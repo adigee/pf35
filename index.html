@@ -70,6 +70,7 @@
       /* Layout */
       --left-col: 400px;
       --panel-transition: 420ms ease;
+      --nav-height: 3.25rem;
     }
 
     /* ─────────────────────────────────────────
@@ -126,7 +127,7 @@
     .page-right { /* intentionally empty */ }
 
     /* ─────────────────────────────────────────
-       SITE NAV  (sticky, inside left col)
+       SITE NAV  (full-width sticky top bar)
     ───────────────────────────────────────── */
     .site-nav {
       position: sticky;
@@ -139,6 +140,8 @@
       align-items: center;
       justify-content: space-between;
       gap: var(--sp-4);
+      /* full width — outside the two-column grid */
+      width: 100%;
     }
 
     .nav-name {
@@ -340,7 +343,7 @@
     ───────────────────────────────────────── */
     .panel {
       position: fixed;
-      top: 0;
+      top: var(--nav-height);
       left: var(--left-col);
       right: 0;
       bottom: 0;
@@ -617,10 +620,6 @@
         border-right: none;
       }
 
-      .site-nav {
-        padding: var(--sp-4) 12.5vw;
-      }
-
       .block-text {
         padding: var(--sp-16) 12.5vw;
       }
@@ -799,19 +798,19 @@
 
   <div class="reading-marker" aria-hidden="true"></div>
 
+  <!-- NAV — full-width sticky bar, outside the two-column grid -->
+  <nav class="site-nav" role="navigation" aria-label="Primary">
+    <a href="#intro" class="nav-name">Aditya Gujaran</a>
+    <ul class="nav-links" role="list">
+      <li><a href="#ondemand">Work</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
   <main class="page">
     <div class="page-left">
-
-      <!-- NAV -->
-      <nav class="site-nav" role="navigation" aria-label="Primary">
-        <a href="#intro" class="nav-name">Aditya Gujaran</a>
-        <ul class="nav-links" role="list">
-          <li><a href="#ondemand">Work</a></li>
-          <li><a href="#experience">Experience</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </nav>
 
       <!-- ── MOBILE INTRO VISUAL (hidden on desktop, leads above text) ── -->
       <div class="mobile-visual mobile-visual--dark" aria-hidden="true">
