@@ -14,17 +14,21 @@
        DESIGN SYSTEM
     ───────────────────────────────────────── */
     :root {
-      /* ── LIGHT MODE (default) ── */
-      --color-bg:           #f8f6ee;
-      --color-fg:           #040404;
-      --color-fg-muted:     #a8a8a8;
-      --color-fg-subtle:    #d4d4d4;
-      --color-border:       #e2e0d8;
-      --color-border-light: #eeece6;
-      --color-accent:       #aca0e8;
-      --color-accent-soft:  #6863FD;
-      --color-surface-dark:   #1f1f1f;
-      --color-surface-dark-2: #262626;
+      /* ── DARK MODE — adityagujaran.me palette ──
+         Midnight  #040404   page background
+         Ivory     #f8f6ee   primary text
+         White     #ffffff   text on coloured surfaces
+         Secondary #d4d4d4   muted / secondary text
+         Lavender  #aca0e8   accent
+      ── */
+      --color-bg:           #040404;   /* midnight */
+      --color-fg:           #f8f6ee;   /* ivory */
+      --color-fg-secondary: #d4d4d4;   /* secondary text */
+      --color-on-accent:    #ffffff;   /* white — text on coloured surfaces */
+      --color-border:       rgba(248, 246, 238, 0.1);  /* ivory @ 10% */
+      --color-border-light: rgba(248, 246, 238, 0.05); /* ivory @ 5% */
+      --color-accent:       #aca0e8;   /* lavender */
+      --color-surface:      #f8f6ee;   /* ivory — inverted panels */
 
       /* Typography */
       --font-display: 'Syne', sans-serif;
@@ -75,26 +79,13 @@
       --nav-height: 3.25rem;
     }
 
-    /* ── DARK MODE — matches adityagujaran.me default ── */
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --color-bg:           #040404;
-        --color-fg:           #f8f6ee;
-        --color-fg-muted:     #a8a8a8;
-        --color-fg-subtle:    #d4d4d4;
-        --color-border:       #2a2a2a;
-        --color-border-light: #1e1e1e;
-        --color-accent:       #aca0e8;
-        --color-accent-soft:  #6863FD;
-        --color-surface-dark:   #f7f7f7;
-        --color-surface-dark-2: #fff;
-      }
-    }
+    /* ── LIGHT MODE (TBD — tokens defined here, values to be set) ── */
+    /* @media (prefers-color-scheme: light) { :root { } } */
 
     /* ─────────────────────────────────────────
        RESET & BASE
     ───────────────────────────────────────── */
-    ::selection { background: var(--color-accent); color: #fff; }
+    ::selection { background: var(--color-accent); color: var(--color-on-accent); }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -187,7 +178,7 @@
       letter-spacing: var(--tracking-wider);
       text-transform: uppercase;
       text-decoration: none;
-      color: var(--color-fg-muted);
+      color: var(--color-fg-secondary);
       white-space: nowrap;
       transition: color 120ms ease;
     }
@@ -229,7 +220,7 @@
       font-size: var(--text-2xs);
       letter-spacing: var(--tracking-widest);
       text-transform: uppercase;
-      color: var(--color-fg-muted);
+      color: var(--color-fg-secondary);
       margin-bottom: var(--sp-5);
     }
 
@@ -251,7 +242,7 @@
     /* Company */
     .b-company {
       font-size: var(--text-sm);
-      color: var(--color-fg-muted);
+      color: var(--color-fg-secondary);
       margin-bottom: var(--sp-5);
     }
 
@@ -288,7 +279,7 @@
       font-size: var(--text-2xs);
       letter-spacing: var(--tracking-wide);
       text-transform: uppercase;
-      color: var(--color-fg-muted);
+      color: var(--color-fg-secondary);
       border: 1px solid var(--color-border);
       border-radius: 2px;
       padding: 0.2em 0.5em;
@@ -297,7 +288,7 @@
     /* Italic aside */
     .b-aside {
       font-style: italic;
-      color: var(--color-fg-muted);
+      color: var(--color-fg-secondary);
       font-size: var(--text-sm);
       margin-top: var(--sp-6);
     }
@@ -317,7 +308,7 @@
     .b-timeline-period {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
-      color: var(--color-fg-subtle);
+      color: var(--color-fg-secondary);
       letter-spacing: var(--tracking-wide);
       padding-top: 0.1rem;
     }
@@ -325,7 +316,7 @@
     .b-timeline-company {
       font-family: var(--font-mono);
       font-size: var(--text-2xs);
-      color: var(--color-fg-muted);
+      color: var(--color-fg-secondary);
       letter-spacing: var(--tracking-wide);
       margin-top: var(--sp-1);
     }
@@ -341,7 +332,7 @@
     .b-skill-desc {
       font-family: var(--font-mono);
       font-size: var(--text-2xs);
-      color: var(--color-fg-muted);
+      color: var(--color-fg-secondary);
       letter-spacing: var(--tracking-wide);
       margin-top: var(--sp-1);
     }
@@ -354,7 +345,7 @@
     .site-footer-copy {
       font-family: var(--font-mono);
       font-size: var(--text-2xs);
-      color: var(--color-fg-subtle);
+      color: var(--color-fg-secondary);
       letter-spacing: var(--tracking-wide);
     }
 
@@ -460,12 +451,12 @@
       font-size: var(--text-2xs);
       letter-spacing: var(--tracking-wider);
       text-transform: uppercase;
-      color: var(--color-fg-muted);
+      color: var(--color-fg-secondary);
       margin-top: var(--sp-2);
     }
 
     /* 2 — Bounce: dark */
-    .panel--bounce { background: var(--color-surface-dark); color: var(--color-bg); }
+    .panel--bounce { background: var(--color-surface); color: var(--color-bg); } /* ivory bg, midnight text */
 
     /* 3 — Unbabel: image panel */
     .panel--unbabel { background: var(--color-fg); }
@@ -512,7 +503,7 @@
       font-size: var(--text-xs);
       letter-spacing: var(--tracking-wider);
       text-transform: uppercase;
-      color: var(--color-fg-muted);
+      color: var(--color-fg-secondary);
       border: 1px solid var(--color-border);
       border-radius: 2px;
       padding: var(--sp-2) var(--sp-4);
@@ -524,10 +515,10 @@
     }
 
     /* 5 — TRQ DAD: dark */
-    .panel--trq { background: var(--color-surface-dark); color: var(--color-bg); }
+    .panel--trq { background: var(--color-surface); color: var(--color-bg); }
 
     /* 6 — Cocoon: warm tint */
-    .panel--cocoon { background: var(--color-accent-soft); }
+    .panel--cocoon { background: var(--color-accent); }
 
     /* 7 — Experience */
     .panel--experience { background: var(--color-bg); }
@@ -548,7 +539,7 @@
     .p-tl-period {
       font-family: var(--font-mono);
       font-size: var(--text-2xs);
-      color: var(--color-fg-subtle);
+      color: var(--color-fg-secondary);
       letter-spacing: var(--tracking-wide);
       padding-top: 0.1rem;
     }
@@ -556,13 +547,13 @@
     .p-tl-company {
       font-family: var(--font-mono);
       font-size: var(--text-2xs);
-      color: var(--color-fg-muted);
+      color: var(--color-fg-secondary);
       letter-spacing: var(--tracking-wide);
       margin-top: var(--sp-1);
     }
 
     /* 8 — Skills/About: dark */
-    .panel--skills { background: var(--color-surface-dark-2); color: var(--color-bg); }
+    .panel--skills { background: var(--color-surface); color: var(--color-bg); }
 
     .p-skills {
       display: grid;
@@ -583,7 +574,7 @@
     }
 
     /* 9 — Contact: accent red */
-    .panel--contact { background: var(--color-accent); color: #fff; }
+    .panel--contact { background: var(--color-accent); color: var(--color-on-accent); }
 
     .p-email {
       display: inline-block;
@@ -595,7 +586,7 @@
       text-decoration: none;
       margin-top: var(--sp-8);
       padding: var(--sp-4) var(--sp-6);
-      border: 1px solid rgba(255,255,255,0.4);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: 2px;
       transition: background 200ms ease;
     }
@@ -692,9 +683,9 @@
         text-align: center;
       }
 
-      .mobile-visual--dark { background: var(--color-surface-dark); color: var(--color-bg); }
-      .mobile-visual--red  { background: var(--color-accent); color: #fff; }
-      .mobile-visual--soft { background: var(--color-accent-soft); }
+      .mobile-visual--dark { background: var(--color-surface); color: var(--color-bg); }
+      .mobile-visual--red  { background: var(--color-accent); color: var(--color-on-accent); }
+      .mobile-visual--soft { background: var(--color-accent); }
       .mobile-visual--plain { background: var(--color-bg); }
 
       .mv-inner { width: 100%; }
