@@ -14,15 +14,17 @@
        DESIGN SYSTEM
     ───────────────────────────────────────── */
     :root {
-      /* Colour */
-      --color-bg:           #f8f6f2;
-      --color-fg:           #141210;
-      --color-fg-muted:     #7a766f;
-      --color-fg-subtle:    #b5b0a8;
-      --color-border:       #dedad4;
-      --color-border-light: #edeae5;
-      --color-accent:       #b83a12;
-      --color-accent-soft:  #f0e8e4;
+      /* ── LIGHT MODE (default) ── */
+      --color-bg:           #f8f6ee;
+      --color-fg:           #040404;
+      --color-fg-muted:     #a8a8a8;
+      --color-fg-subtle:    #d4d4d4;
+      --color-border:       #e2e0d8;
+      --color-border-light: #eeece6;
+      --color-accent:       #aca0e8;
+      --color-accent-soft:  #6863FD;
+      --color-surface-dark:   #1f1f1f;
+      --color-surface-dark-2: #262626;
 
       /* Typography */
       --font-display: 'Syne', sans-serif;
@@ -73,9 +75,27 @@
       --nav-height: 3.25rem;
     }
 
+    /* ── DARK MODE — matches adityagujaran.me default ── */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg:           #040404;
+        --color-fg:           #f8f6ee;
+        --color-fg-muted:     #a8a8a8;
+        --color-fg-subtle:    #d4d4d4;
+        --color-border:       #2a2a2a;
+        --color-border-light: #1e1e1e;
+        --color-accent:       #aca0e8;
+        --color-accent-soft:  #6863FD;
+        --color-surface-dark:   #f7f7f7;
+        --color-surface-dark-2: #fff;
+      }
+    }
+
     /* ─────────────────────────────────────────
        RESET & BASE
     ───────────────────────────────────────── */
+    ::selection { background: var(--color-accent); color: #fff; }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html {
@@ -445,7 +465,7 @@
     }
 
     /* 2 — Bounce: dark */
-    .panel--bounce { background: var(--color-fg); color: var(--color-bg); }
+    .panel--bounce { background: var(--color-surface-dark); color: var(--color-bg); }
 
     /* 3 — Unbabel: image panel */
     .panel--unbabel { background: var(--color-fg); }
@@ -504,7 +524,7 @@
     }
 
     /* 5 — TRQ DAD: dark */
-    .panel--trq { background: var(--color-fg); color: var(--color-bg); }
+    .panel--trq { background: var(--color-surface-dark); color: var(--color-bg); }
 
     /* 6 — Cocoon: warm tint */
     .panel--cocoon { background: var(--color-accent-soft); }
@@ -542,7 +562,7 @@
     }
 
     /* 8 — Skills/About: dark */
-    .panel--skills { background: var(--color-fg); color: var(--color-bg); }
+    .panel--skills { background: var(--color-surface-dark-2); color: var(--color-bg); }
 
     .p-skills {
       display: grid;
@@ -672,7 +692,7 @@
         text-align: center;
       }
 
-      .mobile-visual--dark { background: var(--color-fg); color: var(--color-bg); }
+      .mobile-visual--dark { background: var(--color-surface-dark); color: var(--color-bg); }
       .mobile-visual--red  { background: var(--color-accent); color: #fff; }
       .mobile-visual--soft { background: var(--color-accent-soft); }
       .mobile-visual--plain { background: var(--color-bg); }
