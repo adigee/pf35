@@ -568,29 +568,120 @@
     .p-contact-links a:hover { color: #fff; }
 
     /* ─────────────────────────────────────────
+       MOBILE HERO  (shown only on mobile)
+    ───────────────────────────────────────── */
+    .mobile-hero {
+      display: none; /* hidden on desktop */
+    }
+
+    /* ─────────────────────────────────────────
+       TABLET  (512px – 768px)
+    ───────────────────────────────────────── */
+    @media (min-width: 32rem) and (max-width: 768px) {
+      .page-left {
+        border-right: none;
+      }
+
+      .site-nav {
+        padding: var(--sp-4) 12.5vw;
+      }
+
+      .block-text {
+        padding: var(--sp-16) 12.5vw;
+      }
+
+      .block-text:last-of-type {
+        padding-bottom: var(--sp-20);
+        border-bottom: none;
+      }
+
+      .mobile-hero {
+        padding: var(--sp-16) 12.5vw var(--sp-12);
+      }
+
+      .site-footer {
+        padding: var(--sp-8) 12.5vw;
+      }
+    }
+
+    /* ─────────────────────────────────────────
        MOBILE  (<= 768px)
     ───────────────────────────────────────── */
     @media (max-width: 768px) {
+      :root {
+        --text-4xl: 2.75rem;
+        --text-3xl: 2rem;
+        --text-2xl: 1.5rem;
+      }
+
       .page {
         display: block;
       }
 
+      /* Hide all fixed panels on mobile */
       .panel {
-        /* Hide all fixed panels on mobile */
         display: none !important;
+      }
+
+      /* Hide the desktop intro block — mobile-hero replaces it */
+      .block-text--intro {
+        display: none;
+      }
+
+      /* Show mobile hero */
+      .mobile-hero {
+        display: block;
+        padding: var(--sp-16) var(--sp-6) var(--sp-12);
+        border-bottom: 1px solid var(--color-border-light);
       }
 
       .reading-marker { display: none; }
 
-      .block-text {
-        padding: var(--sp-12) var(--sp-6);
-      }
+      .page-right { display: none; }
+
+      /* Nav: hide links on small screens, keep name + section count */
+      .nav-links { display: none; }
 
       .site-nav {
         padding: var(--sp-4) var(--sp-6);
       }
 
       .b-body { max-width: 100%; }
+
+      /* Reduce block vertical rhythm */
+      .block-text {
+        padding: var(--sp-12) var(--sp-6);
+      }
+
+      .block-text:last-of-type {
+        padding-bottom: var(--sp-16);
+        border-bottom: none;
+      }
+
+      .site-footer {
+        padding: var(--sp-8) var(--sp-6);
+      }
+
+      /* Stack timeline labels above content on very small screens */
+      .b-timeline-item {
+        grid-template-columns: 4.5rem 1fr;
+        gap: var(--sp-2);
+      }
+    }
+
+    /* ─────────────────────────────────────────
+       SMALL MOBILE  (<= 400px)
+    ───────────────────────────────────────── */
+    @media (max-width: 400px) {
+      :root {
+        --text-4xl: 2.25rem;
+        --text-3xl: 1.75rem;
+        --text-2xl: 1.375rem;
+      }
+
+      .block-text {
+        padding: var(--sp-10) var(--sp-5);
+      }
     }
 
     /* ─────────────────────────────────────────
@@ -622,8 +713,24 @@
         </ul>
       </nav>
 
-      <!-- ── 1. INTRO ── -->
-      <div class="block-text" id="intro">
+      <!-- ── MOBILE HERO (hidden on desktop) ── -->
+      <div class="mobile-hero" aria-hidden="false">
+        <p class="b-label">Designer &amp; Researcher — Lisbon, PT</p>
+        <h1 class="b-title b-title--xl">Aditya<br>Gujaran</h1>
+        <p class="b-body">
+          Over the past 8+ years I have built a versatile design practice
+          spanning UX research, product design, and service design — primarily
+          on 0→1 projects across many verticals and contexts.
+        </p>
+        <p class="b-body" style="margin-top: var(--sp-4);">
+          I work at the intersection of user needs and business objectives,
+          using human-centred methodologies to define product strategy and
+          shape interfaces that drive growth.
+        </p>
+      </div>
+
+      <!-- ── 1. INTRO (desktop only) ── -->
+      <div class="block-text block-text--intro" id="intro">
         <p class="b-label">Designer &amp; Researcher — Lisbon, PT</p>
         <h1 class="b-title b-title--xl">Aditya<br>Gujaran</h1>
         <p class="b-body">
