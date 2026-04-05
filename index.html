@@ -444,11 +444,38 @@
     /* 2 — Bounce: dark */
     .panel--bounce { background: var(--color-fg); color: var(--color-bg); }
 
-    /* 3 — Unbabel: accent red */
-    .panel--unbabel { background: var(--color-accent); color: #fff; }
+    /* 3 — Unbabel: image panel */
+    .panel--unbabel { background: var(--color-fg); }
 
-    /* 4 — Decision Module */
-    .panel--decision { background: var(--color-bg); }
+    /* 4 — Decision Module: image panel */
+    .panel--decision { background: #f4f4f6; }
+
+    .panel-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+
+    .panel-img-caption {
+      position: absolute;
+      bottom: var(--sp-6);
+      left: var(--sp-8);
+      right: var(--sp-8);
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      z-index: 2;
+    }
+
+    .panel-img-caption--dark {
+      color: rgba(0,0,0,0.35);
+    }
 
     .p-relation {
       display: flex;
@@ -575,6 +602,14 @@
     }
 
     /* ─────────────────────────────────────────
+       MOBILE VISUAL  (inline card on mobile,
+       hidden on desktop — replaces fixed panel)
+    ───────────────────────────────────────── */
+    .mobile-visual {
+      display: none; /* hidden on desktop */
+    }
+
+    /* ─────────────────────────────────────────
        TABLET  (512px – 768px)
     ───────────────────────────────────────── */
     @media (min-width: 32rem) and (max-width: 768px) {
@@ -599,6 +634,10 @@
         padding: var(--sp-16) 12.5vw var(--sp-12);
       }
 
+      .mobile-visual {
+        padding: var(--sp-10) 12.5vw;
+      }
+
       .site-footer {
         padding: var(--sp-8) 12.5vw;
       }
@@ -621,6 +660,67 @@
       /* Hide all fixed panels on mobile */
       .panel {
         display: none !important;
+      }
+
+      /* Show inline mobile visuals */
+      .mobile-visual {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52vw;
+        padding: var(--sp-10) var(--sp-6);
+        border-bottom: 1px solid var(--color-border-light);
+        text-align: center;
+      }
+
+      .mobile-visual--dark { background: var(--color-fg); color: var(--color-bg); }
+      .mobile-visual--red  { background: var(--color-accent); color: #fff; }
+      .mobile-visual--soft { background: var(--color-accent-soft); }
+      .mobile-visual--plain { background: var(--color-bg); }
+
+      .mv-inner { width: 100%; }
+
+      .mv-label {
+        font-family: var(--font-mono);
+        font-size: var(--text-2xs);
+        letter-spacing: var(--tracking-widest);
+        text-transform: uppercase;
+        opacity: 0.45;
+        margin-bottom: var(--sp-4);
+      }
+
+      .mv-title {
+        font-family: var(--font-display);
+        font-size: var(--text-3xl);
+        font-weight: 700;
+        letter-spacing: var(--tracking-tight);
+        line-height: var(--leading-tight);
+      }
+
+      .mv-sub {
+        font-family: var(--font-mono);
+        font-size: var(--text-2xs);
+        letter-spacing: var(--tracking-wider);
+        text-transform: uppercase;
+        opacity: 0.45;
+        margin-top: var(--sp-4);
+      }
+
+      /* Image mobile-visual */
+      .mobile-visual--img {
+        background: var(--color-fg);
+        padding: 0;
+        min-height: 60vw;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .mobile-visual--img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top;
+        display: block;
       }
 
       /* Hide the desktop intro block — mobile-hero replaces it */
@@ -706,12 +806,21 @@
       <nav class="site-nav" role="navigation" aria-label="Primary">
         <a href="#intro" class="nav-name">Aditya Gujaran</a>
         <ul class="nav-links" role="list">
-          <li><a href="#bounce">Work</a></li>
+          <li><a href="#ondemand">Work</a></li>
           <li><a href="#experience">Experience</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
+
+      <!-- ── MOBILE INTRO VISUAL (hidden on desktop, leads above text) ── -->
+      <div class="mobile-visual mobile-visual--dark" aria-hidden="true">
+        <div class="mv-inner">
+          <p class="mv-label">Designer &amp; Researcher — Lisbon, PT</p>
+          <p class="mv-title">Aditya<br>Gujaran</p>
+          <p class="mv-sub">8+ years · Product · Service · AI</p>
+        </div>
+      </div>
 
       <!-- ── MOBILE HERO (hidden on desktop) ── -->
       <div class="mobile-hero" aria-hidden="false">
@@ -765,139 +874,90 @@
         </div>
       </aside>
 
-      <!-- ── 2. ON-DEMAND (BOUNCE) ── -->
-      <div class="block-text" id="bounce">
-        <p class="b-label">Product Design · 2024–25</p>
+      <!-- ── 2. ON-DEMAND (UNBABEL) ── -->
+      <div class="mobile-visual mobile-visual--img" aria-hidden="true">
+        <img src="project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand — Unbabel product interface" />
+      </div>
+      <div class="block-text" id="ondemand">
+        <p class="b-label">Product Design · 2020–23</p>
         <h2 class="b-title">On-demand</h2>
-        <p class="b-company">At <strong>Bounce</strong> — Sr. Product Designer</p>
+        <p class="b-company">At <strong>Unbabel</strong> — Sr. Product Designer</p>
         <p class="b-body">
-          Revamped and expanded an existing feature to migrate and serve
-          customers of an acquired company. The challenge was not just
-          visual — it was about translating two different mental models
-          of the same service into a single coherent product experience,
-          without losing either customer base along the way.
+          Following Unbabel's acquisition of Lingo24, the platform needed
+          to support Localisation — a use-case it had never handled before.
+          The challenge was building comprehensive workflows for a migrating
+          customer base, without disrupting the existing one. Two different
+          mental models of the same service, unified into one coherent product.
         </p>
         <div class="b-tags">
           <span class="b-tag">Visual Design</span>
           <span class="b-tag">Systems Thinking</span>
-          <span class="b-tag">Migration</span>
+          <span class="b-tag">Feature Refactor</span>
         </div>
-        <a href="https://bounceapp.com" class="b-link" target="_blank" rel="noopener">bounceapp.com →</a>
-      </div>
-      <aside class="panel panel--bounce" aria-hidden="true">
-        <div class="p-inner">
-          <p class="p-label">Product Design · 2024–25</p>
-          <h2 class="p-display">On-demand</h2>
-          <p class="p-sub">Bounce</p>
-        </div>
-      </aside>
-
-      <!-- ── 3. TRANSLATION OS (UNBABEL) ── -->
-      <div class="block-text" id="unbabel">
-        <p class="b-label">Product Design · 2020–23</p>
-        <h2 class="b-title">Translation OS</h2>
-        <p class="b-company">At <strong>Unbabel</strong> — Sr. Product Designer</p>
-        <p class="b-body">
-          Designed the core translator-facing experience for a platform
-          where human editors collaborate with AI to produce
-          quality-assured translation at scale. Navigated the delicate
-          tension between speed (the business metric) and craft
-          (the translator's identity) — and found that they need not
-          be at odds.
-        </p>
-        <div class="b-tags">
-          <span class="b-tag">Product Strategy</span>
-          <span class="b-tag">Interaction Design</span>
-          <span class="b-tag">NLP</span>
-        </div>
-        <a href="https://unbabel.com" class="b-link" target="_blank" rel="noopener">unbabel.com →</a>
+        <a href="https://adityagujaran.me/projects/On-demand/" class="b-link" target="_blank" rel="noopener">Case study →</a>
       </div>
       <aside class="panel panel--unbabel" aria-hidden="true">
-        <div class="p-inner">
-          <p class="p-label">Product Design · 2020–23</p>
-          <h2 class="p-display">Translation<br>OS</h2>
-          <p class="p-sub">Unbabel</p>
-        </div>
+        <img class="panel-img" src="project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand — Unbabel product interface" />
+        <span class="panel-img-caption">On-demand · Unbabel</span>
       </aside>
 
-      <!-- ── 4. DECISION MODULE ── -->
+      <!-- ── 3. DECISION MODULE (UNBABEL) ── -->
+      <div class="mobile-visual mobile-visual--img" aria-hidden="true">
+        <img src="project%20content/2%20QE%20images%20for%20framer/1%20Hero.png" alt="Decision Module — Unbabel pipeline editor" />
+      </div>
       <div class="block-text" id="decision">
-        <p class="b-label">AI &amp; Emerging Interfaces · 2024</p>
+        <p class="b-label">AI &amp; Interaction Design · 2020–23</p>
         <h2 class="b-title">The Decision<br>Module</h2>
+        <p class="b-company">At <strong>Unbabel</strong> — Sr. Product Designer</p>
         <p class="b-body">
-          Designed an interface to increase operational efficiency in a
-          Human-AI interaction paradigm. The central question: when a
-          machine offers a recommendation, how should a human receive it?
-          What information restores agency? The result was a module that
-          makes the model's reasoning legible without making it
-          overwhelming — trust through transparency.
+          Operating Unbabel's AI quality estimation model required constant
+          input from specialist engineers — a bottleneck at scale. The brief
+          was to design an interface that gave linguists on the ops team the
+          capability and confidence to run the model independently. Making
+          the machine's reasoning legible, without making it overwhelming.
         </p>
         <div class="b-tags">
           <span class="b-tag">Interaction Design</span>
           <span class="b-tag">AI / ML</span>
-          <span class="b-tag">Human-AI</span>
+          <span class="b-tag">Operations</span>
         </div>
-        <a href="https://adityagujaran.me" class="b-link" target="_blank" rel="noopener">Case study on request →</a>
+        <a href="https://adityagujaran.me/projects/decision-module/" class="b-link" target="_blank" rel="noopener">Case study →</a>
       </div>
       <aside class="panel panel--decision" aria-hidden="true">
-        <div class="p-inner">
-          <p class="p-label">AI &amp; Emerging Interfaces · 2024</p>
-          <h2 class="p-display">The Decision<br>Module</h2>
-          <div class="p-relation">
-            <span class="p-relation-node">Human</span>
-            <span class="p-relation-arrow">⟷</span>
-            <span class="p-relation-node">Machine</span>
-          </div>
-        </div>
+        <img class="panel-img" src="project%20content/2%20QE%20images%20for%20framer/1%20Hero.png" alt="Decision Module — Unbabel pipeline editor" />
+        <span class="panel-img-caption panel-img-caption--dark">Decision Module · Unbabel</span>
       </aside>
 
-      <!-- ── 5. TRQ DAD ── -->
+      <!-- ── 4. TRQ DAD (COCOON) ── -->
+      <div class="mobile-visual mobile-visual--dark" aria-hidden="true">
+        <div class="mv-inner">
+          <p class="mv-label">Service Design · 2016–19</p>
+          <p class="mv-title">TRQ DAD</p>
+          <p class="mv-sub">Cocoon Experience</p>
+        </div>
+      </div>
       <div class="block-text" id="trqdad">
-        <p class="b-label">Service Design · 2022</p>
+        <p class="b-label">Service Design · 2016–19</p>
         <h2 class="b-title">TRQ DAD</h2>
+        <p class="b-company">At <strong>Cocoon Experience</strong> — Product Designer</p>
         <p class="b-body">
-          Created a chatbot to guide people through submitting an
-          insurance claim after a car accident — at the worst possible
-          moment. The service design challenge was acute: shock, stress,
-          and bureaucratic complexity all arrive at once. The work was
-          about radical simplification: every word earns its place, every
-          step removes friction.
+          Customers filing an insurance claim after a car accident face
+          verbose, technically-worded forms — at the worst possible moment.
+          The solution was a mobile chatbot that stripped the process to its
+          essentials: every word earns its place, every step removes friction.
+          A service design challenge as much as an interaction one.
         </p>
         <div class="b-tags">
           <span class="b-tag">Service Design</span>
           <span class="b-tag">Interaction Design</span>
           <span class="b-tag">Conversational UI</span>
         </div>
+        <a href="https://adityagujaran.me/projects/trq-dad/" class="b-link" target="_blank" rel="noopener">Case study →</a>
       </div>
       <aside class="panel panel--trq" aria-hidden="true">
         <div class="p-inner">
-          <p class="p-label">Service Design · 2022</p>
-          <h2 class="p-display">TRQ DAD</h2>
-          <p class="p-sub">Insurance · Conversational UI</p>
-        </div>
-      </aside>
-
-      <!-- ── 6. EXPERIENCE ARCHITECTURE (COCOON) ── -->
-      <div class="block-text" id="cocoon">
-        <p class="b-label">Service Design · 2016–19</p>
-        <h2 class="b-title">Experience<br>Architecture</h2>
-        <p class="b-company">At <strong>Cocoon Experience</strong></p>
-        <p class="b-body">
-          A suite of service design projects across verticals — from
-          financial services to public sector — mapping journeys,
-          uncovering hidden pain, and building the case for change from
-          inside organisations. The job was as much facilitation as design.
-        </p>
-        <div class="b-tags">
-          <span class="b-tag">Service Design</span>
-          <span class="b-tag">Research</span>
-          <span class="b-tag">Strategy</span>
-        </div>
-      </div>
-      <aside class="panel panel--cocoon" aria-hidden="true">
-        <div class="p-inner">
           <p class="p-label">Service Design · 2016–19</p>
-          <h2 class="p-display">Experience<br>Architecture</h2>
+          <h2 class="p-display">TRQ DAD</h2>
           <p class="p-sub">Cocoon Experience</p>
         </div>
       </aside>
@@ -917,7 +977,7 @@
           <div class="b-timeline-item">
             <span class="b-timeline-period">2020–23</span>
             <div>
-              <p class="b-timeline-role">Sr. Product Designer</p>
+              <p class="b-timeline-role">Sr. Product Designer — Linguistic Tools</p>
               <p class="b-timeline-company">Unbabel (YC W14)</p>
             </div>
           </div>
@@ -958,8 +1018,8 @@
             <div class="p-tl-item">
               <span class="p-tl-period">2020–23</span>
               <div>
-                <p class="p-tl-role">Sr. Product Designer</p>
-                <p class="p-tl-company">Unbabel</p>
+                <p class="p-tl-role">Sr. Product Designer — Linguistic Tools</p>
+                <p class="p-tl-company">Unbabel (YC W14)</p>
               </div>
             </div>
             <div class="p-tl-item">
