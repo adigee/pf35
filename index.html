@@ -369,6 +369,9 @@
       padding: var(--sp-10) var(--sp-8);
       border-top: 1px solid var(--color-border);
     }
+    .theme-toggle-wrap {
+      margin-bottom: var(--sp-6);
+    }
     .site-footer-copy {
       font-family: var(--font-mono);
       font-size: var(--text-2xs);
@@ -836,24 +839,55 @@
     /* ─────────────────────────────────────────
        THEME TOGGLE
     ───────────────────────────────────────── */
-    .theme-toggle {
+    .theme-toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .toggle-label {
       font-family: var(--font-mono);
       font-size: var(--text-2xs);
       letter-spacing: var(--tracking-wider);
       text-transform: uppercase;
-      color: var(--color-text-muted);
-      background: none;
-      border: 1px solid var(--color-border);
-      border-radius: 2px;
-      padding: 0.3em 0.65em;
-      cursor: pointer;
-      transition: color 120ms ease, border-color 120ms ease;
+      color: var(--color-primary);
+      opacity: 1;
+      transition: opacity 300ms ease;
       white-space: nowrap;
-      flex-shrink: 0;
+      pointer-events: none;
+      user-select: none;
     }
-    .theme-toggle:hover {
-      color: var(--color-text);
-      border-color: var(--color-text-muted);
+    .toggle-label.hidden {
+      opacity: 0;
+    }
+    [data-theme="light"] .toggle-label {
+      order: -1;
+    }
+    .theme-toggle {
+      position: relative;
+      width: 35px;
+      height: 19px;
+      border-radius: 999px;
+      background: var(--color-primary);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+      transition: background 300ms ease;
+    }
+    .toggle-knob {
+      position: absolute;
+      top: 2.5px;
+      left: 2.5px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 250ms ease;
+      pointer-events: none;
+    }
+    [data-theme="dark"] .toggle-knob {
+      transform: translateX(16px);
     }
   </style>
 </head>
@@ -871,7 +905,6 @@
       <li><a href="#about">About</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle colour mode">Light</button>
   </nav>
 
   <main class="page">
@@ -1212,6 +1245,12 @@
       </aside>
 
       <footer class="site-footer">
+        <div class="theme-toggle-wrap" id="theme-toggle-wrap">
+          <button class="theme-toggle" id="theme-toggle" role="switch" aria-label="Toggle colour mode">
+            <span class="toggle-knob"></span>
+          </button>
+          <span class="toggle-label" id="toggle-label"></span>
+        </div>
         <p class="site-footer-copy">© 2026 Aditya Gujaran — Lisbon, Portugal</p>
       </footer>
 
@@ -1291,22 +1330,41 @@
        Priority: localStorage > prefers-color-scheme
     ───────────────────────────────────────── */
     (function () {
-      const html = document.documentElement;
-      const btn  = document.getElementById('theme-toggle');
+      const html  = document.documentElement;
+      const btn   = document.getElementById('theme-toggle');
+      const wrap  = document.getElementById('theme-toggle-wrap');
+      const label = document.getElementById('toggle-label');
+
+      let labelTimer = null;
+      const canHover = window.matchMedia('(hover: hover)').matches;
+
+      function showLabel() {
+        label.classList.remove('hidden');
+        clearTimeout(labelTimer);
+        labelTimer = setTimeout(function () {
+          label.classList.add('hidden');
+        }, 5000);
+      }
 
       function applyTheme(theme) {
         html.setAttribute('data-theme', theme);
-        btn.textContent = theme === 'dark' ? 'Light' : 'Dark';
+        btn.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
+        label.textContent = theme === 'dark' ? 'Dark' : 'Light';
         localStorage.setItem('theme', theme);
+        showLabel();
       }
 
-      const saved    = localStorage.getItem('theme');
+      const saved     = localStorage.getItem('theme');
       const preferred = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
       applyTheme(saved || preferred);
 
       btn.addEventListener('click', function () {
         applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
       });
+
+      if (canHover) {
+        wrap.addEventListener('mouseenter', showLabel);
+      }
     })();
   </script>
 
