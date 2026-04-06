@@ -1449,5 +1449,27 @@
     })();
   </script>
 
+  <script>
+    /* ─────────────────────────────────────────
+       LIVE TIMEZONE CLOCK — Lisbon / WET
+    ───────────────────────────────────────── */
+    (function () {
+      var fmt = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Lisbon',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+      function tick() {
+        var t = fmt.format(new Date());
+        document.querySelectorAll('.b-tz-time').forEach(function (el) {
+          el.textContent = t;
+        });
+      }
+      tick();
+      setInterval(tick, 60000);
+    })();
+  </script>
+
 </body>
 </html>
