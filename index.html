@@ -892,22 +892,45 @@
        TIMEZONE COMPONENT
     ───────────────────────────────────────── */
     .b-tz {
+      position: relative;
       display: inline-flex;
       align-items: center;
       gap: var(--sp-2);
       font-size: var(--text-sm);
-      color: var(--color-text-muted);
+      color: var(--color-text);
       border: 1px solid var(--color-border);
       border-radius: 999px;
       padding: var(--sp-2) var(--sp-4);
       margin-top: var(--sp-5);
       line-height: 1;
+      cursor: default;
     }
     .b-tz-icon {
       font-size: 16px;
       line-height: 1;
-      color: var(--color-text-muted);
+      color: var(--color-text);
       font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    .b-tz::after {
+      content: 'Lisbon, Portugal';
+      position: absolute;
+      bottom: calc(100% + var(--sp-2));
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--sp-2);
+      padding: var(--sp-1) var(--sp-3);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 150ms ease, transform 150ms ease;
+    }
+    .b-tz:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     /* ─────────────────────────────────────────
@@ -1020,7 +1043,6 @@
       <!-- ── 1. INTRO (desktop only) ── -->
       <div class="block-text block-text--intro" id="intro">
         <h1 class="b-title b-title--xl">Aditya<br>Gujaran</h1>
-        <p class="b-tz"><span class="b-tz-dot"></span>Lisbon · WET UTC+1</p>
         <p class="b-body">
           Over the past 8+ years I have built a versatile design practice
           spanning UX research, product design, and service design — primarily
@@ -1031,6 +1053,7 @@
           using human-centred methodologies to define product strategy and
           shape interfaces that drive growth.
         </p>
+        <p class="b-tz"><span class="material-symbols-rounded b-tz-icon">schedule</span><span class="b-tz-time">--:--</span>&thinsp;·&thinsp;WET UTC+1</p>
       </div>
       <aside class="panel panel--intro" aria-hidden="true">
         <img class="panel-img" src="project%20content/hello.avif" alt="Hello" />
@@ -1423,6 +1446,28 @@
       if (canHover) {
         wrap.addEventListener('mouseenter', showLabel);
       }
+    })();
+  </script>
+
+  <script>
+    /* ─────────────────────────────────────────
+       LIVE TIMEZONE CLOCK — Lisbon / WET
+    ───────────────────────────────────────── */
+    (function () {
+      var fmt = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Lisbon',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+      function tick() {
+        var t = fmt.format(new Date());
+        document.querySelectorAll('.b-tz-time').forEach(function (el) {
+          el.textContent = t;
+        });
+      }
+      tick();
+      setInterval(tick, 60000);
     })();
   </script>
 
