@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
     /* ─────────────────────────────────────────
@@ -39,7 +39,7 @@
       /* Typography */
       --font-display: 'Manrope', sans-serif;
       --font-body:    'Manrope', sans-serif;
-      --font-mono:    'JetBrains Mono', monospace;
+      --font-mono:    'Manrope', sans-serif;
 
       /* Type scale */
       --text-2xs:  0.65rem;
@@ -546,8 +546,8 @@
       font-weight: 300;
     }
 
-    /* 5 — TRQ DAD: dark */
-    .panel--trq { background: var(--color-text); color: var(--color-bg); }
+    /* 5 — TRQ DAD: image panel */
+    .panel--trq { background: var(--color-surface); }
 
     /* 6 — Cocoon: warm tint */
     .panel--cocoon { background: var(--color-accent); }
@@ -833,6 +833,26 @@
     }
 
     /* ─────────────────────────────────────────
+       TIMEZONE COMPONENT
+    ───────────────────────────────────────── */
+    .b-tz {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      font-size: var(--text-2xs);
+      color: var(--color-text-muted);
+      letter-spacing: var(--tracking-wide);
+      margin-bottom: var(--sp-5);
+    }
+    .b-tz-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    /* ─────────────────────────────────────────
        ANIMATION
     ───────────────────────────────────────── */
     @keyframes fade-in {
@@ -919,18 +939,14 @@
     <div class="page-left">
 
       <!-- ── MOBILE INTRO VISUAL (hidden on desktop, leads above text) ── -->
-      <div class="mobile-visual mobile-visual--dark" aria-hidden="true">
-        <div class="mv-inner">
-          <p class="mv-label">Designer &amp; Researcher — Lisbon, PT</p>
-          <p class="mv-title">Aditya<br>Gujaran</p>
-          <p class="mv-sub">8+ years · Product · Service · AI</p>
-        </div>
+      <div class="mobile-visual mobile-visual--img" aria-hidden="true">
+        <img src="project%20content/hello.avif" alt="Hello" />
       </div>
 
       <!-- ── MOBILE HERO (hidden on desktop) ── -->
       <div class="mobile-hero" aria-hidden="false">
-        <p class="b-label">Designer &amp; Researcher — Lisbon, PT</p>
         <h1 class="b-title b-title--xl">Aditya<br>Gujaran</h1>
+        <p class="b-tz"><span class="b-tz-dot"></span>Lisbon · WET UTC+1</p>
         <p class="b-body">
           Over the past 8+ years I have built a versatile design practice
           spanning UX research, product design, and service design — primarily
@@ -945,8 +961,8 @@
 
       <!-- ── 1. INTRO (desktop only) ── -->
       <div class="block-text block-text--intro" id="intro">
-        <p class="b-label">Designer &amp; Researcher — Lisbon, PT</p>
         <h1 class="b-title b-title--xl">Aditya<br>Gujaran</h1>
+        <p class="b-tz"><span class="b-tz-dot"></span>Lisbon · WET UTC+1</p>
         <p class="b-body">
           Over the past 8+ years I have built a versatile design practice
           spanning UX research, product design, and service design — primarily
@@ -959,24 +975,7 @@
         </p>
       </div>
       <aside class="panel panel--intro" aria-hidden="true">
-        <div class="p-inner">
-          <p class="p-label">Designer &amp; Researcher</p>
-          <h2 class="p-display">Aditya<br>Gujaran</h2>
-          <div class="p-stats">
-            <div>
-              <div class="p-stat-val">8+</div>
-              <div class="p-stat-lbl">Years of practice</div>
-            </div>
-            <div>
-              <div class="p-stat-val">Lisbon</div>
-              <div class="p-stat-lbl">Portugal</div>
-            </div>
-            <div>
-              <div class="p-stat-val">Open</div>
-              <div class="p-stat-lbl">Select projects</div>
-            </div>
-          </div>
-        </div>
+        <img class="panel-img" src="project%20content/hello.avif" alt="Hello" />
       </aside>
 
       <!-- ── 2. ON-DEMAND (UNBABEL) ── -->
@@ -1034,12 +1033,8 @@
       </aside>
 
       <!-- ── 4. TRQ DAD (COCOON) ── -->
-      <div class="mobile-visual mobile-visual--dark" aria-hidden="true">
-        <div class="mv-inner">
-          <p class="mv-label">Service Design · 2016–19</p>
-          <p class="mv-title">TRQ DAD</p>
-          <p class="mv-sub">Cocoon Experience</p>
-        </div>
+      <div class="mobile-visual mobile-visual--img" aria-hidden="true">
+        <img src="project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Cocoon Experience" />
       </div>
       <div class="block-text" id="trqdad">
         <p class="b-label">Service Design · 2016–19</p>
@@ -1060,11 +1055,8 @@
         <a href="https://adityagujaran.me/projects/trq-dad/" class="b-link" target="_blank" rel="noopener">Case study →</a>
       </div>
       <aside class="panel panel--trq" aria-hidden="true">
-        <div class="p-inner">
-          <p class="p-label">Service Design · 2016–19</p>
-          <h2 class="p-display">TRQ DAD</h2>
-          <p class="p-sub">Cocoon Experience</p>
-        </div>
+        <img class="panel-img" src="project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Cocoon Experience" />
+        <span class="panel-img-caption">TRQ DAD · Cocoon Experience</span>
       </aside>
 
       <!-- ── 7. EXPERIENCE TIMELINE ── -->
