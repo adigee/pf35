@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,1,0" rel="stylesheet" />
 
   <style>
     /* ─────────────────────────────────────────
@@ -41,25 +42,26 @@
       --font-body:    'Manrope', sans-serif;
       --font-mono:    'Manrope', sans-serif;
 
-      /* Type scale */
-      --text-2xs:  0.65rem;
-      --text-xs:   0.75rem;
-      --text-sm:   0.875rem;
-      --text-base: 1rem;
-      --text-lg:   1.125rem;
-      --text-xl:   1.375rem;
-      --text-2xl:  1.75rem;
-      --text-3xl:  2.5rem;
-      --text-4xl:  3.5rem;
+      /* Type scale — matched to Pencil design system */
+      --text-2xs:  0.5625rem;  /* 9px  — Label Small */
+      --text-xs:   0.6875rem;  /* 11px — Label */
+      --text-sm:   0.875rem;   /* 14px — Body Small / Caption */
+      --text-base: 1.125rem;   /* 18px — Body */
+      --text-lg:   1.75rem;    /* 28px — H4 */
+      --text-xl:   1.375rem;   /* 22px — misc */
+      --text-2xl:  2.75rem;    /* 44px — H3 */
+      --text-3xl:  4.3125rem;  /* 69px — H2 */
+      --text-4xl:  5.5rem;     /* 88px — H1 */
 
       /* Leading */
-      --leading-tight:  1.2;
-      --leading-snug:   1.4;
-      --leading-normal: 1.6;
-      --leading-loose:  1.8;
+      --leading-tight:  1.1;
+      --leading-snug:   1.18;
+      --leading-normal: 1.4;
+      --leading-loose:  1.6;
 
       /* Tracking */
-      --tracking-tight:   -0.02em;
+      --tracking-tight:   -0.04em;
+      --tracking-snug:    -0.02em;
       --tracking-normal:   0em;
       --tracking-wide:     0.04em;
       --tracking-wider:    0.1em;
@@ -256,13 +258,15 @@
       font-family: var(--font-display);
       font-size: var(--text-2xl);
       font-weight: 700;
-      letter-spacing: var(--tracking-tight);
-      line-height: var(--leading-tight);
+      letter-spacing: 0;
+      line-height: var(--leading-snug);
       margin-bottom: var(--sp-5);
     }
 
     .b-title--xl {
-      font-size: var(--text-3xl);
+      font-size: var(--text-4xl);
+      letter-spacing: var(--tracking-tight);
+      line-height: var(--leading-tight);
       margin-bottom: var(--sp-8);
     }
 
@@ -690,9 +694,10 @@
     ───────────────────────────────────────── */
     @media (max-width: 768px) {
       :root {
-        --text-4xl: 2.75rem;
-        --text-3xl: 2rem;
-        --text-2xl: 1.5rem;
+        --text-4xl: 4.5rem;    /* 72px — H1 */
+        --text-3xl: 2.5rem;    /* 40px — H2 */
+        --text-2xl: 2.125rem;  /* 34px — H3 */
+        --text-lg:  1.5rem;    /* 24px — H4 */
       }
 
       .page {
@@ -822,9 +827,10 @@
     ───────────────────────────────────────── */
     @media (max-width: 400px) {
       :root {
-        --text-4xl: 2.25rem;
-        --text-3xl: 1.75rem;
-        --text-2xl: 1.375rem;
+        --text-4xl: 2.875rem;  /* 46px — H1 */
+        --text-3xl: 2.5rem;    /* 40px — H2 */
+        --text-2xl: 1.625rem;  /* 26px — H3 */
+        --text-lg:  1.375rem;  /* 22px — H4 */
       }
 
       .block-text {
@@ -839,17 +845,19 @@
       display: inline-flex;
       align-items: center;
       gap: var(--sp-2);
-      font-size: var(--text-2xs);
+      font-size: var(--text-sm);
       color: var(--color-text-muted);
-      letter-spacing: var(--tracking-wide);
-      margin-bottom: var(--sp-5);
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      padding: var(--sp-2) var(--sp-4);
+      margin-top: var(--sp-5);
+      line-height: 1;
     }
-    .b-tz-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--color-primary);
-      flex-shrink: 0;
+    .b-tz-icon {
+      font-size: 16px;
+      line-height: 1;
+      color: var(--color-text-muted);
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
     }
 
     /* ─────────────────────────────────────────
@@ -946,7 +954,6 @@
       <!-- ── MOBILE HERO (hidden on desktop) ── -->
       <div class="mobile-hero" aria-hidden="false">
         <h1 class="b-title b-title--xl">Aditya<br>Gujaran</h1>
-        <p class="b-tz"><span class="b-tz-dot"></span>Lisbon · WET UTC+1</p>
         <p class="b-body">
           Over the past 8+ years I have built a versatile design practice
           spanning UX research, product design, and service design — primarily
@@ -957,6 +964,7 @@
           using human-centred methodologies to define product strategy and
           shape interfaces that drive growth.
         </p>
+        <p class="b-tz"><span class="material-symbols-rounded b-tz-icon">schedule</span><span class="b-tz-time">--:--</span>&thinsp;·&thinsp;WET UTC+1</p>
       </div>
 
       <!-- ── 1. INTRO (desktop only) ── -->
@@ -984,7 +992,7 @@
       </div>
       <div class="block-text" id="ondemand">
         <p class="b-label">Product Design · 2020–23</p>
-        <h2 class="b-title">On-demand</h2>
+        <h3 class="b-title">On-demand</h3>
         <p class="b-company">At <strong>Unbabel</strong> — Sr. Product Designer</p>
         <p class="b-body">
           Following Unbabel's acquisition of Lingo24, the platform needed
@@ -1011,7 +1019,7 @@
       </div>
       <div class="block-text" id="decision">
         <p class="b-label">AI &amp; Interaction Design · 2020–23</p>
-        <h2 class="b-title">The Decision<br>Module</h2>
+        <h3 class="b-title">The Decision<br>Module</h3>
         <p class="b-company">At <strong>Unbabel</strong> — Sr. Product Designer</p>
         <p class="b-body">
           Operating Unbabel's AI quality estimation model required constant
@@ -1038,7 +1046,7 @@
       </div>
       <div class="block-text" id="trqdad">
         <p class="b-label">Service Design · 2016–19</p>
-        <h2 class="b-title">TRQ DAD</h2>
+        <h3 class="b-title">TRQ DAD</h3>
         <p class="b-company">At <strong>Cocoon Experience</strong> — Product Designer</p>
         <p class="b-body">
           Customers filing an insurance claim after a car accident face
@@ -1062,7 +1070,7 @@
       <!-- ── 7. EXPERIENCE TIMELINE ── -->
       <div class="block-text" id="experience">
         <p class="b-label">Experience</p>
-        <h2 class="b-title">8+ Years of<br>Design Practice</h2>
+        <h3 class="b-title">8+ Years of<br>Design Practice</h3>
         <div class="b-timeline">
           <div class="b-timeline-item">
             <span class="b-timeline-period">2024–25</span>
@@ -1147,7 +1155,7 @@
       <!-- ── 8. ABOUT / SKILLS ── -->
       <div class="block-text" id="about">
         <p class="b-label">About</p>
-        <h2 class="b-title">Business-oriented<br>design practice</h2>
+        <h3 class="b-title">Business-oriented<br>design practice</h3>
         <p class="b-body">
           My work lives at the overlap of rigorous research, clear strategic
           thinking, and considered craft. I have a particular fondness for
@@ -1221,7 +1229,7 @@
       <!-- ── 9. CONTACT ── -->
       <div class="block-text" id="contact">
         <p class="b-label">Contact</p>
-        <h2 class="b-title">Let's work on<br>something worth<br>making.</h2>
+        <h3 class="b-title">Let's work on<br>something worth<br>making.</h3>
         <p class="b-body">
           Currently based in Lisbon, available for select collaborations.
           Requests should come with a few months in advance.
@@ -1235,7 +1243,7 @@
       <aside class="panel panel--contact" aria-hidden="true">
         <div class="p-inner">
           <p class="p-label">Contact</p>
-          <h2 class="p-display">Let's work<br>together.</h2>
+          <h2 class="p-display">Let's work<br>together.</h3>
           <a href="mailto:hello@adityagujaran.me" class="p-email">hello@adityagujaran.me</a>
           <div class="p-contact-links">
             <a href="https://linkedin.com/in/agujaran/" target="_blank" rel="noopener">LinkedIn</a>
