@@ -54,18 +54,19 @@
       --text-4xl:  5.5rem;     /* 88px — H1 */
 
       /* Leading */
-      --leading-tight:  1.1;
-      --leading-snug:   1.18;
-      --leading-normal: 1.4;
-      --leading-loose:  1.6;
+      --leading-tight:    1.1;    /* H1, H2 */
+      --leading-snug:     1.18;   /* H3 */
+      --leading-normal:   1.4;    /* H4 */
+      --leading-body:     1.6;    /* Body */
+      --leading-loose:    1.8;    /* Body bold */
+      --leading-relaxed:  2.0;    /* Body caption, Body small */
 
       /* Tracking */
-      --tracking-tight:   -0.04em;
-      --tracking-snug:    -0.02em;
+      --tracking-tight:   -0.04em; /* H1 */
       --tracking-normal:   0em;
       --tracking-wide:     0.04em;
-      --tracking-wider:    0.1em;
-      --tracking-widest:   0.16em;
+      --tracking-wider:    0.1em;  /* Label */
+      --tracking-widest:   0.16em; /* Label Small */
 
       /* Space */
       --sp-1:  0.25rem;
@@ -280,10 +281,38 @@
     /* Body */
     .b-body {
       font-size: var(--text-base);
-      line-height: var(--leading-loose);
+      line-height: var(--leading-body);
       max-width: 340px;
     }
     .b-body + .b-body { margin-top: var(--sp-4); }
+
+    /* Body bold */
+    .b-body-bold {
+      font-size: var(--text-base);
+      font-weight: 600;
+      line-height: var(--leading-loose);
+    }
+
+    /* Body image caption */
+    .b-body-caption {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      line-height: var(--leading-relaxed);
+    }
+
+    /* Body small — regular */
+    .b-body-small {
+      font-size: var(--text-sm);
+      font-weight: 300;
+      line-height: var(--leading-relaxed);
+    }
+
+    /* Body small — bold */
+    .b-body-small-impact {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      line-height: var(--leading-relaxed);
+    }
 
     /* Link */
     .b-link {
@@ -690,15 +719,44 @@
     }
 
     /* ─────────────────────────────────────────
-       MOBILE  (<= 768px)
+       TYPE SCALE BREAKPOINTS
     ───────────────────────────────────────── */
-    @media (max-width: 768px) {
+
+    /* Medium — 1200 to 1440px */
+    @media (max-width: 1440px) {
+      :root {
+        /* H1: 88px — same as Large */
+        --text-3xl: 3.25rem;   /* 52px — H2 */
+        --text-2xl: 2.375rem;  /* 38px — H3 */
+        /* H4: 28px — same as Large */
+      }
+    }
+
+    /* Small — 810 to 1200px */
+    @media (max-width: 1200px) {
       :root {
         --text-4xl: 4.5rem;    /* 72px — H1 */
         --text-3xl: 2.5rem;    /* 40px — H2 */
         --text-2xl: 2.125rem;  /* 34px — H3 */
         --text-lg:  1.5rem;    /* 24px — H4 */
       }
+    }
+
+    /* X-Small — ≤810px */
+    @media (max-width: 810px) {
+      :root {
+        --text-4xl: 2.875rem;  /* 46px — H1 */
+        --text-3xl: 2.5rem;    /* 40px — H2 */
+        --text-2xl: 1.625rem;  /* 26px — H3 */
+        --text-lg:  1.375rem;  /* 22px — H4 */
+        --text-sm:  0.75rem;   /* 12px — Body Small */
+      }
+    }
+
+    /* ─────────────────────────────────────────
+       MOBILE  (<= 768px)
+    ───────────────────────────────────────── */
+    @media (max-width: 768px) {
 
       .page {
         display: block;
@@ -826,13 +884,6 @@
        SMALL MOBILE  (<= 400px)
     ───────────────────────────────────────── */
     @media (max-width: 400px) {
-      :root {
-        --text-4xl: 2.875rem;  /* 46px — H1 */
-        --text-3xl: 2.5rem;    /* 40px — H2 */
-        --text-2xl: 1.625rem;  /* 26px — H3 */
-        --text-lg:  1.375rem;  /* 22px — H4 */
-      }
-
       .block-text {
         padding: var(--sp-10) var(--sp-5);
       }
@@ -852,13 +903,32 @@
       padding: var(--sp-2) var(--sp-4);
       margin-top: var(--sp-5);
       line-height: 1;
+      cursor: default;
     }
     .b-tz-icon {
       font-size: 16px;
       line-height: 1;
       color: var(--color-text-muted);
       font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      transition: opacity 200ms ease;
     }
+    .b-tz-icon--clock   { opacity: 1; }
+    .b-tz-body {
+      position: relative;
+      display: inline-grid;
+    }
+    .b-tz-default,
+    .b-tz-hover {
+      grid-area: 1 / 1;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      transition: opacity 200ms ease;
+      white-space: nowrap;
+    }
+    .b-tz-hover { opacity: 0; }
+    .b-tz:hover .b-tz-default { opacity: 0; }
+    .b-tz:hover .b-tz-hover   { opacity: 1; }
 
     /* ─────────────────────────────────────────
        ANIMATION
@@ -964,13 +1034,12 @@
           using human-centred methodologies to define product strategy and
           shape interfaces that drive growth.
         </p>
-        <p class="b-tz"><span class="material-symbols-rounded b-tz-icon">schedule</span><span class="b-tz-time">--:--</span>&thinsp;·&thinsp;WET UTC+1</p>
+        <p class="b-tz"><span class="b-tz-body"><span class="b-tz-default"><span class="material-symbols-rounded b-tz-icon">schedule</span><span class="b-tz-time">--:--</span>&thinsp;·&thinsp;WET UTC+1</span><span class="b-tz-hover"><span class="material-symbols-rounded b-tz-icon">location_on</span>Lisbon, Portugal</span></span></p>
       </div>
 
       <!-- ── 1. INTRO (desktop only) ── -->
       <div class="block-text block-text--intro" id="intro">
         <h1 class="b-title b-title--xl">Aditya<br>Gujaran</h1>
-        <p class="b-tz"><span class="b-tz-dot"></span>Lisbon · WET UTC+1</p>
         <p class="b-body">
           Over the past 8+ years I have built a versatile design practice
           spanning UX research, product design, and service design — primarily
@@ -981,6 +1050,7 @@
           using human-centred methodologies to define product strategy and
           shape interfaces that drive growth.
         </p>
+        <p class="b-tz"><span class="b-tz-body"><span class="b-tz-default"><span class="material-symbols-rounded b-tz-icon">schedule</span><span class="b-tz-time">--:--</span>&thinsp;·&thinsp;WET UTC+1</span><span class="b-tz-hover"><span class="material-symbols-rounded b-tz-icon">location_on</span>Lisbon, Portugal</span></span></p>
       </div>
       <aside class="panel panel--intro" aria-hidden="true">
         <img class="panel-img" src="project%20content/hello.avif" alt="Hello" />
@@ -1373,6 +1443,28 @@
       if (canHover) {
         wrap.addEventListener('mouseenter', showLabel);
       }
+    })();
+  </script>
+
+  <script>
+    /* ─────────────────────────────────────────
+       LIVE TIMEZONE CLOCK — Lisbon / WET
+    ───────────────────────────────────────── */
+    (function () {
+      const fmt = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Lisbon',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+      function tick() {
+        const t = fmt.format(new Date());
+        document.querySelectorAll('.b-tz-time').forEach(function (el) {
+          el.textContent = t;
+        });
+      }
+      tick();
+      setInterval(tick, 60000);
     })();
   </script>
 
