@@ -54,18 +54,19 @@
       --text-4xl:  5.5rem;     /* 88px — H1 */
 
       /* Leading */
-      --leading-tight:  1.1;
-      --leading-snug:   1.18;
-      --leading-normal: 1.4;
-      --leading-loose:  1.6;
+      --leading-tight:    1.1;    /* H1, H2 */
+      --leading-snug:     1.18;   /* H3 */
+      --leading-normal:   1.4;    /* H4 */
+      --leading-body:     1.6;    /* Body */
+      --leading-loose:    1.8;    /* Body bold */
+      --leading-relaxed:  2.0;    /* Body caption, Body small */
 
       /* Tracking */
-      --tracking-tight:   -0.04em;
-      --tracking-snug:    -0.02em;
+      --tracking-tight:   -0.04em; /* H1 */
       --tracking-normal:   0em;
       --tracking-wide:     0.04em;
-      --tracking-wider:    0.1em;
-      --tracking-widest:   0.16em;
+      --tracking-wider:    0.1em;  /* Label */
+      --tracking-widest:   0.16em; /* Label Small */
 
       /* Space */
       --sp-1:  0.25rem;
@@ -280,10 +281,38 @@
     /* Body */
     .b-body {
       font-size: var(--text-base);
-      line-height: var(--leading-loose);
+      line-height: var(--leading-body);
       max-width: 340px;
     }
     .b-body + .b-body { margin-top: var(--sp-4); }
+
+    /* Body bold */
+    .b-body-bold {
+      font-size: var(--text-base);
+      font-weight: 600;
+      line-height: var(--leading-loose);
+    }
+
+    /* Body image caption */
+    .b-body-caption {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      line-height: var(--leading-relaxed);
+    }
+
+    /* Body small — regular */
+    .b-body-small {
+      font-size: var(--text-sm);
+      font-weight: 300;
+      line-height: var(--leading-relaxed);
+    }
+
+    /* Body small — bold */
+    .b-body-small-impact {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      line-height: var(--leading-relaxed);
+    }
 
     /* Link */
     .b-link {
@@ -690,16 +719,44 @@
     }
 
     /* ─────────────────────────────────────────
-       MOBILE  (<= 768px)
+       TYPE SCALE BREAKPOINTS
     ───────────────────────────────────────── */
-    @media (max-width: 768px) {
+
+    /* Medium — 1200 to 1440px */
+    @media (max-width: 1440px) {
+      :root {
+        /* H1: 88px — same as Large */
+        --text-3xl: 3.25rem;   /* 52px — H2 */
+        --text-2xl: 2.375rem;  /* 38px — H3 */
+        /* H4: 28px — same as Large */
+      }
+    }
+
+    /* Small — 810 to 1200px */
+    @media (max-width: 1200px) {
       :root {
         --text-4xl: 4.5rem;    /* 72px — H1 */
         --text-3xl: 2.5rem;    /* 40px — H2 */
         --text-2xl: 2.125rem;  /* 34px — H3 */
         --text-lg:  1.5rem;    /* 24px — H4 */
       }
+    }
 
+    /* X-Small — ≤810px */
+    @media (max-width: 810px) {
+      :root {
+        --text-4xl: 2.875rem;  /* 46px — H1 */
+        --text-3xl: 2.5rem;    /* 40px — H2 */
+        --text-2xl: 1.625rem;  /* 26px — H3 */
+        --text-lg:  1.375rem;  /* 22px — H4 */
+        --text-sm:  0.75rem;   /* 12px — Body Small */
+      }
+    }
+
+    /* ─────────────────────────────────────────
+       MOBILE  (<= 768px)
+    ───────────────────────────────────────── */
+    @media (max-width: 768px) {
       .page {
         display: block;
       }
@@ -826,13 +883,6 @@
        SMALL MOBILE  (<= 400px)
     ───────────────────────────────────────── */
     @media (max-width: 400px) {
-      :root {
-        --text-4xl: 2.875rem;  /* 46px — H1 */
-        --text-3xl: 2.5rem;    /* 40px — H2 */
-        --text-2xl: 1.625rem;  /* 26px — H3 */
-        --text-lg:  1.375rem;  /* 22px — H4 */
-      }
-
       .block-text {
         padding: var(--sp-10) var(--sp-5);
       }
