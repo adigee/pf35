@@ -14,21 +14,27 @@
        DESIGN SYSTEM
     ───────────────────────────────────────── */
     :root {
-      /* ── DARK MODE — adityagujaran.me palette ──
-         Midnight  #040404   page background
-         Ivory     #f8f6ee   primary text
-         White     #ffffff   text on coloured surfaces
-         Secondary #d4d4d4   muted / secondary text
-         Lavender  #aca0e8   accent
-      ── */
-      --color-bg:           #040404;   /* midnight */
-      --color-fg:           #f8f6ee;   /* ivory */
-      --color-fg-secondary: #d4d4d4;   /* secondary text */
-      --color-on-accent:    #ffffff;   /* white — text on coloured surfaces */
-      --color-border:       rgba(248, 246, 238, 0.1);  /* ivory @ 10% */
-      --color-border-light: rgba(248, 246, 238, 0.05); /* ivory @ 5% */
-      --color-accent:       #aca0e8;   /* lavender */
-      --color-surface:      #f8f6ee;   /* ivory — inverted panels */
+      /* ── DARK MODE ─────────────────────────────
+         Midnight  #040404   bg
+         Ivory     #F8F6EE   text
+         Lavender  #ACA0E8   primary — links, CTAs, reading marker
+         Peach     #F0956E   accent  — highlights, decorative
+      ─────────────────────────────────────────── */
+      --color-bg:               #040404;
+      --color-surface:          #0F0E0C;
+      --color-surface-2:        #1A1916;
+      --color-border:           rgba(248, 246, 238, 0.08);
+
+      --color-text:             #F8F6EE;
+      --color-text-muted:       rgba(248, 246, 238, 0.45);
+      --color-text-subtle:      rgba(248, 246, 238, 0.20);
+
+      --color-primary:          #ACA0E8;
+      --color-primary-muted:    rgba(172, 160, 232, 0.12);
+
+      --color-accent:           #F0956E;
+      --color-accent-muted:     rgba(240, 149, 110, 0.12);
+      --color-accent-on-accent: #040404;
 
       /* Typography */
       --font-display: 'Syne', sans-serif;
@@ -79,13 +85,34 @@
       --nav-height: 3.25rem;
     }
 
-    /* ── LIGHT MODE (TBD — tokens defined here, values to be set) ── */
-    /* @media (prefers-color-scheme: light) { :root { } } */
+    /* ── LIGHT MODE ────────────────────────────
+         Peach cream  #FFF3E8   bg
+         Navy         #1A2A5E   text
+         Cobalt       #2147CC   primary — links, CTAs, reading marker
+         Burnt orange #F5600A   accent  — highlights, decorative
+      ─────────────────────────────────────────── */
+    [data-theme="light"] {
+      --color-bg:               #FFF3E8;
+      --color-surface:          #FFE0C4;
+      --color-surface-2:        #FFD0A8;
+      --color-border:           rgba(26, 42, 94, 0.10);
+
+      --color-text:             #1A2A5E;
+      --color-text-muted:       rgba(26, 42, 94, 0.48);
+      --color-text-subtle:      rgba(26, 42, 94, 0.20);
+
+      --color-primary:          #2147CC;
+      --color-primary-muted:    rgba(33, 71, 204, 0.11);
+
+      --color-accent:           #F5600A;
+      --color-accent-muted:     rgba(245, 96, 10, 0.11);
+      --color-accent-on-accent: #FFF3E8;
+    }
 
     /* ─────────────────────────────────────────
        RESET & BASE
     ───────────────────────────────────────── */
-    ::selection { background: var(--color-accent); color: var(--color-on-accent); }
+    ::selection { background: var(--color-primary); color: var(--color-accent-on-accent); }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -97,7 +124,7 @@
 
     body {
       background: var(--color-bg);
-      color: var(--color-fg);
+      color: var(--color-text);
       font-family: var(--font-body);
       font-size: var(--text-base);
       font-weight: 300;
@@ -114,8 +141,8 @@
       transition: color 120ms ease, text-decoration-color 120ms ease;
     }
     a:hover {
-      color: var(--color-accent);
-      text-decoration-color: var(--color-accent);
+      color: var(--color-primary);
+      text-decoration-color: var(--color-primary);
     }
 
     /* ─────────────────────────────────────────
@@ -162,9 +189,9 @@
       letter-spacing: var(--tracking-tight);
       text-decoration: none;
       white-space: nowrap;
-      color: var(--color-fg);
+      color: var(--color-text);
     }
-    .nav-name:hover { color: var(--color-accent); text-decoration: none; }
+    .nav-name:hover { color: var(--color-primary); text-decoration: none; }
 
     .nav-links {
       display: flex;
@@ -178,11 +205,11 @@
       letter-spacing: var(--tracking-wider);
       text-transform: uppercase;
       text-decoration: none;
-      color: var(--color-fg-secondary);
+      color: var(--color-text-muted);
       white-space: nowrap;
       transition: color 120ms ease;
     }
-    .nav-links a:hover { color: var(--color-fg); }
+    .nav-links a:hover { color: var(--color-text); }
 
     /* ─────────────────────────────────────────
        READING MARKER
@@ -194,7 +221,7 @@
       width: 4px;
       height: 4px;
       border-radius: 50%;
-      background: var(--color-accent);
+      background: var(--color-primary);
       opacity: 0.35;
       z-index: 100;
       pointer-events: none;
@@ -205,7 +232,7 @@
     ───────────────────────────────────────── */
     .block-text {
       padding: var(--sp-16) var(--sp-8);
-      border-bottom: 1px solid var(--color-border-light);
+      border-bottom: 1px solid var(--color-border);
       position: relative;
     }
 
@@ -220,7 +247,7 @@
       font-size: var(--text-2xs);
       letter-spacing: var(--tracking-widest);
       text-transform: uppercase;
-      color: var(--color-fg-secondary);
+      color: var(--color-text-muted);
       margin-bottom: var(--sp-5);
     }
 
@@ -242,7 +269,7 @@
     /* Company */
     .b-company {
       font-size: var(--text-sm);
-      color: var(--color-fg-secondary);
+      color: var(--color-text-muted);
       margin-bottom: var(--sp-5);
     }
 
@@ -261,10 +288,10 @@
       font-family: var(--font-mono);
       font-size: var(--text-xs);
       letter-spacing: var(--tracking-wide);
-      color: var(--color-accent);
+      color: var(--color-primary);
       text-decoration: none;
     }
-    .b-link:hover { text-decoration: underline; text-decoration-color: var(--color-accent); color: var(--color-accent); }
+    .b-link:hover { text-decoration: underline; text-decoration-color: var(--color-primary); color: var(--color-primary); }
 
     /* Tags */
     .b-tags {
@@ -279,7 +306,7 @@
       font-size: var(--text-2xs);
       letter-spacing: var(--tracking-wide);
       text-transform: uppercase;
-      color: var(--color-fg-secondary);
+      color: var(--color-text-muted);
       border: 1px solid var(--color-border);
       border-radius: 2px;
       padding: 0.2em 0.5em;
@@ -288,7 +315,7 @@
     /* Italic aside */
     .b-aside {
       font-style: italic;
-      color: var(--color-fg-secondary);
+      color: var(--color-text-muted);
       font-size: var(--text-sm);
       margin-top: var(--sp-6);
     }
@@ -308,7 +335,7 @@
     .b-timeline-period {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
-      color: var(--color-fg-secondary);
+      color: var(--color-text-muted);
       letter-spacing: var(--tracking-wide);
       padding-top: 0.1rem;
     }
@@ -316,7 +343,7 @@
     .b-timeline-company {
       font-family: var(--font-mono);
       font-size: var(--text-2xs);
-      color: var(--color-fg-secondary);
+      color: var(--color-text-muted);
       letter-spacing: var(--tracking-wide);
       margin-top: var(--sp-1);
     }
@@ -332,7 +359,7 @@
     .b-skill-desc {
       font-family: var(--font-mono);
       font-size: var(--text-2xs);
-      color: var(--color-fg-secondary);
+      color: var(--color-text-muted);
       letter-spacing: var(--tracking-wide);
       margin-top: var(--sp-1);
     }
@@ -345,7 +372,7 @@
     .site-footer-copy {
       font-family: var(--font-mono);
       font-size: var(--text-2xs);
-      color: var(--color-fg-secondary);
+      color: var(--color-text-muted);
       letter-spacing: var(--tracking-wide);
     }
 
@@ -451,15 +478,15 @@
       font-size: var(--text-2xs);
       letter-spacing: var(--tracking-wider);
       text-transform: uppercase;
-      color: var(--color-fg-secondary);
+      color: var(--color-text-muted);
       margin-top: var(--sp-2);
     }
 
     /* 2 — Bounce: dark */
-    .panel--bounce { background: var(--color-surface); color: var(--color-bg); } /* ivory bg, midnight text */
+    .panel--bounce { background: var(--color-text); color: var(--color-bg); }
 
     /* 3 — Unbabel: image panel */
-    .panel--unbabel { background: var(--color-fg); }
+    .panel--unbabel { background: var(--color-text); }
 
     /* 4 — Decision Module: image panel */
     .panel--decision { background: #f4f4f6; }
@@ -503,19 +530,19 @@
       font-size: var(--text-xs);
       letter-spacing: var(--tracking-wider);
       text-transform: uppercase;
-      color: var(--color-fg-secondary);
+      color: var(--color-text-muted);
       border: 1px solid var(--color-border);
       border-radius: 2px;
       padding: var(--sp-2) var(--sp-4);
     }
     .p-relation-arrow {
       font-size: var(--text-xl);
-      color: var(--color-accent);
+      color: var(--color-primary);
       font-weight: 300;
     }
 
     /* 5 — TRQ DAD: dark */
-    .panel--trq { background: var(--color-surface); color: var(--color-bg); }
+    .panel--trq { background: var(--color-text); color: var(--color-bg); }
 
     /* 6 — Cocoon: warm tint */
     .panel--cocoon { background: var(--color-accent); }
@@ -533,13 +560,13 @@
       grid-template-columns: 5.5rem 1fr;
       gap: var(--sp-4);
       padding: var(--sp-4) 0;
-      border-bottom: 1px solid var(--color-border-light);
+      border-bottom: 1px solid var(--color-border);
     }
-    .p-tl-item:first-child { border-top: 1px solid var(--color-border-light); }
+    .p-tl-item:first-child { border-top: 1px solid var(--color-border); }
     .p-tl-period {
       font-family: var(--font-mono);
       font-size: var(--text-2xs);
-      color: var(--color-fg-secondary);
+      color: var(--color-text-muted);
       letter-spacing: var(--tracking-wide);
       padding-top: 0.1rem;
     }
@@ -547,13 +574,13 @@
     .p-tl-company {
       font-family: var(--font-mono);
       font-size: var(--text-2xs);
-      color: var(--color-fg-secondary);
+      color: var(--color-text-muted);
       letter-spacing: var(--tracking-wide);
       margin-top: var(--sp-1);
     }
 
     /* 8 — Skills/About: dark */
-    .panel--skills { background: var(--color-surface); color: var(--color-bg); }
+    .panel--skills { background: var(--color-text); color: var(--color-bg); }
 
     .p-skills {
       display: grid;
@@ -574,7 +601,7 @@
     }
 
     /* 9 — Contact: accent red */
-    .panel--contact { background: var(--color-accent); color: var(--color-on-accent); }
+    .panel--contact { background: var(--color-primary); color: var(--color-accent-on-accent); }
 
     .p-email {
       display: inline-block;
@@ -679,13 +706,13 @@
         justify-content: center;
         min-height: 52vw;
         padding: var(--sp-10) var(--sp-6);
-        border-bottom: 1px solid var(--color-border-light);
+        border-bottom: 1px solid var(--color-border);
         text-align: center;
       }
 
-      .mobile-visual--dark { background: var(--color-surface); color: var(--color-bg); }
-      .mobile-visual--red  { background: var(--color-accent); color: var(--color-on-accent); }
-      .mobile-visual--soft { background: var(--color-accent); }
+      .mobile-visual--dark { background: var(--color-text); color: var(--color-bg); }
+      .mobile-visual--red  { background: var(--color-primary); color: var(--color-accent-on-accent); }
+      .mobile-visual--soft { background: var(--color-primary); }
       .mobile-visual--plain { background: var(--color-bg); }
 
       .mv-inner { width: 100%; }
@@ -718,7 +745,7 @@
 
       /* Image mobile-visual */
       .mobile-visual--img {
-        background: var(--color-fg);
+        background: var(--color-text);
         padding: 0;
         min-height: 60vw;
         position: relative;
@@ -742,7 +769,7 @@
       .mobile-hero {
         display: block;
         padding: var(--sp-16) var(--sp-6) var(--sp-12);
-        border-bottom: 1px solid var(--color-border-light);
+        border-bottom: 1px solid var(--color-border);
       }
 
       .reading-marker { display: none; }
@@ -801,7 +828,33 @@
       from { opacity: 0; }
       to   { opacity: 1; }
     }
-    body { animation: fade-in 250ms ease; }
+    body {
+      animation: fade-in 250ms ease;
+      transition: background 300ms ease, color 300ms ease;
+    }
+
+    /* ─────────────────────────────────────────
+       THEME TOGGLE
+    ───────────────────────────────────────── */
+    .theme-toggle {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 0.3em 0.65em;
+      cursor: pointer;
+      transition: color 120ms ease, border-color 120ms ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover {
+      color: var(--color-text);
+      border-color: var(--color-text-muted);
+    }
   </style>
 </head>
 
@@ -818,6 +871,7 @@
       <li><a href="#about">About</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle colour mode">Light</button>
   </nav>
 
   <main class="page">
@@ -1229,6 +1283,31 @@
         block.classList.toggle('active', i === activeIndex);
       });
     }
+  </script>
+
+  <script>
+    /* ─────────────────────────────────────────
+       THEME TOGGLE
+       Priority: localStorage > prefers-color-scheme
+    ───────────────────────────────────────── */
+    (function () {
+      const html = document.documentElement;
+      const btn  = document.getElementById('theme-toggle');
+
+      function applyTheme(theme) {
+        html.setAttribute('data-theme', theme);
+        btn.textContent = theme === 'dark' ? 'Light' : 'Dark';
+        localStorage.setItem('theme', theme);
+      }
+
+      const saved    = localStorage.getItem('theme');
+      const preferred = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      applyTheme(saved || preferred);
+
+      btn.addEventListener('click', function () {
+        applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+      });
+    })();
   </script>
 
 </body>
