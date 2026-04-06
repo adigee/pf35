@@ -48,7 +48,6 @@
       --text-sm:   0.875rem;   /* 14px — Body Small / Caption */
       --text-base: 1.125rem;   /* 18px — Body */
       --text-lg:   1.75rem;    /* 28px — H4 */
-      --text-xl:   1.375rem;   /* 22px — H4 XS (unused token, kept for reference) */
       --text-2xl:  2.75rem;    /* 44px — H3 */
       --text-3xl:  4.3125rem;  /* 69px — H2 */
       --text-4xl:  5.5rem;     /* 88px — H1 */
@@ -56,13 +55,14 @@
       /* Leading */
       --leading-tight:    1.1;    /* H1, H2 */
       --leading-snug:     1.18;   /* H3 */
-      --leading-normal:   1.4;    /* H4 */
+      --leading-normal:   1.4;    /* H4, Body caption */
       --leading-body:     1.6;    /* Body */
       --leading-loose:    1.8;    /* Body bold */
-      --leading-relaxed:  2.0;    /* Body caption, Body small */
+      --leading-medium:   1.5;    /* Body small */
 
       /* Tracking */
       --tracking-tight:   -0.04em; /* H1 */
+      --tracking-snug:    -0.02em; /* H2 */
       --tracking-normal:   0em;
       --tracking-wide:     0.04em;
       --tracking-wider:    0.1em;  /* Label */
@@ -297,21 +297,21 @@
     .b-body-caption {
       font-size: var(--text-sm);
       font-weight: 500;
-      line-height: var(--leading-relaxed);
+      line-height: var(--leading-normal);
     }
 
     /* Body small — regular */
     .b-body-small {
       font-size: var(--text-sm);
       font-weight: 300;
-      line-height: var(--leading-relaxed);
+      line-height: var(--leading-medium);
     }
 
     /* Body small — bold */
     .b-body-small-impact {
       font-size: var(--text-sm);
       font-weight: 700;
-      line-height: var(--leading-relaxed);
+      line-height: var(--leading-medium);
     }
 
     /* Link */
