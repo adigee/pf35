@@ -41,24 +41,61 @@
       --font-body:    'Hanken Grotesk', sans-serif;
       --font-mono:    'JetBrains Mono', monospace;
 
-      /* Type scale */
-      --text-2xs:  0.65rem;
-      --text-xs:   0.75rem;
-      --text-sm:   0.875rem;
-      --text-base: 1rem;
-      --text-lg:   1.125rem;
-      --text-xl:   1.375rem;
-      --text-2xl:  1.75rem;
-      --text-3xl:  2.5rem;
-      --text-4xl:  3.5rem;
+      /* ── Primitive size tokens (used throughout CSS) ── */
+      --text-2xs:  0.5625rem;  /* 9px  — label-sm */
+      --text-xs:   0.6875rem;  /* 11px — label */
+      --text-sm:   0.875rem;   /* 14px — body-sm, caption */
+      --text-base: 1rem;       /* 16px */
+      --text-lg:   1.125rem;   /* 18px — body */
+      --text-xl:   1.75rem;    /* 28px — h4 */
+      --text-2xl:  2.75rem;    /* 44px — h3 */
+      --text-3xl:  4.3125rem;  /* 69px — h2 */
+      --text-4xl:  5.5rem;     /* 88px — h1 */
 
-      /* Leading */
+      /* ── Semantic type tokens — Large (>1440) ── */
+
+      /* Headings — Syne Regular */
+      --type-h1-size:    5.5rem;     /* 88px */
+      --type-h1-lh:      1.1;
+      --type-h1-ls:     -0.04em;
+
+      --type-h2-size:    4.3125rem;  /* 69px */
+      --type-h2-lh:      1.1;
+      --type-h2-ls:     -0.02em;
+
+      --type-h3-size:    2.75rem;    /* 44px */
+      --type-h3-lh:      1.18;
+      --type-h3-ls:      0em;
+
+      --type-h4-size:    1.75rem;    /* 28px */
+      --type-h4-lh:      1.4;
+      --type-h4-ls:      0em;
+
+      /* Body — Hanken Grotesk */
+      --type-body-size:  1.125rem;   /* 18px */
+      --type-body-lh:    1.6;
+
+      --type-caption-size:  0.875rem; /* 14px */
+      --type-caption-lh:    1.4;
+
+      --type-body-bold-lh:  1.8;
+
+      --type-sm-size:    0.875rem;   /* 14px */
+      --type-sm-lh:      1.5;
+
+      /* Labels — JetBrains Mono */
+      --type-label-size:    0.6875rem;  /* 11px */
+      --type-label-ls:      0.1em;
+
+      --type-label-sm-size: 0.5625rem;  /* 9px */
+      --type-label-sm-ls:   0.16em;
+
+      /* ── Leading / Tracking (legacy aliases) ── */
       --leading-tight:  1.2;
       --leading-snug:   1.4;
       --leading-normal: 1.6;
       --leading-loose:  1.8;
 
-      /* Tracking */
       --tracking-tight:   -0.02em;
       --tracking-normal:   0em;
       --tracking-wide:     0.04em;
@@ -651,6 +688,23 @@
     }
 
     /* ─────────────────────────────────────────
+       MEDIUM  (1200px – 1439px)
+    ───────────────────────────────────────── */
+    @media (min-width: 769px) and (max-width: 1439px) {
+      :root {
+        --type-h1-size: 4.75rem;   /* 76px */
+        --type-h2-size: 3.25rem;   /* 52px */
+        --type-h3-size: 2.375rem;  /* 38px */
+        --type-h4-size: 1.75rem;   /* 28px — same */
+
+        /* Primitive aliases */
+        --text-4xl: 4.75rem;
+        --text-3xl: 2.375rem;
+        --text-2xl: 1.75rem;
+      }
+    }
+
+    /* ─────────────────────────────────────────
        TABLET  (512px – 768px)
     ───────────────────────────────────────── */
     @media (min-width: 32rem) and (max-width: 768px) {
@@ -685,8 +739,17 @@
     ───────────────────────────────────────── */
     @media (max-width: 768px) {
       :root {
-        --text-4xl: 2.75rem;
-        --text-3xl: 2rem;
+        /* Small (810px) scale */
+        --type-h1-size: 4.5rem;    /* 72px */
+        --type-h1-lh:   1.0;
+        --type-h2-size: 2.5rem;    /* 40px */
+        --type-h3-size: 2.125rem;  /* 34px */
+        --type-h4-size: 1.5rem;    /* 24px */
+        --type-sm-size: 0.75rem;   /* 12px */
+
+        /* Primitive aliases for existing CSS */
+        --text-4xl: 4.5rem;
+        --text-3xl: 2.125rem;
         --text-2xl: 1.5rem;
       }
 
@@ -811,8 +874,15 @@
     ───────────────────────────────────────── */
     @media (max-width: 400px) {
       :root {
-        --text-4xl: 2.25rem;
-        --text-3xl: 1.75rem;
+        /* XS (<810px) scale */
+        --type-h1-size: 2.875rem;  /* 46px */
+        --type-h2-size: 2.5rem;    /* 40px */
+        --type-h3-size: 1.625rem;  /* 26px */
+        --type-h4-size: 1.375rem;  /* 22px */
+
+        /* Primitive aliases */
+        --text-4xl: 2.875rem;
+        --text-3xl: 1.625rem;
         --text-2xl: 1.375rem;
       }
 
