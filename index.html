@@ -1144,84 +1144,12 @@
       <div class="block-text" id="experience">
         <p class="b-label">Experience</p>
         <h3 class="b-title">8+ Years of<br>Design Practice</h3>
-        <div class="b-timeline">
-          <div class="b-timeline-item">
-            <span class="b-timeline-period">2024–25</span>
-            <div>
-              <p class="b-timeline-role">Sr. Product Designer</p>
-              <p class="b-timeline-company">Bounce</p>
-            </div>
-          </div>
-          <div class="b-timeline-item">
-            <span class="b-timeline-period">2020–23</span>
-            <div>
-              <p class="b-timeline-role">Sr. Product Designer — Linguistic Tools</p>
-              <p class="b-timeline-company">Unbabel (YC W14)</p>
-            </div>
-          </div>
-          <div class="b-timeline-item">
-            <span class="b-timeline-period">2016–19</span>
-            <div>
-              <p class="b-timeline-role">Product &amp; Service Designer</p>
-              <p class="b-timeline-company">Cocoon Experience</p>
-            </div>
-          </div>
-          <div class="b-timeline-item">
-            <span class="b-timeline-period">2013–15</span>
-            <div>
-              <p class="b-timeline-role">Experience Design Consultant</p>
-              <p class="b-timeline-company">Novabase</p>
-            </div>
-          </div>
-          <div class="b-timeline-item">
-            <span class="b-timeline-period">2012</span>
-            <div>
-              <p class="b-timeline-role">UX Research Intern</p>
-              <p class="b-timeline-company">Google Photos</p>
-            </div>
-          </div>
-        </div>
+        <div class="b-timeline"></div>
       </div>
       <aside class="panel panel--experience" aria-hidden="true">
         <div class="p-inner p-inner--left">
           <p class="p-label">Experience</p>
-          <div class="p-timeline">
-            <div class="p-tl-item">
-              <span class="p-tl-period">2024–25</span>
-              <div>
-                <p class="p-tl-role">Sr. Product Designer</p>
-                <p class="p-tl-company">Bounce</p>
-              </div>
-            </div>
-            <div class="p-tl-item">
-              <span class="p-tl-period">2020–23</span>
-              <div>
-                <p class="p-tl-role">Sr. Product Designer — Linguistic Tools</p>
-                <p class="p-tl-company">Unbabel (YC W14)</p>
-              </div>
-            </div>
-            <div class="p-tl-item">
-              <span class="p-tl-period">2016–19</span>
-              <div>
-                <p class="p-tl-role">Product &amp; Service Designer</p>
-                <p class="p-tl-company">Cocoon Experience</p>
-              </div>
-            </div>
-            <div class="p-tl-item">
-              <span class="p-tl-period">2013–15</span>
-              <div>
-                <p class="p-tl-role">Experience Design Consultant</p>
-                <p class="p-tl-company">Novabase</p>
-              </div>
-            </div>
-            <div class="p-tl-item">
-              <span class="p-tl-period">2012</span>
-              <div>
-                <p class="p-tl-role">UX Research Intern</p>
-                <p class="p-tl-company">Google Photos</p>
-              </div>
-            </div>
-          </div>
+          <div class="p-timeline"></div>
         </div>
       </aside>
 
@@ -1240,62 +1168,12 @@
           business and researchers who could speak design.
         </p>
         <p class="b-aside">I like clean information design, lemon cheesecakes and stormy views.</p>
-        <div class="b-skills">
-          <div>
-            <p class="b-skill-name">Product Thinking</p>
-            <p class="b-skill-desc">strategy / 0→1</p>
-          </div>
-          <div>
-            <p class="b-skill-name">Interaction Design</p>
-            <p class="b-skill-desc">flows / prototyping</p>
-          </div>
-          <div>
-            <p class="b-skill-name">UX Research</p>
-            <p class="b-skill-desc">qual / quant</p>
-          </div>
-          <div>
-            <p class="b-skill-name">Service Design</p>
-            <p class="b-skill-desc">journeys / blueprints</p>
-          </div>
-          <div>
-            <p class="b-skill-name">Visual Design</p>
-            <p class="b-skill-desc">systems / craft</p>
-          </div>
-          <div>
-            <p class="b-skill-name">Information Design</p>
-            <p class="b-skill-desc">clarity / hierarchy</p>
-          </div>
-        </div>
+        <div class="b-skills"></div>
       </div>
       <aside class="panel panel--skills" aria-hidden="true">
         <div class="p-inner">
           <p class="p-label">Capabilities</p>
-          <div class="p-skills">
-            <div>
-              <p class="p-skill-name">Product Thinking</p>
-              <p class="p-skill-desc">strategy / 0→1</p>
-            </div>
-            <div>
-              <p class="p-skill-name">Interaction Design</p>
-              <p class="p-skill-desc">flows / prototyping</p>
-            </div>
-            <div>
-              <p class="p-skill-name">UX Research</p>
-              <p class="p-skill-desc">qual / quant</p>
-            </div>
-            <div>
-              <p class="p-skill-name">Service Design</p>
-              <p class="p-skill-desc">journeys / blueprints</p>
-            </div>
-            <div>
-              <p class="p-skill-name">Visual Design</p>
-              <p class="p-skill-desc">systems / craft</p>
-            </div>
-            <div>
-              <p class="p-skill-name">Information Design</p>
-              <p class="p-skill-desc">clarity / hierarchy</p>
-            </div>
-          </div>
+          <div class="p-skills"></div>
         </div>
       </aside>
 
@@ -1340,6 +1218,71 @@
     <!-- Right grid column (empty — fixed panels overlay this space) -->
     <div class="page-right" aria-hidden="true"></div>
   </main>
+
+  <script>
+    /* ─────────────────────────────────────────
+       CONTENT DATA
+       Single source of truth for timeline and skills.
+       Edit here — both the left column and right panel
+       are rendered from these arrays automatically.
+    ───────────────────────────────────────── */
+    const TIMELINE = [
+      { period: '2024–25', role: 'Sr. Product Designer',                    company: 'Bounce'          },
+      { period: '2020–23', role: 'Sr. Product Designer — Linguistic Tools', company: 'Unbabel (YC W14)' },
+      { period: '2016–19', role: 'Product & Service Designer',              company: 'Cocoon Experience' },
+      { period: '2013–15', role: 'Experience Design Consultant',            company: 'Novabase'          },
+      { period: '2012',    role: 'UX Research Intern',                      company: 'Google Photos'     },
+    ];
+
+    const SKILLS = [
+      { name: 'Product Thinking',   desc: 'strategy / 0→1'       },
+      { name: 'Interaction Design', desc: 'flows / prototyping'   },
+      { name: 'UX Research',        desc: 'qual / quant'          },
+      { name: 'Service Design',     desc: 'journeys / blueprints' },
+      { name: 'Visual Design',      desc: 'systems / craft'       },
+      { name: 'Information Design', desc: 'clarity / hierarchy'   },
+    ];
+
+    (function renderContent() {
+      /* Timeline — left column */
+      const bTimeline = document.querySelector('.b-timeline');
+      if (bTimeline) bTimeline.innerHTML = TIMELINE.map(({ period, role, company }) => `
+        <div class="b-timeline-item">
+          <span class="b-timeline-period">${period}</span>
+          <div>
+            <p class="b-timeline-role">${role}</p>
+            <p class="b-timeline-company">${company}</p>
+          </div>
+        </div>`).join('');
+
+      /* Timeline — right panel */
+      const pTimeline = document.querySelector('.p-timeline');
+      if (pTimeline) pTimeline.innerHTML = TIMELINE.map(({ period, role, company }) => `
+        <div class="p-tl-item">
+          <span class="p-tl-period">${period}</span>
+          <div>
+            <p class="p-tl-role">${role}</p>
+            <p class="p-tl-company">${company}</p>
+          </div>
+        </div>`).join('');
+
+      /* Skills — left column */
+      const bSkills = document.querySelector('.b-skills');
+      if (bSkills) bSkills.innerHTML = SKILLS.map(({ name, desc }) => `
+        <div>
+          <p class="b-skill-name">${name}</p>
+          <p class="b-skill-desc">${desc}</p>
+        </div>`).join('');
+
+      /* Skills — right panel */
+      const pSkills = document.querySelector('.p-skills');
+      if (pSkills) pSkills.innerHTML = SKILLS.map(({ name, desc }) => `
+        <div>
+          <p class="p-skill-name">${name}</p>
+          <p class="p-skill-desc">${desc}</p>
+        </div>`).join('');
+    })();
+  </script>
 
   <script>
     /* ─────────────────────────────────────────
