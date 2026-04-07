@@ -1278,36 +1278,47 @@
          4. Reading line = 33vh from top of viewport
     ───────────────────────────────────────── */
     let readingTarget = window.innerHeight / 3;
+    let blocks = [];
+    let rafPending = false;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      blocks = [...document.querySelectorAll('.block-text')];
+      readingTarget = window.innerHeight / 3;
+      handlePanels();
+    });
 
     window.addEventListener('resize', () => {
       readingTarget = window.innerHeight / 3;
     });
 
-    window.addEventListener('scroll', handlePanels, { passive: true });
-
-    window.addEventListener('DOMContentLoaded', () => {
-      readingTarget = window.innerHeight / 3;
-      handlePanels();
-    });
+    window.addEventListener('scroll', () => {
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(() => {
+        handlePanels();
+        rafPending = false;
+      });
+    }, { passive: true });
 
     function handlePanels() {
       if (window.innerWidth <= 768) return;
 
-      const blocks = [...document.querySelectorAll('.block-text')];
+      /* Read all rects in one pass before touching the DOM */
+      const rects = blocks.map(b => b.getBoundingClientRect());
 
       /* Step 1 — find which block (if any) straddles the reading line */
       let activeIndex = -1;
-      blocks.forEach((block, i) => {
-        const r = block.getBoundingClientRect();
-        if (r.top < readingTarget && r.bottom > readingTarget) {
+      for (let i = 0; i < rects.length; i++) {
+        if (rects[i].top < readingTarget && rects[i].bottom > readingTarget) {
           activeIndex = i;
+          break;
         }
-      });
+      }
 
       /* Step 2 — if nothing straddles, use the last block scrolled past */
       if (activeIndex < 0) {
-        for (let i = blocks.length - 1; i >= 0; i--) {
-          if (blocks[i].getBoundingClientRect().bottom < readingTarget) {
+        for (let i = rects.length - 1; i >= 0; i--) {
+          if (rects[i].bottom < readingTarget) {
             activeIndex = i;
             break;
           }
@@ -1317,16 +1328,10 @@
       /* Step 3 — before any block reaches the line, default to first */
       if (activeIndex < 0) activeIndex = 0;
 
-      /* Step 4 — update classes */
+      /* Step 4 — write all class changes after all reads are done */
       blocks.forEach((block, i) => {
-        const r = block.getBoundingClientRect();
-        const inViewport = r.top < window.innerHeight && r.bottom > 0;
-
-        /* in-view: block in viewport OR is the active fallback */
-        const needsDisplay = inViewport || i === activeIndex;
-        block.classList.toggle('in-view', needsDisplay);
-
-        /* active: this is the designated block */
+        const inViewport = rects[i].top < window.innerHeight && rects[i].bottom > 0;
+        block.classList.toggle('in-view', inViewport || i === activeIndex);
         block.classList.toggle('active', i === activeIndex);
       });
     }
