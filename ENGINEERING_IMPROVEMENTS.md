@@ -7,17 +7,17 @@ Ordered by impact. Tackle high-priority items first.
 ## High Priority
 
 ### Performance
-- [ ] Throttle `handlePanels()` scroll handler using `requestAnimationFrame`
-- [ ] Cache `querySelectorAll('.block-text')` result on `DOMContentLoaded` instead of querying on every scroll
-- [ ] Batch all DOM reads before DOM writes in `handlePanels()` to eliminate layout thrashing
+- [x] Throttle `handlePanels()` scroll handler using `requestAnimationFrame`
+- [x] Cache `querySelectorAll('.block-text')` result on `DOMContentLoaded` instead of querying on every scroll
+- [x] Batch all DOM reads before DOM writes in `handlePanels()` to eliminate layout thrashing
 - [ ] Convert all PNG/GIF images to webp format
 - [ ] Add `srcset` + `sizes` attributes for responsive image loading
-- [ ] Add `loading="lazy"` to all images below the fold
+- [x] Add `loading="lazy"` to all images below the fold
 - [ ] Compress and resize GIF walkthroughs (currently 6–12 MB each)
 
 ### Code Duplication
-- [ ] Remove duplicate timeline HTML — render from a single shared data source
-- [ ] Remove duplicate skills grid HTML — same fix
+- [x] Remove duplicate timeline HTML — render from a single shared data source
+- [x] Remove duplicate skills grid HTML — same fix
 - [ ] Audit all `.b-*` vs `.p-*` paired blocks for further duplication
 
 ---
@@ -30,7 +30,7 @@ Ordered by impact. Tackle high-priority items first.
 - [ ] Normalize image filenames — remove spaces and URL encoding (`project%20content/` → `project-content/`)
 
 ### Error Handling
-- [ ] Add null guards before all `getElementById` / `querySelector` calls
+- [x] Add null guards before all `getElementById` / `querySelector` calls
 - [ ] Add `onerror` fallback on all `<img>` tags (show placeholder on load failure)
 - [ ] Validate `localStorage` reads before applying theme state
 
