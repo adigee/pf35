@@ -138,6 +138,8 @@ function handlePanels() {
   const wrap  = document.getElementById('theme-toggle-wrap');
   const label = document.getElementById('toggle-label');
 
+  if (!btn || !wrap || !label) return;
+
   let labelTimer = null;
   const canHover = window.matchMedia('(hover: hover)').matches;
 
