@@ -25,8 +25,8 @@ Ordered by impact. Tackle high-priority items first.
 ## Medium Priority
 
 ### Code Structure
-- [ ] Extract CSS into a separate `style.css` file
-- [ ] Extract JavaScript into a separate `main.js` file
+- [x] Extract CSS into a separate `style.css` file
+- [x] Extract JavaScript into a separate `main.js` file
 - [ ] Normalize image filenames — remove spaces and URL encoding (`project%20content/` → `project-content/`)
 
 ### Error Handling
