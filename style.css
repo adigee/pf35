@@ -73,6 +73,16 @@
   --left-col: 400px;
   --panel-transition: 420ms ease;
   --nav-height: 3.25rem;
+
+  /* ── COMPONENT: Link 1 — Panel CTA (.panel-cta) ──────────────────
+     Text + filled circle arrow. Used in right-column panels below image.
+     Font:    --font-display, --text-sm (14px), weight 500
+     Colour:  --color-text default → --color-primary on hover
+     Circle:  36×36px, border-radius 50%, background --color-primary
+              white SVG arrow; rotates 45° on hover
+     Spacing: margin-top --sp-10 above component
+     Variant: add class cs-link for internal pages (exit transition)
+  ─────────────────────────────────────────────────────────────────── */
 }
 
 /* ── LIGHT MODE ────────────────────────────
@@ -509,10 +519,10 @@ a:hover {
 .panel--bounce { background: var(--color-text); color: var(--color-bg); }
 
 /* 3 — Unbabel: image panel */
-.panel--unbabel { background: var(--color-text); }
+.panel--unbabel { background: var(--color-bg); }
 
 /* 4 — Decision Module: image panel */
-.panel--decision { background: #f4f4f6; }
+.panel--decision { background: var(--color-bg); }
 
 .panel-img {
   width: 88%;
@@ -524,6 +534,58 @@ a:hover {
   border-radius: 4px;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
   flex-shrink: 0;
+}
+
+/* Panel CTA — sits below the image, centred in the panel */
+.panel-cta {
+  margin-top: var(--sp-10);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-4);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-text);
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: color 150ms ease;
+}
+.panel-cta:hover {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+.panel-cta-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 200ms ease;
+}
+.panel-cta:hover .panel-cta-circle {
+  transform: rotate(45deg);
+}
+
+/* Back variant — circle on left, arrow points left, rotates -45° on hover */
+.panel-cta--back .panel-cta-circle {
+  order: -1;
+}
+.panel-cta--back:hover .panel-cta-circle {
+  transform: rotate(-45deg);
+}
+.panel-cta-circle svg {
+  width: 14px;
+  height: 14px;
+  stroke: #fff;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .panel-img-caption {
@@ -567,7 +629,7 @@ a:hover {
 }
 
 /* 5 — TRQ DAD: image panel */
-.panel--trq { background: var(--color-surface); }
+.panel--trq { background: var(--color-bg); }
 
 /* 6 — Cocoon: warm tint */
 .panel--cocoon { background: var(--color-accent); }
@@ -930,6 +992,37 @@ a:hover {
 body {
   animation: fade-in 250ms ease;
   transition: background 300ms ease, color 300ms ease;
+}
+
+/* ─────────────────────────────────────────
+   PAGE EXIT TRANSITION
+   Triggered by JS adding .is-exiting to body
+   before navigating to a case study page.
+───────────────────────────────────────── */
+body.is-exiting {
+  overflow: hidden;
+  animation: none;
+}
+
+body.is-exiting .page-left {
+  opacity: 0;
+  transform: translateX(-28px);
+  transition: opacity 340ms ease, transform 340ms ease;
+  pointer-events: none;
+}
+
+body.is-exiting .panel {
+  opacity: 0 !important;
+  transition: opacity 240ms ease !important;
+  pointer-events: none;
+}
+
+/* Case study exit (back to homepage) */
+body.is-exiting .cs-main {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 300ms ease, transform 300ms ease;
+  pointer-events: none;
 }
 
 /* ─────────────────────────────────────────

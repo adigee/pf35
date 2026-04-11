@@ -291,9 +291,9 @@ Panels are full-viewport overlays (fixed, `z-index: 1`) triggered from the left 
 |---|---|---|
 | `.panel--intro` | `--color-bg` | Default page background |
 | `.panel--bounce` | `--color-text` | Inverted — text becomes background |
-| `.panel--unbabel` | `--color-text` | Inverted |
-| `.panel--decision` | `#f4f4f6` | Intentional light-gray exception |
-| `.panel--trq` | `--color-surface` | Slight elevation from background |
+| `.panel--unbabel` | `--color-bg` | Matches page background |
+| `.panel--decision` | `--color-bg` | Matches page background |
+| `.panel--trq` | `--color-bg` | Matches page background |
 | `.panel--cocoon` | `--color-accent` | Accent-colored, high warmth |
 | `.panel--experience` | `--color-bg` | Default page background |
 | `.panel--skills` | `--color-text` | Inverted |
@@ -366,6 +366,40 @@ Live clock display with a tooltip on hover. Tooltip uses `--color-surface-2` bac
 ### Theme Toggle
 
 Located in the footer. Pill toggle (`border-radius: 9999px`) with a sliding knob. Dark mode: knob at `translateX(16px)`. Light mode: knob at `translateX(0)`. Label text fades between "Dark" and "Light" using `opacity` transition.
+
+### Panel CTA (Link 1)
+
+`.panel-cta` — used in right-column fixed panels, below the project hero image.
+
+**Structure:** `inline-flex` row — label text on the left, filled circle with SVG arrow on the right.
+
+```html
+<a href="…" class="panel-cta [cs-link]">
+  View project
+  <span class="panel-cta-circle" aria-hidden="true">
+    <svg viewBox="0 0 16 16">
+      <line x1="3" y1="8" x2="13" y2="8"/>
+      <polyline points="9 4 13 8 9 12"/>
+    </svg>
+  </span>
+</a>
+```
+
+| Property | Value |
+|---|---|
+| Font | `--font-display`, `--text-sm` (14px), weight 500 |
+| Default colour | `--color-text` (ivory dark / navy light) |
+| Hover colour | `--color-primary` |
+| Circle size | 36×36px, `border-radius: 50%` |
+| Circle background | `--color-primary` |
+| Arrow | Inline SVG, white stroke, `stroke-width: 1.75` |
+| Hover — circle | Rotates 45° (`transform: rotate(45deg)`, 200ms ease) |
+| Hover — text | Shifts to `--color-primary` (150ms ease) |
+| Top spacing | `margin-top: --sp-10` |
+
+**Variant:** Add class `cs-link` for internal page links — JS intercepts the click and plays the left-column exit transition before navigating. Omit `cs-link` for external links (use `target="_blank" rel="noopener"`).
+
+---
 
 ### Mobile Visuals
 
@@ -449,4 +483,4 @@ These rules are strict. They exist because this is a small, deliberate codebase 
 
 ---
 
-*Last updated: 2026-04-07*
+*Last updated: 2026-04-11*
