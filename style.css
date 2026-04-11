@@ -73,6 +73,16 @@
   --left-col: 400px;
   --panel-transition: 420ms ease;
   --nav-height: 3.25rem;
+
+  /* ── COMPONENT: Link 1 — Panel CTA (.panel-cta) ──────────────────
+     Text + filled circle arrow. Used in right-column panels below image.
+     Font:    --font-display, --text-sm (14px), weight 500
+     Colour:  --color-text default → --color-primary on hover
+     Circle:  36×36px, border-radius 50%, background --color-primary
+              white SVG arrow; rotates 45° on hover
+     Spacing: margin-top --sp-10 above component
+     Variant: add class cs-link for internal pages (exit transition)
+  ─────────────────────────────────────────────────────────────────── */
 }
 
 /* ── LIGHT MODE ────────────────────────────
@@ -559,6 +569,14 @@ a:hover {
 }
 .panel-cta:hover .panel-cta-circle {
   transform: rotate(45deg);
+}
+
+/* Back variant — circle on left, arrow points left, rotates -45° on hover */
+.panel-cta--back .panel-cta-circle {
+  order: -1;
+}
+.panel-cta--back:hover .panel-cta-circle {
+  transform: rotate(-45deg);
 }
 .panel-cta-circle svg {
   width: 14px;
