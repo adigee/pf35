@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Decision Module — Aditya Gujaran</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,1,0" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="case-study.css" />
+</head>
+
+<body class="cs-page">
+
+  <!-- Reading progress bar -->
+  <div class="cs-progress" id="cs-progress" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <nav class="cs-nav" role="navigation" aria-label="Case study navigation">
+    <a href="index.html" class="cs-back" id="cs-back">← All work</a>
+    <span class="cs-nav-title">The Decision Module</span>
+    <div class="theme-toggle-wrap" id="theme-toggle-wrap">
+      <button class="theme-toggle" id="theme-toggle" role="switch" aria-label="Toggle colour mode">
+        <span class="toggle-knob"></span>
+      </button>
+      <span class="toggle-label" id="toggle-label"></span>
+    </div>
+  </nav>
+
+  <main class="cs-main" id="cs-main">
+
+    <!-- ── HERO ── -->
+    <div class="cs-container">
+      <div class="cs-hero-img-wrap">
+        <img
+          class="cs-hero-img"
+          src="project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png"
+          alt="The Decision Module — final UI in the Unbabel pipeline editor"
+        />
+      </div>
+    </div>
+
+    <div class="cs-container">
+      <header class="cs-hero">
+        <p class="cs-hero-label">AI &amp; Interaction Design · Unbabel · 2020–23</p>
+        <h1 class="cs-title">The Decision<br>Module</h1>
+        <p class="cs-subtitle">Sr. Product Designer</p>
+        <div class="b-tags">
+          <span class="b-tag">Interaction Design</span>
+          <span class="b-tag">AI / ML</span>
+          <span class="b-tag">Operations</span>
+        </div>
+        <p class="cs-hero-desc">
+          Unbabel's AI quality estimation model needed specialist engineers to operate it —
+          a bottleneck that didn't scale. The brief was to put that control in the hands of
+          the ops team: making the model's reasoning legible without making it overwhelming.
+        </p>
+      </header>
+    </div>
+
+    <!-- ── SECTION 1: CONTEXT ── -->
+    <div class="cs-container">
+      <section class="cs-section">
+        <p class="cs-section-label">Context</p>
+        <h2 class="cs-h2">An AI pipeline with a human in the loop</h2>
+        <p class="cs-body">
+          Unbabel combines machine translation with human post-editing to produce
+          high-quality translations at scale. At the centre of this pipeline sits
+          the Quality Estimation (QE) model — an AI system that scores every
+          translated segment and decides whether it needs a human editor to review it,
+          or whether it's good enough to pass directly to the customer.
+        </p>
+        <p class="cs-body">
+          That routing decision is everything. Send too much to human review and
+          turnaround slows; send too little and quality drops. Getting the threshold
+          right — and keeping it right across hundreds of customer pipelines — was the
+          operational challenge the team faced every day.
+        </p>
+        <figure class="cs-figure">
+          <img
+            class="cs-img"
+            src="project%20content/2%20Decision%20module%20for%20framer/2%20Unbabel%20pipeline.png"
+            alt="The Unbabel translation pipeline: Order → Machine Translation → Quality Estimation → Human Post Edition → Finished Order"
+            loading="lazy"
+          />
+          <figcaption class="cs-figcaption">The Unbabel pipeline — QE sits at the decision point between machine and human</figcaption>
+        </figure>
+      </section>
+    </div>
+
+    <!-- ── SECTION 2: PROBLEM ── -->
+    <div class="cs-container">
+      <section class="cs-section">
+        <p class="cs-section-label">Problem</p>
+        <h2 class="cs-h2">The model worked. The interface didn't.</h2>
+        <p class="cs-body">
+          Configuring QE thresholds required engineering access. Every adjustment —
+          a new customer profile, a language-pair tweak, a sensitivity change —
+          went through a ticket to the ML team and waited in a queue. The ops team
+          had the domain knowledge to make these calls confidently, but no way to act on it.
+        </p>
+        <p class="cs-body">
+          The user problem and the business goal pointed at the same solution:
+          surface QE as a lever that the ops team could operate directly,
+          without engineering involvement.
+        </p>
+        <figure class="cs-figure">
+          <img
+            class="cs-img cs-img--dark"
+            src="project%20content/2%20Decision%20module%20for%20framer/3%20Prob%20def.png"
+            alt="Problem definition: enable ops team to use QE as a lever to customise translation pipelines"
+            loading="lazy"
+          />
+          <figcaption class="cs-figcaption">The framing — user problem and business goal converging on the same opportunity</figcaption>
+        </figure>
+      </section>
+    </div>
+
+    <!-- ── SECTION 3: HOW QE WORKS ── -->
+    <div class="cs-container">
+      <section class="cs-section">
+        <p class="cs-section-label">Understanding the model</p>
+        <h2 class="cs-h2">Decision making based on a threshold</h2>
+        <p class="cs-body">
+          The QE model produces two types of scores: a segment-level score for each
+          translated sentence, and a document-level score that aggregates across
+          the whole job. When a score falls below a set threshold, the segment is
+          routed to a human editor. Above the threshold, it skips review entirely.
+        </p>
+        <p class="cs-body">
+          The model also learns continuously — human edits feed back as annotations
+          that improve future scoring. This meant that how ops team members set
+          thresholds today would shape what the model learned tomorrow.
+          That feedback loop made the design challenge more significant, not less.
+        </p>
+        <figure class="cs-figure">
+          <img
+            class="cs-img cs-img--dark"
+            src="project%20content/2%20Decision%20module%20for%20framer/4%20How%20QE%20works.png"
+            alt="QE decision making: segment-level score → document-level score → decision to skip based on threshold"
+            loading="lazy"
+          />
+          <figcaption class="cs-figcaption">Segment scores aggregate to a document score, which crosses a threshold to determine routing</figcaption>
+        </figure>
+      </section>
+    </div>
+
+    <!-- ── SECTION 4: ORIGINAL UI ── -->
+    <div class="cs-container">
+      <section class="cs-section">
+        <p class="cs-section-label">Starting point</p>
+        <h2 class="cs-h2">Numeric controls nobody used</h2>
+        <p class="cs-body">
+          The existing Decision Module was a WHEN / IS / THEN conditional logic form:
+          raw threshold inputs presented as bare number fields. It was built for
+          engineers, and it showed. Analytics confirmed what we already suspected —
+          the numeric QE controls were not being used. The interface assumed a mental
+          model that ops team members simply didn't have.
+        </p>
+        <p class="cs-body">
+          Discovery sessions revealed the core gap: ops team members understood the
+          <em>outcome</em> they wanted (fewer reviews for high-trust language pairs,
+          tighter scrutiny for sensitive customers) but had no framework for
+          translating that intent into a numeric threshold. The abstraction was wrong.
+        </p>
+        <figure class="cs-figure">
+          <img
+            class="cs-img cs-img--dark"
+            src="project%20content/2%20Decision%20module%20for%20framer/5%20Original%20UI.png"
+            alt="Original Decision Module UI: WHEN / IS / THEN conditional form with raw numeric threshold inputs"
+            loading="lazy"
+          />
+          <figcaption class="cs-figcaption">The original interface — engineer-facing conditional logic that ops team members couldn't act on</figcaption>
+        </figure>
+      </section>
+    </div>
+
+    <!-- ── SECTION 5: QE PROFILES ── -->
+    <div class="cs-container">
+      <section class="cs-section">
+        <p class="cs-section-label">The design pivot</p>
+        <h2 class="cs-h2">From thresholds to profiles</h2>
+        <p class="cs-body">
+          The key insight from research was that ops team members thought in
+          <em>postures</em>, not numbers. "We want to be conservative here" or
+          "this customer trusts our MT quality" — qualitative stances that implied
+          a direction on a spectrum.
+        </p>
+        <p class="cs-body">
+          This led to the introduction of QE Profiles: a named spectrum from
+          Very Conservative to Very Aggressive, each mapping to a threshold range
+          behind the scenes. Choosing a profile meant choosing how much of the
+          translation volume would skip human review — a relationship the ops team
+          could reason about intuitively.
+        </p>
+        <figure class="cs-figure">
+          <img
+            class="cs-img cs-img--dark"
+            src="project%20content/2%20Decision%20module%20for%20framer/6%20QE%20profiles.png"
+            alt="QE Profiles spectrum: Very conservative to Very aggressive, with increasing skip volume"
+            loading="lazy"
+          />
+          <figcaption class="cs-figcaption">QE Profiles — a named spectrum that maps human intent to threshold values automatically</figcaption>
+        </figure>
+      </section>
+    </div>
+
+    <!-- ── SECTION 6: DIVERGENT EXPLORATION ── -->
+    <div class="cs-container">
+      <section class="cs-section">
+        <p class="cs-section-label">Exploration</p>
+        <h2 class="cs-h2">Three directions, one constraint</h2>
+        <p class="cs-body">
+          In the divergent phase we explored three concepts, each foregrounding a
+          different model of control. The first let users select a QE profile directly —
+          choosing a qualitative posture. The second let users target a skip volume —
+          expressing intent as a percentage of translations to pass without review.
+          The third focused on quality indication — letting users specify an
+          acceptable quality floor for skipped jobs.
+        </p>
+        <p class="cs-body">
+          All three could theoretically work, but concept testing quickly revealed
+          that skip volume resonated most. It gave ops team members a concrete,
+          business-legible number to reason about — "we're skipping 34% of
+          translations" — without requiring them to understand threshold mathematics.
+        </p>
+
+        <div class="cs-callout">
+          <p>"I don't know what 0.85 means, but I know what 30% fewer reviews means for my team's capacity."</p>
+        </div>
+
+        <figure class="cs-figure">
+          <img
+            class="cs-img cs-img--dark"
+            src="project%20content/2%20Decision%20module%20for%20framer/7%20Divergent%20designs.png"
+            alt="Three divergent design concepts: QE profile selection, skip volume targeting, quality floor indication"
+            loading="lazy"
+          />
+          <figcaption class="cs-figcaption">Three concept directions explored in parallel — each expressing a different model of control</figcaption>
+        </figure>
+      </section>
+    </div>
+
+    <!-- ── SECTION 7: V1 ── -->
+    <div class="cs-container">
+      <section class="cs-section">
+        <p class="cs-section-label">First version</p>
+        <h2 class="cs-h2">Profiles as levels of skip</h2>
+        <p class="cs-body">
+          Decision Module v1 merged the profile and volume concepts: a 5-level
+          slider (corresponding to the QE profiles) with a live donut chart showing
+          the estimated percentage of translations that would skip review. Selecting
+          a level correlated directly to a skip volume, and a quality indicator
+          showed the estimated quality of the jobs being skipped.
+        </p>
+        <p class="cs-body">
+          The donut chart gave ops team members a feedback loop — choose a level,
+          see the consequence — without having to reason about thresholds at all.
+          The design made the model's decision legible, not just configurable.
+        </p>
+        <figure class="cs-figure">
+          <img
+            class="cs-img cs-img--dark"
+            src="project%20content/2%20Decision%20module%20for%20framer/8%20Decision%20module%20v1.png"
+            alt="Decision Module v1: 5-level slider with donut chart showing skip volume and quality indicator"
+            loading="lazy"
+          />
+          <figcaption class="cs-figcaption">v1 — level selection drives a live skip volume preview, making consequences tangible</figcaption>
+        </figure>
+      </section>
+    </div>
+
+    <!-- ── SECTION 8: TESTING ── -->
+    <div class="cs-container">
+      <section class="cs-section">
+        <p class="cs-section-label">User testing</p>
+        <h2 class="cs-h2">Two rounds, one critical fix</h2>
+        <p class="cs-body">
+          We ran two rounds of moderated usability testing with five ops team
+          members each. Round one established that the slider model was understood
+          and the donut chart was read correctly. What surfaced as a problem was
+          the profile labels themselves — "Level 1 through 5" carried no semantic
+          weight, and participants were reluctant to move away from the default
+          without understanding what they were moving towards.
+        </p>
+        <p class="cs-body">
+          Round two introduced named levels ("Very conservative" through "Very
+          aggressive") and set "Balanced" as the preselected default. Confidence
+          scores in post-task questionnaires rose markedly. Participants described
+          the named profiles as giving them "permission to act" — the language
+          matched their mental model well enough that they trusted themselves to
+          make a decision.
+        </p>
+
+        <div class="cs-img-pair">
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/2%20Decision%20module%20for%20framer/9%20Test%20findings%201.png"
+              alt="Test findings round 1: usability issues with numeric level labels"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">Round 1 findings</figcaption>
+          </figure>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/2%20Decision%20module%20for%20framer/10%20Test%20findings%202.png"
+              alt="Test findings round 2: named profiles with Balanced default resolved confidence issues"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">Round 2 findings</figcaption>
+          </figure>
+        </div>
+      </section>
+    </div>
+
+    <!-- ── SECTION 9: FINAL DESIGN ── -->
+    <div class="cs-container">
+      <section class="cs-section">
+        <p class="cs-section-label">Final design</p>
+        <h2 class="cs-h2">Simple, autosaved, balanced by default</h2>
+        <p class="cs-body">
+          The shipped design distilled the interaction to its essentials.
+          A single slider with five named levels, "Balanced" preselected. A donut
+          chart showing the live skip percentage. A "View quality" toggle to reveal
+          the estimated quality distribution of skipped segments — surfaced on demand
+          rather than always-on, reducing cognitive load for routine adjustments.
+        </p>
+        <p class="cs-body">
+          All changes autosaved, removing the commit friction that had previously
+          made ops team members hesitant to experiment. The design reframed
+          configuration as an iterative, low-stakes act rather than a consequential
+          one-shot decision.
+        </p>
+
+        <div class="cs-img-pair">
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="project%20content/2%20Decision%20module%20for%20framer/11%20Final%20designs.png"
+              alt="Final design: simplified slider with named levels and Balanced preselected by default"
+              loading="lazy"
+            />
+          </figure>
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="project%20content/2%20Decision%20module%20for%20framer/12%20Final%20designs.png"
+              alt="Final design: View quality toggle and autosave behaviour"
+              loading="lazy"
+            />
+          </figure>
+        </div>
+        <p class="cs-figcaption" style="margin-top: var(--sp-3);">Named profiles, live skip preview, autosave — all changes low-friction and reversible</p>
+      </section>
+    </div>
+
+    <!-- ── SECTION 10: OUTCOMES ── -->
+    <div class="cs-container">
+      <section class="cs-section">
+        <p class="cs-section-label">Outcomes</p>
+        <h2 class="cs-h2">An uptick in usage — and in ownership</h2>
+        <p class="cs-body">
+          The clearest signal came from product analytics: usage of the Decision
+          Module spiked sharply after the redesign launched, and sustained. The ops
+          team was adjusting QE settings routinely, without engineering tickets,
+          treating the module as a genuine operational tool rather than a legacy
+          artefact to work around.
+        </p>
+        <p class="cs-body">
+          More meaningfully, post-launch interviews surfaced a shift in how the team
+          described their relationship to the model. The language changed from
+          "we have to ask engineering to change that" to "we adjusted it last week."
+          The design hadn't just made a task easier — it had transferred a form of
+          operational ownership that hadn't existed before.
+        </p>
+
+        <div class="cs-outcomes">
+          <div>
+            <p class="cs-stat-num">↑ Usage</p>
+            <p class="cs-stat-desc">Sharp, sustained uptick in Decision Module interactions post-launch</p>
+          </div>
+          <div>
+            <p class="cs-stat-num">0 tickets</p>
+            <p class="cs-stat-desc">QE threshold changes handled directly by the ops team, without engineering</p>
+          </div>
+          <div>
+            <p class="cs-stat-num">Owned</p>
+            <p class="cs-stat-desc">Ops team described the model as something they operate, not something that happens to them</p>
+          </div>
+        </div>
+
+        <figure class="cs-figure">
+          <img
+            class="cs-img cs-img--dark"
+            src="project%20content/2%20Decision%20module%20for%20framer/13%20Outcomes.png"
+            alt="Analytics graph showing a sharp uptick in Decision Module usage after the redesign launched"
+            loading="lazy"
+          />
+          <figcaption class="cs-figcaption">Usage analytics — the spike in adoption coincided precisely with the redesign launch</figcaption>
+        </figure>
+      </section>
+    </div>
+
+    <!-- ── FOOTER ── -->
+    <div class="cs-container">
+      <footer class="cs-footer">
+        <a href="index.html" class="cs-footer-back" id="cs-footer-back">← Back to all work</a>
+        <p class="cs-footer-copy">© 2026 Aditya Gujaran</p>
+      </footer>
+    </div>
+
+  </main>
+
+  <script src="main.js" defer></script>
+  <script>
+    /* ── READING PROGRESS BAR ── */
+    (function () {
+      var bar = document.getElementById('cs-progress');
+      var main = document.getElementById('cs-main');
+      if (!bar || !main) return;
+
+      function updateProgress() {
+        var scrollTop = window.scrollY;
+        var docH = document.documentElement.scrollHeight - window.innerHeight;
+        var pct = docH > 0 ? (scrollTop / docH) * 100 : 0;
+        bar.style.width = pct + '%';
+      }
+
+      window.addEventListener('scroll', updateProgress, { passive: true });
+      updateProgress();
+    })();
+
+    /* ── EXIT TRANSITION (back links) ── */
+    (function () {
+      function bindExit(el) {
+        if (!el) return;
+        el.addEventListener('click', function (e) {
+          e.preventDefault();
+          var href = this.href;
+          document.body.classList.add('is-exiting');
+          setTimeout(function () { window.location.href = href; }, 360);
+        });
+      }
+      bindExit(document.getElementById('cs-back'));
+      bindExit(document.getElementById('cs-footer-back'));
+    })();
+  </script>
+
+</body>
+</html>

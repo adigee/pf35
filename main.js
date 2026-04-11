@@ -173,6 +173,22 @@ function handlePanels() {
 })();
 
 /* ─────────────────────────────────────────
+   CASE STUDY PAGE TRANSITION
+   Intercepts .cs-link clicks on the homepage,
+   plays the column-exit animation, then navigates.
+───────────────────────────────────────── */
+(function () {
+  document.querySelectorAll('.cs-link').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      var href = this.href;
+      document.body.classList.add('is-exiting');
+      setTimeout(function () { window.location.href = href; }, 380);
+    });
+  });
+})();
+
+/* ─────────────────────────────────────────
    LIVE TIMEZONE CLOCK — Lisbon / WET
 ───────────────────────────────────────── */
 (function () {
