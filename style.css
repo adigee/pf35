@@ -3,12 +3,12 @@
 ───────────────────────────────────────── */
 :root {
   /* ── DARK MODE ─────────────────────────────
-     Midnight  #040404   bg
+     Midnight  #121212   bg
      Ivory     #F8F6EE   text
      Lavender  #ACA0E8   primary — links, CTAs, reading marker
      Peach     #F0956E   accent  — highlights, decorative
   ─────────────────────────────────────────── */
-  --color-bg:               #040404;
+  --color-bg:               #121212;
   --color-surface:          #0F0E0C;
   --color-surface-2:        #1A1916;
   --color-border:           rgba(248, 246, 238, 0.08);
@@ -22,7 +22,7 @@
 
   --color-accent:           #F0956E;
   --color-accent-muted:     rgba(240, 149, 110, 0.12);
-  --color-accent-on-accent: #040404;
+  --color-accent-on-accent: #121212;
 
   /* Typography */
   --font-display: 'Manrope', sans-serif;
