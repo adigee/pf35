@@ -12,6 +12,7 @@
 
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="case-study.css" />
+  <script src="components/nav.js"></script>
 </head>
 
 <body class="cs-page">
@@ -19,17 +20,8 @@
   <!-- Reading progress bar -->
   <div class="cs-progress" id="cs-progress" aria-hidden="true"></div>
 
-  <!-- NAV -->
-  <nav class="cs-nav" role="navigation" aria-label="Case study navigation">
-    <a href="index.html" class="cs-back" id="cs-back">← All work</a>
-    <span class="cs-nav-title">The Decision Module</span>
-    <div class="theme-toggle-wrap" id="theme-toggle-wrap">
-      <button class="theme-toggle" id="theme-toggle" role="switch" aria-label="Toggle colour mode">
-        <span class="toggle-knob"></span>
-      </button>
-      <span class="toggle-label" id="toggle-label"></span>
-    </div>
-  </nav>
+  <!-- NAV — injected by components/nav.js -->
+  <div data-component="nav"></div>
 
   <main class="cs-main" id="cs-main">
 
