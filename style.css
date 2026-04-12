@@ -279,7 +279,6 @@ a:hover {
 .b-body {
   font-size: var(--text-base);
   line-height: var(--leading-body);
-  max-width: 340px;
 }
 .b-body + .b-body { margin-top: var(--sp-4); }
 
@@ -801,6 +800,17 @@ a:hover {
     --text-sm:  0.75rem;   /* 12px — Body Small */
   }
 }
+
+/* ─────────────────────────────────────────
+   WIDE DESKTOP  (>= 1280px)
+   Left col grows 400→600px, reaches 600 at 1600px
+───────────────────────────────────────── */
+@media (min-width: 1280px) {
+  :root {
+    --left-col: clamp(400px, 62.5vw - 400px, 600px);
+  }
+}
+
 
 /* ─────────────────────────────────────────
    MOBILE  (<= 768px)
