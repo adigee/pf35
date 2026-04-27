@@ -627,6 +627,35 @@ a:hover {
   font-weight: 300;
 }
 
+/* ── B-META — case study metadata fields in left sidebar ── */
+.b-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  list-style: none;
+  margin-top: var(--sp-8);
+}
+
+.b-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.b-meta-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.b-meta-value {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: var(--leading-normal);
+}
+
 /* 5 — TRQ DAD: image panel */
 .panel--trq { background: var(--color-bg); }
 
