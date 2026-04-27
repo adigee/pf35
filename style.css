@@ -193,6 +193,12 @@ a:hover {
 }
 .nav-name:hover { color: var(--color-primary); text-decoration: none; }
 
+.nav-resume-icon {
+  font-size: 1em;
+  vertical-align: -0.15em;
+  line-height: 1;
+}
+
 .nav-links {
   display: flex;
   gap: var(--sp-4);
