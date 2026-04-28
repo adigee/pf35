@@ -133,6 +133,9 @@
   overflow: hidden;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.30);
   background: #f4f4f6;
+  --_breakout: max(0px, calc((70vw - (720px - 4rem)) / 2));
+  margin-left: calc(-1 * var(--_breakout));
+  margin-right: calc(-1 * var(--_breakout));
 }
 
 .cs-hero-img {
@@ -210,6 +213,10 @@
 /* ── FIGURES ── */
 .cs-figure {
   margin-top: var(--sp-10);
+  margin-bottom: var(--sp-10);
+  --_breakout: max(0px, calc((70vw - (720px - 4rem)) / 2));
+  margin-left: calc(-1 * var(--_breakout));
+  margin-right: calc(-1 * var(--_breakout));
 }
 
 .cs-img {
@@ -231,6 +238,7 @@
   font-size: var(--text-sm);
   letter-spacing: var(--tracking-wide);
   color: var(--color-text);
+  text-align: center;
 }
 
 /* ── TWO-UP IMAGE PAIR ── */
@@ -243,6 +251,10 @@
 
 .cs-img-pair .cs-figure {
   margin-top: 0;
+  margin-bottom: 0;
+  --_breakout: 0px;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 /* ── CALLOUT / INSIGHT BOX ── */
