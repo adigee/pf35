@@ -195,6 +195,18 @@
   margin-top: var(--sp-4);
 }
 
+.cs-list {
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  color: var(--color-text);
+  margin-top: var(--sp-4);
+  padding-left: var(--sp-6);
+}
+
+.cs-list li + li {
+  margin-top: var(--sp-2);
+}
+
 /* ── FIGURES ── */
 .cs-figure {
   margin-top: var(--sp-10);
