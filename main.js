@@ -125,8 +125,34 @@ function handlePanels() {
     const inViewport = rects[i].top < window.innerHeight && rects[i].bottom > 0;
     block.classList.toggle('in-view', inViewport || i === activeIndex);
     block.classList.toggle('active', i === activeIndex);
+
+    /* Play/pause any video in the sibling panel */
+    const panel = block.nextElementSibling;
+    if (panel) {
+      const vid = panel.querySelector('video');
+      if (vid) i === activeIndex ? vid.play() : vid.pause();
+    }
   });
 }
+
+/* ─────────────────────────────────────────
+   VIDEO — PLAY ON SCROLL
+   Handles non-panel videos (mobile visuals,
+   case study heroes) via IntersectionObserver.
+───────────────────────────────────────── */
+(function () {
+  if (!('IntersectionObserver' in window)) return;
+  const vids = [...document.querySelectorAll('video')].filter(
+    v => !v.closest('.panel')
+  );
+  if (!vids.length) return;
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      e.isIntersecting ? e.target.play() : e.target.pause();
+    });
+  }, { threshold: 0.3 });
+  vids.forEach(v => io.observe(v));
+})();
 
 /* ─────────────────────────────────────────
    THEME TOGGLE
