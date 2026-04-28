@@ -520,8 +520,8 @@ a:hover {
   margin-top: var(--sp-2);
 }
 
-/* 2 — Bounce: dark */
-.panel--bounce { background: var(--color-text); color: var(--color-bg); }
+/* 2 — Bounce: image panel */
+.panel--bounce { background: var(--color-bg); }
 
 /* 3 — Unbabel: image panel */
 .panel--unbabel { background: var(--color-bg); }
