@@ -1,0 +1,36 @@
+# Aditya Gujaran — Product Designer
+
+> Senior product designer based in Lisbon with 8+ years of experience. Practice focuses on rigorous UX research to enable high-velocity product delivery. Works at the overlap of product strategy, user research, interaction design, and visual craft. Strong track record in B2B SaaS, AI/ML tooling, and mobile products. Available for select freelance collaborations — requests preferred a few months in advance. Contact: hello@adityagujaran.me
+
+## Portfolio
+
+- [Portfolio home](index.html): Overview of selected work, experience, and skills
+- [Lockers PUDO — Bounce](lockers-reducing-cancellation.html): Reduced cancellation rate to prove product-market fit for a new locker pick-up/drop-off use case. Built from 0→1. Skills: Interaction design, Continuous discovery.
+- [On-demand — Unbabel](on-demand.html): Refactored and expanded a B2B translation platform to support Localisation after the acquisition of Lingo24. Two different customer mental models unified into one coherent product. Skills: Visual design, Systems thinking.
+- [The Decision Module — Unbabel](decision-module.html): Made Unbabel's AI quality-estimation model operable by ops linguists without specialist engineers — translating ML reasoning into a legible, actionable UI. Skills: Interaction design, AI/ML interfaces.
+- [TRQ DAD — Cocoon](https://adityagujaran.me/projects/trq-dad/): Mobile chatbot for filing insurance claims after a car accident. Stripped verbose forms to their essentials. Skills: Service design, Conversational UI.
+
+## About
+
+Aditya Gujaran is a senior product designer with 8+ years of practice across B2B SaaS, AI tooling, consumer mobile, and insurance products. His work lives at the overlap of rigorous research, clear strategic thinking, and considered craft. He has a particular fondness for the 0→1 problem — the moment before the product exists — and believes good design is argued for, not just executed.
+
+**Core skills:** UX Research · Interaction Design · Visual Design · Systems Thinking · Service Design · Conversational UI · AI/ML interface design · Design Strategy · Continuous Discovery · 0→1 product design
+
+**Industries:** B2B SaaS · Localisation / translation technology · AI operations tools · Logistics · Insurance / insurtech
+
+**Tools:** Figma · Prototyping · User research · Design systems
+
+## Experience
+
+- **Bounce** — Senior Product Designer. Built new PUDO (pick-up/drop-off) locker product from scratch, reduced cancellation rate, established product-market fit.
+- **Unbabel** — Senior Product Designer. Led design for On-demand platform expansion post-acquisition; designed Decision Module AI tooling to scale ops efficiency.
+- **Cocoon** — Senior Product Designer. Service design and conversational UI for TRQ DAD, a mobile-first insurance claim chatbot.
+- 8+ years total design practice across multiple industries and company stages.
+
+## Contact
+
+- **Email:** hello@adityagujaran.me
+- **LinkedIn:** https://linkedin.com/in/agujaran/
+- **Website:** https://adityagujaran.me
+- **Location:** Lisbon, Portugal (GMT+1)
+- **Availability:** Open to select freelance collaborations. Requests preferred a few months in advance.
