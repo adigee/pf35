@@ -541,6 +541,9 @@ a:hover {
   flex-shrink: 0;
 }
 
+/* Mobile-only CTA — hidden on desktop, shown inside .block-text on mobile */
+.mobile-cta { display: none; }
+
 /* Panel CTA — sits below the image, centred in the panel */
 .panel-cta {
   margin-top: var(--sp-10);
@@ -858,6 +861,11 @@ a:hover {
   /* Hide all fixed panels on mobile */
   .panel {
     display: none !important;
+  }
+
+  /* Show in-block CTA links on mobile */
+  .mobile-cta {
+    display: inline-flex;
   }
 
   /* Show inline mobile visuals */
