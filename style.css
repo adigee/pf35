@@ -494,7 +494,7 @@ a:hover {
 /* ── PANEL THEMES ── */
 
 /* 1 — Intro */
-.panel--intro { background: var(--color-bg); }
+.panel--intro { background: #000; }
 
 .p-stats {
   display: grid;
@@ -521,13 +521,13 @@ a:hover {
 }
 
 /* 2 — Bounce: image panel */
-.panel--bounce { background: var(--color-bg); }
+.panel--bounce { background: #000; }
 
 /* 3 — Unbabel: image panel */
-.panel--unbabel { background: var(--color-bg); }
+.panel--unbabel { background: #000; }
 
 /* 4 — Decision Module: image panel */
-.panel--decision { background: var(--color-bg); }
+.panel--decision { background: #000; }
 
 .panel-img {
   width: 88%;
@@ -540,6 +540,9 @@ a:hover {
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
   flex-shrink: 0;
 }
+
+/* Mobile-only CTA — hidden on desktop, shown inside .block-text on mobile */
+.mobile-cta { display: none; }
 
 /* Panel CTA — sits below the image, centred in the panel */
 .panel-cta {
@@ -663,13 +666,13 @@ a:hover {
 }
 
 /* 5 — TRQ DAD: image panel */
-.panel--trq { background: var(--color-bg); }
+.panel--trq { background: #000; }
 
 /* 6 — Cocoon: warm tint */
 .panel--cocoon { background: var(--color-accent); }
 
 /* 7 — Experience */
-.panel--experience { background: var(--color-bg); }
+.panel--experience { background: #000; }
 
 .p-timeline {
   width: 100%;
@@ -860,6 +863,11 @@ a:hover {
     display: none !important;
   }
 
+  /* Show in-block CTA links on mobile */
+  .mobile-cta {
+    display: inline-flex;
+  }
+
   /* Show inline mobile visuals */
   .mobile-visual {
     display: flex;
@@ -906,7 +914,7 @@ a:hover {
 
   /* Image mobile-visual */
   .mobile-visual--img {
-    background: var(--color-text);
+    background: #000;
     padding: var(--sp-8);
     min-height: 60vw;
     display: flex;
