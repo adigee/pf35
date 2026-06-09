@@ -18,7 +18,6 @@
     nav.innerHTML =
       '<a href="index.html" class="nav-name">Aditya Gujaran</a>' +
       '<div class="nav-resume-group">' +
-        '<span class="nav-name nav-resume-label">Resume</span>' +
         '<a href="https://drive.google.com/file/d/1FJDZI8xlQgeWfl7zgbS3LjaTYYZJbWh3/view" target="_blank" rel="noopener" class="nav-resume-action"><span class="material-symbols-rounded nav-resume-icon">download</span>resume.pdf</a>' +
         '<a href="resume.md" target="_blank" rel="noopener" class="nav-resume-action"><span class="material-symbols-rounded nav-resume-icon">visibility</span>@resume.md</a>' +
       '</div>';
