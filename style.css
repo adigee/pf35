@@ -202,7 +202,7 @@ a:hover {
 .nav-resume-group {
   display: flex;
   align-items: center;
-  gap: var(--sp-2);
+  gap: 0.25em;
 }
 
 .nav-resume-label {
@@ -214,18 +214,12 @@ a:hover {
   cursor: default;
 }
 
-.nav-resume-action {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25em;
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  letter-spacing: var(--tracking-wider);
-  color: var(--color-text-muted);
+.nav-resume-link {
+  cursor: pointer;
   text-decoration: none;
   transition: color 120ms ease;
 }
-.nav-resume-action:hover { color: var(--color-primary); }
+.nav-resume-link:hover { color: var(--color-primary); }
 
 .nav-links {
   display: flex;
