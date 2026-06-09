@@ -212,6 +212,10 @@ a:hover {
 .nav-resume-action {
   display: inline-flex;
   align-items: center;
+  gap: 0.25em;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wider);
   color: var(--color-text-muted);
   text-decoration: none;
   transition: color 120ms ease;
