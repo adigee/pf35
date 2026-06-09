@@ -206,6 +206,10 @@ a:hover {
 }
 
 .nav-resume-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-text-muted);
   cursor: default;
 }
 
@@ -368,6 +372,35 @@ a:hover {
   border: 1px solid var(--color-border);
   border-radius: 2px;
   padding: 0.2em 0.5em;
+}
+
+/* Email copy — left col */
+.email-copy-pill {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.email-copy-hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--sp-2);
+}
+
+/* Email copy — right panel */
+.p-email.email-copy-pill {
+  cursor: pointer;
+}
+
+.p-copy-hint {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-top: var(--sp-2);
 }
 
 /* Italic aside */
