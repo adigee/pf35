@@ -219,7 +219,7 @@ a:hover {
   align-items: center;
   gap: 0.25em;
   font-family: var(--font-mono);
-  font-size: var(--text-2xs);
+  font-size: var(--text-sm);
   letter-spacing: var(--tracking-wider);
   color: var(--color-text-muted);
   text-decoration: none;
