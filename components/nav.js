@@ -17,7 +17,11 @@
     nav.setAttribute('aria-label', 'Primary');
     nav.innerHTML =
       '<a href="index.html" class="nav-name">Aditya Gujaran</a>' +
-      '<a href="https://drive.google.com/file/d/1FJDZI8xlQgeWfl7zgbS3LjaTYYZJbWh3/view" target="_blank" rel="noopener" class="nav-name nav-resume">Resume&thinsp;<span class="material-symbols-rounded nav-resume-icon">download</span></a>';
+      '<div class="nav-resume-group">' +
+        '<span class="nav-name nav-resume-label">Resume</span>' +
+        '<a href="https://drive.google.com/file/d/1FJDZI8xlQgeWfl7zgbS3LjaTYYZJbWh3/view" target="_blank" rel="noopener" class="nav-resume-action" title="Download PDF"><span class="material-symbols-rounded nav-resume-icon">download</span></a>' +
+        '<a href="resume.md" target="_blank" rel="noopener" class="nav-resume-action" title="View as Markdown"><span class="material-symbols-rounded nav-resume-icon">visibility</span></a>' +
+      '</div>';
 
     el.replaceWith(nav);
   }

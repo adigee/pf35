@@ -199,6 +199,25 @@ a:hover {
   line-height: 1;
 }
 
+.nav-resume-group {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.nav-resume-label {
+  cursor: default;
+}
+
+.nav-resume-action {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 120ms ease;
+}
+.nav-resume-action:hover { color: var(--color-primary); }
+
 .nav-links {
   display: flex;
   gap: var(--sp-4);
