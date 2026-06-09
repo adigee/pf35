@@ -233,3 +233,17 @@ function handlePanels() {
   tick();
   setInterval(tick, 60000);
 })();
+
+/* ─────────────────────────────────────────
+   COPY EMAIL TO CLIPBOARD
+───────────────────────────────────────── */
+document.addEventListener('click', function (e) {
+  var pill = e.target.closest('[data-copy]');
+  if (!pill) return;
+  navigator.clipboard.writeText(pill.dataset.copy).then(function () {
+    var original = pill.textContent;
+    pill.textContent = 'Copied!';
+    setTimeout(function () { pill.textContent = original; }, 2000);
+  });
+});
+
