@@ -214,6 +214,21 @@ a:hover {
   cursor: default;
 }
 
+.nav-resume-flyout {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  overflow: hidden;
+  max-width: 0;
+  opacity: 0;
+  transition: max-width 200ms ease, opacity 160ms ease;
+}
+
+.nav-resume-group:hover .nav-resume-flyout {
+  max-width: 12rem;
+  opacity: 1;
+}
+
 .nav-resume-action {
   display: inline-flex;
   align-items: center;
@@ -223,6 +238,7 @@ a:hover {
   letter-spacing: var(--tracking-wider);
   color: var(--color-text-muted);
   text-decoration: none;
+  white-space: nowrap;
   transition: color 120ms ease;
 }
 .nav-resume-action:hover { color: var(--color-primary); }
