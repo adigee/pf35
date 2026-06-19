@@ -1200,3 +1200,121 @@ body.is-exiting .cs-main {
 [data-theme="dark"] .toggle-knob {
   transform: translateX(16px);
 }
+
+/* ─────────────────────────────────────────
+   STORY PANELS  — scroll-driven callouts
+   Desktop only (panels hidden on mobile).
+───────────────────────────────────────── */
+
+/* JS-managed visibility for multi-beat project panels */
+.panel.panel-js-inview { display: flex; }
+.panel.panel-js-active  { display: flex; opacity: 1; z-index: 2; }
+
+/* Full-coverage story layer */
+.panel-story {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background image or ambient video */
+.story-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+/* Callout stack — bottom-left of panel */
+.story-callouts {
+  position: absolute;
+  bottom: var(--sp-16);
+  left: var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  z-index: 1;
+}
+
+/* Individual callout badge — invisible until activated */
+.story-callout {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  background: rgba(0, 0, 0, 0.68);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: var(--sp-2) var(--sp-4);
+  color: #fff;
+  font-family: var(--font);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+/* Cumulative beat reveal via panel data-beat attribute */
+.panel[data-beat="1"] .story-callout[data-beat="1"],
+.panel[data-beat="2"] .story-callout[data-beat="1"],
+.panel[data-beat="2"] .story-callout[data-beat="2"],
+.panel[data-beat="3"] .story-callout[data-beat="1"],
+.panel[data-beat="3"] .story-callout[data-beat="2"],
+.panel[data-beat="3"] .story-callout[data-beat="3"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.callout-stat {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1;
+}
+
+.callout-label,
+.callout-context {
+  font-size: var(--text-xs);
+  opacity: 0.65;
+}
+
+/* CTA overlay — bottom-right of panel */
+.panel-cta--story {
+  position: absolute;
+  bottom: var(--sp-8);
+  right: var(--sp-8);
+  left: auto;
+  margin-top: 0;
+  z-index: 1;
+}
+
+/* ─────────────────────────────────────────
+   MOBILE: portrait crop + beat block hide
+───────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Beat sub-blocks are desktop-only scroll triggers */
+  .block-text--beat { display: none; }
+
+  /* Full-bleed portrait crop for project images */
+  .mobile-visual--img {
+    padding: 0;
+    aspect-ratio: 3 / 4;
+    min-height: unset;
+  }
+
+  .mobile-visual--img img,
+  .mobile-visual--img video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 0;
+    box-shadow: none;
+    max-height: unset;
+  }
+}

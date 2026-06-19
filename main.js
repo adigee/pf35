@@ -126,11 +126,42 @@ function handlePanels() {
     block.classList.toggle('in-view', inViewport || i === activeIndex);
     block.classList.toggle('active', i === activeIndex);
 
-    /* Play/pause any video in the sibling panel */
-    const panel = block.nextElementSibling;
-    if (panel) {
-      const vid = panel.querySelector('video');
-      if (vid) i === activeIndex ? vid.play() : vid.pause();
+    /* Play/pause video in adjacent panel (non-project panels only) */
+    if (!block.dataset.project) {
+      const panel = block.nextElementSibling;
+      if (panel && panel.classList.contains('panel')) {
+        const vid = panel.querySelector('video');
+        if (vid) i === activeIndex ? vid.play() : vid.pause();
+      }
+    }
+  });
+
+  /* Step 5 — update story panels driven by multi-beat project blocks */
+  document.querySelectorAll('.panel[data-project]').forEach(panel => {
+    const project = panel.dataset.project;
+    const projectBlocks = blocks.filter(b => b.dataset.project === project);
+
+    const anyInView   = projectBlocks.some(b => b.classList.contains('in-view'));
+    const activeBlock = projectBlocks.find(b => b.classList.contains('active'));
+
+    panel.classList.toggle('panel-js-inview', anyInView);
+    panel.classList.toggle('panel-js-active',  !!activeBlock);
+
+    if (anyInView) {
+      if (activeBlock) {
+        const newBeat     = parseInt(activeBlock.dataset.beat || 0);
+        const currentBeat = parseInt(panel.dataset.beat       || 0);
+        if (newBeat > currentBeat) panel.dataset.beat = newBeat;
+      }
+    } else {
+      /* Project has scrolled fully out — reset for re-entry */
+      panel.dataset.beat = '0';
+    }
+
+    /* Play/pause the background video in story panels */
+    const vid = panel.querySelector('.story-bg');
+    if (vid && vid.tagName === 'VIDEO') {
+      !!activeBlock ? vid.play().catch(() => {}) : vid.pause();
     }
   });
 }
