@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Rings — Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 100vw;
+      height: 100dvh;
+      overflow: hidden;
+      background: #F5F1E8;
+      font-family: 'Manrope', sans-serif;
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+
+    body.panning { cursor: grabbing; }
+
+    #canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .ring {
+      fill: none;
+      stroke: rgba(26,26,26,0.08);
+      stroke-width: 1;
+    }
+
+    .connector {
+      fill: none;
+      stroke: rgba(26,26,26,0.1);
+      stroke-width: 1;
+    }
+
+    .node-bg {
+      transition: opacity 0.2s;
+    }
+
+    .node-label {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 500;
+      text-anchor: middle;
+      dominant-baseline: central;
+      pointer-events: none;
+    }
+
+    .hint {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(26,26,26,0.35);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      pointer-events: none;
+      transition: opacity 1s ease;
+    }
+    .hint.hidden { opacity: 0; }
+  </style>
+</head>
+<body>
+
+<svg id="canvas" xmlns="http://www.w3.org/2000/svg"></svg>
+<div class="hint" id="hint">Drag to explore</div>
+
+<script>
+const svg = document.getElementById('canvas');
+const NS = 'http://www.w3.org/2000/svg';
+let W = window.innerWidth, H = window.innerHeight;
+let cx = W / 2, cy = H / 2;
+
+// ── Config ────────────────────────────────────────────────────────────────────
+const RADII   = [0, 150, 270, 385, 495];
+const R_NODE  = [34, 26, 18, 13, 9];
+
+// Palette
+const COLORS = {
+  center : { bg: '#1A1A1A', text: '#F5F1E8' },
+  r1     : { bg: '#ACA0E8', text: '#1A1A1A' },
+  r2     : { bg: '#F0956E', text: '#1A1A1A' },
+  r3     : { bg: '#FFFFFF', stroke: 'rgba(26,26,26,0.18)', text: 'rgba(26,26,26,0.7)' },
+  r4     : { bg: '#FFFFFF', stroke: 'rgba(26,26,26,0.1)',  text: 'rgba(26,26,26,0.45)' },
+};
+
+// ── Data ──────────────────────────────────────────────────────────────────────
+// Ring 1: 4 main branches at cardinal angles
+const R1 = [
+  { label: 'Work',     angle: -90 },
+  { label: 'Life',     angle:   0 },
+  { label: 'Making',   angle:  90 },
+  { label: 'Thinking', angle: 180 },
+];
+
+// Ring 2: 3 children per R1 node, spread ±22° around parent
+const R2 = [
+  // Work
+  { label: 'Product\nDesign', parent: -90, offset: -22 },
+  { label: 'Research',        parent: -90, offset:   0 },
+  { label: 'Strategy',        parent: -90, offset:  22 },
+  // Life
+  { label: 'Lisbon',          parent:   0, offset: -22 },
+  { label: 'Music',           parent:   0, offset:   0 },
+  { label: 'Travel',          parent:   0, offset:  22 },
+  // Making
+  { label: 'Writing',         parent:  90, offset: -22 },
+  { label: 'Side\nProjects',  parent:  90, offset:   0 },
+  { label: 'Art',             parent:  90, offset:  22 },
+  // Thinking
+  { label: 'Books',           parent: 180, offset: -22 },
+  { label: 'Ideas',           parent: 180, offset:   0 },
+  { label: 'Philosophy',      parent: 180, offset:  22 },
+];
+
+// Ring 3: 2 children per R2 node, spread ±13°
+const R3 = [
+  // Work › Product Design
+  { label: 'Systems',    parent: -112, offset: -13 },
+  { label: 'Motion',     parent: -112, offset:  13 },
+  // Work › Research
+  { label: 'Qual',       parent:  -90, offset: -13 },
+  { label: 'Quant',      parent:  -90, offset:  13 },
+  // Work › Strategy
+  { label: 'Vision',     parent:  -68, offset: -13 },
+  { label: 'Roadmaps',   parent:  -68, offset:  13 },
+  // Life › Lisbon
+  { label: 'Príncipe',   parent:  -22, offset: -13 },
+  { label: 'Bairro Alto',parent:  -22, offset:  13 },
+  // Life › Music
+  { label: 'Electronic', parent:    0, offset: -13 },
+  { label: 'Jazz',       parent:    0, offset:  13 },
+  // Life › Travel
+  { label: 'India',      parent:   22, offset: -13 },
+  { label: 'Americas',   parent:   22, offset:  13 },
+  // Making › Writing
+  { label: 'Essays',     parent:   68, offset: -13 },
+  { label: 'Notes',      parent:   68, offset:  13 },
+  // Making › Side projects
+  { label: 'Tools',      parent:   90, offset: -13 },
+  { label: 'Experiments',parent:   90, offset:  13 },
+  // Thinking › Books
+  { label: 'Fiction',    parent:  158, offset: -13 },
+  { label: 'Non-fiction',parent:  158, offset:  13 },
+  // Thinking › Ideas
+  { label: 'Futures',    parent:  180, offset: -13 },
+  { label: 'Systems\nThinking', parent: 180, offset: 13 },
+  // Thinking › Philosophy
+  { label: 'Ethics',     parent:  202, offset: -13 },
+  { label: 'Aesthetics', parent:  202, offset:  13 },
+];
+
+// Ring 4: sparse leaf nodes
+const R4 = [
+  { label: 'Figma',         parent: -125, offset:  0 },
+  { label: 'Framer',        parent: -103, offset:  0 },
+  { label: 'Ethnography',   parent:  -77, offset:  0 },
+  { label: 'Discogs',       parent:   -9, offset:  0 },
+  { label: 'Resident\nAdvisor', parent: 9, offset: 0 },
+  { label: 'Bombay',        parent:  -35, offset:  0 },
+  { label: 'Substack',      parent:   55, offset:  0 },
+  { label: 'Rawls',         parent:  167, offset:  0 },
+  { label: 'Speculative\nDesign', parent: 193, offset: 0 },
+];
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function el(tag, attrs = {}) {
+  const e = document.createElementNS(NS, tag);
+  Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
+  return e;
+}
+
+function deg2rad(d) { return d * Math.PI / 180; }
+
+function polar(angleDeg, r) {
+  const rad = deg2rad(angleDeg);
+  return { x: cx + Math.cos(rad) * r, y: cy + Math.sin(rad) * r };
+}
+
+// ── Build world ───────────────────────────────────────────────────────────────
+const world = el('g', { id: 'world' });
+svg.appendChild(world);
+
+// Rings
+[1, 2, 3, 4].forEach(i => {
+  world.appendChild(el('circle', { cx, cy, r: RADII[i], class: 'ring' }));
+});
+
+function line(x1, y1, x2, y2) {
+  world.insertBefore(el('line', { x1, y1, x2, y2, class: 'connector' }), world.firstChild);
+}
+
+function node(x, y, ring, label) {
+  const cfg = COLORS[ring === 0 ? 'center' : `r${ring}`];
+  const r   = R_NODE[ring];
+  const g   = el('g', { transform: `translate(${x},${y})` });
+
+  const circle = el('circle', { cx: 0, cy: 0, r, class: 'node-bg',
+    fill: cfg.bg, ...(cfg.stroke ? { stroke: cfg.stroke, 'stroke-width': 1 } : {}) });
+  g.appendChild(circle);
+
+  const lines = label.split('\n');
+  const lh = Math.min(r * 0.55, 11);
+  lines.forEach((txt, i) => {
+    const dy = lines.length === 1 ? 0 : (i - (lines.length - 1) / 2) * lh;
+    const t  = el('text', {
+      x: 0, y: dy,
+      class: 'node-label',
+      fill: cfg.text,
+      'font-size': Math.max(r * 0.38, 7.5),
+    });
+    t.textContent = txt;
+    g.appendChild(t);
+  });
+
+  world.appendChild(g);
+}
+
+// Center
+node(cx, cy, 0, 'Aditya');
+
+// R1
+R1.forEach(n => {
+  const p = polar(n.angle, RADII[1]);
+  line(cx, cy, p.x, p.y);
+  node(p.x, p.y, 1, n.label);
+});
+
+// R2
+R2.forEach(n => {
+  const angle   = n.parent + n.offset;
+  const pos     = polar(angle, RADII[2]);
+  const parent  = polar(n.parent, RADII[1]);
+  line(parent.x, parent.y, pos.x, pos.y);
+  node(pos.x, pos.y, 2, n.label);
+});
+
+// R3
+R3.forEach(n => {
+  const angle  = n.parent + n.offset;
+  const pos    = polar(angle, RADII[3]);
+  const parent = polar(n.parent, RADII[2]);
+  line(parent.x, parent.y, pos.x, pos.y);
+  node(pos.x, pos.y, 3, n.label);
+});
+
+// R4
+R4.forEach(n => {
+  const angle  = n.parent + n.offset;
+  const pos    = polar(angle, RADII[4]);
+  const parent = polar(n.parent, RADII[3]);
+  line(parent.x, parent.y, pos.x, pos.y);
+  node(pos.x, pos.y, 4, n.label);
+});
+
+// ── Pan + inertia ─────────────────────────────────────────────────────────────
+let panning = false;
+let panX = 0, panY = 0;
+let ox = 0, oy = 0;
+let vx = 0, vy = 0;
+let lx = 0, ly = 0, lt = 0;
+let raf = null;
+
+function pt(e) {
+  const s = e.touches ? e.touches[0] : e;
+  return [s.clientX, s.clientY];
+}
+
+function down(e) {
+  panning = true;
+  const [x, y] = pt(e);
+  ox = x - panX; oy = y - panY;
+  lx = x; ly = y; lt = performance.now();
+  vx = 0; vy = 0;
+  cancelAnimationFrame(raf);
+  document.body.classList.add('panning');
+}
+
+function move(e) {
+  if (!panning) return;
+  e.preventDefault();
+  const [x, y] = pt(e);
+  const now = performance.now();
+  const dt  = Math.max(now - lt, 1);
+  vx = (x - lx) / dt * 16;
+  vy = (y - ly) / dt * 16;
+  lx = x; ly = y; lt = now;
+  panX = x - ox; panY = y - oy;
+  apply();
+}
+
+function up() {
+  if (!panning) return;
+  panning = false;
+  document.body.classList.remove('panning');
+  coast();
+}
+
+function coast() {
+  raf = requestAnimationFrame(function tick() {
+    vx *= 0.93; vy *= 0.93;
+    panX += vx;  panY += vy;
+    apply();
+    if (Math.abs(vx) > 0.1 || Math.abs(vy) > 0.1) raf = requestAnimationFrame(tick);
+  });
+}
+
+function apply() {
+  world.setAttribute('transform', `translate(${panX},${panY})`);
+}
+
+svg.addEventListener('mousedown', down);
+window.addEventListener('mousemove', move);
+window.addEventListener('mouseup', up);
+svg.addEventListener('touchstart', down, { passive: true });
+svg.addEventListener('touchmove', move, { passive: false });
+svg.addEventListener('touchend', up);
+
+// ── Fade hint ─────────────────────────────────────────────────────────────────
+const hint = document.getElementById('hint');
+setTimeout(() => hint.classList.add('hidden'), 2800);
+</script>
+</body>
+</html>
