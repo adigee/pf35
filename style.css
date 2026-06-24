@@ -599,7 +599,8 @@ a:hover {
 .panel--decision { background: #000; }
 
 .panel-img {
-  width: 88%;
+  max-width: 88%;
+  width: auto;
   height: auto;
   max-height: 85%;
   object-fit: contain;
