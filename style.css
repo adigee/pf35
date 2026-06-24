@@ -262,6 +262,10 @@ a:hover {
   padding: var(--sp-16) var(--sp-8);
   border-bottom: 1px solid var(--color-border);
   position: relative;
+  min-height: calc(100vh - var(--nav-height));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .block-text:last-of-type {
@@ -854,6 +858,8 @@ a:hover {
 
   .block-text {
     padding: var(--sp-16) 12.5vw;
+    min-height: unset;
+    display: block;
   }
 
   .block-text:last-of-type {
@@ -1033,6 +1039,8 @@ a:hover {
   /* Reduce block vertical rhythm */
   .block-text {
     padding: var(--sp-12) var(--sp-6);
+    min-height: unset;
+    display: block;
   }
 
   .block-text:last-of-type {
