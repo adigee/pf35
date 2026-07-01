@@ -1,0 +1,6 @@
+"$schema" = "https://conductor.build/schemas/settings.repo.schema.json"
+
+[scripts]
+# Static site — no build step. Serve the workspace on Conductor's assigned port.
+run = "python3 -m http.server $CONDUCTOR_PORT --bind 127.0.0.1"
+run_mode = "concurrent"
