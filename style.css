@@ -1074,6 +1074,7 @@ a:hover {
 .b-tz {
   position: relative;
   display: inline-flex;
+  align-self: flex-start;
   align-items: center;
   gap: var(--sp-2);
   font-size: var(--text-sm);
