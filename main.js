@@ -77,7 +77,25 @@ window.addEventListener('DOMContentLoaded', () => {
   blocks = [...document.querySelectorAll('.block-text')];
   readingTarget = window.innerHeight / 3;
   handlePanels();
+  startFrameCountdowns();
 });
+
+// Kick off each cancellation-rate countdown once its frames have loaded.
+function startFrameCountdowns() {
+  document.querySelectorAll('.frame-cycle').forEach((cycle) => {
+    const imgs = [...cycle.querySelectorAll('img')];
+    if (!imgs.length) return;
+    let remaining = imgs.length;
+    const done = () => { if (--remaining <= 0) cycle.classList.add('loaded'); };
+    imgs.forEach((img) => {
+      if (img.complete) done();
+      else {
+        img.addEventListener('load', done, { once: true });
+        img.addEventListener('error', done, { once: true });
+      }
+    });
+  });
+}
 
 window.addEventListener('resize', () => {
   readingTarget = window.innerHeight / 3;
