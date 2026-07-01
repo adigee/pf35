@@ -699,6 +699,9 @@ a:hover {
 /* Mobile-only CTA — hidden on desktop, shown inside .block-text on mobile */
 .mobile-cta { display: none; }
 
+/* Hidden for now — "View project" CTA in the right-hand panel column */
+.panel .panel-cta { display: none; }
+
 /* Panel CTA — sits below the image, centred in the panel */
 .panel-cta {
   margin-top: var(--sp-10);
