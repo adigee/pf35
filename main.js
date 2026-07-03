@@ -80,13 +80,18 @@ window.addEventListener('DOMContentLoaded', () => {
   startFrameCountdowns();
 });
 
-// Kick off each cancellation-rate countdown once its frames have loaded.
+// How long each iteration frame is held before a hard cut to the next.
+const FRAME_HOLD_MS = 1200;
+// The final frame lingers longer before cycling back to the first.
+const LAST_FRAME_HOLD_MS = 4000;
+
+// Kick off each cancellation-rate slideshow once its frames have loaded.
 function startFrameCountdowns() {
   document.querySelectorAll('.frame-cycle').forEach((cycle) => {
     const imgs = [...cycle.querySelectorAll('img')];
     if (!imgs.length) return;
     let remaining = imgs.length;
-    const done = () => { if (--remaining <= 0) cycle.classList.add('loaded'); };
+    const done = () => { if (--remaining <= 0) startFrameSequence(cycle); };
     imgs.forEach((img) => {
       if (img.complete) done();
       else {
@@ -95,6 +100,41 @@ function startFrameCountdowns() {
       }
     });
   });
+}
+
+// Hard-cut through the four iteration frames (1 → 2 → 3 → 4), then loop.
+// No crossfade — each cut represents a distinct iteration that brought the
+// cancellation rate down.
+function startFrameSequence(cycle) {
+  const imgs = [...cycle.querySelectorAll('img')];
+  if (!imgs.length) return;
+
+  const show = (idx) => imgs.forEach((img, i) => {
+    img.style.opacity = i === idx ? 1 : 0;
+  });
+
+  // Reduced-motion: settle on the first frame, no animation.
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    show(0);
+    return;
+  }
+
+  // Each frame's hold duration; the last frame lingers longer.
+  const holds = imgs.map((_, i) =>
+    i === imgs.length - 1 ? LAST_FRAME_HOLD_MS : FRAME_HOLD_MS
+  );
+  const loop = holds.reduce((a, b) => a + b, 0);
+  const start = performance.now();
+  let lastIdx = -1;
+
+  function tick(now) {
+    let t = (now - start) % loop;
+    let idx = 0;
+    while (t >= holds[idx]) { t -= holds[idx]; idx++; }
+    if (idx !== lastIdx) { show(idx); lastIdx = idx; }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
 }
 
 window.addEventListener('resize', () => {

@@ -500,7 +500,7 @@ a:hover {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: var(--sp-16);
+  padding: var(--sp-8);
   opacity: 0;
   transition: opacity var(--panel-transition);
   z-index: 1;
@@ -637,25 +637,24 @@ a:hover {
   box-shadow: none;
   z-index: 1;
   opacity: 0;
-  animation: frameCycle 4s infinite;
-  animation-play-state: paused;
 }
-.frame-cycle img:nth-child(2) { animation-delay: 0s; }
-.frame-cycle img:nth-child(3) { animation-delay: 1s; }
-.frame-cycle img:nth-child(4) { animation-delay: 2s; }
-.frame-cycle img:nth-child(5) { animation-delay: 3s; }
+/* Frame 1 is the default poster before JS takes over the sequence. */
+.frame-cycle img:nth-child(2) { opacity: 1; }
 
 /* Giant cancellation-rate number that counts down behind each frame.
    Rendered with screen blend so it reads as a dark figure on the black
    areas of the frame, but disappears wherever the white phone sits on top. */
 .frame-nums {
+  /* Hidden for now — the story is told by cutting through the four
+     iteration frames rather than by an overlaid number. */
+  display: none;
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
   mix-blend-mode: screen;
 }
-.frame-nums span {
+.frame-num {
   position: absolute;
   inset: 0;
   display: flex;
@@ -666,34 +665,15 @@ a:hover {
   font-weight: 700;
   letter-spacing: -0.04em;
   color: #2a2a2a;
-  opacity: 0;
-  animation: frameCycle 4s infinite;
-  animation-play-state: paused;
-}
-.frame-nums span:nth-child(1) { animation-delay: 0s; }
-.frame-nums span:nth-child(2) { animation-delay: 1s; }
-.frame-nums span:nth-child(3) { animation-delay: 2s; }
-.frame-nums span:nth-child(4) { animation-delay: 3s; }
-
-/* Countdown only begins once the frames have loaded. */
-.frame-cycle.loaded img,
-.frame-cycle.loaded .frame-nums span {
-  animation-play-state: running;
+  font-variant-numeric: tabular-nums;
 }
 
-@keyframes frameCycle {
-  0%   { opacity: 0; }
-  4%   { opacity: 1; }
-  25%  { opacity: 1; }
-  29%  { opacity: 0; }
-  100% { opacity: 0; }
-}
+/* The frame sequence and number countdown are both driven from JS
+   (see startFrameSequence in main.js), starting once frames have loaded. */
 
 @media (prefers-reduced-motion: reduce) {
-  .frame-cycle img { animation: none; }
-  .frame-cycle img:nth-child(2) { opacity: 1; }
-  .frame-nums span { animation: none; }
-  .frame-nums span:nth-child(1) { opacity: 1; }
+  /* Static poster: frame 1 + starting number, handled by the default
+     opacity above and by main.js settling the number on its start value. */
 }
 
 /* Mobile-only CTA — hidden on desktop, shown inside .block-text on mobile */
