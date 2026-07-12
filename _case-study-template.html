@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ── PER-PAGE (edit these) ──────────────────────────── -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PROJECT NAME — Aditya Gujaran</title>
+  <meta name="description" content="One-line summary of this case study for search + link previews." />
+
+  <!-- ── SHARED (leave as-is) ───────────────────────────── -->
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="case-study.css" />
+  <script src="components/nav.js"></script>   <!-- injects the site nav -->
+  <script src="components/head.js"></script>  <!-- injects fonts + llms link + analytics -->
+</head>
+
+<body class="cs-page">
+
+  <!-- Reading progress bar (filled by components/footer.js) -->
+  <div class="cs-progress" id="cs-progress" aria-hidden="true"></div>
+
+  <!-- NAV — injected by components/nav.js -->
+  <div data-component="nav"></div>
+
+  <main class="cs-main" id="cs-main">
+
+    <!-- ── HERO ─────────────────────────────────────────── -->
+    <div class="cs-container">
+      <div class="cs-hero-img-wrap">
+        <img
+          class="cs-hero-img"
+          src="project%20content/REPLACE_hero.png"
+          alt="PROJECT NAME — short alt text"
+        />
+      </div>
+    </div>
+
+    <div class="cs-container">
+      <header class="cs-hero">
+        <!-- Project title, role, timeframe, one-line summary go here. -->
+      </header>
+    </div>
+
+    <!-- ── SECTIONS ─────────────────────────────────────── -->
+    <!-- Duplicate this block per section. Content is bespoke per
+         project — the shell (cs-container > cs-section) is what's shared. -->
+    <div class="cs-container">
+      <section class="cs-section">
+        <!-- Section heading + body + images. -->
+      </section>
+    </div>
+
+    <!-- ── FOOTER (injected by components/footer.js) ─────── -->
+    <div class="cs-container">
+      <div data-component="cs-footer"></div>
+    </div>
+
+  </main>
+
+  <script src="main.js" defer></script>
+  <script src="components/footer.js"></script>
+
+</body>
+</html>
+
+<!--
+  ─────────────────────────────────────────────────────────
+  HOW TO ADD A NEW PROJECT
+  1. Copy this file to  your-project-slug.html
+  2. Fill in the PER-PAGE <head> tags + the section content.
+  3. Drop images into  project content/  and update the src paths.
+  4. Add a project panel + link to index.html so it shows in the grid.
+  (Everything under "SHARED" is centralised — don't edit it here.)
+  ─────────────────────────────────────────────────────────
+-->
