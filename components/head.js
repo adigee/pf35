@@ -5,6 +5,7 @@
      • Google Fonts (Manrope + Material Symbols)
      • llms.txt discovery link
      • Umami analytics
+     • Vercel Web Analytics
 
    Render-critical / per-page tags stay static in each
    page's <head>: charset, viewport, <title>,
@@ -33,4 +34,14 @@
   umami.src = 'https://cloud.umami.is/script.js';
   umami.setAttribute('data-website-id', '5c4d27a2-1670-4d49-ad0c-b5447a605a69');
   head.appendChild(umami);
+
+  /* Vercel Web Analytics — queue shim so events fire before the
+     script loads, then the real script (served by Vercel at
+     /_vercel/insights/script.js once Analytics is enabled in the
+     dashboard). Appended as a real element so it executes. */
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  var vercel = document.createElement('script');
+  vercel.defer = true;
+  vercel.src = '/_vercel/insights/script.js';
+  head.appendChild(vercel);
 })();
