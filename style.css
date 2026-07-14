@@ -6,7 +6,7 @@
      Midnight  #121212   bg
      Ivory     #F8F6EE   text
      Lavender  #ACA0E8   primary — links, CTAs, reading marker
-     Peach     #F0956E   accent  — highlights, decorative
+     Lilac     #8E7FD1   accent  — highlights, decorative (primary-family shade)
   ─────────────────────────────────────────── */
   --color-bg:               #121212;
   --color-surface:          #0F0E0C;
@@ -20,8 +20,7 @@
   --color-primary:          #ACA0E8;
   --color-primary-muted:    rgba(172, 160, 232, 0.12);
 
-  --color-accent:           #F0956E;
-  --color-accent-muted:     rgba(240, 149, 110, 0.12);
+  --color-accent:           #8E7FD1;
   --color-accent-on-accent: #121212;
 
   /* Typography */
@@ -89,7 +88,7 @@
      Peach cream  #FFF3E8   bg
      Navy         #1A2A5E   text
      Cobalt       #2147CC   primary — links, CTAs, reading marker
-     Burnt orange #F5600A   accent  — highlights, decorative
+     Periwinkle   #5B6FD6   accent  — highlights, decorative (primary-family shade)
   ─────────────────────────────────────────── */
 [data-theme="light"] {
   --color-bg:               #FFF3E8;
@@ -104,8 +103,7 @@
   --color-primary:          #2147CC;
   --color-primary-muted:    rgba(33, 71, 204, 0.11);
 
-  --color-accent:           #F5600A;
-  --color-accent-muted:     rgba(245, 96, 10, 0.11);
+  --color-accent:           #5B6FD6;
   --color-accent-on-accent: #FFF3E8;
 }
 
