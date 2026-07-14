@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aditya Gujaran — Designer (Explore)</title>
+
+  <!-- Tokens from the existing design system -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Fonts (mirrors components/head.js, without analytics) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,1,0" rel="stylesheet" />
+
+  <style>
+    /* ─────────────────────────────────────────
+       EXPLORE PROTOTYPE
+       Fixed left rail + scroll-driven right column.
+       Grid overview  →  feature sequence.
+       Rail context syncs to the active project.
+       Reuses tokens from style.css only.
+    ───────────────────────────────────────── */
+
+    :root {
+      --rail-w: 354px;
+      --page-pad: 40px;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── LEFT RAIL ─────────────────────────── */
+    .rail {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: calc(var(--rail-w) + var(--page-pad) * 2);
+      padding: var(--page-pad);
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      pointer-events: none;               /* clicks pass through empty rail space */
+    }
+    .rail > * { pointer-events: auto; }
+
+    /* Persistent identity block — avatar + name, static on scroll */
+    .rail-identity { flex-shrink: 0; }
+    .rail-avatar {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--color-surface);
+    }
+    .rail-identity .name {
+      font-size: var(--text-lg);
+      line-height: var(--leading-normal);
+      font-weight: 500;
+      letter-spacing: var(--tracking-snug);
+      margin-top: var(--sp-8);
+    }
+    .rail-identity .name .role { color: var(--color-text-muted); }
+
+    /* Context zone that crossfades between intro caption + project */
+    .rail-context {
+      position: relative;
+      flex: 1;
+      margin-top: var(--sp-8);
+    }
+    .rail-layer {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      transition: opacity 480ms var(--ease), transform 480ms var(--ease);
+    }
+
+    /* Intro caption layer (top of page) */
+    .rail-intro { opacity: 1; }
+    .rail-intro .bio {
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      max-width: 34ch;
+    }
+    .rail-intro .tagline {
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      margin-top: var(--sp-8);
+    }
+    .rail-intro .tagline em { color: var(--color-primary); font-style: italic; }
+    .rail-intro .location {
+      font-size: var(--text-base);
+      color: var(--color-text-muted);
+      margin-top: var(--sp-8);
+    }
+
+    /* Project layer (on scroll) */
+    .rail-project {
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+    }
+    .rail-project .crumb {
+      font-size: var(--text-base);
+      letter-spacing: var(--tracking-normal);
+    }
+    .rail-project .crumb .dir { color: var(--color-text-muted); }
+    .rail-project .p-desc {
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      margin-top: var(--sp-8);
+      max-width: 32ch;
+    }
+    .rail-project .p-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      font-size: var(--text-base);
+      margin-top: var(--sp-8);
+      width: fit-content;
+      transition: gap 240ms var(--ease), color 240ms var(--ease);
+    }
+    .rail-project .p-cta:hover { gap: var(--sp-3); color: var(--color-primary); }
+    .rail-project .p-cta .arrow { transition: transform 240ms var(--ease); }
+    .rail-project .p-cta:hover .arrow { transform: translateX(3px); }
+
+    /* When scrolled into project mode */
+    .rail.is-project .rail-intro { opacity: 0; transform: translateY(-8px); pointer-events: none; }
+    .rail.is-project .rail-project { opacity: 1; transform: none; pointer-events: auto; }
+
+    /* ── NAV (rail bottom) ─────────────────── */
+    .rail-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: var(--sp-8);
+      flex-shrink: 0;
+    }
+    .rail-nav a {
+      position: relative;
+      font-size: var(--text-base);
+      letter-spacing: var(--tracking-wide);
+      color: var(--color-text);
+      width: fit-content;
+      transition: color 240ms var(--ease), opacity 240ms var(--ease);
+    }
+    .rail-nav a:hover { color: var(--color-primary); }
+    /* Active = current section: accent + a small leading dot (vertical list) */
+    .rail-nav a.is-active { color: var(--color-primary); }
+    .rail-nav a.is-active::before {
+      content: "";
+      position: absolute;
+      left: -14px; top: 50%;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      transform: translateY(-50%) scale(1);
+      transition: transform 240ms var(--ease);
+    }
+
+    /* ── RIGHT COLUMN ──────────────────────── */
+    .content {
+      margin-left: calc(var(--rail-w) + var(--page-pad) * 2);
+      padding: var(--page-pad) var(--page-pad) 0 0;
+      max-width: 760px;
+    }
+
+    /* Overview grid (Direction A) */
+    .overview {
+      min-height: calc(100vh - var(--page-pad) * 2);
+      display: flex;
+      align-items: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      width: 100%;
+    }
+    .tile {
+      position: relative;
+      aspect-ratio: 215 / 245;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--color-surface);
+      display: block;
+    }
+    .tile img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 700ms var(--ease), filter 500ms var(--ease);
+    }
+    .tile:hover img { transform: scale(1.05); }
+    .tile-label {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: var(--sp-4);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0));
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 320ms var(--ease), transform 320ms var(--ease);
+    }
+    .tile:hover .tile-label { opacity: 1; transform: none; }
+    .tile-cat {
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+    }
+    .tile-title {
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: #fff;
+    }
+
+    /* Feature sequence (Direction B) */
+    .feature {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: var(--sp-16) 0;
+    }
+    .feature-card {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 705 / 519;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--color-surface);
+    }
+    .feature-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .feature-card .fc-title {
+      position: absolute;
+      left: var(--sp-6); bottom: var(--sp-6);
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: var(--tracking-snug);
+      text-shadow: 0 2px 30px rgba(0,0,0,0.4);
+    }
+
+    /* Closing / end spacer so last project can center */
+    .tail { height: 30vh; }
+
+    /* ── THEME TOGGLE (fixed, bottom-right) ── */
+    .theme-btn {
+      position: fixed;
+      right: 24px; bottom: 24px;
+      z-index: 20;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text);
+      display: grid; place-items: center;
+      cursor: pointer;
+      transition: transform 240ms var(--ease);
+    }
+    .theme-btn:hover { transform: scale(1.08); }
+    .theme-btn .material-symbols-rounded { font-size: 22px; }
+
+    /* Per-project caption injected under each feature card (mobile only) */
+    .f-meta { display: none; }
+
+    /* ─────────────────────────────────────────
+       RESPONSIVE — phone (≤ 720px)
+       Rail collapses to a top header; nav persists as a
+       fixed top bar (Madhurima model).
+    ───────────────────────────────────────── */
+    @media (max-width: 720px) {
+      /* Rail collapses into a normal top header */
+      .rail {
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: var(--page-pad) var(--page-pad) 0;
+      }
+      .rail-avatar { width: 72px; height: 72px; }
+
+      /* No scroll crossfade on mobile — intro sits in normal flow */
+      .rail-context { position: static; flex: none; min-height: 0; margin-top: var(--sp-5); }
+      .rail-layer { position: static; inset: auto; transition: none; }
+      .rail-project { display: none; }
+      .rail.is-project .rail-intro { opacity: 1; transform: none; pointer-events: auto; }
+      .rail-intro .bio, .rail-intro .tagline, .rail-intro .location { margin-top: var(--sp-5); }
+
+      /* Content flows full width */
+      .content { margin-left: 0; padding: 0 var(--page-pad); max-width: none; }
+      .overview { min-height: 0; margin-top: var(--sp-10); align-items: stretch; }
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+      .feature { display: block; min-height: 0; padding: var(--sp-12) 0 0; }
+      .feature-card { aspect-ratio: 4 / 3; }
+      .feature-card .fc-title { font-size: var(--text-lg); left: var(--sp-4); bottom: var(--sp-4); }
+
+      /* Per-project caption replaces the desktop rail swap */
+      .f-meta { display: block; margin-top: var(--sp-4); }
+      .f-meta .fm-crumb { font-size: var(--text-sm); color: var(--color-text-muted); letter-spacing: var(--tracking-wide); }
+      .f-meta .fm-desc  { font-size: var(--text-base); line-height: var(--leading-body); margin-top: var(--sp-2); }
+      .f-meta .fm-cta   { display: inline-block; font-size: var(--text-base); color: var(--color-primary); margin-top: var(--sp-3); }
+
+      /* ── Persistent nav — fixed top bar, always visible (Madhurima) ── */
+      body { padding-top: 54px; }
+      .rail-nav {
+        position: fixed; left: 0; right: 0; top: 0; z-index: 25;
+        flex-direction: row; justify-content: space-around; gap: 0; margin: 0;
+        padding: calc(var(--sp-3) + env(safe-area-inset-top, 0px)) var(--sp-4) var(--sp-3);
+        background: color-mix(in srgb, var(--color-bg) 82%, transparent);
+        backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .rail-nav a { font-size: var(--text-sm); letter-spacing: var(--tracking-wide); }
+      /* In the horizontal bar, swap the leading dot for an underline */
+      .rail-nav a.is-active::before { display: none; }
+      .rail-nav a.is-active {
+        text-decoration: underline;
+        text-decoration-thickness: 1.5px;
+        text-underline-offset: 5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── LEFT RAIL ─────────────────────────── -->
+  <aside class="rail" id="rail">
+    <!-- Persistent identity — never changes on scroll -->
+    <div class="rail-identity">
+      <img class="rail-avatar" src="project%20content/intro.png" alt="Aditya Gujaran" />
+      <p class="name">Aditya Gujaran<br><span class="role">Product designer</span></p>
+    </div>
+
+    <div class="rail-context">
+      <!-- Intro caption (top of page) -->
+      <div class="rail-layer rail-intro">
+        <p class="bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p>
+        <p class="tagline">the <em>why</em> behind the what,<br>has never been more important</p>
+        <p class="location">Based in Lisbon</p>
+      </div>
+
+      <!-- Project context (on scroll) -->
+      <div class="rail-layer rail-project">
+        <p class="crumb"><span class="dir">/work/</span><span class="p-name">Bounce</span></p>
+        <p class="p-desc">Reducing cancellation rate to prove PMF</p>
+        <a class="p-cta" href="#" target="_self">View case-study <span class="arrow">→</span></a>
+      </div>
+    </div>
+
+    <nav class="rail-nav">
+      <a href="#" data-nav="work">WORK</a>
+      <a href="#" data-nav="side-quests">SIDE-QUESTS</a>
+      <a href="#" data-nav="gallery">GALLERY</a>
+      <a href="#" data-nav="about">ABOUT</a>
+    </nav>
+  </aside>
+
+  <!-- ── RIGHT COLUMN ──────────────────────── -->
+  <main class="content">
+
+    <!-- Overview grid (Direction A) -->
+    <section class="overview" id="overview">
+      <div class="grid">
+        <a class="tile" href="lockers-reducing-cancellation.html">
+          <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Bounce — Lockers PUDO" />
+          <span class="tile-label"><span class="tile-cat">Bounce · Work</span><span class="tile-title">Lockers PUDO</span></span>
+        </a>
+        <a class="tile" href="on-demand.html">
+          <img src="project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand — Unbabel" />
+          <span class="tile-label"><span class="tile-cat">Unbabel · Work</span><span class="tile-title">On-demand</span></span>
+        </a>
+        <a class="tile" href="decision-module.html">
+          <img src="project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module — Unbabel" />
+          <span class="tile-label"><span class="tile-cat">Unbabel · Work</span><span class="tile-title">Decision Module</span></span>
+        </a>
+        <a class="tile" href="https://adityagujaran.me/projects/trq-dad/" target="_blank" rel="noopener">
+          <img src="project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Cocoon" />
+          <span class="tile-label"><span class="tile-cat">Cocoon · Work</span><span class="tile-title">TRQ DAD</span></span>
+        </a>
+        <a class="tile" href="#">
+          <img src="project%20content/expereience.jpg" alt="Side-quests" />
+          <span class="tile-label"><span class="tile-cat">Side-quests</span><span class="tile-title">Experiments</span></span>
+        </a>
+        <a class="tile" href="#">
+          <img src="project%20content/about%20me.jpg" alt="Gallery" />
+          <span class="tile-label"><span class="tile-cat">Gallery</span><span class="tile-title">Moments</span></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Feature sequence (Direction B) — synced to rail -->
+    <section class="feature"
+             data-name="Bounce" data-dir="/work/"
+             data-desc="Reducing cancellation rate to prove PMF"
+             data-href="lockers-reducing-cancellation.html" data-section="work">
+      <div class="feature-card">
+        <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Bounce — Lockers PUDO" />
+        <span class="fc-title">Lockers PUDO</span>
+      </div>
+    </section>
+
+    <section class="feature"
+             data-name="On-demand" data-dir="/work/"
+             data-desc="Unifying two mental models into one coherent product"
+             data-href="on-demand.html" data-section="work">
+      <div class="feature-card">
+        <img src="project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand — Unbabel" />
+        <span class="fc-title">On-demand</span>
+      </div>
+    </section>
+
+    <section class="feature"
+             data-name="Decision-Module" data-dir="/work/"
+             data-desc="Making the machine's reasoning legible, not overwhelming"
+             data-href="decision-module.html" data-section="work">
+      <div class="feature-card">
+        <img src="project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module — Unbabel" />
+        <span class="fc-title">The Decision Module</span>
+      </div>
+    </section>
+
+    <section class="feature"
+             data-name="TRQ-DAD" data-dir="/work/"
+             data-desc="Stripping the insurance claim to its essentials"
+             data-href="https://adityagujaran.me/projects/trq-dad/" data-section="work">
+      <div class="feature-card">
+        <img src="project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Cocoon" />
+        <span class="fc-title">TRQ DAD</span>
+      </div>
+    </section>
+
+    <div class="tail"></div>
+  </main>
+
+  <!-- Theme toggle -->
+  <button class="theme-btn" id="themeBtn" aria-label="Toggle colour mode">
+    <span class="material-symbols-rounded" id="themeIcon">dark_mode</span>
+  </button>
+
+  <script>
+    (function () {
+      var rail    = document.getElementById('rail');
+      var overview= document.getElementById('overview');
+      var features= Array.prototype.slice.call(document.querySelectorAll('.feature'));
+      var navLinks= Array.prototype.slice.call(document.querySelectorAll('.rail-nav a'));
+
+      var rProjName = rail.querySelector('.p-name');
+      var rProjDir  = rail.querySelector('.crumb .dir');
+      var rProjDesc = rail.querySelector('.p-desc');
+      var rProjCta  = rail.querySelector('.p-cta');
+
+      function setActiveNav(section) {
+        navLinks.forEach(function (a) {
+          a.classList.toggle('is-active', section && a.dataset.nav === section);
+        });
+      }
+
+      function showIntro() {
+        rail.classList.remove('is-project');
+        setActiveNav(null);
+      }
+
+      function showProject(el) {
+        rProjName.textContent = el.dataset.name.replace(/-/g, ' ');
+        rProjDir.textContent  = el.dataset.dir;
+        rProjDesc.textContent = el.dataset.desc;
+        rProjCta.setAttribute('href', el.dataset.href);
+        rProjCta.setAttribute('target', /^https?:/.test(el.dataset.href) ? '_blank' : '_self');
+        rail.classList.add('is-project');
+        setActiveNav(el.dataset.section);
+      }
+
+      // Pick whichever feature is nearest viewport centre; if the grid
+      // dominates the viewport, fall back to the intro.
+      var io = new IntersectionObserver(function () { update(); }, {
+        threshold: [0, 0.25, 0.5, 0.75, 1]
+      });
+      features.forEach(function (f) { io.observe(f); });
+      io.observe(overview);
+
+      // Mobile: inject a per-project caption under each feature card
+      // (replaces the desktop rail crossfade, which doesn't apply on phones)
+      features.forEach(function (f) {
+        var href = f.dataset.href, ext = /^https?:/.test(href);
+        var meta = document.createElement('div');
+        meta.className = 'f-meta';
+        meta.innerHTML =
+          '<div class="fm-crumb">' + f.dataset.dir + f.dataset.name.replace(/-/g, ' ') + '</div>' +
+          '<div class="fm-desc">'  + f.dataset.desc + '</div>' +
+          '<a class="fm-cta" href="' + href + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '>View case-study →</a>';
+        f.appendChild(meta);
+      });
+
+      var ticking = false;
+      function onScroll() {
+        if (!ticking) { requestAnimationFrame(update); ticking = true; }
+      }
+      function update() {
+        ticking = false;
+        var mid = window.innerHeight / 2;
+
+        // If the grid overview still owns the viewport centre → intro.
+        var gr = overview.getBoundingClientRect();
+        if (gr.top <= mid && gr.bottom >= mid) { showIntro(); return; }
+        if (gr.bottom >= mid) { showIntro(); return; }   // still above the grid
+
+        // Otherwise choose the feature closest to centre.
+        var best = null, bestDist = Infinity;
+        features.forEach(function (f) {
+          var r = f.getBoundingClientRect();
+          var c = r.top + r.height / 2;
+          var d = Math.abs(c - mid);
+          if (d < bestDist) { bestDist = d; best = f; }
+        });
+        if (best) showProject(best);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      update();
+
+      // ── Theme toggle ──
+      var btn  = document.getElementById('themeBtn');
+      var icon = document.getElementById('themeIcon');
+      var root = document.documentElement;
+      function sync() {
+        var dark = root.getAttribute('data-theme') === 'dark';
+        icon.textContent = dark ? 'light_mode' : 'dark_mode';
+      }
+      btn.addEventListener('click', function () {
+        root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        sync();
+      });
+      sync();
+    })();
+  </script>
+</body>
+</html>
