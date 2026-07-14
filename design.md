@@ -59,7 +59,7 @@ Element:  <html data-theme="dark|light">
 
 | Token | Value | Usage |
 |---|---|---|
-| `--color-bg` | `#040404` | Page background |
+| `--color-bg` | `#121212` | Page background |
 | `--color-surface` | `#0F0E0C` | Primary surface (panels, cards) |
 | `--color-surface-2` | `#1A1916` | Secondary surface (elevated elements, tooltips) |
 | `--color-border` | `rgba(248, 246, 238, 0.08)` | Borders, dividers |
@@ -68,11 +68,10 @@ Element:  <html data-theme="dark|light">
 | `--color-text-subtle` | `rgba(248, 246, 238, 0.20)` | Tertiary text, placeholders, disabled |
 | `--color-primary` | `#ACA0E8` | Interactive: links, CTAs, active states |
 | `--color-primary-muted` | `rgba(172, 160, 232, 0.12)` | Primary backgrounds, soft highlights |
-| `--color-accent` | `#F0956E` | Decorative highlights, emphasis |
-| `--color-accent-muted` | `rgba(240, 149, 110, 0.12)` | Accent backgrounds |
-| `--color-accent-on-accent` | `#040404` | Text rendered on accent-colored backgrounds |
+| `--color-accent` | `#8E7FD1` | Decorative highlights, emphasis |
+| `--color-accent-on-accent` | `#121212` | Text rendered on accent-colored backgrounds |
 
-**Character:** Midnight near-black with warm ivory text. Soft lavender for interaction, peachy coral for decoration. The warmth in the palette prevents harshness.
+**Character:** Midnight near-black with warm ivory text. Soft lavender for interaction, a deeper lilac for decoration. The accent is a shade in the primary's own family — a quiet warm-cool sibling rather than a contrasting hue — which keeps the palette calm and unified.
 
 ---
 
@@ -89,11 +88,10 @@ Element:  <html data-theme="dark|light">
 | `--color-text-subtle` | `rgba(26, 42, 94, 0.20)` | Tertiary text, placeholders, disabled |
 | `--color-primary` | `#2147CC` | Interactive: links, CTAs, active states |
 | `--color-primary-muted` | `rgba(33, 71, 204, 0.11)` | Primary backgrounds, soft highlights |
-| `--color-accent` | `#F5600A` | Decorative highlights, emphasis |
-| `--color-accent-muted` | `rgba(245, 96, 10, 0.11)` | Accent backgrounds |
+| `--color-accent` | `#5B6FD6` | Decorative highlights, emphasis |
 | `--color-accent-on-accent` | `#FFF3E8` | Text rendered on accent-colored backgrounds |
 
-**Character:** Warm peach cream background with deep navy text. Cobalt blue for interaction, burnt orange for decoration. Cool text on warm surface creates a subtle tension that reads as refined.
+**Character:** Warm peach cream background with deep navy text. Cobalt blue for interaction, a lighter periwinkle for decoration. The accent is a tint in the primary's own family, not a contrasting hue — cool accents on the warm surface stay refined rather than loud.
 
 ---
 
@@ -113,7 +111,6 @@ These pairings must not be broken. Never use a token outside its intended semant
 | Link, button, interactive element | `--color-primary` |
 | Tinted background behind interactive | `--color-primary-muted` |
 | Decorative, non-interactive highlight | `--color-accent` |
-| Tinted background behind accent | `--color-accent-muted` |
 
 ---
 
@@ -445,9 +442,9 @@ This project targets **WCAG 2.1 AA**.
 
 ### Known Checks
 
-- `--color-text` (`#F8F6EE`) on `--color-bg` (`#040404`) — high contrast, passes AAA
-- `--color-primary` (`#ACA0E8`) on `--color-bg` (`#040404`) — verify interactive text contrast ≥4.5:1
-- `--color-text-muted` (45% ivory on `#040404`) — decorative/secondary; must still pass 3:1 where conveying information
+- `--color-text` (`#F8F6EE`) on `--color-bg` (`#121212`) — high contrast, passes AAA
+- `--color-primary` (`#ACA0E8`) on `--color-bg` (`#121212`) — verify interactive text contrast ≥4.5:1
+- `--color-text-muted` (45% ivory on `#121212`) — decorative/secondary; must still pass 3:1 where conveying information
 - Light mode: `--color-text` (`#1A2A5E`) on `--color-bg` (`#FFF3E8`) — passes
 
 ### Rules
@@ -483,4 +480,4 @@ These rules are strict. They exist because this is a small, deliberate codebase 
 
 ---
 
-*Last updated: 2026-04-11*
+*Last updated: 2026-07-14*
