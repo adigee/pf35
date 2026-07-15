@@ -23,7 +23,7 @@
 /* ── READING PROGRESS BAR ── */
 .cs-progress {
   position: fixed;
-  top: var(--nav-height);
+  top: 0;
   left: 0;
   height: 2px;
   width: 0%;
@@ -87,6 +87,28 @@
   margin: 0 auto;
   padding-left: var(--sp-8);
   padding-right: var(--sp-8);
+}
+
+/* ── TOP BACK LINK (single-column pages, no left rail) ── */
+.cs-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-10);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: color 120ms ease;
+}
+.cs-back-link:hover { color: var(--color-primary); }
+.cs-back-link svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 /* ── HERO ── */
@@ -338,7 +360,7 @@
 /* ── LEFT RAIL: back link + table of contents ── */
 .cs-rail {
   position: sticky;
-  top: calc(var(--nav-height) + var(--sp-10));
+  top: var(--sp-10);
   align-self: start;
   height: max-content;
 }
@@ -442,9 +464,9 @@
   color: var(--color-text);
 }
 
-/* Anchor offset so sections clear the sticky nav on jump */
+/* Anchor offset so sections clear the top edge on jump */
 .cs-content .cs-section {
-  scroll-margin-top: calc(var(--nav-height) + var(--sp-8));
+  scroll-margin-top: var(--sp-8);
 }
 /* First section sits right under the meta block */
 .cs-content .cs-section:first-of-type {
