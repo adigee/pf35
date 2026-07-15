@@ -183,12 +183,13 @@
 }
 
 .cs-section-label {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: var(--tracking-widest);
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin-bottom: var(--sp-4);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: var(--leading-normal);
+  letter-spacing: 0;
+  color: var(--color-text);
+  margin-bottom: var(--sp-6);
 }
 
 .cs-h2 {
@@ -202,12 +203,12 @@
 
 .cs-h3 {
   font-family: var(--font-display);
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   font-weight: 600;
   letter-spacing: 0;
-  line-height: var(--leading-normal);
-  margin-top: var(--sp-12);
-  margin-bottom: var(--sp-4);
+  line-height: var(--leading-body);
+  margin-top: var(--sp-10);
+  margin-bottom: var(--sp-3);
 }
 
 .cs-body {
