@@ -214,47 +214,10 @@ function handlePanels() {
 
 /* ─────────────────────────────────────────
    THEME TOGGLE
-   Priority: localStorage > prefers-color-scheme
+   The floating light/dark toggle is a shared chrome
+   component — see components/theme.js. Kept out of
+   main.js so it also runs on pages that don't load it.
 ───────────────────────────────────────── */
-(function () {
-  const html  = document.documentElement;
-  const btn   = document.getElementById('theme-toggle');
-  const wrap  = document.getElementById('theme-toggle-wrap');
-  const label = document.getElementById('toggle-label');
-
-  if (!btn || !wrap || !label) return;
-
-  let labelTimer = null;
-  const canHover = window.matchMedia('(hover: hover)').matches;
-
-  function showLabel() {
-    label.classList.remove('hidden');
-    clearTimeout(labelTimer);
-    labelTimer = setTimeout(function () {
-      label.classList.add('hidden');
-    }, 5000);
-  }
-
-  function applyTheme(theme) {
-    html.setAttribute('data-theme', theme);
-    btn.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
-    label.textContent = theme === 'dark' ? 'Dark' : 'Light';
-    localStorage.setItem('theme', theme);
-    showLabel();
-  }
-
-  const saved     = localStorage.getItem('theme');
-  const preferred = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-  applyTheme(saved || preferred);
-
-  btn.addEventListener('click', function () {
-    applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-  });
-
-  if (canHover) {
-    wrap.addEventListener('mouseenter', showLabel);
-  }
-})();
 
 /* ─────────────────────────────────────────
    CASE STUDY PAGE TRANSITION
