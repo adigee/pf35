@@ -57,6 +57,49 @@
       bindExit(document.getElementById('cs-back'));
       bindExit(document.getElementById('cs-footer-back'));
     })();
+
+    /* ── TABLE-OF-CONTENTS SCROLL-SPY ── */
+    (function () {
+      var links = [].slice.call(document.querySelectorAll('.cs-toc-link'));
+      if (!links.length) return;
+
+      /* Pair each TOC link with the section it points to */
+      var items = links
+        .map(function (link) {
+          var id = (link.getAttribute('href') || '').replace(/^#/, '');
+          var section = id && document.getElementById(id);
+          return section ? { link: link, section: section } : null;
+        })
+        .filter(Boolean);
+      if (!items.length) return;
+
+      var activeMark; // marker line = 30% down the viewport
+      var ticking = false;
+
+      function update() {
+        ticking = false;
+        var mark = window.innerHeight * 0.3;
+        var activeIndex = 0;
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].section.getBoundingClientRect().top <= mark) {
+            activeIndex = i;
+          }
+        }
+        if (activeIndex === activeMark) return;
+        activeMark = activeIndex;
+        items.forEach(function (item, i) {
+          item.link.classList.toggle('is-active', i === activeIndex);
+        });
+      }
+
+      window.addEventListener('scroll', function () {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(update);
+      }, { passive: true });
+      window.addEventListener('resize', update, { passive: true });
+      update();
+    })();
   }
 
   if (document.readyState === 'loading') {
