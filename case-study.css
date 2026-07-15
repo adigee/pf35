@@ -343,20 +343,16 @@
   height: max-content;
 }
 
+/* Type comes from .b-label-link — this rule is layout only. */
 .cs-rail-back {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  font-size: var(--text-sm);
-  color: var(--color-text);
-  text-decoration: none;
   margin-bottom: var(--sp-12);
-  transition: color 120ms ease;
 }
-.cs-rail-back:hover { color: var(--color-primary); }
 .cs-rail-back svg {
-  width: 16px;
-  height: 16px;
+  width: 13px;
+  height: 13px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.5;
@@ -369,14 +365,10 @@
   flex-direction: column;
   gap: var(--sp-4);
 }
+/* Type comes from .b-label-link — this rule is layout + active state only. */
 .cs-toc-link {
-  font-size: var(--text-sm);
   line-height: 1.2;
-  color: var(--color-text-subtle);
-  text-decoration: none;
-  transition: color 120ms ease;
 }
-.cs-toc-link:hover { color: var(--color-text); }
 .cs-toc-link.is-active { color: var(--color-text); }
 
 /* Smooth anchor jumps on the TOC (only on these pages) */

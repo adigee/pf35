@@ -233,8 +233,16 @@ These classes encapsulate the full typographic treatment. Use these — do not r
 | `.b-body-small` | `--text-sm` | 300 | `--leading-medium` | — | — | Secondary content |
 | `.b-body-small-impact` | `--text-sm` | 700 | `--leading-medium` | — | — | Small but prominent |
 | `.b-link` | `--text-xs` | 400 | — | `--tracking-wide` | uppercase | Primary color |
+| `.b-label-link` | `--text-xs` | 500 | — | `--tracking-wider` | uppercase | Muted color → primary on hover. Quiet navigational/utility links |
 | `.b-tag` | `--text-2xs` | 400 | — | `--tracking-wide` | uppercase | Muted, bordered |
 | `.b-aside` | `--text-sm` | 400 | — | — | — | Italic, muted |
+
+**Choosing a link style — two distinct roles:**
+
+- **`.b-link`** — an *inline call-to-action* link. Coloured (`--color-primary`) so it stands out within body copy. Use for "View project", external references, and other links meant to draw the eye.
+- **`.b-label-link`** — a *quiet navigational/utility* link. Reads as a label, not prose: uppercase, letter-spaced, muted, and only brightens to primary on hover. Use for back links, tables of contents, in-page nav, and any secondary wayfinding.
+
+**Rule:** All case-study wayfinding links — the rail "Back to work" link (`.cs-rail-back`) and every table-of-contents link (`.cs-toc-link`) — must carry `.b-label-link`. These links must **not** be styled in body type (`--text-sm`, weight 300); doing so makes them read as content rather than navigation and gives them too much visual weight. Component rules (`.cs-rail-back`, `.cs-toc-link`) carry layout only (flex, gaps, spacing, active state); all type comes from `.b-label-link`. The footer "All work" link is the exception — it is the [Panel CTA](#panel-cta-link-1) component, a deliberate prominent CTA, not a label link.
 
 ---
 
@@ -480,4 +488,4 @@ These rules are strict. They exist because this is a small, deliberate codebase 
 
 ---
 
-*Last updated: 2026-07-14*
+*Last updated: 2026-07-15*
