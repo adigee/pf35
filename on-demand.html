@@ -7,7 +7,6 @@
 
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="case-study.css" />
-  <script src="components/nav.js"></script>
   <script src="components/head.js"></script>
 </head>
 
@@ -16,10 +15,15 @@
   <!-- Reading progress bar -->
   <div class="cs-progress" id="cs-progress" aria-hidden="true"></div>
 
-  <!-- NAV — injected by components/nav.js -->
-  <div data-component="nav"></div>
-
   <main class="cs-main" id="cs-main">
+
+    <!-- ── BACK LINK ── -->
+    <div class="cs-container">
+      <a href="index.html" class="cs-back-link" id="cs-back">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><line x1="13" y1="8" x2="3" y2="8"/><polyline points="7 4 3 8 7 12"/></svg>
+        Back to work
+      </a>
+    </div>
 
     <!-- ── HERO ── -->
     <div class="cs-container">
