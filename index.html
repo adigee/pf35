@@ -4,337 +4,403 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aditya Gujaran — Designer</title>
+  <meta name="description" content="Aditya Gujaran — product designer in Lisbon. Selected work in UX research, interaction design, and 0→1 product." />
+
+  <!-- Apply saved theme before first paint (avoids a flash of the wrong mode) -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme') ||
+                (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
 
   <link rel="stylesheet" href="style.css" />
-  <script src="components/nav.js"></script>
+  <!-- Shared fonts + analytics (Umami, Vercel) + llms discovery link -->
   <script src="components/head.js"></script>
+
+  <style>
+    /* ─────────────────────────────────────────
+       HOMEPAGE
+       Fixed left rail + scroll-driven right column.
+       Grid overview  →  feature sequence.
+       The rail is fully static — nothing in it changes
+       as the right column scrolls.
+       Reuses tokens from style.css only.
+    ───────────────────────────────────────── */
+
+    :root {
+      --rail-w: 354px;
+      --page-pad: 40px;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── LEFT RAIL (static) ────────────────── */
+    .rail {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: calc(var(--rail-w) + var(--page-pad) * 2);
+      padding: var(--page-pad);
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      pointer-events: none;               /* clicks pass through empty rail space */
+    }
+    .rail > * { pointer-events: auto; }
+
+    /* Persistent identity block — avatar + name */
+    .rail-identity { flex-shrink: 0; }
+    .rail-avatar {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--color-surface);
+    }
+    .rail-identity .name {
+      font-size: var(--text-lg);
+      line-height: var(--leading-normal);
+      font-weight: 500;
+      letter-spacing: var(--tracking-snug);
+      margin-top: var(--sp-8);
+    }
+    .rail-identity .name .role { color: var(--color-text-muted); }
+
+    /* Intro caption — static, fills the space above the nav */
+    .rail-context {
+      flex: 1;
+      margin-top: var(--sp-8);
+    }
+    .rail-intro .bio {
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      max-width: 34ch;
+    }
+    .rail-intro .tagline {
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      margin-top: var(--sp-8);
+    }
+    .rail-intro .tagline em { color: var(--color-primary); font-style: italic; }
+    .rail-intro .location {
+      font-size: var(--text-base);
+      color: var(--color-text-muted);
+      margin-top: var(--sp-8);
+    }
+
+    /* ── NAV (rail bottom) ─────────────────── */
+    .rail-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: var(--sp-8);
+      flex-shrink: 0;
+    }
+    .rail-nav a {
+      position: relative;
+      font-size: var(--text-base);
+      letter-spacing: var(--tracking-wide);
+      color: var(--color-text);
+      width: fit-content;
+      transition: color 240ms var(--ease);
+    }
+    .rail-nav a:hover { color: var(--color-primary); }
+
+    /* Resume links — static, sit under the nav */
+    .rail-resume {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      margin-top: var(--sp-5);
+      flex-shrink: 0;
+    }
+    .rail-resume .rr-label {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      letter-spacing: var(--tracking-wide);
+    }
+    .rail-resume .rr-link {
+      display: inline-flex;
+      align-items: center;
+      font-size: var(--text-sm);
+      letter-spacing: var(--tracking-wide);
+      color: var(--color-text);
+      transition: color 240ms var(--ease);
+    }
+    .rail-resume .rr-link:hover { color: var(--color-primary); }
+    .rail-resume .rr-icon { font-size: 16px; }
+
+    /* ── RIGHT COLUMN ──────────────────────── */
+    .content {
+      margin-left: calc(var(--rail-w) + var(--page-pad) * 2);
+      padding: var(--page-pad) var(--page-pad) 0 0;
+      max-width: 760px;
+    }
+
+    /* Overview grid */
+    .overview {
+      min-height: calc(100vh - var(--page-pad) * 2);
+      display: flex;
+      align-items: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+      width: 100%;
+    }
+    .tile {
+      position: relative;
+      aspect-ratio: 215 / 245;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--color-surface);
+      display: block;
+    }
+    .tile img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 700ms var(--ease), filter 500ms var(--ease);
+    }
+    .tile:hover img { transform: scale(1.05); }
+    .tile-label {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: var(--sp-4);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0));
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 320ms var(--ease), transform 320ms var(--ease);
+    }
+    .tile:hover .tile-label { opacity: 1; transform: none; }
+    .tile-cat {
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+    }
+    .tile-title {
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: #fff;
+    }
+
+    /* Feature sequence */
+    .feature {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: var(--sp-16) 0;
+    }
+    .feature-card {
+      position: relative;
+      display: block;
+      width: 100%;
+      aspect-ratio: 705 / 519;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--color-surface);
+    }
+    .feature-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 700ms var(--ease);
+    }
+    .feature-card:hover img { transform: scale(1.03); }
+    .feature-card .fc-title {
+      position: absolute;
+      left: var(--sp-6); bottom: var(--sp-6);
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: var(--tracking-snug);
+      text-shadow: 0 2px 30px rgba(0,0,0,0.4);
+    }
+
+    /* Closing spacer so the last project can center */
+    .tail { height: 30vh; }
+
+    /* ── THEME TOGGLE (fixed, bottom-right) ── */
+    .theme-btn {
+      position: fixed;
+      right: 24px; bottom: 24px;
+      z-index: 20;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text);
+      display: grid; place-items: center;
+      cursor: pointer;
+      transition: transform 240ms var(--ease);
+    }
+    .theme-btn:hover { transform: scale(1.08); }
+    .theme-btn .material-symbols-rounded { font-size: 22px; }
+
+    /* ─────────────────────────────────────────
+       RESPONSIVE — phone (≤ 720px)
+       Rail collapses to a top header; nav persists as a
+       fixed translucent top bar.
+    ───────────────────────────────────────── */
+    @media (max-width: 720px) {
+      /* Rail collapses into a normal top header */
+      .rail {
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: var(--page-pad) var(--page-pad) 0;
+      }
+      .rail-avatar { width: 72px; height: 72px; }
+
+      .rail-context { flex: none; min-height: 0; margin-top: var(--sp-5); }
+      .rail-intro .bio, .rail-intro .tagline, .rail-intro .location { margin-top: var(--sp-5); }
+
+      /* Content flows full width */
+      .content { margin-left: 0; padding: 0 var(--page-pad); max-width: none; }
+      .overview { min-height: 0; margin-top: var(--sp-10); align-items: stretch; }
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+      .feature { display: block; min-height: 0; padding: var(--sp-12) 0 0; }
+      .feature-card { aspect-ratio: 4 / 3; }
+      .feature-card .fc-title { font-size: var(--text-lg); left: var(--sp-4); bottom: var(--sp-4); }
+
+      /* ── Persistent nav — fixed top bar, always visible ── */
+      body { padding-top: 54px; }
+      .rail-nav {
+        position: fixed; left: 0; right: 0; top: 0; z-index: 25;
+        flex-direction: row; justify-content: space-around; gap: 0; margin: 0;
+        padding: calc(var(--sp-3) + env(safe-area-inset-top, 0px)) var(--sp-4) var(--sp-3);
+        background: color-mix(in srgb, var(--color-bg) 82%, transparent);
+        backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .rail-nav a { font-size: var(--text-sm); letter-spacing: var(--tracking-wide); }
+    }
+  </style>
 </head>
 
 <body>
 
-  <div class="reading-marker" aria-hidden="true"></div>
-
-  <!-- NAV — injected by components/nav.js -->
-  <div data-component="nav"></div>
-
-  <main class="page">
-    <div class="page-left">
-
-      <!-- ── MOBILE INTRO VISUAL (hidden on desktop, leads above text) ── -->
-      <div class="mobile-visual mobile-visual--img" aria-hidden="true">
-        <img src="project%20content/intro.png" alt="Aditya Gujaran" />
-      </div>
-
-      <!-- ── MOBILE HERO (hidden on desktop) ── -->
-      <div class="mobile-hero" aria-hidden="false">
-        <h4 class="b-body" style="font-size: var(--text-lg); line-height: var(--leading-normal);">Aditya Gujaran<br><span style="color: var(--color-primary);">Product designer</span></h4>
-        <p class="b-body">
-          Versatile designer with a practice that focuses on rigorous UX research to enable high velocity product delivery.
-        </p>
-        <p class="b-tz"><span class="material-symbols-rounded b-tz-icon">location_on</span> GMT+1</p>
-      </div>
-
-      <!-- ── 1. INTRO (desktop only) ── -->
-      <div class="block-text block-text--intro" id="intro">
-        <h4 class="b-body" style="font-size: var(--text-lg); line-height: var(--leading-normal);">Aditya Gujaran<br><span style="color: var(--color-primary);">Product designer</span></h4>
-        <p class="b-body">
-          Versatile designer with a practice that focuses on rigorous UX research to enable high velocity product delivery.
-        </p>
-        <p class="b-tz"><span class="material-symbols-rounded b-tz-icon">location_on</span> GMT+1</p>
-      </div>
-      <aside class="panel panel--intro" aria-hidden="true">
-        <img class="panel-img" src="project%20content/intro.png" alt="Aditya Gujaran" />
-      </aside>
-
-      <!-- ── 2. LOCKERS PUDO (BOUNCE) ── -->
-      <div class="mobile-visual mobile-visual--img" aria-hidden="true">
-        <div class="frame-cycle">
-          <div class="frame-nums" aria-hidden="true">
-            <span class="frame-num" data-count-from="65" data-count-to="45">65</span>
-          </div>
-          <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/cancel-frame-1.png" alt="Cancellation rate reducing across design iterations" />
-          <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/cancel-frame-2.png" alt="" />
-          <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/cancel-frame-3.png" alt="" />
-          <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/cancel-frame-4.png" alt="" />
-        </div>
-      </div>
-      <div class="block-text" id="bounce">
-        <h3 class="b-title">Lockers PUDO</h3>
-        <p class="b-body">
-          Reducing the cancellation rate down to prove product market fit for a new use-case at Bounce
-        </p>
-        <dl class="b-meta">
-          <div class="b-meta-item">
-            <dt class="b-meta-label">Business Objective</dt>
-            <dd class="b-meta-value">Product market fit</dd>
-          </div>
-          <div class="b-meta-item">
-            <dt class="b-meta-label">Project Type</dt>
-            <dd class="b-meta-value">Build new product</dd>
-          </div>
-          <div class="b-meta-item">
-            <dt class="b-meta-label">My Role</dt>
-            <dd class="b-meta-value">Sr. Product designer</dd>
-          </div>
-          <div class="b-meta-item">
-            <dt class="b-meta-label">Skills Highlight</dt>
-            <dd class="b-meta-value">Interaction design, Continuous discovery</dd>
-          </div>
-        </dl>
-        <a href="lockers-reducing-cancellation.html" class="panel-cta cs-link mobile-cta">
-          View project
-          <span class="panel-cta-circle" aria-hidden="true">
-            <svg viewBox="0 0 16 16"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9 4 13 8 9 12"/></svg>
-          </span>
-        </a>
-      </div>
-      <aside class="panel panel--bounce" aria-hidden="true">
-        <div class="frame-cycle panel-img">
-          <div class="frame-nums" aria-hidden="true">
-            <span class="frame-num" data-count-from="65" data-count-to="45">65</span>
-          </div>
-          <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/cancel-frame-1.png" alt="Cancellation rate reducing across design iterations" />
-          <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/cancel-frame-2.png" alt="" />
-          <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/cancel-frame-3.png" alt="" />
-          <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/cancel-frame-4.png" alt="" />
-        </div>
-        <a href="lockers-reducing-cancellation.html" class="panel-cta cs-link">
-          View project
-          <span class="panel-cta-circle" aria-hidden="true">
-            <svg viewBox="0 0 16 16"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9 4 13 8 9 12"/></svg>
-          </span>
-        </a>
-      </aside>
-
-      <!-- ── 3. ON-DEMAND (UNBABEL) ── -->
-      <div class="mobile-visual mobile-visual--img" aria-hidden="true">
-        <img src="project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand — Unbabel product interface" loading="lazy" />
-      </div>
-      <div class="block-text" id="ondemand">
-        <h3 class="b-title">On-demand</h3>
-        <p class="b-body">
-          Following Unbabel's acquisition of Lingo24, the platform needed
-          to support Localisation — a use-case it had never handled before.
-          The challenge was building comprehensive workflows for a migrating
-          customer base, without disrupting the existing one. Two different
-          mental models of the same service, unified into one coherent product.
-        </p>
-        <dl class="b-meta">
-          <div class="b-meta-item">
-            <dt class="b-meta-label">Business Objective</dt>
-            <dd class="b-meta-value">Acquire new revenue</dd>
-          </div>
-          <div class="b-meta-item">
-            <dt class="b-meta-label">Project Type</dt>
-            <dd class="b-meta-value">Refactor existing feature</dd>
-          </div>
-          <div class="b-meta-item">
-            <dt class="b-meta-label">My Role</dt>
-            <dd class="b-meta-value">Sr. Product designer</dd>
-          </div>
-          <div class="b-meta-item">
-            <dt class="b-meta-label">Skills Highlight</dt>
-            <dd class="b-meta-value">Visual design, Systems thinking</dd>
-          </div>
-        </dl>
-        <a href="on-demand.html" class="panel-cta cs-link mobile-cta">
-          View project
-          <span class="panel-cta-circle" aria-hidden="true">
-            <svg viewBox="0 0 16 16"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9 4 13 8 9 12"/></svg>
-          </span>
-        </a>
-      </div>
-      <aside class="panel panel--unbabel" aria-hidden="true">
-        <img class="panel-img" src="project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand — Unbabel product interface" loading="lazy" />
-        <a href="on-demand.html" class="panel-cta cs-link">
-          View project
-          <span class="panel-cta-circle" aria-hidden="true">
-            <svg viewBox="0 0 16 16"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9 4 13 8 9 12"/></svg>
-          </span>
-        </a>
-      </aside>
-
-      <!-- ── 3. DECISION MODULE (UNBABEL) ── -->
-      <div class="mobile-visual mobile-visual--img" aria-hidden="true">
-        <img src="project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module — Unbabel pipeline editor" loading="lazy" />
-      </div>
-      <div class="block-text" id="decision">
-        <h3 class="b-title">The Decision<br>Module</h3>
-        <p class="b-body">
-          Operating Unbabel's AI quality estimation model required constant
-          input from specialist engineers — a bottleneck at scale. The brief
-          was to design an interface that gave linguists on the ops team the
-          capability and confidence to run the model independently. Making
-          the machine's reasoning legible, without making it overwhelming.
-        </p>
-        <dl class="b-meta">
-          <div class="b-meta-item">
-            <dt class="b-meta-label">Business Objective</dt>
-            <dd class="b-meta-value">Scale ops efficiency</dd>
-          </div>
-          <div class="b-meta-item">
-            <dt class="b-meta-label">Project Type</dt>
-            <dd class="b-meta-value">New internal tool</dd>
-          </div>
-          <div class="b-meta-item">
-            <dt class="b-meta-label">My Role</dt>
-            <dd class="b-meta-value">Sr. Product designer</dd>
-          </div>
-          <div class="b-meta-item">
-            <dt class="b-meta-label">Skills Highlight</dt>
-            <dd class="b-meta-value">Interaction design, AI / ML</dd>
-          </div>
-        </dl>
-        <a href="decision-module.html" class="panel-cta cs-link mobile-cta">
-          View project
-          <span class="panel-cta-circle" aria-hidden="true">
-            <svg viewBox="0 0 16 16"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9 4 13 8 9 12"/></svg>
-          </span>
-        </a>
-      </div>
-      <aside class="panel panel--decision" aria-hidden="true">
-        <img class="panel-img" src="project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module — Unbabel pipeline editor" loading="lazy" />
-        <a href="decision-module.html" class="panel-cta cs-link">
-          View project
-          <span class="panel-cta-circle" aria-hidden="true">
-            <svg viewBox="0 0 16 16"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9 4 13 8 9 12"/></svg>
-          </span>
-        </a>
-      </aside>
-
-      <!-- ── 4. TRQ DAD (COCOON) ── -->
-      <div class="mobile-visual mobile-visual--img" aria-hidden="true">
-        <img src="project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Cocoon Experience" loading="lazy" />
-      </div>
-      <div class="block-text" id="trqdad">
-        <h3 class="b-title">TRQ DAD</h3>
-        <p class="b-body">
-          Customers filing an insurance claim after a car accident face
-          verbose, technically-worded forms — at the worst possible moment.
-          The solution was a mobile chatbot that stripped the process to its
-          essentials: every word earns its place, every step removes friction.
-          A service design challenge as much as an interaction one.
-        </p>
-        <dl class="b-meta">
-          <div class="b-meta-item">
-            <dt class="b-meta-label">Business Objective</dt>
-            <dd class="b-meta-value">Improve claim conversion</dd>
-          </div>
-          <div class="b-meta-item">
-            <dt class="b-meta-label">Project Type</dt>
-            <dd class="b-meta-value">New product</dd>
-          </div>
-          <div class="b-meta-item">
-            <dt class="b-meta-label">My Role</dt>
-            <dd class="b-meta-value">Sr. Product designer</dd>
-          </div>
-          <div class="b-meta-item">
-            <dt class="b-meta-label">Skills Highlight</dt>
-            <dd class="b-meta-value">Service design, Conversational UI</dd>
-          </div>
-        </dl>
-        <a href="https://adityagujaran.me/projects/trq-dad/" class="panel-cta mobile-cta" target="_blank" rel="noopener">
-          View project
-          <span class="panel-cta-circle" aria-hidden="true">
-            <svg viewBox="0 0 16 16"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9 4 13 8 9 12"/></svg>
-          </span>
-        </a>
-      </div>
-      <aside class="panel panel--trq" aria-hidden="true">
-        <img class="panel-img" src="project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Cocoon Experience" loading="lazy" />
-        <a href="https://adityagujaran.me/projects/trq-dad/" class="panel-cta" target="_blank" rel="noopener">
-          View project
-          <span class="panel-cta-circle" aria-hidden="true">
-            <svg viewBox="0 0 16 16"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9 4 13 8 9 12"/></svg>
-          </span>
-        </a>
-      </aside>
-
-      <!-- ── 7. EXPERIENCE TIMELINE ── -->
-      <div class="mobile-visual mobile-visual--img" aria-hidden="true">
-        <img src="project%20content/expereience.jpg" alt="Experience" loading="lazy" />
-      </div>
-      <div class="block-text" id="experience">
-        <p class="b-label">Experience</p>
-        <h3 class="b-title">8+ Years of<br>Design Practice</h3>
-        <div class="b-timeline"></div>
-      </div>
-      <aside class="panel panel--experience" aria-hidden="true">
-        <img class="panel-img" src="project%20content/expereience.jpg" alt="Experience" loading="lazy" />
-      </aside>
-
-      <!-- ── 8. ABOUT / SKILLS ── -->
-      <div class="mobile-visual mobile-visual--img" aria-hidden="true">
-        <img src="project%20content/about%20me.jpg" alt="About" loading="lazy" />
-      </div>
-      <div class="block-text" id="about">
-        <p class="b-label">About</p>
-        <h3 class="b-title">Business-oriented<br>design practice</h3>
-        <p class="b-body">
-          My work lives at the overlap of rigorous research, clear strategic
-          thinking, and considered craft. I have a particular fondness for
-          the 0→1 problem — the moment before the product exists.
-        </p>
-        <p class="b-body">
-          I believe good design is argued for, not just executed. The best
-          outcomes I have been part of came from designers who could speak
-          business and researchers who could speak design.
-        </p>
-        <p class="b-aside">I like clean information design, lemon cheesecakes and stormy views.</p>
-        <div class="b-skills"></div>
-      </div>
-      <aside class="panel panel--skills" aria-hidden="true">
-        <img class="panel-img" src="project%20content/about%20me.jpg" alt="About" loading="lazy" />
-      </aside>
-
-      <!-- ── 9. CONTACT ── -->
-      <div class="block-text" id="contact">
-        <p class="b-label">Contact</p>
-        <h3 class="b-title">Let's work on<br>something worth<br>making.</h3>
-        <p class="b-body">
-          Currently based in Lisbon, available for select collaborations.
-          Requests should come with a few months in advance.
-        </p>
-        <div class="b-tags" style="margin-top: var(--sp-6);">
-          <a href="https://linkedin.com/in/agujaran/" class="b-tag" target="_blank" rel="noopener" style="text-decoration: none;">LinkedIn</a>
-          <a href="https://cal.com/adi-g/30min" class="b-tag" target="_blank" rel="noopener" style="text-decoration: none;">Book a call</a>
-        </div>
-        <div class="email-copy-wrap" style="margin-top: var(--sp-4);">
-          <button class="email-copy-pill" data-copy="aditya.gujaran@gmail.com">aditya.gujaran@gmail.com</button>
-          <p class="email-copy-hint">Click to copy</p>
-        </div>
-      </div>
-      <aside class="panel panel--contact" aria-hidden="true">
-        <div class="p-inner">
-          <p class="p-label">Contact</p>
-          <h2 class="p-display">Let's work<br>together.</h3>
-          <button class="p-email email-copy-pill" data-copy="aditya.gujaran@gmail.com">aditya.gujaran@gmail.com</button>
-          <p class="p-copy-hint">Click to copy</p>
-          <div class="p-contact-links">
-            <a href="https://linkedin.com/in/agujaran/" target="_blank" rel="noopener">LinkedIn</a>
-            <a href="https://cal.com/adi-g/30min" target="_blank" rel="noopener">Book a call</a>
-          </div>
-        </div>
-      </aside>
-
-      <footer class="site-footer">
-        <div class="theme-toggle-wrap" id="theme-toggle-wrap">
-          <button class="theme-toggle" id="theme-toggle" role="switch" aria-label="Toggle colour mode">
-            <span class="toggle-knob"></span>
-          </button>
-          <span class="toggle-label" id="toggle-label"></span>
-        </div>
-        <p class="site-footer-copy">© 2026 Aditya Gujaran — Lisbon, Portugal</p>
-      </footer>
-
+  <!-- ── LEFT RAIL (static) ─────────────────── -->
+  <aside class="rail" id="rail">
+    <div class="rail-identity" id="top">
+      <img class="rail-avatar" src="project%20content/intro.png" alt="Aditya Gujaran" />
+      <p class="name">Aditya Gujaran<br><span class="role">Product designer</span></p>
     </div>
 
-    <!-- Right grid column (empty — fixed panels overlay this space) -->
-    <div class="page-right" aria-hidden="true"></div>
+    <div class="rail-context">
+      <div class="rail-intro">
+        <p class="bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p>
+        <p class="tagline">the <em>why</em> behind the what,<br>has never been more important</p>
+        <p class="location">Based in Lisbon</p>
+      </div>
+    </div>
+
+    <nav class="rail-nav">
+      <a href="#overview">WORK</a>
+      <a href="#top">ABOUT</a>
+    </nav>
+
+    <div class="rail-resume">
+      <span class="rr-label">Resume</span>
+      <a class="rr-link" href="https://drive.google.com/file/d/1FJDZI8xlQgeWfl7zgbS3LjaTYYZJbWh3/view" target="_blank" rel="noopener">PDF&thinsp;<span class="material-symbols-rounded rr-icon">download</span></a>
+      <a class="rr-link" href="resume.md" target="_blank" rel="noopener">MD&thinsp;<span class="material-symbols-rounded rr-icon">download</span></a>
+    </div>
+  </aside>
+
+  <!-- ── RIGHT COLUMN ──────────────────────── -->
+  <main class="content">
+
+    <!-- Overview grid -->
+    <section class="overview" id="overview">
+      <div class="grid">
+        <a class="tile" href="lockers-reducing-cancellation.html">
+          <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Bounce — Lockers PUDO" />
+          <span class="tile-label"><span class="tile-cat">Bounce · Work</span><span class="tile-title">Lockers PUDO</span></span>
+        </a>
+        <a class="tile" href="on-demand.html">
+          <img src="project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand — Unbabel" />
+          <span class="tile-label"><span class="tile-cat">Unbabel · Work</span><span class="tile-title">On-demand</span></span>
+        </a>
+        <a class="tile" href="decision-module.html">
+          <img src="project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module — Unbabel" />
+          <span class="tile-label"><span class="tile-cat">Unbabel · Work</span><span class="tile-title">Decision Module</span></span>
+        </a>
+        <a class="tile" href="https://adityagujaran.me/projects/trq-dad/" target="_blank" rel="noopener">
+          <img src="project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Cocoon" />
+          <span class="tile-label"><span class="tile-cat">Cocoon · Work</span><span class="tile-title">TRQ DAD</span></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Feature sequence -->
+    <section class="feature">
+      <a class="feature-card" href="lockers-reducing-cancellation.html">
+        <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Bounce — Lockers PUDO" />
+        <span class="fc-title">Lockers PUDO</span>
+      </a>
+    </section>
+
+    <section class="feature">
+      <a class="feature-card" href="on-demand.html">
+        <img src="project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand — Unbabel" />
+        <span class="fc-title">On-demand</span>
+      </a>
+    </section>
+
+    <section class="feature">
+      <a class="feature-card" href="decision-module.html">
+        <img src="project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module — Unbabel" />
+        <span class="fc-title">The Decision Module</span>
+      </a>
+    </section>
+
+    <section class="feature">
+      <a class="feature-card" href="https://adityagujaran.me/projects/trq-dad/" target="_blank" rel="noopener">
+        <img src="project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Cocoon" />
+        <span class="fc-title">TRQ DAD</span>
+      </a>
+    </section>
+
+    <div class="tail"></div>
   </main>
 
+  <!-- Theme toggle -->
+  <button class="theme-btn" id="themeBtn" aria-label="Toggle colour mode">
+    <span class="material-symbols-rounded" id="themeIcon">dark_mode</span>
+  </button>
 
-  <script src="main.js" defer></script>
-
+  <script>
+    (function () {
+      var btn  = document.getElementById('themeBtn');
+      var icon = document.getElementById('themeIcon');
+      var root = document.documentElement;
+      function sync() {
+        icon.textContent = root.getAttribute('data-theme') === 'dark' ? 'light_mode' : 'dark_mode';
+      }
+      btn.addEventListener('click', function () {
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+        sync();
+      });
+      sync();
+    })();
+  </script>
 </body>
 </html>
