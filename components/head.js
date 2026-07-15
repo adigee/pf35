@@ -19,6 +19,18 @@
   var head = document.head || document.getElementsByTagName('head')[0];
   if (!head) return;
 
+  /* Apply the saved theme before first paint (avoids a flash of the
+     wrong colour mode). Runs here because this script is parser-
+     blocking in <head>. Mirrors the localStorage key used by the
+     toggle in components/theme.js. */
+  try {
+    var t = localStorage.getItem('theme') ||
+            (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+
   head.insertAdjacentHTML('beforeend',
     '<link rel="preconnect" href="https://fonts.googleapis.com" />' +
     '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />' +
