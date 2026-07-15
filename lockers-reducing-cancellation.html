@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lockers PUDO — Aditya Gujaran</title>
+  <meta name="description" content="How continuous discovery drove Bounce's Lockers PUDO cancellation rate from ~70% toward 15% and proved product-market fit for a new use-case." />
 
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="case-study.css" />
@@ -20,273 +21,366 @@
   <div data-component="nav"></div>
 
   <main class="cs-main" id="cs-main">
+    <div class="cs-shell">
 
-    <div class="cs-container">
-      <div class="cs-hero-img-wrap">
-        <img
-          class="cs-hero-img"
-          src="project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png"
-          alt="Lockers PUDO — Bounce locker booking app screens"
-        />
+      <!-- ── LEFT RAIL: back link + table of contents ── -->
+      <aside class="cs-rail">
+        <a href="index.html" class="cs-rail-back" id="cs-back">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><line x1="13" y1="8" x2="3" y2="8"/><polyline points="7 4 3 8 7 12"/></svg>
+          Back to work
+        </a>
+        <nav class="cs-toc" aria-label="Contents">
+          <a href="#tldr"       class="cs-toc-link">Tl;dr</a>
+          <a href="#solution"   class="cs-toc-link">Solution</a>
+          <a href="#overview"   class="cs-toc-link">Overview</a>
+          <a href="#problem"    class="cs-toc-link">Problem</a>
+          <a href="#findings"   class="cs-toc-link">Initial findings</a>
+          <a href="#goals"      class="cs-toc-link">Goals</a>
+          <a href="#process"    class="cs-toc-link">Design process</a>
+          <a href="#test"       class="cs-toc-link">Test &amp; launch</a>
+          <a href="#outcome"    class="cs-toc-link">Outcome</a>
+          <a href="#reflection" class="cs-toc-link">Reflection</a>
+        </nav>
+      </aside>
+
+      <!-- ── CONTENT COLUMN ── -->
+      <div class="cs-content">
+
+        <!-- Header -->
+        <p class="cs-eyebrow">Bounce &bull; B2C Mobility &bull; 2024–25</p>
+        <h1 class="cs-title">Lockers PUDO</h1>
+
+        <div class="cs-hero-img-wrap">
+          <img
+            class="cs-hero-img"
+            src="project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png"
+            alt="Lockers PUDO — Bounce locker booking app screens"
+          />
+        </div>
+
+        <!-- Project meta -->
+        <dl class="cs-meta">
+          <div>
+            <dt>Timeline</dt>
+            <dd>2024–25</dd>
+          </div>
+          <div>
+            <dt>Role</dt>
+            <dd>Lead Product Designer (Me!)</dd>
+          </div>
+          <div>
+            <dt>Team</dt>
+            <dd>Growth squad — PM + Eng</dd>
+          </div>
+        </dl>
+
+        <!-- ── TL;DR ── -->
+        <section class="cs-section" id="tldr">
+          <p class="cs-section-label">Tl;dr</p>
+          <h2 class="cs-h2">Continuous discovery turned a leaking funnel into proof of PMF</h2>
+          <p class="cs-body">
+            Bounce expanded from luggage storage into Lockers PUDO — a pick-up
+            and drop-off use-case. Early on, customers were booking and then
+            cancelling at a rate around 70%, calling the entire business case
+            into question. I stood up a continuous discovery practice that
+            paired weekly customer interviews with funnel instrumentation, then
+            translated each insight into a tightly-scoped design iteration.
+          </p>
+          <p class="cs-body">
+            The result: the cancellation rate fell week over week toward the 15%
+            goal, and the team had the evidence it needed to confidently prove
+            product-market fit for a brand-new use-case.
+          </p>
+          <div class="cs-outcomes">
+            <div>
+              <p class="cs-stat-num">70% → 15%</p>
+              <p class="cs-stat-desc">Cancellation rate driven down week over week toward the goal</p>
+            </div>
+            <div>
+              <p class="cs-stat-num">PMF</p>
+              <p class="cs-stat-desc">Proved product-market fit for a nascent pick-up / drop-off use-case</p>
+            </div>
+            <div>
+              <p class="cs-stat-num">Weekly</p>
+              <p class="cs-stat-desc">Discovery loop — learn, design, test, repeat — as the operating model</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── SOLUTION ── -->
+        <section class="cs-section" id="solution">
+          <p class="cs-section-label">Solution</p>
+          <h2 class="cs-h2">A discovery loop feeding tightly-scoped design bets</h2>
+          <p class="cs-body">
+            Rather than redesigning everything at once, we built a repeatable
+            loop: surface a real reason for cancellation, design a targeted
+            change, ship it, and measure the effect before moving on. That
+            discipline kept the work legible to the business and let us attack
+            the funnel one validated friction point at a time.
+          </p>
+          <p class="cs-body">
+            The product strategy itself was two-pronged — partnering with
+            existing parcel-locker networks while standing up Bounce's own
+            locker locations — which meant the experience had to hold up across
+            very different physical contexts.
+          </p>
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2002.png"
+              alt="Two-pronged lockers strategy — parcel locker partnerships and Bounce's own locker locations"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">A two-pronged product strategy — partner networks and Bounce's own locker locations</figcaption>
+          </figure>
+        </section>
+
+        <!-- ── OVERVIEW ── -->
+        <section class="cs-section" id="overview">
+          <p class="cs-section-label">Overview</p>
+          <h2 class="cs-h2">A new use-case, a leaking funnel</h2>
+          <p class="cs-body">
+            Bounce built its reputation as the world's leading luggage storage
+            network. Expanding into Lockers PUDO — a pick-up and drop-off
+            use-case — represented a meaningful strategic bet, acquiring
+            customers at transportation hubs like airports and train stations.
+            But the early signals were uncomfortable: customers were booking and
+            then cancelling at a rate that called the entire business case into
+            question.
+          </p>
+          <p class="cs-body">
+            The team needed to answer one question fast: was this a product
+            problem or a market problem? And the only way to find out was to
+            get into the hands and minds of real users, quickly and repeatedly.
+          </p>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2000.png"
+              alt="Bounce lockers at transportation hubs, including Suica lockers in a train station"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">The bet: acquire customers at transportation hubs like airports and train stations</figcaption>
+          </figure>
+        </section>
+
+        <!-- ── PROBLEM ── -->
+        <section class="cs-section" id="problem">
+          <p class="cs-section-label">Problem</p>
+          <h2 class="cs-h2">High cancellation rate as the primary signal</h2>
+          <p class="cs-body">
+            The cancellation rate for Lockers PUDO was significantly above the
+            benchmark set by the core luggage storage product — hovering around
+            70% at the start of the project. Initial hypotheses from the team
+            ranged from pricing to location coverage to trust. None of them were
+            validated.
+          </p>
+          <p class="cs-body">
+            Rather than designing to a hypothesis, we needed to surface the
+            real reasons — and do it with enough rigour to confidently redirect
+            the product roadmap.
+          </p>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2003.png"
+              alt="Weekly cancellation rate chart hovering around 70% at the start of the project"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">Where we started — a weekly cancellation rate hovering around 70%</figcaption>
+          </figure>
+          <div class="cs-callout">
+            <p>The key question was not "how do we reduce cancellations?" — it was
+            "why is the user deciding to cancel, and at which moment?" Getting
+            to that specificity changed what we designed.</p>
+          </div>
+        </section>
+
+        <!-- ── INITIAL FINDINGS ── -->
+        <section class="cs-section" id="findings">
+          <p class="cs-section-label">Initial findings</p>
+          <h2 class="cs-h2">The reasons were specific to lockers</h2>
+          <p class="cs-body">
+            Once we started capturing structured cancellation reasons in-app and
+            pairing them with interview signal, a clear pattern emerged: the top
+            reasons weren't generic booking friction — they were specific to the
+            unfamiliar locker experience. Users were uncertain about what would
+            happen with their parcel, and hesitant at the physical handoff.
+          </p>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2007.png"
+              alt="Cancellation-by-reason bar chart highlighting locker-specific reasons"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">Peaks and patterns in the quant — the top reasons were specific to lockers</figcaption>
+          </figure>
+        </section>
+
+        <!-- ── GOALS ── -->
+        <section class="cs-section" id="goals">
+          <p class="cs-section-label">Goals</p>
+          <h2 class="cs-h2">Bring cancellations down, and prove the bet</h2>
+          <p class="cs-body">
+            The goal was framed on two fronts at once: a hard business target of
+            bringing the cancellation rate down toward 15%, and the softer but
+            higher-stakes goal of proving product-market fit for the use-case.
+            Every design decision had to earn its place in the funnel — proving
+            PMF in a nascent use-case meant operating without the safety net of
+            established user patterns.
+          </p>
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2001.png"
+              alt="How might we framing — user problems on one side, business goal on the other"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">Framing the problem — balancing real user problems against the business goal</figcaption>
+          </figure>
+        </section>
+
+        <!-- ── DESIGN PROCESS ── -->
+        <section class="cs-section" id="process">
+          <p class="cs-section-label">Design process</p>
+          <h2 class="cs-h2">Continuous discovery as the operating model</h2>
+          <p class="cs-body">
+            I set up a lightweight but structured continuous discovery practice
+            around the PUDO experience — weekly interviews with customers who had
+            recently cancelled, combined with analysis of drop-off points in the
+            booking flow and regular synthesis sessions with the product team.
+            The goal was not one big research project; it was a loop: learn,
+            design, test, repeat.
+          </p>
+
+          <h3 class="cs-h3">Discovery cadence</h3>
+          <p class="cs-body">
+            Bi-weekly customer interviews with recent cancellations anchored the
+            qualitative track. These were short (25 minutes), structured around
+            the moment of cancellation, and synthesised into a running insight
+            repository shared with the full team.
+          </p>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2005.png"
+              alt="Interview tracker and outreach email — 3 to 5 customer interviews per week"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">A steady cadence of 3–5 customer interviews every week</figcaption>
+          </figure>
+
+          <h3 class="cs-h3">Funnel instrumentation</h3>
+          <p class="cs-body">
+            On the quantitative side, I worked with engineering to instrument
+            the booking flow and surface where users were dropping out. This
+            gave us the "where" to pair with the "why" from interviews — and
+            helped us prioritise which friction points to address first.
+          </p>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2006.png"
+              alt="In-app cancellation-reason capture designs that became the foundation for telemetry"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">Capturing structured cancellation reasons in-app — the foundation for our telemetry</figcaption>
+          </figure>
+        </section>
+
+        <!-- ── TEST & LAUNCH ── -->
+        <section class="cs-section" id="test">
+          <p class="cs-section-label">Test &amp; launch</p>
+          <h2 class="cs-h2">Testing assumptions at the speed of discovery</h2>
+          <p class="cs-body">
+            As insights emerged, I translated them into design hypotheses and
+            tested them in rapid cycles. Multiple initiatives shipped in
+            parallel — custom cancellation flows, a drop-off tutorial,
+            bag-to-locker matching and locker wayfinding — each one targeted at a
+            specific failure mode uncovered in research.
+          </p>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2008.png"
+              alt="Multiple design initiatives — custom cancellation flows, drop-off tutorial, bag-to-locker matching and locker wayfinding"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">Multiple initiatives shipped in parallel — from custom cancellation flows to locker wayfinding</figcaption>
+          </figure>
+
+          <h3 class="cs-h3">Iteration 1 — Reducing pre-booking uncertainty</h3>
+          <p class="cs-body">
+            Early interviews revealed that users were uncertain about what would
+            happen with their parcel at the locker location. The information
+            architecture of the booking confirmation flow was redesigned to
+            surface the right reassurances at the right moment — before the user
+            had a reason to doubt.
+          </p>
+
+          <h3 class="cs-h3">Iteration 2 — Simplifying the handoff moment</h3>
+          <p class="cs-body">
+            A second cluster of cancellations was happening after booking — users
+            arriving at the locker and not completing the handoff. This led to a
+            redesign of the in-app guidance for the physical interaction,
+            reducing the cognitive load of an unfamiliar process.
+          </p>
+        </section>
+
+        <!-- ── OUTCOME ── -->
+        <section class="cs-section" id="outcome">
+          <p class="cs-section-label">Outcome</p>
+          <h2 class="cs-h2">The rate fell — and the bet held</h2>
+          <p class="cs-body">
+            Iteration by iteration, the same cancellation rate that had started
+            near 70% fell week over week toward the 15% goal. More importantly,
+            the team could now explain <em>why</em> — every improvement was tied
+            to a validated insight, which made the trend durable rather than
+            lucky.
+          </p>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2004.png"
+              alt="Cancellation rate declining week over week from ~70% down to the 15% goal"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">Where we drove it — the same rate falling week over week toward the 15% goal</figcaption>
+          </figure>
+        </section>
+
+        <!-- ── REFLECTION ── -->
+        <section class="cs-section" id="reflection">
+          <p class="cs-section-label">Reflection</p>
+          <h2 class="cs-h2">What proving PMF actually looks like</h2>
+          <p class="cs-body">
+            The most important thing I learned on this project is that proving
+            product-market fit is not a single event — it is a steady
+            accumulation of small confirmations, each won through disciplined
+            discovery and rapid iteration.
+          </p>
+          <p class="cs-body">
+            The continuous discovery practice gave the team a shared language for
+            talking about user problems without debating opinions. That alignment
+            was as valuable as any individual design improvement. When the data
+            started turning in the right direction, everyone understood why — and
+            that made it durable.
+          </p>
+          <p class="cs-body">
+            The biggest design lesson was one of restraint: the temptation in a
+            high-pressure PMF context is to redesign everything. The discipline
+            of scoping each iteration tightly to a validated insight — and
+            measuring the outcome before moving on — is what made the work
+            legible to the business.
+          </p>
+        </section>
+
+        <!-- ── FOOTER ── -->
+        <div data-component="cs-footer"></div>
+
       </div>
     </div>
-
-    <div class="cs-container">
-      <header class="cs-hero">
-        <h1 class="cs-title">Lockers PUDO</h1>
-        <p class="cs-hero-desc">
-          How we used continuous discovery to bring cancellation rates down and
-          <span style="color: var(--color-accent);">prove product-market fit for a new use-case at Bounce.</span>
-        </p>
-      </header>
-    </div>
-
-    <!-- ── SECTION 1: INTRODUCTION ── -->
-    <div class="cs-container">
-      <section class="cs-section">
-        <p class="cs-section-label">Introduction</p>
-        <h2 class="cs-h2">A new use-case, a leaking funnel</h2>
-        <p class="cs-body">
-          Bounce built its reputation as the world's leading luggage storage
-          network. Expanding into Lockers PUDO — a pick-up and drop-off
-          use-case — represented a meaningful strategic bet. But the early
-          signals were uncomfortable: customers were booking and then cancelling
-          at a rate that called the entire business case into question.
-        </p>
-        <p class="cs-body">
-          The team needed to answer one question fast: was this a product
-          problem or a market problem? And the only way to find out was to
-          get into the hands and minds of real users, quickly and repeatedly.
-        </p>
-        <figure class="cs-figure">
-          <img
-            class="cs-img cs-img--dark"
-            src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2000.png"
-            alt="Bounce lockers at transportation hubs, including Suica lockers in a train station"
-            loading="lazy"
-          />
-          <figcaption class="cs-figcaption">The bet: acquire customers at transportation hubs like airports and train stations</figcaption>
-        </figure>
-        <figure class="cs-figure">
-          <img
-            class="cs-img"
-            src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2001.png"
-            alt="How might we framing — user problems on one side, business goal on the other"
-            loading="lazy"
-          />
-          <figcaption class="cs-figcaption">Framing the problem — balancing real user problems against the business goal</figcaption>
-        </figure>
-        <figure class="cs-figure">
-          <img
-            class="cs-img"
-            src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2002.png"
-            alt="Two-pronged lockers strategy — parcel locker partnerships and Bounce's own locker locations"
-            loading="lazy"
-          />
-          <figcaption class="cs-figcaption">A two-pronged product strategy — partner networks and Bounce's own locker locations</figcaption>
-        </figure>
-      </section>
-    </div>
-
-    <!-- ── SECTION 2: MY ROLE ── -->
-    <div class="cs-container">
-      <section class="cs-section">
-        <p class="cs-section-label">My role</p>
-        <h2 class="cs-h2">Lead designer, embedded in the growth team</h2>
-        <p class="cs-body">
-          I was the sole product designer on the Lockers PUDO initiative,
-          partnering closely with the product manager and a small engineering
-          team. My remit spanned both the discovery practice — understanding
-          why cancellations were happening — and the design execution required
-          to test hypotheses at speed.
-        </p>
-        <p class="cs-body">
-          Proving PMF in a nascent use-case meant operating without the safety
-          net of established user patterns. Every design decision had to earn
-          its place in the funnel.
-        </p>
-      </section>
-    </div>
-
-    <!-- ── SECTION 3: PROBLEM DEFINITION ── -->
-    <div class="cs-container">
-      <section class="cs-section">
-        <p class="cs-section-label">Problem definition</p>
-        <h2 class="cs-h2">High cancellation rate as the primary signal</h2>
-        <p class="cs-body">
-          The cancellation rate for Lockers PUDO was significantly above the
-          benchmark set by the core luggage storage product. Initial hypotheses
-          from the team ranged from pricing to location coverage to trust.
-          None of them were validated.
-        </p>
-        <p class="cs-body">
-          Rather than designing to a hypothesis, we needed to surface the
-          real reasons — and do it with enough rigour to confidently redirect
-          the product roadmap. That meant building a discovery practice that
-          could produce actionable signal, fast.
-        </p>
-        <figure class="cs-figure">
-          <img
-            class="cs-img cs-img--dark"
-            src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2003.png"
-            alt="Weekly cancellation rate chart hovering around 70% at the start of the project"
-            loading="lazy"
-          />
-          <figcaption class="cs-figcaption">Where we started — a weekly cancellation rate hovering around 70%</figcaption>
-        </figure>
-        <figure class="cs-figure">
-          <img
-            class="cs-img cs-img--dark"
-            src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2004.png"
-            alt="Cancellation rate declining week over week from ~70% down to the 15% goal"
-            loading="lazy"
-          />
-          <figcaption class="cs-figcaption">Where we drove it — the same rate falling week over week toward the 15% goal</figcaption>
-        </figure>
-        <div class="cs-callout">
-          <p>The key question was not "how do we reduce cancellations?" — it was
-          "why is the user deciding to cancel, and at which moment?" Getting
-          to that specificity changed what we designed.</p>
-        </div>
-      </section>
-    </div>
-
-    <!-- ── SECTION 4: APPROACH ── -->
-    <div class="cs-container">
-      <section class="cs-section">
-        <p class="cs-section-label">Approach</p>
-        <h2 class="cs-h2">Continuous discovery as the operating model</h2>
-        <p class="cs-body">
-          I set up a lightweight but structured continuous discovery practice
-          around the PUDO experience. This meant weekly interviews with
-          customers who had recently cancelled, combined with analysis of
-          drop-off points in the booking flow and regular synthesis sessions
-          with the product team.
-        </p>
-        <p class="cs-body">
-          The goal was not to run a single big research project — it was to
-          build a loop: learn, design, test, repeat. Each cycle produced a
-          sharper picture of where the experience was failing to hold users.
-        </p>
-
-        <h3 class="cs-h3">Discovery cadence</h3>
-        <p class="cs-body">
-          Bi-weekly customer interviews with recent cancellations anchored
-          the qualitative track. These were short (25 minutes), structured
-          around the moment of cancellation, and synthesised into a running
-          insight repository shared with the full team.
-        </p>
-        <figure class="cs-figure">
-          <img
-            class="cs-img cs-img--dark"
-            src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2005.png"
-            alt="Interview tracker and outreach email — 3 to 5 customer interviews per week"
-            loading="lazy"
-          />
-          <figcaption class="cs-figcaption">A steady cadence of 3–5 customer interviews every week</figcaption>
-        </figure>
-
-        <h3 class="cs-h3">Funnel instrumentation</h3>
-        <p class="cs-body">
-          On the quantitative side, I worked with engineering to instrument
-          the booking flow and surface where users were dropping out. This
-          gave us the "where" to pair with the "why" from interviews —
-          and helped us prioritise which friction points to address first.
-        </p>
-        <figure class="cs-figure">
-          <img
-            class="cs-img cs-img--dark"
-            src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2006.png"
-            alt="In-app cancellation-reason capture designs that became the foundation for telemetry"
-            loading="lazy"
-          />
-          <figcaption class="cs-figcaption">Capturing structured cancellation reasons in-app — the foundation for our telemetry</figcaption>
-        </figure>
-        <figure class="cs-figure">
-          <img
-            class="cs-img cs-img--dark"
-            src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2007.png"
-            alt="Cancellation-by-reason bar chart highlighting locker-specific reasons"
-            loading="lazy"
-          />
-          <figcaption class="cs-figcaption">Peaks and patterns in the quant — the top reasons were specific to lockers</figcaption>
-        </figure>
-      </section>
-    </div>
-
-    <!-- ── SECTION 5: DESIGN ITERATIONS ── -->
-    <div class="cs-container">
-      <section class="cs-section">
-        <p class="cs-section-label">Design iterations</p>
-        <h2 class="cs-h2">Testing assumptions at the speed of discovery</h2>
-        <p class="cs-body">
-          As insights emerged, I translated them into design hypotheses and
-          tested them in rapid cycles. The PUDO booking flow went through
-          multiple iterations — each one targeted at a specific failure mode
-          uncovered in research.
-        </p>
-        <figure class="cs-figure">
-          <img
-            class="cs-img cs-img--dark"
-            src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2008.png"
-            alt="Multiple design initiatives — custom cancellation flows, drop-off tutorial, bag-to-locker matching and locker wayfinding"
-            loading="lazy"
-          />
-          <figcaption class="cs-figcaption">Multiple initiatives shipped in parallel — from custom cancellation flows to locker wayfinding</figcaption>
-        </figure>
-
-        <h3 class="cs-h3">Iteration 1 — Reducing pre-booking uncertainty</h3>
-        <p class="cs-body">
-          Early interviews revealed that users were uncertain about what would
-          happen with their parcel at the locker location. The information
-          architecture of the booking confirmation flow was redesigned to
-          surface the right reassurances at the right moment — before the
-          user had a reason to doubt.
-        </p>
-
-        <h3 class="cs-h3">Iteration 2 — Simplifying the handoff moment</h3>
-        <p class="cs-body">
-          A second cluster of cancellations was happening after booking —
-          users arriving at the locker and not completing the handoff.
-          This led to a redesign of the in-app guidance for the physical
-          interaction, reducing the cognitive load of an unfamiliar process.
-        </p>
-      </section>
-    </div>
-
-    <!-- ── SECTION 6: REFLECTIONS ── -->
-    <div class="cs-container">
-      <section class="cs-section">
-        <p class="cs-section-label">Reflections</p>
-        <h2 class="cs-h2">What proving PMF actually looks like</h2>
-        <p class="cs-body">
-          The most important thing I learned on this project is that proving
-          product-market fit is not a single event — it is a steady accumulation
-          of small confirmations, each won through disciplined discovery and
-          rapid iteration.
-        </p>
-        <p class="cs-body">
-          The continuous discovery practice gave the team a shared language
-          for talking about user problems without debating opinions. That
-          alignment was as valuable as any individual design improvement.
-          When the data started turning in the right direction, everyone
-          understood why — and that made it durable.
-        </p>
-        <p class="cs-body">
-          The biggest design lesson was one of restraint: the temptation in
-          a high-pressure PMF context is to redesign everything. The discipline
-          of scoping each iteration tightly to a validated insight — and
-          measuring the outcome before moving on — is what made the work legible
-          to the business.
-        </p>
-      </section>
-    </div>
-
-    <!-- ── FOOTER ── -->
-    <div class="cs-container">
-      <div data-component="cs-footer"></div>
-    </div>
-
   </main>
 
   <script src="main.js" defer></script>

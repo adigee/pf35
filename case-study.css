@@ -320,8 +320,161 @@
 }
 
 
+/* ═════════════════════════════════════════
+   TWO-COLUMN LAYOUT  (sticky TOC rail + content)
+   Used by pages that opt in with .cs-shell.
+   Scoped so it never touches the single-column
+   .cs-container pages (decision-module, on-demand).
+═════════════════════════════════════════ */
+.cs-shell {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: var(--sp-16) var(--sp-8) 0;
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: var(--sp-16);
+}
+
+/* ── LEFT RAIL: back link + table of contents ── */
+.cs-rail {
+  position: sticky;
+  top: calc(var(--nav-height) + var(--sp-10));
+  align-self: start;
+  height: max-content;
+}
+
+.cs-rail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  text-decoration: none;
+  margin-bottom: var(--sp-12);
+  transition: color 120ms ease;
+}
+.cs-rail-back:hover { color: var(--color-primary); }
+.cs-rail-back svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cs-toc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.cs-toc-link {
+  font-size: var(--text-sm);
+  line-height: 1.2;
+  color: var(--color-text-subtle);
+  text-decoration: none;
+  transition: color 120ms ease;
+}
+.cs-toc-link:hover { color: var(--color-text); }
+.cs-toc-link.is-active { color: var(--color-text); }
+
+/* Smooth anchor jumps on the TOC (only on these pages) */
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.cs-page) { scroll-behavior: smooth; }
+}
+
+/* ── CONTENT COLUMN ── */
+.cs-content {
+  min-width: 0;
+  max-width: 820px;
+}
+
+.cs-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: var(--sp-5);
+}
+
+/* Retune the shared title for the narrower content column */
+.cs-content .cs-title {
+  font-size: clamp(2.25rem, 4.5vw, 3.25rem);
+  letter-spacing: var(--tracking-snug);
+  margin-bottom: 0;
+}
+
+/* Hero + figures fill the content column — no page breakout here */
+.cs-content .cs-hero-img-wrap {
+  margin: var(--sp-10) 0 0;
+}
+.cs-content .cs-figure {
+  margin-left: 0;
+  margin-right: 0;
+  --_breakout: 0px;
+}
+
+/* ── PROJECT META (Timeline / Role / Team) ── */
+.cs-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-6);
+  margin-top: var(--sp-10);
+}
+.cs-meta > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.cs-meta dt {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.cs-meta dd {
+  font-size: var(--text-base);
+  color: var(--color-text);
+}
+
+/* Anchor offset so sections clear the sticky nav on jump */
+.cs-content .cs-section {
+  scroll-margin-top: calc(var(--nav-height) + var(--sp-8));
+}
+/* First section sits right under the meta block */
+.cs-content .cs-section:first-of-type {
+  padding-top: var(--sp-16);
+  margin-top: var(--sp-16);
+  border-top: 1px solid var(--color-border);
+}
+
+/* ═════════════════════════════════════════
+   TWO-COLUMN RESPONSIVE
+═════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .cs-shell {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding-top: var(--sp-10);
+  }
+  .cs-rail {
+    position: static;
+    margin-bottom: var(--sp-8);
+  }
+  .cs-rail-back { margin-bottom: 0; }
+  .cs-toc { display: none; }   /* TOC folds away on small screens */
+  .cs-content { max-width: none; }
+  .cs-meta { grid-template-columns: 1fr 1fr; }
+}
+
+
 /* ─────────────────────────────────────────
-   RESPONSIVE
+   RESPONSIVE  (single-column pages)
 ───────────────────────────────────────── */
 @media (max-width: 768px) {
   .cs-nav {
