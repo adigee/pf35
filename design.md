@@ -154,7 +154,7 @@ Base: `16px`. All values in `rem`.
 | `--text-2xs` | 0.5625 | 9 | Label Small — uppercase micro text |
 | `--text-xs` | 0.6875 | 11 | Label — uppercase small text, sub-headings |
 | `--text-sm` | 0.875 | 14 | Body Small — captions, secondary text |
-| `--text-base` | 1.125 | 18 | Body — primary paragraph text |
+| `--text-base` | 1 | 16 | Body — primary paragraph text |
 | `--text-lg` | 1.75 | 28 | H4 — section headings (responsive) |
 | `--text-2xl` | 2.75 | 44 | H3 — major headings (responsive) |
 | `--text-3xl` | 4.3125 | 69 | H2 — large display (responsive) |
