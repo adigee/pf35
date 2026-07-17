@@ -223,9 +223,12 @@ These classes encapsulate the full typographic treatment. Use these — do not r
 
 | Class | Size | Weight | Leading | Tracking | Transform | Notes |
 |---|---|---|---|---|---|---|
-| `.b-label` | `--text-2xs` | 400 | — | `--tracking-widest` | uppercase | Muted color |
-| `.b-title` | `--text-2xl` | 700 | `--leading-snug` | `--tracking-snug` | — | Panel/section headings |
-| `.b-title--xl` | `--text-4xl` | 700 | `--leading-tight` | `--tracking-tight` | — | Hero title |
+| `.b-label` | `--text-xs` | 500 | — | `--tracking-widest` | uppercase | Muted. Eyebrow / kicker above titles |
+| `.b-title` | `--text-2xl` | 700 | `--leading-snug` | `--tracking-snug` | — | Panel / large headings |
+| `.b-title--xl` | `--text-4xl` | 700 | `--leading-tight` | `--tracking-tight` | — | Hero title; case-study title (single-column) |
+| `.b-title--article` | `clamp(2.25→3.25rem)` | 700 | `--leading-tight` | `--tracking-snug` | — | Case-study hero title (two-column, responsive) |
+| `.b-section-header` | `--text-lg` | 700 | `--leading-normal` | — | — | Long-form section heading |
+| `.b-section-subheader` | `--text-base` | 600 | `--leading-body` | — | — | Sub-heading within a section |
 | `.b-company` | `--text-sm` | 400 | — | — | — | Muted color, company context |
 | `.b-body` | `--text-base` | 300 | `--leading-body` | — | — | Max-width 340px |
 | `.b-body-bold` | `--text-base` | 600 | `--leading-loose` | — | — | Emphasis within body |
