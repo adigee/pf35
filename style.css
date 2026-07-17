@@ -274,7 +274,8 @@ a:hover {
 /* Label — mono, small, muted */
 .b-label {
   font-family: var(--font-mono);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
+  font-weight: 500;
   letter-spacing: var(--tracking-widest);
   text-transform: uppercase;
   color: var(--color-text-muted);
@@ -295,7 +296,39 @@ a:hover {
   font-size: var(--text-4xl);
   letter-spacing: var(--tracking-tight);
   line-height: var(--leading-tight);
-  margin-bottom: var(--sp-8);
+  margin-bottom: var(--sp-4);
+}
+
+/* Article title — responsive hero for long-form case studies (two-column) */
+.b-title--article {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 4.5vw, 3.25rem);
+  font-weight: 700;
+  letter-spacing: var(--tracking-snug);
+  line-height: var(--leading-tight);
+  margin-bottom: 0;
+}
+
+/* Section header — long-form section heading (28px) */
+.b-section-header {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: var(--leading-normal);
+  letter-spacing: 0;
+  color: var(--color-text);
+  margin-bottom: var(--sp-6);
+}
+
+/* Section subheader — sub-heading within a section (16px) */
+.b-section-subheader {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: var(--leading-body);
+  margin-top: var(--sp-10);
+  margin-bottom: var(--sp-3);
 }
 
 /* Company */

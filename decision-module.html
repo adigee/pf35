@@ -40,7 +40,7 @@
     <div class="cs-container">
       <header class="cs-hero">
         <p class="cs-hero-label">AI &amp; Interaction Design · Unbabel · 2020–23</p>
-        <h1 class="cs-title">The Decision<br>Module</h1>
+        <h1 class="b-title b-title--xl">The Decision<br>Module</h1>
         <p class="cs-subtitle">Sr. Product Designer</p>
         <div class="b-tags">
           <span class="b-tag">Interaction Design</span>
@@ -58,16 +58,16 @@
     <!-- ── SECTION 1: CONTEXT ── -->
     <div class="cs-container">
       <section class="cs-section">
-        <p class="cs-section-label">Context</p>
-        <h2 class="cs-h2">An AI pipeline with a human in the loop</h2>
-        <p class="cs-body">
+        <p class="b-section-header">Context</p>
+        <h2 class="b-title">An AI pipeline with a human in the loop</h2>
+        <p class="b-body">
           Unbabel combines machine translation with human post-editing to produce
           high-quality translations at scale. At the centre of this pipeline sits
           the Quality Estimation (QE) model — an AI system that scores every
           translated segment and decides whether it needs a human editor to review it,
           or whether it's good enough to pass directly to the customer.
         </p>
-        <p class="cs-body">
+        <p class="b-body">
           That routing decision is everything. Send too much to human review and
           turnaround slows; send too little and quality drops. Getting the threshold
           right — and keeping it right across hundreds of customer pipelines — was the
@@ -88,15 +88,15 @@
     <!-- ── SECTION 2: PROBLEM ── -->
     <div class="cs-container">
       <section class="cs-section">
-        <p class="cs-section-label">Problem</p>
-        <h2 class="cs-h2">The model worked. The interface didn't.</h2>
-        <p class="cs-body">
+        <p class="b-section-header">Problem</p>
+        <h2 class="b-title">The model worked. The interface didn't.</h2>
+        <p class="b-body">
           Configuring QE thresholds required engineering access. Every adjustment —
           a new customer profile, a language-pair tweak, a sensitivity change —
           went through a ticket to the ML team and waited in a queue. The ops team
           had the domain knowledge to make these calls confidently, but no way to act on it.
         </p>
-        <p class="cs-body">
+        <p class="b-body">
           The user problem and the business goal pointed at the same solution:
           surface QE as a lever that the ops team could operate directly,
           without engineering involvement.
@@ -116,15 +116,15 @@
     <!-- ── SECTION 3: HOW QE WORKS ── -->
     <div class="cs-container">
       <section class="cs-section">
-        <p class="cs-section-label">Understanding the model</p>
-        <h2 class="cs-h2">Decision making based on a threshold</h2>
-        <p class="cs-body">
+        <p class="b-section-header">Understanding the model</p>
+        <h2 class="b-title">Decision making based on a threshold</h2>
+        <p class="b-body">
           The QE model produces two types of scores: a segment-level score for each
           translated sentence, and a document-level score that aggregates across
           the whole job. When a score falls below a set threshold, the segment is
           routed to a human editor. Above the threshold, it skips review entirely.
         </p>
-        <p class="cs-body">
+        <p class="b-body">
           The model also learns continuously — human edits feed back as annotations
           that improve future scoring. This meant that how ops team members set
           thresholds today would shape what the model learned tomorrow.
@@ -145,16 +145,16 @@
     <!-- ── SECTION 4: ORIGINAL UI ── -->
     <div class="cs-container">
       <section class="cs-section">
-        <p class="cs-section-label">Starting point</p>
-        <h2 class="cs-h2">Numeric controls nobody used</h2>
-        <p class="cs-body">
+        <p class="b-section-header">Starting point</p>
+        <h2 class="b-title">Numeric controls nobody used</h2>
+        <p class="b-body">
           The existing Decision Module was a WHEN / IS / THEN conditional logic form:
           raw threshold inputs presented as bare number fields. It was built for
           engineers, and it showed. Analytics confirmed what we already suspected —
           the numeric QE controls were not being used. The interface assumed a mental
           model that ops team members simply didn't have.
         </p>
-        <p class="cs-body">
+        <p class="b-body">
           Discovery sessions revealed the core gap: ops team members understood the
           <em>outcome</em> they wanted (fewer reviews for high-trust language pairs,
           tighter scrutiny for sensitive customers) but had no framework for
@@ -175,15 +175,15 @@
     <!-- ── SECTION 5: QE PROFILES ── -->
     <div class="cs-container">
       <section class="cs-section">
-        <p class="cs-section-label">The design pivot</p>
-        <h2 class="cs-h2">From thresholds to profiles</h2>
-        <p class="cs-body">
+        <p class="b-section-header">The design pivot</p>
+        <h2 class="b-title">From thresholds to profiles</h2>
+        <p class="b-body">
           The key insight from research was that ops team members thought in
           <em>postures</em>, not numbers. "We want to be conservative here" or
           "this customer trusts our MT quality" — qualitative stances that implied
           a direction on a spectrum.
         </p>
-        <p class="cs-body">
+        <p class="b-body">
           This led to the introduction of QE Profiles: a named spectrum from
           Very Conservative to Very Aggressive, each mapping to a threshold range
           behind the scenes. Choosing a profile meant choosing how much of the
@@ -205,9 +205,9 @@
     <!-- ── SECTION 6: DIVERGENT EXPLORATION ── -->
     <div class="cs-container">
       <section class="cs-section">
-        <p class="cs-section-label">Exploration</p>
-        <h2 class="cs-h2">Three directions, one constraint</h2>
-        <p class="cs-body">
+        <p class="b-section-header">Exploration</p>
+        <h2 class="b-title">Three directions, one constraint</h2>
+        <p class="b-body">
           In the divergent phase we explored three concepts, each foregrounding a
           different model of control. The first let users select a QE profile directly —
           choosing a qualitative posture. The second let users target a skip volume —
@@ -215,7 +215,7 @@
           The third focused on quality indication — letting users specify an
           acceptable quality floor for skipped jobs.
         </p>
-        <p class="cs-body">
+        <p class="b-body">
           All three could theoretically work, but concept testing quickly revealed
           that skip volume resonated most. It gave ops team members a concrete,
           business-legible number to reason about — "we're skipping 34% of
@@ -241,16 +241,16 @@
     <!-- ── SECTION 7: V1 ── -->
     <div class="cs-container">
       <section class="cs-section">
-        <p class="cs-section-label">First version</p>
-        <h2 class="cs-h2">Profiles as levels of skip</h2>
-        <p class="cs-body">
+        <p class="b-section-header">First version</p>
+        <h2 class="b-title">Profiles as levels of skip</h2>
+        <p class="b-body">
           Decision Module v1 merged the profile and volume concepts: a 5-level
           slider (corresponding to the QE profiles) with a live donut chart showing
           the estimated percentage of translations that would skip review. Selecting
           a level correlated directly to a skip volume, and a quality indicator
           showed the estimated quality of the jobs being skipped.
         </p>
-        <p class="cs-body">
+        <p class="b-body">
           The donut chart gave ops team members a feedback loop — choose a level,
           see the consequence — without having to reason about thresholds at all.
           The design made the model's decision legible, not just configurable.
@@ -270,9 +270,9 @@
     <!-- ── SECTION 8: TESTING ── -->
     <div class="cs-container">
       <section class="cs-section">
-        <p class="cs-section-label">User testing</p>
-        <h2 class="cs-h2">Two rounds, one critical fix</h2>
-        <p class="cs-body">
+        <p class="b-section-header">User testing</p>
+        <h2 class="b-title">Two rounds, one critical fix</h2>
+        <p class="b-body">
           We ran two rounds of moderated usability testing with five ops team
           members each. Round one established that the slider model was understood
           and the donut chart was read correctly. What surfaced as a problem was
@@ -280,7 +280,7 @@
           weight, and participants were reluctant to move away from the default
           without understanding what they were moving towards.
         </p>
-        <p class="cs-body">
+        <p class="b-body">
           Round two introduced named levels ("Very conservative" through "Very
           aggressive") and set "Balanced" as the preselected default. Confidence
           scores in post-task questionnaires rose markedly. Participants described
@@ -315,16 +315,16 @@
     <!-- ── SECTION 9: FINAL DESIGN ── -->
     <div class="cs-container">
       <section class="cs-section">
-        <p class="cs-section-label">Final design</p>
-        <h2 class="cs-h2">Simple, autosaved, balanced by default</h2>
-        <p class="cs-body">
+        <p class="b-section-header">Final design</p>
+        <h2 class="b-title">Simple, autosaved, balanced by default</h2>
+        <p class="b-body">
           The shipped design distilled the interaction to its essentials.
           A single slider with five named levels, "Balanced" preselected. A donut
           chart showing the live skip percentage. A "View quality" toggle to reveal
           the estimated quality distribution of skipped segments — surfaced on demand
           rather than always-on, reducing cognitive load for routine adjustments.
         </p>
-        <p class="cs-body">
+        <p class="b-body">
           All changes autosaved, removing the commit friction that had previously
           made ops team members hesitant to experiment. The design reframed
           configuration as an iterative, low-stakes act rather than a consequential
@@ -356,16 +356,16 @@
     <!-- ── SECTION 10: OUTCOMES ── -->
     <div class="cs-container">
       <section class="cs-section">
-        <p class="cs-section-label">Outcomes</p>
-        <h2 class="cs-h2">An uptick in usage — and in ownership</h2>
-        <p class="cs-body">
+        <p class="b-section-header">Outcomes</p>
+        <h2 class="b-title">An uptick in usage — and in ownership</h2>
+        <p class="b-body">
           The clearest signal came from product analytics: usage of the Decision
           Module spiked sharply after the redesign launched, and sustained. The ops
           team was adjusting QE settings routinely, without engineering tickets,
           treating the module as a genuine operational tool rather than a legacy
           artefact to work around.
         </p>
-        <p class="cs-body">
+        <p class="b-body">
           More meaningfully, post-launch interviews surfaced a shift in how the team
           described their relationship to the model. The language changed from
           "we have to ask engineering to change that" to "we adjusted it last week."
