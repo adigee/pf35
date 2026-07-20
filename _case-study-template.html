@@ -10,60 +10,63 @@
   <!-- ── SHARED (leave as-is) ───────────────────────────── -->
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="case-study.css" />
-  <script src="components/head.js"></script>  <!-- injects fonts + llms link + analytics -->
-  <script src="components/theme.js"></script>  <!-- injects the light/dark toggle -->
+  <script src="components/head.js"></script>   <!-- fonts + llms link + analytics -->
+  <script src="components/theme.js"></script>  <!-- light/dark toggle -->
 </head>
 
-<body class="cs-page">
+<!-- data-project MUST match this project's slug in components/projects.js.
+     The eyebrow, TOC, and footer navigation all key off it. -->
+<body class="cs-page" data-project="REPLACE-slug">
 
-  <!-- Reading progress bar (filled by components/footer.js) -->
+  <!-- Reading progress bar (filled by components/case-study.js) -->
   <div class="cs-progress" id="cs-progress" aria-hidden="true"></div>
 
   <main class="cs-main" id="cs-main">
+    <div class="cs-shell">
 
-    <!-- ── BACK LINK ────────────────────────────────────── -->
-    <div class="cs-container">
-      <a href="index.html" class="cs-back-link" id="cs-back">
-        <svg viewBox="0 0 16 16" aria-hidden="true"><line x1="13" y1="8" x2="3" y2="8"/><polyline points="7 4 3 8 7 12"/></svg>
-        Back to work
-      </a>
-    </div>
+      <!-- The left rail (back link + auto table of contents) and the
+           footer are injected by components/case-study.js. You only
+           author the content column below. -->
 
-    <!-- ── HERO ─────────────────────────────────────────── -->
-    <div class="cs-container">
-      <div class="cs-hero-img-wrap">
-        <img
-          class="cs-hero-img"
-          src="project%20content/REPLACE_hero.png"
-          alt="PROJECT NAME — short alt text"
-        />
+      <div class="cs-content">
+
+        <!-- ── HEADER ──
+             Eyebrow is filled from the registry — leave it empty.
+             Title + hero image + any meta/desc are per-project. -->
+        <p class="b-label" data-cs-eyebrow></p>
+        <h1 class="b-title--article">PROJECT NAME</h1>
+
+        <div class="cs-hero-img-wrap">
+          <img
+            class="cs-hero-img"
+            src="project%20content/REPLACE_hero.png"
+            alt="PROJECT NAME — short alt text"
+          />
+        </div>
+
+        <!-- Optional: <dl class="cs-meta"> … </dl>  or  <p class="cs-hero-desc"> … </p> -->
+
+        <!-- ── SECTIONS ──
+             One <section class="cs-section"> per part of the story.
+             Its <p class="b-section-header"> becomes the TOC label, and
+             the section id is derived from it automatically — so the
+             left-rail table of contents builds itself. -->
+        <section class="cs-section">
+          <p class="b-section-header">Section name</p>
+          <p class="b-body">Body copy…</p>
+          <!-- <figure class="cs-figure"><img class="cs-img" src="…" loading="lazy" /></figure> -->
+        </section>
+
+        <!-- Footer (All projects ← → Next project) injected here -->
+        <div data-component="cs-footer"></div>
+
       </div>
     </div>
-
-    <div class="cs-container">
-      <header class="cs-hero">
-        <!-- Project title, role, timeframe, one-line summary go here. -->
-      </header>
-    </div>
-
-    <!-- ── SECTIONS ─────────────────────────────────────── -->
-    <!-- Duplicate this block per section. Content is bespoke per
-         project — the shell (cs-container > cs-section) is what's shared. -->
-    <div class="cs-container">
-      <section class="cs-section">
-        <!-- Section heading + body + images. -->
-      </section>
-    </div>
-
-    <!-- ── FOOTER (injected by components/footer.js) ─────── -->
-    <div class="cs-container">
-      <div data-component="cs-footer"></div>
-    </div>
-
   </main>
 
+  <script src="components/projects.js"></script>
+  <script src="components/case-study.js"></script>
   <script src="main.js" defer></script>
-  <script src="components/footer.js"></script>
 
 </body>
 </html>
@@ -71,10 +74,14 @@
 <!--
   ─────────────────────────────────────────────────────────
   HOW TO ADD A NEW PROJECT
-  1. Copy this file to  your-project-slug.html
-  2. Fill in the PER-PAGE <head> tags + the section content.
-  3. Drop images into  project content/  and update the src paths.
-  4. Add a project panel + link to index.html so it shows in the grid.
+  1. Add the project to components/projects.js (slug, href, name, eyebrow).
+     The homepage eyebrow + this page's eyebrow both read from there.
+  2. Copy this file to  <slug>.html  and set  <body data-project="<slug>">.
+  3. Fill in the PER-PAGE <head> tags, the title/hero, and the sections.
+     Each <section class="cs-section"> with a .b-section-header becomes a
+     TOC entry automatically — no need to hand-write the rail or footer.
+  4. Drop images into  project content/  and update the src paths.
+  5. Add the project to the index.html grid so it shows on the homepage.
   (Everything under "SHARED" is centralised — don't edit it here.)
   ─────────────────────────────────────────────────────────
 -->

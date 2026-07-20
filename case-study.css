@@ -276,23 +276,26 @@
   line-height: 1.4;
 }
 
-/* ── PAGE FOOTER ── */
+/* ── PAGE FOOTER ──
+   Project-to-project navigation: All projects ← → Next project.
+   Injected by components/case-study.js. */
 .cs-footer {
   margin-top: var(--sp-16);
   padding: var(--sp-10) 0;
   border-top: 1px solid var(--color-border);
+}
+
+.cs-footer-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-6);
+  flex-wrap: wrap;
 }
 
-.cs-footer-copy {
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  letter-spacing: var(--tracking-wide);
-  color: var(--color-text-subtle);
-}
+/* Forward CTA — mirror of .panel-cta--back: circle trails the label
+   and rotates the same +45° the base .panel-cta hover already applies. */
+.panel-cta--next .panel-cta-circle { order: 1; }
 
 
 /* ═════════════════════════════════════════
@@ -452,10 +455,8 @@
     grid-template-columns: 1fr 1fr;
   }
 
-  .cs-footer {
-    flex-direction: column-reverse;
-    align-items: flex-start;
-    gap: var(--sp-3);
+  .cs-footer-nav {
+    gap: var(--sp-4);
   }
 }
 
