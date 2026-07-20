@@ -159,68 +159,71 @@
       background: var(--color-surface);
       display: block;
     }
+    /* Static thumbnails — no hover zoom or label reveal.
+       The feature cards below carry the project captions. */
     .tile img {
       width: 100%; height: 100%;
       object-fit: cover;
-      transition: transform 700ms var(--ease), filter 500ms var(--ease);
-    }
-    .tile:hover img { transform: scale(1.05); }
-    .tile-label {
-      position: absolute;
-      left: 0; right: 0; bottom: 0;
-      padding: var(--sp-4);
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0));
-      opacity: 0;
-      transform: translateY(6px);
-      transition: opacity 320ms var(--ease), transform 320ms var(--ease);
-    }
-    .tile:hover .tile-label { opacity: 1; transform: none; }
-    .tile-cat {
-      font-size: var(--text-2xs);
-      letter-spacing: var(--tracking-widest);
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.75);
-    }
-    .tile-title {
-      font-size: var(--text-base);
-      font-weight: 500;
-      color: #fff;
     }
 
-    /* Feature sequence */
+    /* Feature sequence — live-media card + caption below */
     .feature {
       min-height: 100vh;
       display: flex;
       align-items: center;
       padding: var(--sp-16) 0;
     }
-    .feature-card {
+    .feature-card { display: block; width: 100%; }
+
+    /* Media frame — holds a looping video (or static image fallback) */
+    .fc-media {
       position: relative;
-      display: block;
-      width: 100%;
-      aspect-ratio: 705 / 519;
+      aspect-ratio: 705 / 519;         /* swap to 3 / 2 when motion assets land */
       border-radius: 12px;
       overflow: hidden;
       background: var(--color-surface);
     }
-    .feature-card img {
+    .fc-media img,
+    .fc-media video {
       width: 100%; height: 100%;
       object-fit: cover;
+      display: block;
       transition: transform 700ms var(--ease);
     }
-    .feature-card:hover img { transform: scale(1.03); }
-    .feature-card .fc-title {
-      position: absolute;
-      left: var(--sp-6); bottom: var(--sp-6);
-      font-size: var(--text-2xl);
-      font-weight: 600;
-      color: #fff;
-      letter-spacing: var(--tracking-snug);
-      text-shadow: 0 2px 30px rgba(0,0,0,0.4);
+    .feature-card:hover .fc-media img,
+    .feature-card:hover .fc-media video { transform: scale(1.03); }
+
+    /* Hover scrim — primary wash + "View project" call to action */
+    .fc-scrim {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: color-mix(in srgb, var(--color-primary) 50%, transparent);
+      opacity: 0;
+      transition: opacity 320ms var(--ease);
     }
+    .feature-card:hover .fc-scrim,
+    .feature-card:focus-visible .fc-scrim { opacity: 1; }
+    .fc-cta {
+      display: inline-flex; align-items: center; gap: var(--sp-2);
+      font-size: var(--text-base); font-weight: 600;
+      letter-spacing: var(--tracking-wide);
+      color: #fff; text-shadow: 0 1px 14px rgba(0,0,0,0.35);
+      transform: translateY(6px);
+      transition: transform 320ms var(--ease);
+    }
+    .feature-card:hover .fc-cta { transform: none; }
+    .fc-cta .material-symbols-rounded { font-size: 20px; }
+
+    /* Caption below the media — single uppercase eyebrow, no title */
+    .fc-caption { margin-top: var(--sp-5); }
+    .fc-eyebrow {
+      font-size: var(--text-sm);
+      letter-spacing: var(--tracking-wide);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      transition: color 240ms var(--ease);
+    }
+    .feature-card:hover .fc-eyebrow { color: var(--color-text); }
 
     /* Closing spacer so the last project can center */
     .tail { height: 30vh; }
@@ -250,8 +253,10 @@
       .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 
       .feature { display: block; min-height: 0; padding: var(--sp-12) 0 0; }
-      .feature-card { aspect-ratio: 4 / 3; }
-      .feature-card .fc-title { font-size: var(--text-lg); left: var(--sp-4); bottom: var(--sp-4); }
+      .fc-media { aspect-ratio: 4 / 3; }
+      .fc-eyebrow { font-size: var(--text-xs); }
+      /* No hover on touch — keep the scrim from covering the still */
+      .feature-card:hover .fc-scrim { opacity: 0; }
 
       /* ── Persistent nav — fixed top bar, always visible ── */
       body { padding-top: 54px; }
@@ -305,19 +310,15 @@
       <div class="grid">
         <a class="tile" href="lockers-reducing-cancellation.html">
           <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Bounce — Lockers PUDO" />
-          <span class="tile-label"><span class="tile-cat">Bounce · Work</span><span class="tile-title">Lockers PUDO</span></span>
         </a>
         <a class="tile" href="on-demand.html">
           <img src="project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand — Unbabel" />
-          <span class="tile-label"><span class="tile-cat">Unbabel · Work</span><span class="tile-title">On-demand</span></span>
         </a>
         <a class="tile" href="decision-module.html">
           <img src="project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module — Unbabel" />
-          <span class="tile-label"><span class="tile-cat">Unbabel · Work</span><span class="tile-title">Decision Module</span></span>
         </a>
         <a class="tile" href="https://adityagujaran.me/projects/trq-dad/" target="_blank" rel="noopener">
           <img src="project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Cocoon" />
-          <span class="tile-label"><span class="tile-cat">Cocoon · Work</span><span class="tile-title">TRQ DAD</span></span>
         </a>
       </div>
     </section>
@@ -325,29 +326,49 @@
     <!-- Feature sequence -->
     <section class="feature">
       <a class="feature-card" href="lockers-reducing-cancellation.html">
-        <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Bounce — Lockers PUDO" />
-        <span class="fc-title">Lockers PUDO</span>
+        <div class="fc-media">
+          <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Bounce — Lockers PUDO" />
+          <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
+        </div>
+        <div class="fc-caption">
+          <span class="fc-eyebrow">Bounce&ensp;•&ensp;B2C&ensp;•&ensp;Locker PUDO&ensp;•&ensp;Prove PMF</span>
+        </div>
       </a>
     </section>
 
     <section class="feature">
       <a class="feature-card" href="on-demand.html">
-        <img src="project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand — Unbabel" />
-        <span class="fc-title">On-demand</span>
+        <div class="fc-media">
+          <img src="project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand — Unbabel" />
+          <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
+        </div>
+        <div class="fc-caption">
+          <span class="fc-eyebrow">Unbabel&ensp;•&ensp;B2B&ensp;•&ensp;On-demand&ensp;•&ensp;Acquire new revenue</span>
+        </div>
       </a>
     </section>
 
     <section class="feature">
       <a class="feature-card" href="decision-module.html">
-        <img src="project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module — Unbabel" />
-        <span class="fc-title">The Decision Module</span>
+        <div class="fc-media">
+          <img src="project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module — Unbabel" />
+          <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
+        </div>
+        <div class="fc-caption">
+          <span class="fc-eyebrow">Unbabel&ensp;•&ensp;B2B&ensp;•&ensp;Decision Module&ensp;•&ensp;Internal tool</span>
+        </div>
       </a>
     </section>
 
     <section class="feature">
       <a class="feature-card" href="https://adityagujaran.me/projects/trq-dad/" target="_blank" rel="noopener">
-        <img src="project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Cocoon" />
-        <span class="fc-title">TRQ DAD</span>
+        <div class="fc-media">
+          <img src="project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Cocoon" />
+          <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
+        </div>
+        <div class="fc-caption">
+          <span class="fc-eyebrow">Freelance&ensp;•&ensp;B2B&ensp;•&ensp;TRQ DAD&ensp;•&ensp;Increase ops efficiency</span>
+        </div>
       </a>
     </section>
 
