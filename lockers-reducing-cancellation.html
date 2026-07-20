@@ -12,7 +12,7 @@
   <script src="components/theme.js"></script>
 </head>
 
-<body class="cs-page">
+<body class="cs-page" data-project="lockers-reducing-cancellation">
 
   <!-- Reading progress bar -->
   <div class="cs-progress" id="cs-progress" aria-hidden="true"></div>
@@ -20,29 +20,14 @@
   <main class="cs-main" id="cs-main">
     <div class="cs-shell">
 
-      <!-- ── LEFT RAIL: back link + table of contents ── -->
-      <aside class="cs-rail">
-        <a href="index.html" class="cs-rail-back b-label-link" id="cs-back">
-          <svg viewBox="0 0 16 16" aria-hidden="true"><line x1="13" y1="8" x2="3" y2="8"/><polyline points="7 4 3 8 7 12"/></svg>
-          Back to work
-        </a>
-        <nav class="cs-toc" aria-label="Contents">
-          <a href="#introduction"         class="cs-toc-link b-label-link">Introduction</a>
-          <a href="#my-role"              class="cs-toc-link b-label-link">My role</a>
-          <a href="#problem-definition"   class="cs-toc-link b-label-link">Problem definition</a>
-          <a href="#approach"             class="cs-toc-link b-label-link">Approach</a>
-          <a href="#continuous-discovery" class="cs-toc-link b-label-link">Continuous discovery</a>
-          <a href="#design-deepdives"     class="cs-toc-link b-label-link">Design deepdives</a>
-          <a href="#outcomes"             class="cs-toc-link b-label-link">Outcomes</a>
-          <a href="#reflections"          class="cs-toc-link b-label-link">Reflections</a>
-        </nav>
-      </aside>
+      <!-- Left rail (back link + table of contents) is injected by
+           components/case-study.js — the TOC is built from the sections. -->
 
       <!-- ── CONTENT COLUMN ── -->
       <div class="cs-content">
 
-        <!-- Header -->
-        <p class="b-label">Bounce &bull; B2C Mobility &bull; 2024–25</p>
+        <!-- Header — eyebrow filled from the project registry -->
+        <p class="b-label" data-cs-eyebrow></p>
         <h1 class="b-title--article">Lockers PUDO</h1>
 
         <div class="cs-hero-img-wrap">
@@ -243,8 +228,9 @@
     </div>
   </main>
 
+  <script src="components/projects.js"></script>
+  <script src="components/case-study.js"></script>
   <script src="main.js" defer></script>
-  <script src="components/footer.js"></script>
 
 </body>
 </html>
