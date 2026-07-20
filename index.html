@@ -26,6 +26,7 @@
     :root {
       --rail-w: 354px;
       --page-pad: 40px;
+      --page-max: 1440px;   /* whole layout (rail + grid) centers within this */
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
@@ -38,18 +39,47 @@
 
     a { color: inherit; text-decoration: none; }
 
-    /* ── LEFT RAIL (static) ────────────────── */
-    .rail {
-      position: fixed;
-      top: 0; left: 0; bottom: 0;
-      width: calc(var(--rail-w) + var(--page-pad) * 2);
+    /* ── PAGE SHELL ────────────────────────────
+       One centered container holds everything, so
+       rail + grid move as a unit with symmetric
+       margins on wide monitors (Julie's pattern).
+    ─────────────────────────────────────────── */
+    .home-shell {
+      max-width: var(--page-max);
+      margin-inline: auto;
       padding: var(--page-pad);
+    }
+    /* Rail + content is itself a grid.
+       Mobile-first: one column (rail stacks on top).
+       ≥1024px: rail column + fluid content column.   */
+    .home-cols {
+      display: grid;
+      gap: var(--sp-10);
+    }
+    @media (min-width: 1024px) {
+      .home-cols {
+        grid-template-columns: var(--rail-w) minmax(0, 1fr);
+        gap: var(--sp-16);
+        align-items: start;
+      }
+    }
+
+    /* ── LEFT RAIL ─────────────────────────── */
+    .rail {
       display: flex;
       flex-direction: column;
-      z-index: 10;
-      pointer-events: none;               /* clicks pass through empty rail space */
     }
-    .rail > * { pointer-events: auto; }
+    /* On desktop the rail becomes a sticky column so it
+       stays in view while the grid scrolls (what the old
+       position:fixed did — but now it's part of the grid). */
+    @media (min-width: 1024px) {
+      .rail {
+        position: sticky;
+        top: var(--page-pad);
+        height: calc(100vh - var(--page-pad) * 2);
+      }
+      .rail-intro .bio { max-width: 34ch; }   /* readable measure in the narrow rail */
+    }
 
     /* Persistent identity block — avatar + name */
     .rail-identity { flex-shrink: 0; }
@@ -76,7 +106,8 @@
     .rail-intro .bio {
       font-size: var(--text-base);
       line-height: var(--leading-body);
-      max-width: 34ch;
+      max-width: 60ch;   /* readable measure when stacked (Julie uses 60ch);
+                            tightened to 34ch in the desktop rail (see ≥1024px) */
     }
     .rail-intro .tagline {
       font-size: var(--text-base);
@@ -134,29 +165,43 @@
 
     /* ── RIGHT COLUMN ──────────────────────── */
     .content {
-      margin-left: calc(var(--rail-w) + var(--page-pad) * 2);
-      padding: var(--page-pad) var(--page-pad) 0 0;
-      max-width: 760px;
+      min-width: 0;   /* let the grid inside shrink instead of overflowing */
     }
 
-    /* Overview grid */
-    .overview {
-      min-height: calc(100vh - var(--page-pad) * 2);
-      display: flex;
-      align-items: center;
+    /* Overview grid — flows from the top, like Julie's */
+    .overview { width: 100%; }
+    /* Nudge the grid down from the top edge so it doesn't hug
+       the very top of the page (desktop only — on mobile the
+       rail stacks above it and provides its own spacing). */
+    @media (min-width: 1024px) {
+      .overview { padding-top: 112px; }
     }
+    /* Explicit responsive columns + minmax(0,1fr).
+       The minmax(0,…) is the classic trick: it lets tracks
+       shrink below their content so wide images never blow
+       out the columns.
+       1 col (phones) → 2 col (≥640px). With only 4 projects
+       we cap at 2 so there's no orphan 4th tile. When you add
+       a 5th/6th project, uncomment the 1280px rule for 3-up. */
     .grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 30px;
+      grid-template-columns: 1fr;
+      gap: var(--sp-6);
       width: 100%;
     }
+    @media (min-width: 640px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    /* @media (min-width: 1280px) {
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    } */
     .tile {
       position: relative;
-      aspect-ratio: 215 / 245;
+      aspect-ratio: 16 / 9;
       border-radius: 10px;
       overflow: hidden;
       background: var(--color-surface);
+      border: 1px solid var(--color-border);   /* hairline defines dark tiles */
       display: block;
     }
     .tile img {
@@ -232,22 +277,11 @@
        fixed translucent top bar.
     ───────────────────────────────────────── */
     @media (max-width: 720px) {
-      /* Rail collapses into a normal top header */
-      .rail {
-        position: static;
-        width: 100%;
-        height: auto;
-        padding: var(--page-pad) var(--page-pad) 0;
-      }
+      /* Rail already stacks on top via the base layout;
+         just tighten it for phones. */
       .rail-avatar { width: 72px; height: 72px; }
-
       .rail-context { flex: none; min-height: 0; margin-top: var(--sp-5); }
       .rail-intro .bio, .rail-intro .tagline, .rail-intro .location { margin-top: var(--sp-5); }
-
-      /* Content flows full width */
-      .content { margin-left: 0; padding: 0 var(--page-pad); max-width: none; }
-      .overview { min-height: 0; margin-top: var(--sp-10); align-items: stretch; }
-      .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 
       .feature { display: block; min-height: 0; padding: var(--sp-12) 0 0; }
       .feature-card { aspect-ratio: 4 / 3; }
@@ -270,7 +304,10 @@
 
 <body>
 
-  <!-- ── LEFT RAIL (static) ─────────────────── -->
+  <div class="home-shell">
+   <div class="home-cols">
+
+  <!-- ── LEFT RAIL ──────────────────────────── -->
   <aside class="rail" id="rail">
     <div class="rail-identity" id="top">
       <img class="rail-avatar" src="project%20content/intro.png" alt="Aditya Gujaran" />
@@ -353,6 +390,9 @@
 
     <div class="tail"></div>
   </main>
+
+   </div><!-- /.home-cols -->
+  </div><!-- /.home-shell -->
 
   <!-- Theme toggle — injected by components/theme.js -->
 </body>

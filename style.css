@@ -8,10 +8,10 @@
      Lavender  #ACA0E8   primary — links, CTAs, reading marker
      Lilac     #8E7FD1   accent  — highlights, decorative (primary-family shade)
   ─────────────────────────────────────────── */
-  --color-bg:               #121212;
-  --color-surface:          #0F0E0C;
-  --color-surface-2:        #1A1916;
-  --color-border:           rgba(248, 246, 238, 0.08);
+  --color-bg:               #121212;   /* base — never pure #000 */
+  --color-surface:          #1E1D1A;   /* elevated: a step LIGHTER than bg, warm */
+  --color-surface-2:        #26241F;   /* second elevation */
+  --color-border:           rgba(248, 246, 238, 0.10);   /* hairline defines dark cards */
 
   --color-text:             #F8F6EE;
   --color-text-muted:       rgba(248, 246, 238, 0.45);
