@@ -28,6 +28,9 @@
       --page-pad: 40px;
       --page-max: 1440px;   /* whole layout (rail + grid) centers within this */
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --feature-media-h: 65vh;        /* thumbnail height (% of viewport) */
+      --feature-media-ar: 544 / 320;  /* thumbnail frame: width / height */
+      --feature-align: center;        /* feature card alignment */
     }
 
     body {
@@ -218,12 +221,23 @@
       align-items: center;
       padding: var(--sp-16) 0;
     }
-    .feature-card { display: block; width: 100%; }
+    /* Centered column: proportional thumbnail on top, caption centered below. */
+    .feature-card {
+      display: flex;
+      flex-direction: column;
+      align-items: var(--feature-align, center);
+      width: 100%;
+    }
 
-    /* Media frame — holds a looping video (or static image fallback) */
+    /* Media frame — holds a looping video (or static image fallback).
+       Height-driven: fixed thumbnail height, and the WIDTH follows the image's
+       aspect ratio so it stays a proper thumbnail (no panoramic crop).
+       Tune the size in one place via --feature-media-h. */
     .fc-media {
       position: relative;
-      aspect-ratio: 705 / 519;         /* swap to 3 / 2 when motion assets land */
+      height: var(--feature-media-h);
+      width: auto;
+      aspect-ratio: var(--feature-media-ar);   /* frame proportions; image fills it exactly */
       border-radius: 12px;
       overflow: hidden;
       background: var(--color-surface);
@@ -285,7 +299,7 @@
       .rail-intro .bio, .rail-intro .tagline, .rail-intro .location { margin-top: var(--sp-5); }
 
       .feature { display: block; min-height: 0; padding: var(--sp-12) 0 0; }
-      .fc-media { aspect-ratio: 4 / 3; }
+      .fc-media { height: auto; width: 100%; aspect-ratio: 4 / 3; }   /* phones: size by width again */
       /* No hover on touch — keep the scrim from covering the still */
       .feature-card:hover .fc-scrim { opacity: 0; }
 
