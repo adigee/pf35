@@ -353,6 +353,29 @@
         border-bottom: 1px solid var(--color-border);
       }
       .rail-nav a { font-size: var(--text-sm); letter-spacing: var(--tracking-wide); }
+
+      /* WORK/ABOUT are now the fixed top bar (out of flow), so the nav's
+         top margin no longer spaces RESUME away from the intro. Restore
+         that gap so RESUME isn't glued under "Based in Lisbon" — matching
+         the spacing it has when all three links sit in the rail.
+         There's no hover to fly the links out here, so decompose the row
+         into a stacked list: RESUME heading, then PDF and MD as their own
+         tappable options. */
+      .rail-resume {
+        margin-top: var(--sp-8);
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .rail-resume .rr-flyout {
+        position: static;
+        transform: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--sp-3);
+        padding-left: 0;
+        margin-top: var(--sp-3);
+      }
+      .rail-resume .rr-link { opacity: 1; transform: none; pointer-events: auto; }
     }
   </style>
 </head>
