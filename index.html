@@ -93,9 +93,9 @@
       background: var(--color-surface);
     }
     .rail-identity .name {
-      font-size: var(--text-lg);
+      font-size: 16px;
       line-height: var(--leading-normal);
-      font-weight: 500;
+      font-weight: 700;
       letter-spacing: var(--tracking-snug);
       margin-top: var(--sp-8);
     }
@@ -107,20 +107,27 @@
       margin-top: var(--sp-8);
     }
     .rail-intro .bio {
-      font-size: var(--text-base);
+      font-size: 14px;
+      font-weight: 400;
       line-height: var(--leading-body);
       max-width: 60ch;   /* readable measure when stacked (Julie uses 60ch);
                             tightened to 34ch in the desktop rail (see ≥1024px) */
     }
     .rail-intro .tagline {
-      font-size: var(--text-base);
+      font-size: 14px;
+      font-weight: 400;
       line-height: var(--leading-body);
       margin-top: var(--sp-8);
     }
-    .rail-intro .tagline em { color: var(--color-primary); font-style: italic; }
+    .rail-intro .tagline em {
+      color: var(--color-primary);
+      font-style: normal;
+      font-weight: 400;
+    }
     .rail-intro .location {
-      font-size: var(--text-base);
-      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--color-text);
       margin-top: var(--sp-8);
     }
 
@@ -134,7 +141,7 @@
     }
     .rail-nav a {
       position: relative;
-      font-size: var(--text-base);
+      font-size: 18px;
       letter-spacing: var(--tracking-wide);
       color: var(--color-text);
       width: fit-content;
@@ -142,29 +149,61 @@
     }
     .rail-nav a:hover { color: var(--color-primary); }
 
-    /* Resume links — static, sit under the nav */
+    /* Resume — reads as a third nav item; PDF/MD fly out on hover */
     .rail-resume {
-      display: flex;
+      position: relative;
+      display: inline-flex;
       align-items: center;
-      gap: var(--sp-4);
-      margin-top: var(--sp-5);
+      width: fit-content;
+      margin-top: 2px;   /* same rhythm as the WORK/ABOUT list above */
       flex-shrink: 0;
     }
     .rail-resume .rr-label {
-      font-size: var(--text-sm);
-      color: var(--color-text-muted);
+      font-size: 18px;
       letter-spacing: var(--tracking-wide);
+      text-transform: uppercase;
+      color: var(--color-text);
+      cursor: default;
+      transition: color 240ms var(--ease);
+    }
+    .rail-resume:hover .rr-label { color: var(--color-primary); }
+
+    /* Fly-out — absolute so it reserves no space until revealed.
+       Sits flush against the label's right edge (padding, not margin,
+       makes the gap) so there's no dead zone to lose the hover in. */
+    .rr-flyout {
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-4);
+      padding-left: var(--sp-4);
+      white-space: nowrap;
     }
     .rail-resume .rr-link {
       display: inline-flex;
       align-items: center;
-      font-size: var(--text-sm);
+      font-size: var(--text-base);
       letter-spacing: var(--tracking-wide);
-      color: var(--color-text);
-      transition: color 240ms var(--ease);
+      color: var(--color-text-muted);
+      opacity: 0;
+      transform: translateX(-8px);
+      pointer-events: none;
+      transition: opacity 260ms var(--ease), transform 260ms var(--ease), color 240ms var(--ease);
     }
+    .rail-resume:hover .rr-link { opacity: 1; transform: none; pointer-events: auto; }
+    .rail-resume:hover .rr-link:nth-of-type(2) { transition-delay: 70ms; }   /* MD trails PDF */
     .rail-resume .rr-link:hover { color: var(--color-primary); }
     .rail-resume .rr-icon { font-size: 16px; }
+
+    /* Touch / no-hover devices can't reveal a flyout — keep the
+       resume links laid out and visible so they stay reachable. */
+    @media (hover: none) {
+      .rr-flyout { position: static; transform: none; }
+      .rail-resume .rr-link { opacity: 1; transform: none; pointer-events: auto; }
+    }
 
     /* ── RIGHT COLUMN ──────────────────────── */
     .content {
@@ -345,8 +384,10 @@
 
     <div class="rail-resume">
       <span class="rr-label">Resume</span>
-      <a class="rr-link" href="https://drive.google.com/file/d/1FJDZI8xlQgeWfl7zgbS3LjaTYYZJbWh3/view" target="_blank" rel="noopener">PDF&thinsp;<span class="material-symbols-rounded rr-icon">download</span></a>
-      <a class="rr-link" href="resume.md" target="_blank" rel="noopener">MD&thinsp;<span class="material-symbols-rounded rr-icon">download</span></a>
+      <span class="rr-flyout">
+        <a class="rr-link" href="https://drive.google.com/file/d/1FJDZI8xlQgeWfl7zgbS3LjaTYYZJbWh3/view" target="_blank" rel="noopener">PDF&thinsp;<span class="material-symbols-rounded rr-icon">download</span></a>
+        <a class="rr-link" href="resume.md" target="_blank" rel="noopener">MD&thinsp;<span class="material-symbols-rounded rr-icon">download</span></a>
+      </span>
     </div>
   </aside>
 
