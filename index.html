@@ -259,13 +259,11 @@
     .feature-card:hover .fc-cta { transform: none; }
     .fc-cta .material-symbols-rounded { font-size: 20px; }
 
-    /* Caption below the media — single uppercase eyebrow, no title */
+    /* Caption below the media — single .b-label eyebrow, no title */
     .fc-caption { margin-top: var(--sp-5); }
+    /* Type + color come from .b-label .b-label-strong; this rule is layout + hover only. */
     .fc-eyebrow {
-      font-size: var(--text-sm);
-      letter-spacing: var(--tracking-wide);
-      text-transform: uppercase;
-      color: var(--color-text);
+      margin-bottom: 0;                 /* below-media caption — no trailing gap */
       transition: color 240ms var(--ease);
     }
     .feature-card:hover .fc-eyebrow { color: var(--color-primary); }
@@ -288,7 +286,6 @@
 
       .feature { display: block; min-height: 0; padding: var(--sp-12) 0 0; }
       .fc-media { aspect-ratio: 4 / 3; }
-      .fc-eyebrow { font-size: var(--text-xs); }
       /* No hover on touch — keep the scrim from covering the still */
       .feature-card:hover .fc-scrim { opacity: 0; }
 
@@ -368,7 +365,7 @@
           <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
         </div>
         <div class="fc-caption">
-          <span class="fc-eyebrow" data-eyebrow-for="lockers-reducing-cancellation"></span>
+          <span class="fc-eyebrow b-label b-label-strong" data-eyebrow-for="lockers-reducing-cancellation"></span>
         </div>
       </a>
     </section>
@@ -380,7 +377,7 @@
           <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
         </div>
         <div class="fc-caption">
-          <span class="fc-eyebrow" data-eyebrow-for="on-demand"></span>
+          <span class="fc-eyebrow b-label b-label-strong" data-eyebrow-for="on-demand"></span>
         </div>
       </a>
     </section>
@@ -392,7 +389,7 @@
           <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
         </div>
         <div class="fc-caption">
-          <span class="fc-eyebrow" data-eyebrow-for="decision-module"></span>
+          <span class="fc-eyebrow b-label b-label-strong" data-eyebrow-for="decision-module"></span>
         </div>
       </a>
     </section>
@@ -404,7 +401,7 @@
           <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
         </div>
         <div class="fc-caption">
-          <span class="fc-eyebrow" data-eyebrow-for="trq-dad"></span>
+          <span class="fc-eyebrow b-label b-label-strong" data-eyebrow-for="trq-dad"></span>
         </div>
       </a>
     </section>

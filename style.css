@@ -281,6 +281,9 @@ a:hover {
   color: var(--color-text-muted);
   margin-bottom: var(--sp-5);
 }
+/* Color variant — same type, full-strength text instead of muted.
+   Compose onto .b-label: class="b-label b-label-strong". */
+.b-label-strong { color: var(--color-text); }
 
 /* Title */
 .b-title {
