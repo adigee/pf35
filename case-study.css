@@ -299,6 +299,117 @@
 
 
 /* ═════════════════════════════════════════
+   PASSWORD GATE  (protected case studies)
+   Shown in place of the sections while the page is locked.
+   The hero stays visible above it; the left rail is not built
+   until the reader unlocks. See components/case-study.js.
+═════════════════════════════════════════ */
+/* While locked the rail isn't built, so drop the two-column grid to a single
+   centred content column — otherwise the lone column falls into the 200px rail
+   track (crushed) or hugs the left edge (off-centre). This keeps the content
+   centred on the page the way the rest of the site reads. */
+.cs-shell.cs-locked {
+  grid-template-columns: minmax(0, 820px);
+  justify-content: center;
+}
+
+.cs-gate {
+  padding: var(--sp-16) 0 var(--sp-10);
+}
+
+.cs-gate-card {
+  max-width: 440px;
+  padding: var(--sp-10) var(--sp-8);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-primary-muted);
+}
+
+.cs-gate-lock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-primary);
+  margin-bottom: var(--sp-6);
+}
+
+.cs-gate-title {
+  margin-bottom: var(--sp-3);
+}
+
+.cs-gate-note {
+  font-size: var(--text-sm);
+  line-height: var(--leading-body);
+  color: var(--color-text-muted);
+  max-width: 34ch;
+}
+
+.cs-gate-form {
+  display: flex;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+
+.cs-gate-input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--sp-3) var(--sp-4);
+  font-family: inherit;
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.cs-gate-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-muted);
+}
+
+.cs-gate-btn {
+  flex-shrink: 0;
+  padding: 0 var(--sp-6);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-bg);
+  background: var(--color-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 120ms ease;
+}
+.cs-gate-btn:hover { opacity: 0.86; }
+.cs-gate-form.is-checking { opacity: 0.6; pointer-events: none; }
+
+.cs-gate-error {
+  margin-top: var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-primary);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cs-gate-card.is-shaking { animation: cs-gate-shake 320ms ease; }
+}
+@keyframes cs-gate-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/* ═════════════════════════════════════════
    TWO-COLUMN LAYOUT  (sticky TOC rail + content)
    Used by pages that opt in with .cs-shell.
    Scoped so it never touches the single-column
