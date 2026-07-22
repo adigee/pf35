@@ -1235,9 +1235,39 @@ body {
 }
 
 /* ─────────────────────────────────────────
+   CROSS-DOCUMENT VIEW TRANSITION
+   Opts every same-origin navigation into a native view
+   transition. The homepage → case-study morph is choreographed
+   in components/page-transition.js (it tags the clicked thumbnail
+   and the case-study hero with a shared view-transition-name so
+   the image morphs; everything else cross-fades).
+
+   Gated on prefers-reduced-motion so readers who opt out get plain
+   navigation. Browsers without cross-document view transitions
+   ignore the at-rule and navigate normally.
+───────────────────────────────────────── */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}
+
+/* Timing — a touch longer + softer than the 250ms UA default, to match
+   the site's easing. Only ever applies while a transition is running. */
+::view-transition-group(project-hero) {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ─────────────────────────────────────────
    PAGE EXIT TRANSITION
    Triggered by JS adding .is-exiting to body
    before navigating to a case study page.
+   Fallback for browsers without cross-document view transitions.
 ───────────────────────────────────────── */
 body.is-exiting {
   overflow: hidden;
