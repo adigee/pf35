@@ -121,10 +121,21 @@
     initTocSpy();
   }
 
-  /* ── EXIT TRANSITION on internal navigation ── */
+  /* ── EXIT TRANSITION on internal navigation ──
+     When the browser supports cross-document view transitions (and the
+     reader hasn't opted out of motion), let it drive the animation — see
+     components/page-transition.js. Otherwise fall back to the JS fade. */
+  function prefersMotion() {
+    return window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+  }
+  function nativeVT() { return 'onpagereveal' in window; }
   function bindExit(el) {
     if (!el || el.target === '_blank') return;
     el.addEventListener('click', function (e) {
+      // Reduced motion → plain navigation. Native cross-document view
+      // transitions → let the browser drive it (see page-transition.js).
+      // Only motion-on browsers without native VT get the JS fade.
+      if (!prefersMotion() || nativeVT()) return;
       e.preventDefault();
       var href = this.href;
       document.body.classList.add('is-exiting');
