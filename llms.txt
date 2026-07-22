@@ -7,7 +7,7 @@
 - [Portfolio home](index.html): Overview of selected work, experience, and skills
 - [Lockers PUDO — Bounce](lockers-reducing-cancellation.html): Reduced cancellation rate to prove product-market fit for a new locker pick-up/drop-off use case. Built from 0→1. Skills: Interaction design, Continuous discovery.
 - [The Decision Module — Unbabel](decision-module.html): Made Unbabel's AI quality-estimation model operable by ops linguists without specialist engineers — translating ML reasoning into a legible, actionable UI. Skills: Interaction design, AI/ML interfaces.
-- [TRQ DAD — Cocoon](https://adityagujaran.me/projects/trq-dad/): Mobile chatbot for filing insurance claims after a car accident. Stripped verbose forms to their essentials. Skills: Service design, Conversational UI.
+- [TRQ DAD — Cocoon](trq-dad.html): Mobile chatbot for filing insurance claims after a car accident. Stripped verbose forms to their essentials. Skills: Service design, Conversational UI.
 
 ## About
 

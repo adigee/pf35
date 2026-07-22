@@ -38,10 +38,9 @@
     },
     {
       slug: 'trq-dad',
-      href: 'https://adityagujaran.me/projects/trq-dad/',
+      href: 'trq-dad.html',
       name: 'TRQ DAD',
       eyebrow: ['Freelance', 'B2B', 'TRQ DAD', 'Increase ops efficiency'],
-      external: true,
     },
   ];
 

@@ -581,3 +581,59 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   VERTICAL RHYTHM  ·  shared by every case study
+   ───────────────────────────────────────────────────────────
+   Flow model: every vertical gap is owned by the NEXT element's
+   margin-top, set by the flow container (.cs-content / .cs-section),
+   so each neighbour pair has one defined value and nothing collapses
+   to zero. The values below are dialled per-transition with the dev
+   spacing dial kit (dev/spacing-tuner.js, localhost + ?tune=1) and
+   pasted back here — one rule per adjacency, retune anytime.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Scaffolding the dial kit relies on but doesn't itself emit. */
+.cs-content > * + *  { margin-top: 64px; }   /* header-zone fallback    */
+.cs-section > * + *  { margin-top: 16px; }   /* reading-rhythm fallback */
+.cs-section > .b-section-header { margin-bottom: 0; }
+/* The eyebrow + sub-labels ship margin-bottom: var(--sp-5) (20px), which
+   would collapse with and floor the following gap — zero it so the rules
+   below own each space in full (this is what lets eyebrow→title reach 4px). */
+.cs-content > .b-label,
+.cs-section > .b-label { margin-bottom: 0; }
+
+/* Header */
+.cs-content > h1                { margin-top: 4px; }
+.cs-content > .cs-hero-img-wrap { margin-top: 64px; }
+.cs-content > .cs-hero-desc     { margin-top: 24px; }
+.cs-content > .cs-meta          { margin-top: 24px; }
+
+/* Chapters — a 64/64 void with the divider hairline centred. */
+.cs-content > .cs-section {
+  margin-top: 64px;
+  padding-top: 64px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Text */
+.cs-section > .b-section-header + * { margin-top: 24px; }
+.b-body + .b-body                   { margin-top: 16px; }
+
+/* Figures */
+.cs-section > .cs-figure     { margin-top: 64px; margin-bottom: 0; }
+.cs-section > .cs-figure + * { margin-top: 64px; }
+.cs-figcaption               { margin-top: 8px; }
+
+/* Callout */
+.cs-section > .cs-callout     { margin-top: 64px; }
+.cs-section > .cs-callout + * { margin-top: 64px; }
+
+/* Stats */
+.cs-section > .cs-outcomes     { margin-top: 64px; }
+.cs-section > .cs-outcomes + * { margin-top: 64px; }
+
+/* List */
+.cs-section > .b-label     { margin-top: 24px; }
+.cs-section > .cs-list     { margin-top: 16px; }
+.cs-section > .cs-list + * { margin-top: 64px; }
