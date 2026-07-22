@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Avatar spin tuner</title>
+<style>
+  html,body{margin:0;height:100%;background:#0d0d0d;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+  #site{position:fixed;inset:0;width:100%;height:100%;border:0}
+
+  /* floating control panel — sits over the real page, does not touch it */
+  .tuner{position:fixed;top:16px;right:16px;z-index:9999;width:264px;
+         background:rgba(20,20,20,.92);backdrop-filter:blur(10px);
+         border:1px solid rgba(255,255,255,.14);border-radius:12px;
+         padding:14px 16px 16px;color:#f2f0ea;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+  .tuner h3{margin:0 0 4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#bdb7ad;font-weight:600}
+  .tuner label{display:flex;justify-content:space-between;align-items:baseline;
+               font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#8f8a80;margin:14px 0 6px}
+  .tuner select{width:100%;background:#161616;color:#f2f0ea;border:1px solid rgba(255,255,255,.14);
+                border-radius:7px;padding:6px 8px;font-size:13px}
+  .row input[type=range]{width:100%;accent-color:#ACA0E8}
+  .val{font-variant-numeric:tabular-nums;font-size:11px;color:#cfc9be;text-transform:none;letter-spacing:0}
+  .seg{display:flex;border:1px solid rgba(255,255,255,.14);border-radius:8px;overflow:hidden}
+  .seg button{flex:1;background:transparent;color:#8f8a80;border:0;padding:7px 4px;font-size:12px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:#ACA0E8;color:#161616;font-weight:600}
+  .actions{display:flex;gap:8px;margin-top:16px}
+  .actions button{flex:1;background:#161616;color:#f2f0ea;border:1px solid rgba(255,255,255,.14);
+                  border-radius:8px;padding:9px 0;font-size:12px;font-weight:600;cursor:pointer}
+  .actions button.primary{background:#ACA0E8;color:#161616;border-color:transparent}
+  .actions button:active{transform:translateY(1px)}
+  pre.css{margin:12px 0 0;background:#0e0e0e;border:1px solid rgba(255,255,255,.1);border-radius:8px;
+          padding:10px;font-size:10.5px;line-height:1.5;color:#c9d6b5;white-space:pre-wrap;
+          font-family:ui-monospace,SFMono-Regular,Menlo,monospace;max-height:160px;overflow:auto}
+  .hint{margin-top:12px;font-size:10px;line-height:1.5;color:#6f6a60}
+  .tuner .drag{position:absolute;top:0;left:0;right:0;height:34px;cursor:move}
+</style>
+</head>
+<body>
+  <iframe id="site" src="../index.html"></iframe>
+
+  <div class="tuner" id="tuner">
+    <div class="drag"></div>
+    <h3>Avatar spin tuner</h3>
+
+    <label>Axis</label>
+    <div class="seg" id="axis">
+      <button data-ax="Y" aria-pressed="true">Vertical · top</button>
+      <button data-ax="X">Horizontal · flip</button>
+    </div>
+
+    <label>Direction</label>
+    <div class="seg" id="dir">
+      <button data-d="1" aria-pressed="true">Clockwise</button>
+      <button data-d="-1">Counter</button>
+    </div>
+
+    <label>Spin <span class="val" id="degv">540° · 1.5 turns</span></label>
+    <div class="row"><input id="deg" type="range" min="180" max="1440" step="90" value="540"></div>
+
+    <label>Duration <span class="val" id="durv">1000 ms</span></label>
+    <div class="row"><input id="dur" type="range" min="300" max="2500" step="50" value="1000"></div>
+
+    <label>Perspective (depth) <span class="val" id="perspv">700 px</span></label>
+    <div class="row"><input id="persp" type="range" min="200" max="1600" step="50" value="700"></div>
+
+    <label>Easing</label>
+    <select id="ease">
+      <option value="cubic-bezier(0.22, 1, 0.36, 1)" selected>Decelerate — settles (current)</option>
+      <option value="cubic-bezier(0.34, 1.56, 0.64, 1)">Overshoot — wobble to rest</option>
+      <option value="cubic-bezier(0.65, 0, 0.35, 1)">Ease-in-out — even</option>
+      <option value="cubic-bezier(0.16, 1, 0.3, 1)">Snappy out</option>
+      <option value="linear">Linear — mechanical</option>
+    </select>
+
+    <label>Theme</label>
+    <div class="seg" id="theme">
+      <button data-t="light" aria-pressed="true">Light</button>
+      <button data-t="dark">Dark</button>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="play">▶ Play spin</button>
+      <button id="copy">Copy CSS</button>
+    </div>
+
+    <pre class="css" id="out"></pre>
+    <div class="hint">Live-editing the real homepage — you can also just hover the avatar. Nothing here is saved; hit Copy CSS or tell me the combo and I'll bake it into index.html.</div>
+  </div>
+
+<script>
+  const frame = document.getElementById('site');
+  const state = { ax:'Y', dir:1, deg:540, dur:1000, persp:700,
+                  ease:'cubic-bezier(0.22, 1, 0.36, 1)', t:'light' };
+
+  function doc(){ try { return frame.contentDocument; } catch(e){ return null; } }
+  function disc(){ const d=doc(); return d && d.querySelector('.rail-avatar'); }
+
+  // The CSS baked back into index.html (hover-driven, no tuner artefacts).
+  function shippedCSS(){
+    const ax = state.ax, deg = state.dir * state.deg;
+    return `.rail-avatar-link { /* … */ perspective: ${state.persp}px; }
+.rail-avatar {
+  transform: rotate${ax}(0deg);
+  transition: transform ${state.dur}ms ${state.ease};
+}
+.rail-avatar-link:hover .rail-avatar { transform: rotate${ax}(${deg}deg); }
+.rail-avatar-face--art { transform: rotate${ax}(180deg); }`;
+  }
+
+  // Live style injected into the iframe — adds a .tune-spun trigger so the
+  // Play button can replay without needing a real hover.
+  function liveCSS(){
+    const ax = state.ax, deg = state.dir * state.deg;
+    return `.rail-avatar-link { perspective: ${state.persp}px; }
+.rail-avatar { transform: rotate${ax}(0deg); transition: transform ${state.dur}ms ${state.ease}; }
+.rail-avatar-link:hover .rail-avatar, .rail-avatar.tune-spun { transform: rotate${ax}(${deg}deg); }
+.rail-avatar-face--art { transform: rotate${ax}(180deg); }`;
+  }
+
+  function apply(){
+    const d = doc(); if(!d) return;
+    d.documentElement.setAttribute('data-theme', state.t);
+    let s = d.getElementById('tune-spin');
+    if(!s){ s = d.createElement('style'); s.id='tune-spin'; d.head.appendChild(s); }
+    s.textContent = liveCSS();
+    document.getElementById('out').textContent = shippedCSS();
+  }
+
+  frame.addEventListener('load', apply);
+
+  // segmented control helper
+  function seg(id, fn){
+    const g = document.getElementById(id);
+    g.addEventListener('click', e=>{
+      const b = e.target.closest('button'); if(!b) return;
+      [...g.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
+      fn(b); apply();
+    });
+  }
+  seg('axis',  b=> state.ax  = b.dataset.ax);
+  seg('dir',   b=> state.dir = +b.dataset.d);
+  seg('theme', b=> state.t   = b.dataset.t);
+
+  function slider(id, valId, fmt, set){
+    const el = document.getElementById(id), out = document.getElementById(valId);
+    el.addEventListener('input', ()=>{ set(+el.value); out.textContent = fmt(+el.value); apply(); });
+  }
+  slider('deg',  'degv',  v=>`${v}° · ${(v/360).toFixed(2)} turns`, v=> state.deg  = v);
+  slider('dur',  'durv',  v=>`${v} ms`,  v=> state.dur  = v);
+  slider('persp','perspv',v=>`${v} px`,  v=> state.persp= v);
+  document.getElementById('ease').addEventListener('change', e=>{ state.ease = e.target.value; apply(); });
+
+  // Play — toggle the spin without hovering (spins to caricature, then back)
+  document.getElementById('play').addEventListener('click', ()=>{
+    const a = disc(); if(!a) return; a.classList.toggle('tune-spun');
+  });
+
+  // Copy the shippable CSS
+  document.getElementById('copy').addEventListener('click', async ()=>{
+    const btn = document.getElementById('copy');
+    try { await navigator.clipboard.writeText(shippedCSS()); btn.textContent='Copied ✓'; }
+    catch(e){ btn.textContent='Copy failed'; }
+    setTimeout(()=>btn.textContent='Copy CSS', 1200);
+  });
+
+  // draggable panel
+  (function(){
+    const t = document.getElementById('tuner'), h = t.querySelector('.drag');
+    let sx,sy,ox,oy,down=false;
+    h.addEventListener('mousedown', e=>{down=true; sx=e.clientX; sy=e.clientY;
+      const r=t.getBoundingClientRect(); ox=r.left; oy=r.top; t.style.right='auto'; e.preventDefault();});
+    window.addEventListener('mousemove', e=>{ if(!down) return;
+      t.style.left=(ox+e.clientX-sx)+'px'; t.style.top=(oy+e.clientY-sy)+'px';});
+    window.addEventListener('mouseup', ()=>down=false);
+  })();
+</script>
+</body>
+</html>

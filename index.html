@@ -86,11 +86,47 @@
 
     /* Persistent identity block — avatar + name */
     .rail-identity { flex-shrink: 0; }
+    .rail-avatar-link {
+      display: inline-block;
+      line-height: 0;
+      border-radius: 50%;
+      perspective: 750px;   /* depth for the 3D spin */
+    }
+    /* Spinning top: a two-faced disc. Which face rests up depends on theme —
+       dark rests on the photo (spins to the caricature), light rests on the
+       caricature (spins to the photo). Entering spins it 2.5 turns and lands
+       on the far face; leaving is a quick half-turn settle back. The
+       asymmetric enter/leave timing is driven by the inline avatar-spin
+       script — this CSS is the no-JS fallback. */
     .rail-avatar {
+      position: relative;
+      display: block;
       width: 100px; height: 100px;
+      transform-style: preserve-3d;
+      transform: rotateY(0deg);
+      transition: transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .rail-avatar-face {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
       border-radius: 50%;
       object-fit: cover;
-      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      backface-visibility: hidden;
+    }
+    /* Dark (default): photo up front, caricature on the back. */
+    .rail-avatar-face--art { transform: rotateY(180deg); }
+    /* Light: caricature up front, photo on the back. */
+    [data-theme="light"] .rail-avatar-face--art  { transform: rotateY(0deg); }
+    [data-theme="light"] .rail-avatar-face--photo { transform: rotateY(180deg); }
+    .rail-avatar-link:hover .rail-avatar { transform: rotateY(-900deg); }
+    /* Motion-sensitive visitors get a plain crossfade, no spin. */
+    @media (prefers-reduced-motion: reduce) {
+      .rail-avatar { transition: none; }
+      .rail-avatar-link:hover .rail-avatar { transform: none; }
+      .rail-avatar-face--art { transform: none; opacity: 0; transition: opacity 240ms var(--ease); }
+      .rail-avatar-link:hover .rail-avatar-face--art { opacity: 1; }
     }
     .rail-identity .name {
       font-size: 16px;
@@ -388,7 +424,12 @@
   <!-- ── LEFT RAIL ──────────────────────────── -->
   <aside class="rail" id="rail">
     <div class="rail-identity" id="top">
-      <img class="rail-avatar" src="project%20content/intro.png" alt="Aditya Gujaran" />
+      <a class="rail-avatar-link" href="/" aria-label="Home">
+        <span class="rail-avatar">
+          <img class="rail-avatar-face rail-avatar-face--photo" src="project%20content/profile-photo.png" alt="Aditya Gujaran" />
+          <img class="rail-avatar-face rail-avatar-face--art" src="project%20content/profile-caricature.png" alt="" aria-hidden="true" />
+        </span>
+      </a>
       <p class="name">Aditya Gujaran<br><span class="role">Product designer</span></p>
     </div>
 
@@ -495,5 +536,45 @@
   <!-- Project registry — fills the feature-card eyebrows above so they
        stay in sync with the case-study headers (single source of truth). -->
   <script src="components/projects.js"></script>
+
+  <!-- Avatar spin: an excited 2.5-turn entrance onto the caricature, then a
+       calm half-turn settle back to the photo. The asymmetric enter/leave
+       timing can't be done with :hover alone — once the entrance lands we
+       normalise the rotation to -180deg (visually identical) so leaving is a
+       single half-turn instead of unwinding all 2.5 turns. -->
+  <script>
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var link = document.querySelector('.rail-avatar-link');
+      var disc = link && link.querySelector('.rail-avatar');
+      if (!disc) return;
+
+      var ENTER_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';    /* excited, no wobble */
+      var LEAVE_EASE = 'cubic-bezier(0.34, 1.56, 0.64, 1)'; /* calm settle back  */
+      var ENTER_MS = 1200;   /* excited spin in  */
+      var LEAVE_MS = 500;    /* calm settle back */
+      var SPIN = -900;       /* 2.5 turns onto the far face */
+      var landTimer;
+
+      link.addEventListener('mouseenter', function () {
+        clearTimeout(landTimer);
+        disc.style.transition = 'transform ' + ENTER_MS + 'ms ' + ENTER_EASE;
+        disc.style.transform = 'rotateY(' + SPIN + 'deg)';
+        // Once it lands, snap to -180deg (same face) so the next leave is a
+        // quick half-turn rather than a full 2.5-turn unwind.
+        landTimer = setTimeout(function () {
+          disc.style.transition = 'none';
+          disc.style.transform = 'rotateY(-180deg)';
+          void disc.offsetWidth;   // flush so the leave transitions from here
+        }, ENTER_MS);
+      });
+
+      link.addEventListener('mouseleave', function () {
+        clearTimeout(landTimer);
+        disc.style.transition = 'transform ' + LEAVE_MS + 'ms ' + LEAVE_EASE;
+        disc.style.transform = 'rotateY(0deg)';
+      });
+    })();
+  </script>
 </body>
 </html>
