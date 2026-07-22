@@ -61,8 +61,15 @@
   });
 
   /* NEW document, before its first render. Only morph into the hero when
-     the reader came from the homepage; otherwise a plain cross-fade. */
+     the reader came from the homepage; otherwise a plain cross-fade.
+     Also fires on back/forward-cache restores, where the DOM (and this
+     script's state) come back exactly as they were left — including the
+     thumbnail tagged in `pageswap`. Untag it, or the next click on a
+     different tile would put two elements in the old document with the
+     same view-transition-name, which makes the browser skip the
+     transition entirely. */
   window.addEventListener('pagereveal', function (e) {
+    if (clickedImg) { clickedImg.style.viewTransitionName = ''; clickedImg = null; }
     if (!e.viewTransition) return;
     var hero = document.querySelector(HERO);
     if (!hero) return;
