@@ -64,9 +64,12 @@
   });
 
   /* NEW document, before its first render. Also fires on back/forward-cache
-     restores, so we always clear stale tags first. */
+     restores, so we always clear stale state first — both the tagged
+     classes and the remembered link, or a later history navigation (no
+     new click) would re-tag the old eyebrow in `pageswap`. */
   window.addEventListener('pagereveal', function (e) {
     untagFeatureEyebrows();
+    clickedLink = null;
     if (!e.viewTransition) return;
     if (!onCaseStudy()) {
       // Back to the homepage: tag the returning project's eyebrow so it
