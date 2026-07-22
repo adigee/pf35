@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playground — Cross-fade vs Rail hand-off</title>
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Tokens (mirrored from style.css so the prototype is self-contained) ── */
+    :root {
+      --color-bg:            #121212;
+      --color-surface:       #1E1D1A;
+      --color-surface-2:     #26241F;
+      --color-border:        rgba(248, 246, 238, 0.10);
+      --color-text:          #F8F6EE;
+      --color-text-muted:    rgba(248, 246, 238, 0.45);
+      --color-text-subtle:   rgba(248, 246, 238, 0.20);
+      --color-primary:       #ACA0E8;
+      --color-primary-muted: rgba(172, 160, 232, 0.12);
+      --font: 'Manrope', sans-serif;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --controls-h: 76px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    .wrap { display: flex; flex-direction: column; height: 100vh; }
+
+    /* ── STAGE — both "pages" are layered here ── */
+    .stage {
+      position: relative;
+      flex: 1 1 auto;
+      overflow: hidden;
+      background: var(--color-bg);
+    }
+    .view {
+      position: absolute;
+      inset: 0;
+      background: var(--color-bg);
+    }
+
+    /* ── HOME view ── */
+    .home {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 56px;
+      padding: 44px 48px;
+      overflow-y: auto;
+      align-items: start;
+    }
+    .home-content { min-width: 0; }
+    .rail { display: flex; flex-direction: column; position: sticky; top: 0; }
+    .avatar {
+      width: 84px; height: 84px; border-radius: 50%;
+      object-fit: cover; background: var(--color-surface);
+    }
+    .rail .name {
+      font-size: 15px; font-weight: 700; line-height: 1.4;
+      letter-spacing: -0.02em; margin: 18px 0 0;
+    }
+    .rail .name .role { color: var(--color-primary); }
+    .rail-mid { flex: 1; margin-top: 22px; }
+    .rail-mid .bio { font-size: 13.5px; line-height: 1.6; max-width: 30ch; margin: 0; }
+    .rail-mid .tag { font-size: 13.5px; line-height: 1.6; margin: 16px 0 0; }
+    .rail-mid .tag em { color: var(--color-primary); font-style: normal; }
+    .rail-mid .loc { font-size: 13.5px; margin: 16px 0 0; color: var(--color-text-muted); }
+    .rail-nav { display: flex; flex-direction: column; gap: 3px; }
+    .rail-nav a { font-size: 17px; letter-spacing: 0.04em; }
+    .rail-resume { font-size: 17px; letter-spacing: 0.04em; margin-top: 4px; text-transform: uppercase; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 1fr;
+      gap: 20px;
+      align-content: start;
+    }
+    .tile {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+    }
+    .tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 600ms var(--ease); }
+    .tile:hover img { transform: scale(1.035); }
+    .tile::after {
+      content: 'View project →';
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600; letter-spacing: 0.04em; color: #fff;
+      background: color-mix(in srgb, var(--color-primary) 46%, transparent);
+      opacity: 0; transition: opacity 300ms var(--ease);
+    }
+    .tile:hover::after { opacity: 1; }
+
+    /* ── Feature sequence — big centred thumbnail + caption below ── */
+    .feature { display: flex; align-items: center; justify-content: center; min-height: 74vh; padding: 40px 0; }
+    .feature:first-of-type { min-height: 0; padding-top: 40px; }
+    .feature-card { display: flex; flex-direction: column; align-items: center; cursor: pointer; width: 100%; }
+    .fc-media {
+      position: relative;
+      height: 40vh; aspect-ratio: 544 / 320;
+      border-radius: 12px; overflow: hidden;
+      background: var(--color-surface); border: 1px solid var(--color-border);
+    }
+    .fc-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 600ms var(--ease); }
+    .feature-card:hover .fc-media img { transform: scale(1.03); }
+    .fc-scrim {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: color-mix(in srgb, var(--color-primary) 46%, transparent);
+      color: #fff; font-size: 14px; font-weight: 600; letter-spacing: 0.04em;
+      opacity: 0; transition: opacity 300ms var(--ease);
+    }
+    .feature-card:hover .fc-scrim { opacity: 1; }
+    .fc-caption { margin-top: 18px; }
+    .fc-eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-muted); transition: color 240ms var(--ease); }
+    .feature-card:hover .fc-eyebrow { color: var(--color-primary); }
+
+    /* ── CASE-STUDY view ── */
+    .cs { overflow-y: auto; }
+    .cs-inner {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      gap: 56px;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 44px 48px 120px;
+    }
+    .cs-rail { position: sticky; top: 44px; align-self: start; display: flex; flex-direction: column; gap: 26px; }
+    .cs-back { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); cursor: pointer; }
+    .cs-back:hover { color: var(--color-primary); }
+    .cs-toc { display: flex; flex-direction: column; gap: 11px; }
+    .cs-toc a { font-size: 13px; letter-spacing: 0.02em; color: var(--color-text-muted); }
+    .cs-toc a.on { color: var(--color-text); }
+    .cs-toc a:hover { color: var(--color-primary); }
+
+    .cs-col { min-width: 0; }
+    .cs-eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-primary); margin: 0 0 14px; }
+    .cs-title { font-size: 54px; line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; margin: 0 0 26px; }
+    .cs-hero { border-radius: 14px; overflow: hidden; background: var(--color-surface); aspect-ratio: 16 / 9; }
+    .cs-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cs-meta { display: flex; gap: 48px; margin: 28px 0 8px; padding: 0; }
+    .cs-meta dt { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 5px; }
+    .cs-meta dd { margin: 0; font-size: 14px; }
+    .blk { margin-top: 48px; max-width: 62ch; }
+    .blk h3 { font-size: 22px; letter-spacing: -0.01em; margin: 0 0 12px; }
+    .blk p { font-size: 15px; line-height: 1.7; color: rgba(248,246,238,0.72); margin: 0 0 14px; }
+
+    .will { will-change: transform, opacity; }
+
+    /* ── CONTROLS ── */
+    .controls {
+      flex: 0 0 var(--controls-h);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; padding: 0 24px;
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+    }
+    .ctl-left { display: flex; align-items: center; gap: 22px; }
+    .seg { display: inline-flex; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 10px; padding: 4px; gap: 2px; }
+    .seg button {
+      appearance: none; border: 0; cursor: pointer;
+      background: transparent; color: var(--color-text-muted);
+      font-family: var(--font); font-size: 13px; font-weight: 600; letter-spacing: 0.01em;
+      padding: 8px 14px; border-radius: 7px; white-space: nowrap;
+      transition: color 160ms var(--ease), background 160ms var(--ease);
+    }
+    .seg button:hover { color: var(--color-text); }
+    .seg button.on { background: var(--color-primary); color: #121212; }
+    .seg .tag { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.7; margin-left: 6px; }
+
+    .dial { display: flex; align-items: center; gap: 10px; }
+    .dial label { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
+    .dial input[type="range"] { width: 116px; accent-color: var(--color-primary); }
+    .dial .val { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--color-text); min-width: 52px; }
+
+    .toggle { display: inline-flex; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 8px; padding: 3px; gap: 2px; }
+    .toggle button {
+      appearance: none; border: 0; cursor: pointer;
+      background: transparent; color: var(--color-text-muted);
+      font-family: var(--font); font-size: 12px; font-weight: 600;
+      padding: 6px 11px; border-radius: 6px;
+      transition: color 160ms var(--ease), background 160ms var(--ease);
+    }
+    .toggle button.on { background: var(--color-surface-2); color: var(--color-text); }
+
+    .ctl-side { display: flex; align-items: center; gap: 14px; }
+    .hint { font-size: 12px; color: var(--color-text-muted); max-width: 30ch; line-height: 1.4; }
+    .hint b { color: var(--color-text); font-weight: 600; }
+    .btn {
+      appearance: none; cursor: pointer;
+      background: transparent; color: var(--color-text);
+      border: 1px solid var(--color-border); border-radius: 8px;
+      font-family: var(--font); font-size: 13px; font-weight: 600;
+      padding: 9px 15px;
+      transition: border-color 160ms var(--ease), color 160ms var(--ease);
+      white-space: nowrap;
+    }
+    .btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .btn.copied { border-color: var(--color-primary); color: var(--color-primary); }
+
+    @media (max-width: 1040px) {
+      .home { grid-template-columns: 1fr; gap: 24px; padding: 24px; }
+      .rail-mid { display: none; }
+      .cs-inner { grid-template-columns: 1fr; }
+      .cs-rail { position: static; flex-direction: row; flex-wrap: wrap; }
+      .controls { flex-wrap: wrap; --controls-h: auto; padding: 12px 16px; }
+      .hint { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="stage" id="stage">
+
+      <!-- ════ HOME ════ -->
+      <section class="view home will" id="home">
+        <aside class="rail will" id="homeRail">
+          <img class="avatar" src="../project%20content/intro.png" alt="Aditya Gujaran" />
+          <p class="name">Aditya Gujaran<br><span class="role">Product designer</span></p>
+          <div class="rail-mid">
+            <p class="bio">Versatile designer with a practice focused on rigorous, rapid, flexible UX research to enable high-velocity product delivery.</p>
+            <p class="tag">the <em>why</em> behind the what,<br>has never been more important</p>
+            <p class="loc">Based in Lisbon</p>
+          </div>
+          <nav class="rail-nav"><a>WORK</a><a>ABOUT</a></nav>
+          <div class="rail-resume">Resume</div>
+        </aside>
+
+        <div class="home-content will" id="homeContent">
+          <main class="grid" id="homeGrid">
+            <a class="tile" data-project="lockers"><img src="../project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Lockers PUDO" /></a>
+            <a class="tile" data-project="ondemand"><img src="../project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand" /></a>
+            <a class="tile" data-project="decision"><img src="../project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module" /></a>
+            <a class="tile" data-project="dad"><img src="../project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD" /></a>
+          </main>
+
+          <section class="feature">
+            <a class="feature-card" data-project="lockers">
+              <div class="fc-media"><img src="../project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Lockers PUDO" /><span class="fc-scrim">View project →</span></div>
+              <div class="fc-caption"><span class="fc-eyebrow">Bounce · Growth</span></div>
+            </a>
+          </section>
+          <section class="feature">
+            <a class="feature-card" data-project="ondemand">
+              <div class="fc-media"><img src="../project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand" /><span class="fc-scrim">View project →</span></div>
+              <div class="fc-caption"><span class="fc-eyebrow">Unbabel · 0→1</span></div>
+            </a>
+          </section>
+          <section class="feature">
+            <a class="feature-card" data-project="decision">
+              <div class="fc-media"><img src="../project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module" /><span class="fc-scrim">View project →</span></div>
+              <div class="fc-caption"><span class="fc-eyebrow">Unbabel · AI</span></div>
+            </a>
+          </section>
+          <section class="feature">
+            <a class="feature-card" data-project="dad">
+              <div class="fc-media"><img src="../project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD" /><span class="fc-scrim">View project →</span></div>
+              <div class="fc-caption"><span class="fc-eyebrow">Cocoon · Service</span></div>
+            </a>
+          </section>
+        </div>
+      </section>
+
+      <!-- ════ CASE STUDY ════ -->
+      <section class="view cs will" id="cs" aria-hidden="true" style="visibility:hidden;opacity:0;">
+        <div class="cs-inner">
+          <aside class="cs-rail will" id="csRail">
+            <a class="cs-back" id="csBack">← Back to work</a>
+            <nav class="cs-toc">
+              <a class="on">Context</a>
+              <a>Approach</a>
+              <a>Design</a>
+              <a>Outcome</a>
+            </nav>
+          </aside>
+
+          <main class="cs-col will" id="csCol">
+            <p class="cs-eyebrow" id="csEyebrow">Bounce · Growth</p>
+            <h1 class="cs-title" id="csTitle">Lockers PUDO</h1>
+            <div class="cs-hero" id="csHero"><img id="csHeroImg" src="../project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="" /></div>
+            <dl class="cs-meta">
+              <div><dt>Timeline</dt><dd>2024–25</dd></div>
+              <div><dt>Role</dt><dd>Lead Product Designer</dd></div>
+              <div><dt>Team</dt><dd>Growth squad</dd></div>
+            </dl>
+            <section class="blk"><h3>Context</h3><p>A new locker-based pick-up/drop-off use-case was cancelling at ~70%. Continuous discovery was set up to find where the flow was breaking and why.</p><p>Weekly rounds of moderated tests surfaced a handful of recurring friction points that no single metric had made obvious on its own.</p></section>
+            <section class="blk"><h3>Approach</h3><p>Rather than a single redesign, the team ran tight build–measure–learn loops, shipping one hypothesis at a time and watching the cancellation curve respond.</p></section>
+            <section class="blk"><h3>Design</h3><p>The booking flow was rebuilt around the two moments that mattered most: choosing a locker and confirming the drop. Everything else was stripped back.</p></section>
+            <section class="blk"><h3>Outcome</h3><p>Cancellation fell from ~70% toward 15%, proving product–market fit for the new use-case and unlocking further investment.</p></section>
+          </main>
+        </div>
+      </section>
+    </div>
+
+    <!-- ════ CONTROLS ════ -->
+    <div class="controls">
+      <div class="ctl-left">
+        <div class="seg" id="seg">
+          <button data-t="crossfade" class="on">Cross-fade<span class="tag">Rec</span></button>
+          <button data-t="handoff">Rail hand-off</button>
+        </div>
+        <div class="dial">
+          <label>Speed</label>
+          <input type="range" id="speed" min="0.6" max="1.6" step="0.05" value="1" />
+          <span class="val" id="speedVal">1.00×</span>
+        </div>
+        <div class="dial">
+          <label>Ease</label>
+          <div class="toggle" id="ease">
+            <button data-e="soft" class="on">Soft</button>
+            <button data-e="snappy">Snappy</button>
+          </div>
+        </div>
+      </div>
+      <div class="ctl-side">
+        <span class="hint" id="hint">Click any thumbnail — grid <i>or</i> feature below — to play <b>Cross-fade</b>. “← Back” reverses.</span>
+        <button class="btn" id="copy">Copy CSS</button>
+        <button class="btn" id="replay">↻ Replay</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var stage    = document.getElementById('stage');
+    var home     = document.getElementById('home');
+    var homeRail = document.getElementById('homeRail');
+    var homeContent = document.getElementById('homeContent');
+    var cs       = document.getElementById('cs');
+    var csRail   = document.getElementById('csRail');
+    var csCol    = document.getElementById('csCol');
+    var csEyebrow= document.getElementById('csEyebrow');
+    var csTitle  = document.getElementById('csTitle');
+    var csHeroImg= document.getElementById('csHeroImg');
+    var seg      = document.getElementById('seg');
+    var easeSeg  = document.getElementById('ease');
+    var speed    = document.getElementById('speed');
+    var speedVal = document.getElementById('speedVal');
+    var hint     = document.getElementById('hint');
+    var replay   = document.getElementById('replay');
+    var copy     = document.getElementById('copy');
+    var tiles    = [].slice.call(document.querySelectorAll('[data-project]'));
+
+    var EASES = {
+      soft:   'cubic-bezier(0.22, 1, 0.36, 1)',
+      snappy: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    };
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var PROJECTS = {
+      lockers:  { eyebrow: 'Bounce · Growth',   title: 'Lockers PUDO',    img: '../project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png' },
+      ondemand: { eyebrow: 'Unbabel · 0→1',     title: 'On-demand',       img: '../project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png' },
+      decision: { eyebrow: 'Unbabel · AI',      title: 'Decision Module', img: '../project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png' },
+      dad:      { eyebrow: 'Cocoon · Service',  title: 'TRQ DAD',         img: '../project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png' },
+    };
+    var LABELS = { crossfade: 'Cross-fade', handoff: 'Rail hand-off' };
+
+    var current  = 'home';        // 'home' | 'cs'
+    var busy     = false;
+    var selected = 'crossfade';
+    var easeKey  = 'soft';
+    var mult     = 1;
+    var lastTile = tiles[0];
+
+    function EASE() { return EASES[easeKey]; }
+    function d(ms) { return Math.round(ms * mult); }   // scale a duration by the speed dial
+
+    var anims = [];
+    function play(el, frames, opts) {
+      var a = el.animate(frames, Object.assign({ easing: EASE(), fill: 'forwards' }, opts));
+      anims.push(a);
+      return a.finished.catch(function () {});
+    }
+    function cancelAll() { anims.forEach(function (a) { try { a.cancel(); } catch (e) {} }); anims = []; }
+
+    // Hard-set the resting look of a view (no animation).
+    function rest(view) {
+      cancelAll();
+      current = view;
+      var onHome = view === 'home';
+      home.style.cssText   = 'visibility:' + (onHome ? 'visible' : 'hidden') + ';opacity:' + (onHome ? '1' : '0') + ';transform:none;pointer-events:' + (onHome ? 'auto' : 'none') + ';';
+      homeRail.style.cssText    = 'transform:none;opacity:1;';
+      homeContent.style.cssText = 'min-width:0;transform:none;opacity:1;';
+      cs.style.cssText     = 'visibility:' + (onHome ? 'hidden' : 'visible') + ';opacity:' + (onHome ? '0' : '1') + ';transform:none;pointer-events:' + (onHome ? 'none' : 'auto') + ';';
+      csRail.style.cssText = 'transform:none;opacity:1;';
+      csCol.style.cssText  = 'transform:none;opacity:1;clip-path:none;';
+      cs.scrollTop = 0;
+      cs.setAttribute('aria-hidden', onHome ? 'true' : 'false');
+    }
+
+    function loadProject(tile) {
+      var p = PROJECTS[tile.getAttribute('data-project')] || PROJECTS.lockers;
+      csEyebrow.textContent = p.eyebrow;
+      csTitle.textContent = p.title;
+      csHeroImg.src = p.img;
+      return p;
+    }
+
+    /* ══════════ FORWARD: home → case study ══════════ */
+    var forward = {
+      // Clean full-page cross-fade — no shared element, no position/aspect
+      // dependence. Incoming content settles up a touch so it reads as a
+      // deliberate arrival rather than a dissolve. Mirrors what the native
+      // cross-document ::view-transition(root) cross-fade does in prod.
+      crossfade: function () {
+        cs.style.visibility = 'visible';
+        cs.style.opacity = '0';
+        cs.style.transform = 'none';
+        csCol.style.transform = 'translateY(12px)';
+        play(home, [{ opacity: 1 }, { opacity: 0 }], { duration: d(300) });
+        play(csCol, [{ transform: 'translateY(12px)' }, { transform: 'none' }], { duration: d(560) });
+        return play(cs, [{ opacity: 0 }, { opacity: 1 }], { duration: d(420) })
+          .then(function () { rest('cs'); });
+      },
+
+      // "Left rail" hand-off: rail slides out left, body reveals top→bottom,
+      // the case-study index slides in. (This is the earlier explored option.)
+      handoff: function () {
+        return play(homeRail, [{ transform: 'none', opacity: 1 }, { transform: 'translateX(-130%)', opacity: 0 }], { duration: d(380) })
+          .then(function () {
+            cs.style.visibility = 'visible'; cs.style.opacity = '1';
+            csRail.style.opacity = '0'; csRail.style.transform = 'translateX(-30px)';
+            play(homeContent, [{ opacity: 1 }, { opacity: 0 }], { duration: d(260) });
+            return play(csCol, [{ clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)' }], { duration: d(560) });
+          })
+          .then(function () {
+            return play(csRail, [{ transform: 'translateX(-30px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: d(460) });
+          })
+          .then(function () { rest('cs'); });
+      },
+    };
+
+    /* ══════════ REVERSE: case study → home ══════════ */
+    var back = {
+      crossfade: function () {
+        home.style.visibility = 'visible';
+        home.style.opacity = '0';
+        homeContent.style.transform = 'translateY(12px)';
+        play(cs, [{ opacity: 1 }, { opacity: 0 }], { duration: d(300) });
+        play(homeContent, [{ transform: 'translateY(12px)' }, { transform: 'none' }], { duration: d(560) });
+        return play(home, [{ opacity: 0 }, { opacity: 1 }], { duration: d(420) })
+          .then(function () { rest('home'); });
+      },
+
+      handoff: function () {
+        return play(csRail, [{ transform: 'none', opacity: 1 }, { transform: 'translateX(-30px)', opacity: 0 }], { duration: d(340) })
+          .then(function () {
+            home.style.visibility = 'visible'; home.style.opacity = '1';
+            homeRail.style.opacity = '0'; homeRail.style.transform = 'translateX(-130%)';
+            homeContent.style.opacity = '0';
+            play(csCol, [{ clipPath: 'inset(0 0 0% 0)' }, { clipPath: 'inset(0 0 100% 0)' }], { duration: d(460) });
+            play(homeContent, [{ opacity: 0 }, { opacity: 1 }], { duration: d(420), delay: d(200) });
+            return play(homeRail, [{ transform: 'translateX(-130%)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: d(460), delay: d(260) });
+          })
+          .then(function () { rest('home'); });
+      },
+    };
+
+    function quickFade(view) {   // reduced-motion path
+      var incoming = view === 'cs' ? cs : home;
+      var outgoing = view === 'cs' ? home : cs;
+      incoming.style.visibility = 'visible';
+      return play(outgoing, [{ opacity: 1 }, { opacity: 0 }], { duration: 160 })
+        .then(function () { rest(view); });
+    }
+
+    function goCS(tile) {
+      if (busy || current !== 'home') return;
+      busy = true;
+      lastTile = tile;
+      loadProject(tile);
+      var run = reduce ? function () { return quickFade('cs'); } : forward[selected];
+      Promise.resolve(run()).then(function () { busy = false; });
+    }
+
+    function goHome() {
+      if (busy || current !== 'cs') return;
+      busy = true;
+      var run = reduce ? function () { return quickFade('home'); } : back[selected];
+      Promise.resolve(run()).then(function () { busy = false; });
+    }
+
+    // ── wiring ──
+    tiles.forEach(function (t) { t.addEventListener('click', function () { goCS(t); }); });
+    document.getElementById('csBack').addEventListener('click', goHome);
+
+    seg.addEventListener('click', function (e) {
+      var btn = e.target.closest('button'); if (!btn) return;
+      selected = btn.getAttribute('data-t');
+      [].forEach.call(seg.children, function (b) { b.classList.toggle('on', b === btn); });
+      hint.innerHTML = 'Click any thumbnail — grid <i>or</i> feature below — to play <b>' + LABELS[selected] + '</b>. “← Back” reverses.';
+      cancelAll(); rest('home'); busy = false;
+    });
+
+    easeSeg.addEventListener('click', function (e) {
+      var btn = e.target.closest('button'); if (!btn) return;
+      easeKey = btn.getAttribute('data-e');
+      [].forEach.call(easeSeg.children, function (b) { b.classList.toggle('on', b === btn); });
+    });
+
+    speed.addEventListener('input', function () {
+      mult = 1 / parseFloat(speed.value);   // higher "speed" → shorter durations
+      speedVal.textContent = parseFloat(speed.value).toFixed(2) + '×';
+    });
+
+    copy.addEventListener('click', function () {
+      var css;
+      if (selected === 'crossfade') {
+        css =
+'/* Home ⇄ case-study cross-fade — native cross-document View Transition */\n' +
+'::view-transition-old(root),\n' +
+'::view-transition-new(root) {\n' +
+'  animation-duration: ' + d(420) + 'ms;\n' +
+'  animation-timing-function: ' + EASE() + ';\n' +
+'}';
+      } else {
+        css =
+'/* Rail hand-off — JS-orchestrated, see components/page-transition.js */\n' +
+'rail-out: ' + d(380) + 'ms  ·  body-reveal: ' + d(560) + 'ms  ·  rail-in: ' + d(460) + 'ms\n' +
+'easing: ' + EASE();
+      }
+      navigator.clipboard && navigator.clipboard.writeText(css);
+      var prev = copy.textContent;
+      copy.textContent = 'Copied ✓'; copy.classList.add('copied');
+      setTimeout(function () { copy.textContent = prev; copy.classList.remove('copied'); }, 1400);
+    });
+
+    replay.addEventListener('click', function () {
+      cancelAll(); rest('home'); busy = false;
+      requestAnimationFrame(function () { requestAnimationFrame(function () { goCS(lastTile || tiles[0]); }); });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'r' || e.key === 'R') { replay.click(); }
+      var idx = ['1', '2'].indexOf(e.key);
+      if (idx > -1) { seg.children[idx].click(); }
+    });
+
+    rest('home');
+  })();
+  </script>
+</body>
+</html>
