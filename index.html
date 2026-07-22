@@ -121,12 +121,28 @@
     [data-theme="light"] .rail-avatar-face--art  { transform: rotateY(0deg); }
     [data-theme="light"] .rail-avatar-face--photo { transform: rotateY(180deg); }
     .rail-avatar-link:hover .rail-avatar { transform: rotateY(-900deg); }
-    /* Motion-sensitive visitors get a plain crossfade, no spin. */
+    /* Motion-sensitive visitors get a plain crossfade, no spin. Flatten both
+       faces and drive visibility by opacity per theme, mirroring the resting
+       face of the spin: dark rests on the photo (reveals the caricature),
+       light rests on the caricature (reveals the photo). */
     @media (prefers-reduced-motion: reduce) {
       .rail-avatar { transition: none; }
       .rail-avatar-link:hover .rail-avatar { transform: none; }
-      .rail-avatar-face--art { transform: none; opacity: 0; transition: opacity 240ms var(--ease); }
+      .rail-avatar-face {
+        backface-visibility: visible;
+        transition: opacity 240ms var(--ease);
+      }
+      /* Flatten both faces — the [data-theme] selector matches the per-theme
+         rotateY rules' specificity and wins by source order, so neither face
+         stays flipped (which would render the headshot mirrored). */
+      [data-theme] .rail-avatar-face { transform: none; }
+      /* Dark: photo at rest, caricature on hover. */
+      .rail-avatar-face--art { opacity: 0; }
       .rail-avatar-link:hover .rail-avatar-face--art { opacity: 1; }
+      /* Light: caricature at rest, photo on hover (art stacks above photo,
+         so its opacity is what gates which one shows). */
+      [data-theme="light"] .rail-avatar-face--art { opacity: 1; }
+      [data-theme="light"] .rail-avatar-link:hover .rail-avatar-face--art { opacity: 0; }
     }
     .rail-identity .name {
       font-size: 16px;
