@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playground — Home ⇄ Case-study transitions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,1,0" rel="stylesheet" />
+
+  <style>
+    /* ── Tokens (mirrored from style.css so the prototype is self-contained) ── */
+    :root {
+      --color-bg:            #121212;
+      --color-surface:       #1E1D1A;
+      --color-surface-2:     #26241F;
+      --color-border:        rgba(248, 246, 238, 0.10);
+      --color-text:          #F8F6EE;
+      --color-text-muted:    rgba(248, 246, 238, 0.45);
+      --color-text-subtle:   rgba(248, 246, 238, 0.20);
+      --color-primary:       #ACA0E8;
+      --color-primary-muted: rgba(172, 160, 232, 0.12);
+      --font: 'Manrope', sans-serif;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --controls-h: 76px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    .wrap { display: flex; flex-direction: column; height: 100vh; }
+
+    /* ── STAGE — both "pages" are layered here ── */
+    .stage {
+      position: relative;
+      flex: 1 1 auto;
+      overflow: hidden;
+      background: var(--color-bg);
+    }
+    .view {
+      position: absolute;
+      inset: 0;
+      background: var(--color-bg);
+    }
+
+    /* ── HOME view ── */
+    .home {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 56px;
+      padding: 44px 48px;
+      overflow-y: auto;         /* the overview grid + feature sequence scroll */
+      align-items: start;
+    }
+    .home-content { min-width: 0; }
+    .rail { display: flex; flex-direction: column; position: sticky; top: 0; }
+    .avatar {
+      width: 84px; height: 84px; border-radius: 50%;
+      object-fit: cover; background: var(--color-surface);
+    }
+    .rail .name {
+      font-size: 15px; font-weight: 700; line-height: 1.4;
+      letter-spacing: -0.02em; margin: 18px 0 0;
+    }
+    .rail .name .role { color: var(--color-primary); }
+    .rail-mid { flex: 1; margin-top: 22px; }
+    .rail-mid .bio { font-size: 13.5px; line-height: 1.6; max-width: 30ch; margin: 0; }
+    .rail-mid .tag { font-size: 13.5px; line-height: 1.6; margin: 16px 0 0; }
+    .rail-mid .tag em { color: var(--color-primary); font-style: normal; }
+    .rail-mid .loc { font-size: 13.5px; margin: 16px 0 0; color: var(--color-text-muted); }
+    .rail-nav { display: flex; flex-direction: column; gap: 3px; }
+    .rail-nav a { font-size: 17px; letter-spacing: 0.04em; }
+    .rail-resume { font-size: 17px; letter-spacing: 0.04em; margin-top: 4px; text-transform: uppercase; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 1fr;
+      gap: 20px;
+      align-content: start;
+    }
+    .tile {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+    }
+    .tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 600ms var(--ease); }
+    .tile:hover img { transform: scale(1.035); }
+    .tile::after {
+      content: 'View project →';
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600; letter-spacing: 0.04em; color: #fff;
+      background: color-mix(in srgb, var(--color-primary) 46%, transparent);
+      opacity: 0; transition: opacity 300ms var(--ease);
+    }
+    .tile:hover::after { opacity: 1; }
+
+    /* ── Feature sequence — big centred thumbnail + caption below ── */
+    .feature { display: flex; align-items: center; justify-content: center; min-height: 74vh; padding: 40px 0; }
+    .feature:first-of-type { min-height: 0; padding-top: 40px; }
+    .feature-card { display: flex; flex-direction: column; align-items: center; cursor: pointer; width: 100%; }
+    .fc-media {
+      position: relative;
+      height: 40vh; aspect-ratio: 544 / 320;
+      border-radius: 12px; overflow: hidden;
+      background: var(--color-surface); border: 1px solid var(--color-border);
+    }
+    .fc-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 600ms var(--ease); }
+    .feature-card:hover .fc-media img { transform: scale(1.03); }
+    .fc-scrim {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: color-mix(in srgb, var(--color-primary) 46%, transparent);
+      color: #fff; font-size: 14px; font-weight: 600; letter-spacing: 0.04em;
+      opacity: 0; transition: opacity 300ms var(--ease);
+    }
+    .feature-card:hover .fc-scrim { opacity: 1; }
+    .fc-caption { margin-top: 18px; }
+    .fc-eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-muted); transition: color 240ms var(--ease); }
+    .feature-card:hover .fc-eyebrow { color: var(--color-primary); }
+
+    /* ── CASE-STUDY view ── */
+    .cs { overflow-y: auto; }
+    .cs-inner {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      gap: 56px;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 44px 48px 120px;
+    }
+    .cs-rail { position: sticky; top: 44px; align-self: start; display: flex; flex-direction: column; gap: 26px; }
+    .cs-back { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); }
+    .cs-back:hover { color: var(--color-primary); }
+    .cs-toc { display: flex; flex-direction: column; gap: 11px; }
+    .cs-toc a { font-size: 13px; letter-spacing: 0.02em; color: var(--color-text-muted); }
+    .cs-toc a.on { color: var(--color-text); }
+    .cs-toc a:hover { color: var(--color-primary); }
+
+    .cs-col { min-width: 0; }
+    .cs-eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-primary); margin: 0 0 14px; }
+    .cs-title { font-size: 54px; line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; margin: 0 0 26px; }
+    .cs-hero { border-radius: 14px; overflow: hidden; background: var(--color-surface); aspect-ratio: 16 / 9; }
+    .cs-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cs-meta { display: flex; gap: 48px; margin: 28px 0 8px; padding: 0; }
+    .cs-meta dt { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 5px; }
+    .cs-meta dd { margin: 0; font-size: 14px; }
+    .blk { margin-top: 48px; max-width: 62ch; }
+    .blk h3 { font-size: 22px; letter-spacing: -0.01em; margin: 0 0 12px; }
+    .blk p { font-size: 15px; line-height: 1.7; color: rgba(248,246,238,0.72); margin: 0 0 14px; }
+
+    /* ── Transition helpers ── */
+    .curtain {
+      position: absolute; inset: 0;
+      background: var(--color-primary);
+      display: flex; align-items: center; justify-content: center;
+      transform: translateY(-101%);
+      z-index: 40; pointer-events: none;
+    }
+    .curtain span { color: #121212; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600; }
+    .morph {
+      position: fixed;
+      object-fit: cover;
+      border-radius: 10px;
+      z-index: 50;
+      display: none;
+      pointer-events: none;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+    }
+    .will { will-change: transform, opacity, clip-path; }
+
+    /* ── CONTROLS ── */
+    .controls {
+      flex: 0 0 var(--controls-h);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; padding: 0 24px;
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+    }
+    .seg { display: inline-flex; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 10px; padding: 4px; gap: 2px; }
+    .seg button {
+      appearance: none; border: 0; cursor: pointer;
+      background: transparent; color: var(--color-text-muted);
+      font-family: var(--font); font-size: 13px; font-weight: 600; letter-spacing: 0.01em;
+      padding: 8px 14px; border-radius: 7px;
+      transition: color 160ms var(--ease), background 160ms var(--ease);
+    }
+    .seg button:hover { color: var(--color-text); }
+    .seg button.on { background: var(--color-primary); color: #121212; }
+    .ctl-side { display: flex; align-items: center; gap: 18px; }
+    .hint { font-size: 12px; color: var(--color-text-muted); }
+    .hint b { color: var(--color-text); font-weight: 600; }
+    .replay {
+      appearance: none; cursor: pointer;
+      background: transparent; color: var(--color-text);
+      border: 1px solid var(--color-border); border-radius: 8px;
+      font-family: var(--font); font-size: 13px; font-weight: 600;
+      padding: 9px 16px;
+      transition: border-color 160ms var(--ease), color 160ms var(--ease);
+    }
+    .replay:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+    @media (max-width: 900px) {
+      .home { grid-template-columns: 1fr; gap: 24px; padding: 24px; }
+      .rail-mid { display: none; }
+      .cs-inner { grid-template-columns: 1fr; }
+      .cs-rail { position: static; flex-direction: row; flex-wrap: wrap; }
+      .controls { flex-wrap: wrap; --controls-h: auto; padding: 12px 16px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="stage" id="stage">
+
+      <!-- ════ HOME ════ -->
+      <section class="view home will" id="home">
+        <aside class="rail will" id="homeRail">
+          <img class="avatar" src="../project%20content/intro.png" alt="Aditya Gujaran" />
+          <p class="name">Aditya Gujaran<br><span class="role">Product designer</span></p>
+          <div class="rail-mid">
+            <p class="bio">Versatile designer with a practice focused on rigorous, rapid, flexible UX research to enable high-velocity product delivery.</p>
+            <p class="tag">the <em>why</em> behind the what,<br>has never been more important</p>
+            <p class="loc">Based in Lisbon</p>
+          </div>
+          <nav class="rail-nav"><a>WORK</a><a>ABOUT</a></nav>
+          <div class="rail-resume">Resume</div>
+        </aside>
+
+        <div class="home-content will" id="homeContent">
+          <!-- overview grid -->
+          <main class="grid" id="homeGrid">
+            <a class="tile" data-project="lockers"><img src="../project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Lockers PUDO" /></a>
+            <a class="tile" data-project="ondemand"><img src="../project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand" /></a>
+            <a class="tile" data-project="decision"><img src="../project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module" /></a>
+            <a class="tile" data-project="dad"><img src="../project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD" /></a>
+          </main>
+
+          <!-- feature sequence (the individual project items below the grid) -->
+          <section class="feature">
+            <a class="feature-card" data-project="lockers">
+              <div class="fc-media"><img src="../project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Lockers PUDO" /><span class="fc-scrim">View project →</span></div>
+              <div class="fc-caption"><span class="fc-eyebrow">Bounce · Growth</span></div>
+            </a>
+          </section>
+          <section class="feature">
+            <a class="feature-card" data-project="ondemand">
+              <div class="fc-media"><img src="../project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand" /><span class="fc-scrim">View project →</span></div>
+              <div class="fc-caption"><span class="fc-eyebrow">Unbabel · 0→1</span></div>
+            </a>
+          </section>
+          <section class="feature">
+            <a class="feature-card" data-project="decision">
+              <div class="fc-media"><img src="../project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module" /><span class="fc-scrim">View project →</span></div>
+              <div class="fc-caption"><span class="fc-eyebrow">Unbabel · AI</span></div>
+            </a>
+          </section>
+          <section class="feature">
+            <a class="feature-card" data-project="dad">
+              <div class="fc-media"><img src="../project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD" /><span class="fc-scrim">View project →</span></div>
+              <div class="fc-caption"><span class="fc-eyebrow">Cocoon · Service</span></div>
+            </a>
+          </section>
+        </div>
+      </section>
+
+      <!-- ════ CASE STUDY ════ -->
+      <section class="view cs will" id="cs" aria-hidden="true" style="visibility:hidden;opacity:0;">
+        <div class="cs-inner">
+          <aside class="cs-rail will" id="csRail">
+            <a class="cs-back" id="csBack">← Back to work</a>
+            <nav class="cs-toc">
+              <a class="on">Context</a>
+              <a>Approach</a>
+              <a>Design</a>
+              <a>Outcome</a>
+            </nav>
+          </aside>
+
+          <main class="cs-col will" id="csCol">
+            <p class="cs-eyebrow" id="csEyebrow">Bounce · Growth</p>
+            <h1 class="cs-title" id="csTitle">Lockers PUDO</h1>
+            <div class="cs-hero" id="csHero"><img id="csHeroImg" src="../project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="" /></div>
+            <dl class="cs-meta">
+              <div><dt>Timeline</dt><dd>2024–25</dd></div>
+              <div><dt>Role</dt><dd>Lead Product Designer</dd></div>
+              <div><dt>Team</dt><dd>Growth squad</dd></div>
+            </dl>
+            <section class="blk"><h3>Context</h3><p>A new locker-based pick-up/drop-off use-case was cancelling at ~70%. Continuous discovery was set up to find where the flow was breaking and why.</p><p>Weekly rounds of moderated tests surfaced a handful of recurring friction points that no single metric had made obvious on its own.</p></section>
+            <section class="blk"><h3>Approach</h3><p>Rather than a single redesign, the team ran tight build–measure–learn loops, shipping one hypothesis at a time and watching the cancellation curve respond.</p></section>
+            <section class="blk"><h3>Design</h3><p>The booking flow was rebuilt around the two moments that mattered most: choosing a locker and confirming the drop. Everything else was stripped back.</p></section>
+            <section class="blk"><h3>Outcome</h3><p>Cancellation fell from ~70% toward 15%, proving product–market fit for the new use-case and unlocking further investment.</p></section>
+          </main>
+        </div>
+      </section>
+
+      <!-- transition helpers -->
+      <div class="curtain will" id="curtain"><span>Aditya Gujaran</span></div>
+      <img class="morph" id="morph" alt="" />
+    </div>
+
+    <!-- ════ CONTROLS ════ -->
+    <div class="controls">
+      <div class="seg" id="seg">
+        <button data-t="handoff" class="on">Rail hand-off</button>
+        <button data-t="morph">Image morph</button>
+        <button data-t="curtain">Curtain wipe</button>
+        <button data-t="push">Spatial push</button>
+      </div>
+      <div class="ctl-side">
+        <span class="hint" id="hint">Click any thumbnail — grid <i>or</i> feature below — to play <b>Rail hand-off</b> · “← Back to work” reverses</span>
+        <button class="replay" id="replay">↻ Replay</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var stage    = document.getElementById('stage');
+    var home     = document.getElementById('home');
+    var homeRail = document.getElementById('homeRail');
+    var homeContent = document.getElementById('homeContent');
+    var cs       = document.getElementById('cs');
+    var csRail   = document.getElementById('csRail');
+    var csCol    = document.getElementById('csCol');
+    var csHero   = document.getElementById('csHero');
+    var csHeroImg= document.getElementById('csHeroImg');
+    var csEyebrow= document.getElementById('csEyebrow');
+    var csTitle  = document.getElementById('csTitle');
+    var curtain  = document.getElementById('curtain');
+    var morph    = document.getElementById('morph');
+    var seg      = document.getElementById('seg');
+    var hint     = document.getElementById('hint');
+    var replay   = document.getElementById('replay');
+    var tiles    = [].slice.call(document.querySelectorAll('[data-project]'));
+
+    var EASE   = 'cubic-bezier(0.22, 1, 0.36, 1)';
+    var EASE_IO= 'cubic-bezier(0.65, 0, 0.35, 1)';
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var PROJECTS = {
+      lockers:  { eyebrow: 'Bounce · Growth',   title: 'Lockers PUDO',    img: '../project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png' },
+      ondemand: { eyebrow: 'Unbabel · 0→1',     title: 'On-demand',       img: '../project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png' },
+      decision: { eyebrow: 'Unbabel · AI',      title: 'Decision Module', img: '../project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png' },
+      dad:      { eyebrow: 'Cocoon · Service',  title: 'TRQ DAD',         img: '../project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png' },
+    };
+    var LABELS = { handoff: 'Rail hand-off', morph: 'Image morph', curtain: 'Curtain wipe', push: 'Spatial push' };
+
+    var current = 'home';      // 'home' | 'cs'
+    var busy    = false;
+    var selected= 'handoff';
+    var lastTile= tiles[0];
+
+    var anims = [];
+    function play(el, frames, opts) {
+      var a = el.animate(frames, Object.assign({ easing: EASE, fill: 'forwards' }, opts));
+      anims.push(a);
+      return a.finished.catch(function () {});
+    }
+    function cancelAll() { anims.forEach(function (a) { try { a.cancel(); } catch (e) {} }); anims = []; }
+
+    // Hard-set the resting look of a view (no animation).
+    function rest(view) {
+      cancelAll();
+      current = view;
+      var onHome = view === 'home';
+      home.style.cssText = 'visibility:' + (onHome ? 'visible' : 'hidden') + ';opacity:' + (onHome ? '1' : '0') + ';transform:none;pointer-events:' + (onHome ? 'auto' : 'none') + ';';
+      homeRail.style.cssText = 'transform:none;opacity:1;';
+      homeContent.style.cssText = 'min-width:0;transform:none;opacity:1;';
+      cs.style.cssText = 'visibility:' + (onHome ? 'hidden' : 'visible') + ';opacity:' + (onHome ? '0' : '1') + ';transform:none;pointer-events:' + (onHome ? 'none' : 'auto') + ';';
+      csRail.style.cssText = 'transform:none;opacity:1;';
+      csCol.style.cssText  = 'transform:none;opacity:1;clip-path:none;';
+      curtain.style.cssText = 'transform:translateY(-101%);';
+      morph.style.display = 'none';
+      cs.scrollTop = 0;
+      cs.setAttribute('aria-hidden', onHome ? 'true' : 'false');
+    }
+
+    function loadProject(tile) {
+      var p = PROJECTS[tile.getAttribute('data-project')] || PROJECTS.lockers;
+      csEyebrow.textContent = p.eyebrow;
+      csTitle.textContent = p.title;
+      csHeroImg.src = p.img;
+      return p;
+    }
+
+    // Rect of an element relative to the viewport (morph uses position:fixed).
+    function rect(el) { return el.getBoundingClientRect(); }
+
+    /* ══════════ FORWARD: home → case study ══════════ */
+    var forward = {
+      // 1) rail exits left  2) content reveals top→bottom  3) new index slides in from left
+      handoff: function (tile) {
+        return play(homeRail, [{ transform: 'none', opacity: 1 }, { transform: 'translateX(-130%)', opacity: 0 }], { duration: 380 })
+          .then(function () {
+            cs.style.visibility = 'visible'; cs.style.opacity = '1';
+            csRail.style.opacity = '0'; csRail.style.transform = 'translateX(-30px)';
+            play(homeContent, [{ opacity: 1 }, { opacity: 0 }], { duration: 260 });
+            return play(csCol, [{ clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)' }], { duration: 560 });
+          })
+          .then(function () {
+            return play(csRail, [{ transform: 'translateX(-30px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 460 });
+          })
+          .then(function () { rest('cs'); });
+      },
+
+      // clicked thumbnail flies into the hero; surroundings cross-fade
+      morph: function (tile) {
+        var img = tile.querySelector('img');
+        var r = rect(img);
+        cs.style.visibility = 'visible'; cs.style.opacity = '0';   // laid out for measuring, not yet shown
+        var hr = rect(csHero);
+        csHeroImg.style.opacity = '0';
+        morph.src = img.src;
+        morph.style.display = 'block';
+        morph.style.left = r.left + 'px'; morph.style.top = r.top + 'px';
+        morph.style.width = r.width + 'px'; morph.style.height = r.height + 'px';
+        morph.style.borderRadius = '10px';
+
+        play(home, [{ opacity: 1 }, { opacity: 0 }], { duration: 520, easing: EASE_IO });
+        play(cs,   [{ opacity: 0 }, { opacity: 1 }], { duration: 420, easing: EASE_IO });
+        play(csRail, [{ transform: 'translateX(-24px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 520, delay: 160 });
+        var blocks = [csEyebrow, csTitle].concat([].slice.call(csCol.querySelectorAll('.cs-meta, .blk')));
+        blocks.forEach(function (b, i) {
+          play(b, [{ transform: 'translateY(14px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 460, delay: 220 + i * 55 });
+        });
+
+        return play(morph, [
+          { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px', borderRadius: '10px' },
+          { left: hr.left + 'px', top: hr.top + 'px', width: hr.width + 'px', height: hr.height + 'px', borderRadius: '14px' }
+        ], { duration: 640, easing: EASE_IO })
+          .then(function () {
+            csHeroImg.style.opacity = '1';
+            morph.style.display = 'none';
+            rest('cs');
+          });
+      },
+
+      // lavender panel sweeps down over home, pages swap under cover, panel lifts away
+      curtain: function (tile) {
+        return play(curtain, [{ transform: 'translateY(-101%)' }, { transform: 'translateY(0%)' }], { duration: 440, easing: EASE_IO })
+          .then(function () {
+            home.style.visibility = 'hidden'; home.style.opacity = '0';
+            cs.style.visibility = 'visible'; cs.style.opacity = '1';
+            csRail.style.opacity = '0'; csRail.style.transform = 'translateX(-26px)';
+            play(csRail, [{ transform: 'translateX(-26px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 520, delay: 180 });
+            return play(curtain, [{ transform: 'translateY(0%)' }, { transform: 'translateY(101%)' }], { duration: 540, easing: EASE_IO });
+          })
+          .then(function () { rest('cs'); });
+      },
+
+      // whole home slides out left as a unit; case study slides in from the right
+      push: function (tile) {
+        cs.style.visibility = 'visible'; cs.style.opacity = '1';
+        cs.style.transform = 'translateX(100%)';
+        play(home, [{ transform: 'translateX(0)' }, { transform: 'translateX(-100%)' }], { duration: 600, easing: EASE_IO });
+        return play(cs, [{ transform: 'translateX(100%)' }, { transform: 'translateX(0)' }], { duration: 600, easing: EASE_IO })
+          .then(function () { rest('cs'); });
+      },
+    };
+
+    /* ══════════ REVERSE: case study → home ══════════ */
+    var back = {
+      handoff: function () {
+        return play(csRail, [{ transform: 'none', opacity: 1 }, { transform: 'translateX(-30px)', opacity: 0 }], { duration: 340 })
+          .then(function () {
+            home.style.visibility = 'visible'; home.style.opacity = '1';
+            homeRail.style.opacity = '0'; homeRail.style.transform = 'translateX(-130%)';
+            homeContent.style.opacity = '0';
+            play(csCol, [{ clipPath: 'inset(0 0 0% 0)' }, { clipPath: 'inset(0 0 100% 0)' }], { duration: 460 });
+            play(homeContent, [{ opacity: 0 }, { opacity: 1 }], { duration: 420, delay: 200 });
+            return play(homeRail, [{ transform: 'translateX(-130%)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 460, delay: 260 });
+          })
+          .then(function () { rest('home'); });
+      },
+
+      morph: function () {
+        var target = lastTile.querySelector('img');
+        // the clicked thumbnail may be a feature card scrolled off-screen — bring it back
+        try { lastTile.scrollIntoView({ block: 'center' }); } catch (e) {}
+        var hr = rect(csHero);
+        var r = rect(target);
+        morph.src = csHeroImg.src;
+        morph.style.display = 'block';
+        morph.style.left = hr.left + 'px'; morph.style.top = hr.top + 'px';
+        morph.style.width = hr.width + 'px'; morph.style.height = hr.height + 'px';
+        morph.style.borderRadius = '14px';
+        csHeroImg.style.opacity = '0';
+        home.style.visibility = 'visible';
+        play(cs,   [{ opacity: 1 }, { opacity: 0 }], { duration: 460, easing: EASE_IO });
+        play(home, [{ opacity: 0 }, { opacity: 1 }], { duration: 520, easing: EASE_IO });
+        return play(morph, [
+          { left: hr.left + 'px', top: hr.top + 'px', width: hr.width + 'px', height: hr.height + 'px', borderRadius: '14px' },
+          { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px', borderRadius: '10px' }
+        ], { duration: 600, easing: EASE_IO })
+          .then(function () { csHeroImg.style.opacity = '1'; rest('home'); });
+      },
+
+      curtain: function () {
+        return play(curtain, [{ transform: 'translateY(-101%)' }, { transform: 'translateY(0%)' }], { duration: 440, easing: EASE_IO })
+          .then(function () {
+            cs.style.visibility = 'hidden'; cs.style.opacity = '0';
+            home.style.visibility = 'visible'; home.style.opacity = '1';
+            homeRail.style.opacity = '0'; homeRail.style.transform = 'translateX(-26px)';
+            play(homeRail, [{ transform: 'translateX(-26px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 520, delay: 180 });
+            return play(curtain, [{ transform: 'translateY(0%)' }, { transform: 'translateY(101%)' }], { duration: 540, easing: EASE_IO });
+          })
+          .then(function () { rest('home'); });
+      },
+
+      push: function () {
+        home.style.visibility = 'visible'; home.style.opacity = '1';
+        home.style.transform = 'translateX(-100%)';
+        play(cs, [{ transform: 'translateX(0)' }, { transform: 'translateX(100%)' }], { duration: 600, easing: EASE_IO });
+        return play(home, [{ transform: 'translateX(-100%)' }, { transform: 'translateX(0)' }], { duration: 600, easing: EASE_IO })
+          .then(function () { rest('home'); });
+      },
+    };
+
+    function quickFade(view) {   // reduced-motion path
+      var incoming = view === 'cs' ? cs : home;
+      var outgoing = view === 'cs' ? home : cs;
+      incoming.style.visibility = 'visible';
+      return play(outgoing, [{ opacity: 1 }, { opacity: 0 }], { duration: 180 })
+        .then(function () { rest(view); });
+    }
+
+    function goCS(tile) {
+      if (busy || current !== 'home') return;
+      busy = true;
+      lastTile = tile;
+      loadProject(tile);
+      var run = reduce ? function () { return quickFade('cs'); } : forward[selected];
+      Promise.resolve(run(tile)).then(function () { busy = false; });
+    }
+
+    function goHome() {
+      if (busy || current !== 'cs') return;
+      busy = true;
+      var run = reduce ? function () { return quickFade('home'); } : back[selected];
+      Promise.resolve(run()).then(function () { busy = false; });
+    }
+
+    // ── wiring ──
+    tiles.forEach(function (t) { t.addEventListener('click', function () { goCS(t); }); });
+    document.getElementById('csBack').addEventListener('click', goHome);
+
+    seg.addEventListener('click', function (e) {
+      var btn = e.target.closest('button'); if (!btn) return;
+      selected = btn.getAttribute('data-t');
+      [].forEach.call(seg.children, function (b) { b.classList.toggle('on', b === btn); });
+      hint.innerHTML = 'Click any thumbnail — grid <i>or</i> feature below — to play <b>' + LABELS[selected] + '</b> · “← Back to work” reverses';
+      cancelAll();
+      rest('home');
+      busy = false;
+    });
+
+    replay.addEventListener('click', function () {
+      cancelAll();
+      rest('home');
+      busy = false;
+      // let the reset paint, then replay the selected forward transition
+      requestAnimationFrame(function () { requestAnimationFrame(function () { goCS(lastTile || tiles[0]); }); });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'r' || e.key === 'R') { replay.click(); }
+      var idx = ['1', '2', '3', '4'].indexOf(e.key);
+      if (idx > -1) { seg.children[idx].click(); }
+    });
+
+    rest('home');
+  })();
+  </script>
+</body>
+</html>

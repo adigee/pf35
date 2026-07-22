@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playground — visual explorations</title>
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #121212; --surface: #1E1D1A; --surface-2: #26241F;
+      --border: rgba(248,246,238,0.10);
+      --text: #F8F6EE; --muted: rgba(248,246,238,0.45); --subtle: rgba(248,246,238,0.20);
+      --primary: #ACA0E8;
+      --font: 'Manrope', sans-serif;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      background: var(--bg); color: var(--text);
+      font-family: var(--font); -webkit-font-smoothing: antialiased;
+      padding: 72px 32px 96px;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    .eyebrow { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--primary); margin: 0 0 14px; }
+    h1 { font-size: 40px; line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 16px; font-weight: 700; }
+    .lede { font-size: 15px; line-height: 1.65; color: var(--muted); max-width: 56ch; margin: 0 0 8px; }
+    .note {
+      font-size: 12.5px; line-height: 1.6; color: var(--subtle);
+      margin: 20px 0 44px; padding: 14px 16px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    }
+    .note b { color: var(--muted); font-weight: 600; }
+
+    .list { display: flex; flex-direction: column; gap: 14px; }
+    a.card {
+      display: block; text-decoration: none; color: inherit;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px 22px;
+      transition: border-color 200ms var(--ease), transform 200ms var(--ease), background 200ms var(--ease);
+    }
+    a.card:hover { border-color: var(--primary); transform: translateY(-2px); background: var(--surface-2); }
+    .card-top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+    .card-title { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+    .card-date { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .card-desc { font-size: 14px; line-height: 1.6; color: var(--muted); margin: 8px 0 0; }
+    .card-arrow { color: var(--primary); }
+
+    footer { margin-top: 56px; font-size: 12px; color: var(--subtle); line-height: 1.6; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <p class="eyebrow">Playground</p>
+    <h1>Visual explorations</h1>
+    <p class="lede">A sandbox for feeling interactions, motion, and layout live in the browser before any production code exists.</p>
+
+    <p class="note">
+      This lives on the <b>playground</b> branch, which is <b>never merged into main</b> — nothing
+      here ships to the production site. Each entry is a self-contained prototype kept as a durable
+      reference. When an exploration wins, it's rebuilt cleanly on its own feature branch and PR'd to main.
+    </p>
+
+    <div class="list">
+
+      <!-- Newest first -->
+      <a class="card" href="page-transition-case-study-page-transition.html">
+        <div class="card-top">
+          <p class="card-title">Home ⇄ case-study page transitions <span class="card-arrow">→</span></p>
+          <span class="card-date">2026-07-22</span>
+        </div>
+        <p class="card-desc">
+          Four ways to move from the homepage into a project: rail hand-off, image morph, curtain
+          wipe, and spatial push — playable from both the grid tiles and the feature thumbnails.
+          The <b>image morph</b> was chosen and shipped in PR #79.
+        </p>
+      </a>
+
+    </div>
+
+    <footer>
+      New experiments are added to the top of this list. Bookmark this page to traverse every past exploration.
+    </footer>
+  </div>
+</body>
+</html>
