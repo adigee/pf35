@@ -268,3 +268,18 @@ document.addEventListener('click', function (e) {
   });
 });
 
+/* ─────────────────────────────────────────
+   DEV: spacing dial kit  (localhost + ?tune=1 only)
+   Per-adjacency vertical-rhythm tuner. Open any case study locally with
+   ?tune=1 to inject it. Guarded to localhost so it never runs elsewhere;
+   dev/ is deploy-excluded. Playground is a never-merged sandbox — this is
+   its home. See dev/spacing-tuner.js.
+───────────────────────────────────────── */
+(function () {
+  if (!/[?&]tune=1(?:&|$)/.test(location.search)) return;
+  if (!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) return;
+  var s = document.createElement('script');
+  s.src = 'dev/spacing-tuner.js';
+  document.body.appendChild(s);
+})();
+
