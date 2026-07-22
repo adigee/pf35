@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playground — Rail hand-off choreography tuner</title>
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --color-bg:            #121212;
+      --color-surface:       #1E1D1A;
+      --color-surface-2:     #26241F;
+      --color-border:        rgba(248, 246, 238, 0.10);
+      --color-text:          #F8F6EE;
+      --color-text-muted:    rgba(248, 246, 238, 0.45);
+      --color-text-subtle:   rgba(248, 246, 238, 0.20);
+      --color-primary:       #ACA0E8;
+      --color-primary-muted: rgba(172, 160, 232, 0.12);
+      --font: 'Manrope', sans-serif;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      background: var(--color-bg); color: var(--color-text);
+      font-family: var(--font); -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    .stage { position: fixed; inset: 0; overflow: hidden; background: var(--color-bg); }
+    .view { position: absolute; inset: 0; background: var(--color-bg); }
+
+    /* ── HOME ── */
+    .home { display: grid; grid-template-columns: 300px minmax(0,1fr); gap: 56px; padding: 44px 48px; overflow-y: auto; align-items: start; }
+    .home-content { min-width: 0; }
+    .rail { display: flex; flex-direction: column; position: sticky; top: 0; }
+    .avatar { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; background: var(--color-surface); }
+    .rail .name { font-size: 15px; font-weight: 700; line-height: 1.4; letter-spacing: -0.02em; margin: 18px 0 0; }
+    .rail .name .role { color: var(--color-primary); }
+    .rail-mid { flex: 1; margin-top: 22px; }
+    .rail-mid .bio { font-size: 13.5px; line-height: 1.6; max-width: 30ch; margin: 0; }
+    .rail-mid .tag { font-size: 13.5px; line-height: 1.6; margin: 16px 0 0; }
+    .rail-mid .tag em { color: var(--color-primary); font-style: normal; }
+    .rail-mid .loc { font-size: 13.5px; margin: 16px 0 0; color: var(--color-text-muted); }
+    .rail-nav { display: flex; flex-direction: column; gap: 3px; }
+    .rail-nav a { font-size: 17px; letter-spacing: 0.04em; }
+    .rail-resume { font-size: 17px; letter-spacing: 0.04em; margin-top: 4px; text-transform: uppercase; }
+
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); grid-auto-rows: 1fr; gap: 20px; align-content: start; }
+    .tile { position: relative; aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; background: var(--color-surface); border: 1px solid var(--color-border); cursor: pointer; }
+    .tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 600ms var(--ease); }
+    .tile:hover img { transform: scale(1.035); }
+    .tile::after { content: 'View project →'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; letter-spacing: 0.04em; color: #fff; background: color-mix(in srgb, var(--color-primary) 46%, transparent); opacity: 0; transition: opacity 300ms var(--ease); }
+    .tile:hover::after { opacity: 1; }
+
+    .feature { display: flex; align-items: center; justify-content: center; min-height: 74vh; padding: 40px 0; }
+    .feature:first-of-type { min-height: 0; padding-top: 40px; }
+    .feature-card { display: flex; flex-direction: column; align-items: center; cursor: pointer; width: 100%; }
+    .fc-media { position: relative; height: 40vh; aspect-ratio: 544/320; border-radius: 12px; overflow: hidden; background: var(--color-surface); border: 1px solid var(--color-border); }
+    .fc-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 600ms var(--ease); }
+    .feature-card:hover .fc-media img { transform: scale(1.03); }
+    .fc-scrim { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--color-primary) 46%, transparent); color: #fff; font-size: 14px; font-weight: 600; letter-spacing: 0.04em; opacity: 0; transition: opacity 300ms var(--ease); }
+    .feature-card:hover .fc-scrim { opacity: 1; }
+    .fc-caption { margin-top: 18px; }
+    .fc-eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-muted); }
+
+    /* ── CASE STUDY ── */
+    .cs { overflow-y: auto; }
+    .cs-inner { display: grid; grid-template-columns: 190px minmax(0,1fr); gap: 56px; max-width: 1120px; margin: 0 auto; padding: 44px 48px 120px; }
+    .cs-rail { position: sticky; top: 44px; align-self: start; display: flex; flex-direction: column; gap: 26px; }
+    .cs-back { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); cursor: pointer; }
+    .cs-back:hover { color: var(--color-primary); }
+    .cs-toc { display: flex; flex-direction: column; gap: 11px; }
+    .cs-toc a { font-size: 13px; letter-spacing: 0.02em; color: var(--color-text-muted); }
+    .cs-toc a.on { color: var(--color-text); }
+    .cs-col { min-width: 0; }
+    .cs-eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-primary); margin: 0 0 14px; }
+    .cs-title { font-size: 54px; line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; margin: 0 0 26px; }
+    .cs-hero { border-radius: 14px; overflow: hidden; background: var(--color-surface); aspect-ratio: 16/9; }
+    .cs-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cs-meta { display: flex; gap: 48px; margin: 28px 0 8px; padding: 0; }
+    .cs-meta dt { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 5px; }
+    .cs-meta dd { margin: 0; font-size: 14px; }
+    .blk { margin-top: 48px; max-width: 62ch; }
+    .blk h3 { font-size: 22px; letter-spacing: -0.01em; margin: 0 0 12px; }
+    .blk p { font-size: 15px; line-height: 1.7; color: rgba(248,246,238,0.72); margin: 0 0 14px; }
+
+    /* ── flying connectors ── */
+    .fly { position: fixed; z-index: 60; pointer-events: none; display: none; }
+    .fly-eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-primary); white-space: nowrap; font-weight: 500; }
+    .fly-img { object-fit: cover; border-radius: 14px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.45); }
+
+    /* ── PANEL ── */
+    .panel {
+      position: fixed; top: 14px; right: 14px; bottom: 14px; width: 348px; z-index: 100;
+      display: flex; flex-direction: column;
+      background: rgba(24,23,20,0.82); backdrop-filter: blur(18px) saturate(1.2);
+      border: 1px solid var(--color-border); border-radius: 16px;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.5);
+      overflow: hidden; transition: transform 360ms var(--ease);
+    }
+    .panel.collapsed { transform: translateX(calc(100% + 20px)); }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px 12px; border-bottom: 1px solid var(--color-border); }
+    .panel-head h2 { font-size: 13px; font-weight: 700; letter-spacing: 0.02em; margin: 0; }
+    .panel-head .sub { font-size: 11px; color: var(--color-text-muted); margin: 3px 0 0; }
+    .tabs { display: flex; gap: 4px; padding: 12px 14px 0; }
+    .tabs button { flex: 1; appearance: none; border: 1px solid var(--color-border); background: var(--color-bg); color: var(--color-text-muted); font-family: var(--font); font-size: 12px; font-weight: 600; padding: 9px 8px; border-radius: 9px; cursor: pointer; transition: all 160ms var(--ease); }
+    .tabs button.on { background: var(--color-primary); color: #121212; border-color: var(--color-primary); }
+    .tabbody { flex: 1; overflow-y: auto; padding: 12px 14px 8px; }
+    .tabbody::-webkit-scrollbar { width: 8px; }
+    .tabbody::-webkit-scrollbar-thumb { background: rgba(248,246,238,0.14); border-radius: 8px; }
+    .tp { display: none; }
+    .tp.on { display: block; }
+
+    .grp { border: 1px solid var(--color-border); border-radius: 11px; padding: 11px 12px 13px; margin-bottom: 10px; background: rgba(18,18,18,0.4); }
+    .grp > h3 { font-size: 11.5px; font-weight: 700; letter-spacing: 0.03em; color: var(--color-text); margin: 0 0 9px; }
+    .row { display: grid; grid-template-columns: 66px 1fr 46px; align-items: center; gap: 9px; margin: 7px 0; }
+    .row label { font-size: 11px; color: var(--color-text-muted); letter-spacing: 0.02em; }
+    .row input[type=range] { width: 100%; accent-color: var(--color-primary); }
+    .row .val { font-size: 11px; font-variant-numeric: tabular-nums; color: var(--color-text); text-align: right; }
+    .row select { width: 100%; background: var(--color-bg); color: var(--color-text); border: 1px solid var(--color-border); border-radius: 7px; font-family: var(--font); font-size: 11px; padding: 5px 6px; }
+    .row.wide { grid-template-columns: 66px 1fr; }
+
+    .panel-foot { border-top: 1px solid var(--color-border); padding: 11px 14px 13px; display: flex; flex-direction: column; gap: 9px; }
+    .foot-row { display: flex; gap: 7px; }
+    .foot-row.scrub { display: grid; grid-template-columns: 44px 1fr 40px; align-items: center; gap: 9px; }
+    .foot-row.scrub label { font-size: 11px; color: var(--color-text-muted); }
+    .foot-row.scrub input { width: 100%; accent-color: var(--color-primary); }
+    .foot-row.scrub .val { font-size: 11px; color: var(--color-text); text-align: right; font-variant-numeric: tabular-nums; }
+    .btn { flex: 1; appearance: none; cursor: pointer; background: transparent; color: var(--color-text); border: 1px solid var(--color-border); border-radius: 9px; font-family: var(--font); font-size: 12px; font-weight: 600; padding: 9px 8px; transition: all 160ms var(--ease); white-space: nowrap; }
+    .btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .btn.prim { background: var(--color-primary); color: #121212; border-color: var(--color-primary); }
+    .btn.prim:hover { color: #121212; opacity: 0.9; }
+    .btn.copied { border-color: var(--color-primary); color: var(--color-primary); }
+    .chk { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--color-text-muted); cursor: pointer; }
+    .chk input { accent-color: var(--color-primary); }
+
+    .reopen { position: fixed; top: 18px; right: 18px; z-index: 99; appearance: none; cursor: pointer; background: rgba(24,23,20,0.85); backdrop-filter: blur(10px); color: var(--color-text); border: 1px solid var(--color-border); border-radius: 10px; font-family: var(--font); font-size: 12px; font-weight: 600; padding: 9px 13px; display: none; }
+    .panel.collapsed ~ .reopen { display: block; }
+
+    .hud { position: fixed; left: 16px; bottom: 14px; z-index: 90; font-size: 11.5px; color: var(--color-text-muted); background: rgba(24,23,20,0.7); backdrop-filter: blur(8px); border: 1px solid var(--color-border); border-radius: 9px; padding: 8px 12px; line-height: 1.5; }
+    .hud b { color: var(--color-text); }
+  </style>
+</head>
+
+<body>
+  <div class="stage" id="stage">
+    <!-- HOME -->
+    <section class="view home" id="home">
+      <aside class="rail" id="homeRail">
+        <img class="avatar" src="../project%20content/intro.png" alt="Aditya Gujaran" />
+        <p class="name">Aditya Gujaran<br><span class="role">Product designer</span></p>
+        <div class="rail-mid">
+          <p class="bio">Versatile designer with a practice focused on rigorous, rapid, flexible UX research to enable high-velocity product delivery.</p>
+          <p class="tag">the <em>why</em> behind the what,<br>has never been more important</p>
+          <p class="loc">Based in Lisbon</p>
+        </div>
+        <nav class="rail-nav"><a>WORK</a><a>ABOUT</a></nav>
+        <div class="rail-resume">Resume</div>
+      </aside>
+      <div class="home-content" id="homeContent">
+        <main class="grid">
+          <a class="tile" data-project="lockers"><img src="../project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Lockers PUDO" /></a>
+          <a class="tile" data-project="ondemand"><img src="../project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand" /></a>
+          <a class="tile" data-project="decision"><img src="../project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module" /></a>
+          <a class="tile" data-project="dad"><img src="../project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD" /></a>
+        </main>
+        <section class="feature"><a class="feature-card" data-project="lockers"><div class="fc-media"><img src="../project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Lockers PUDO" /><span class="fc-scrim">View project →</span></div><div class="fc-caption"><span class="fc-eyebrow">Bounce · Growth</span></div></a></section>
+        <section class="feature"><a class="feature-card" data-project="ondemand"><div class="fc-media"><img src="../project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand" /><span class="fc-scrim">View project →</span></div><div class="fc-caption"><span class="fc-eyebrow">Unbabel · 0→1</span></div></a></section>
+        <section class="feature"><a class="feature-card" data-project="decision"><div class="fc-media"><img src="../project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module" /><span class="fc-scrim">View project →</span></div><div class="fc-caption"><span class="fc-eyebrow">Unbabel · AI</span></div></a></section>
+        <section class="feature"><a class="feature-card" data-project="dad"><div class="fc-media"><img src="../project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD" /><span class="fc-scrim">View project →</span></div><div class="fc-caption"><span class="fc-eyebrow">Cocoon · Service</span></div></a></section>
+      </div>
+    </section>
+
+    <!-- CASE STUDY -->
+    <section class="view cs" id="cs" aria-hidden="true" style="visibility:hidden;opacity:0;">
+      <div class="cs-inner">
+        <aside class="cs-rail" id="csRail">
+          <a class="cs-back" id="csBack">← Back to work</a>
+          <nav class="cs-toc"><a class="on">Context</a><a>Approach</a><a>Design</a><a>Outcome</a></nav>
+        </aside>
+        <main class="cs-col" id="csCol">
+          <p class="cs-eyebrow" id="csEyebrow">Bounce · Growth</p>
+          <h1 class="cs-title" id="csTitle">Lockers PUDO</h1>
+          <div class="cs-hero" id="csHero"><img id="csHeroImg" src="../project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="" /></div>
+          <dl class="cs-meta"><div><dt>Timeline</dt><dd>2024–25</dd></div><div><dt>Role</dt><dd>Lead Product Designer</dd></div><div><dt>Team</dt><dd>Growth squad</dd></div></dl>
+          <section class="blk"><h3>Context</h3><p>A new locker-based pick-up/drop-off use-case was cancelling at ~70%. Continuous discovery was set up to find where the flow was breaking and why.</p></section>
+          <section class="blk"><h3>Approach</h3><p>Rather than a single redesign, the team ran tight build–measure–learn loops, shipping one hypothesis at a time and watching the cancellation curve respond.</p></section>
+          <section class="blk"><h3>Design</h3><p>The booking flow was rebuilt around the two moments that mattered most: choosing a locker and confirming the drop. Everything else was stripped back.</p></section>
+          <section class="blk"><h3>Outcome</h3><p>Cancellation fell from ~70% toward 15%, proving product–market fit for the new use-case.</p></section>
+        </main>
+      </div>
+    </section>
+
+    <!-- flying connectors -->
+    <div class="fly fly-eyebrow" id="flyEyebrow"></div>
+    <img class="fly fly-img" id="flyImg" alt="" />
+  </div>
+
+  <!-- PANEL -->
+  <div class="panel" id="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Rail hand-off choreographer</h2>
+        <p class="sub">Click a project ▸ tune ▸ replay</p>
+      </div>
+      <button class="btn" id="collapse" style="flex:0 0 auto;padding:7px 11px;">Hide</button>
+    </div>
+    <div class="tabs">
+      <button data-tab="in" class="on">Incoming ▸</button>
+      <button data-tab="out">◂ Outgoing</button>
+    </div>
+    <div class="tabbody">
+      <div class="tp on" id="tp-in"></div>
+      <div class="tp" id="tp-out"></div>
+    </div>
+    <div class="panel-foot">
+      <div class="row wide" style="margin:0;"><label>Speed</label><input type="range" id="speed" min="0.5" max="1.8" step="0.05" value="1"></div>
+      <div class="row" style="margin:0;"><label>Master ease</label><select id="masterEase"></select><span class="val" id="speedVal">1.00×</span></div>
+      <div class="foot-row scrub"><label>Scrub</label><input type="range" id="scrub" min="0" max="100" step="0.5" value="0"><span class="val" id="scrubVal">0%</span></div>
+      <label class="chk"><input type="checkbox" id="reduce"> Preview reduced-motion fallback</label>
+      <div class="foot-row">
+        <button class="btn prim" id="replayIn">▶ Incoming</button>
+        <button class="btn prim" id="replayOut">▶ Outgoing</button>
+      </div>
+      <div class="foot-row">
+        <button class="btn" id="reset">Reset</button>
+        <button class="btn" id="copy">Copy config</button>
+      </div>
+    </div>
+  </div>
+  <button class="reopen" id="reopen">Tuner</button>
+
+  <div class="hud" id="hud">Click any thumbnail to play <b>Incoming</b> · “← Back” plays <b>Outgoing</b></div>
+
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var stage=$('stage'), home=$('home'), homeRail=$('homeRail'), homeContent=$('homeContent');
+    var cs=$('cs'), csRail=$('csRail'), csCol=$('csCol'), csEyebrow=$('csEyebrow'), csTitle=$('csTitle'),
+        csHero=$('csHero'), csHeroImg=$('csHeroImg');
+    var flyEyebrow=$('flyEyebrow'), flyImg=$('flyImg');
+    var tiles=[].slice.call(document.querySelectorAll('[data-project]'));
+
+    var EASES = {
+      soft:   'cubic-bezier(0.22, 1, 0.36, 1)',
+      snappy: 'cubic-bezier(0.4, 0, 0.2, 1)',
+      gentle: 'cubic-bezier(0.33, 0, 0.2, 1)',
+      expo:   'cubic-bezier(0.16, 1, 0.3, 1)',
+      back:   'cubic-bezier(0.34, 1.56, 0.64, 1)',
+      inout:  'cubic-bezier(0.65, 0, 0.35, 1)',
+      linear: 'linear',
+    };
+    var EASE_KEYS = Object.keys(EASES);
+
+    var PROJECTS = {
+      lockers:  { eyebrow: 'Bounce · Growth',   title: 'Lockers PUDO',    img: '../project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png' },
+      ondemand: { eyebrow: 'Unbabel · 0→1',     title: 'On-demand',       img: '../project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png' },
+      decision: { eyebrow: 'Unbabel · AI',      title: 'Decision Module', img: '../project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png' },
+      dad:      { eyebrow: 'Cocoon · Service',  title: 'TRQ DAD',         img: '../project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png' },
+    };
+
+    /* ── Default choreography (matches the narration) ── */
+    var DEFAULT = {
+      in: {
+        railOut:  { dur: 360, dist: 130, ease: 'soft' },
+        pageFade: { delay: 180, dur: 240, ease: 'snappy' },
+        eyebrow:  { delay: 40,  dur: 640, ease: 'expo' },
+        title:    { delay: 60,  dur: 520, rise: 20, ease: 'soft' },
+        content:  { delay: 40,  step: 80, dur: 480, rise: 22, ease: 'soft' },
+        railIn:   { delay: 40,  dur: 560, dist: 44, ease: 'soft' },
+      },
+      out: {
+        railOut:  { dur: 300, dist: 44, ease: 'snappy' },
+        zoom:     { delay: 120, dur: 620, scale: 0.82, ease: 'expo' },
+        converge: { delay: 120, dur: 660, ease: 'expo' },
+        railIn:   { delay: 220, dur: 560, dist: 130, ease: 'soft' },
+      },
+    };
+    var CFG = JSON.parse(JSON.stringify(DEFAULT));
+
+    /* ── Control schema (drives the panel UI) ── */
+    var SCHEMA = {
+      in: [
+        { key:'railOut',  title:'① Home rail exits',        fields:[ f('dur','Duration',120,900,10,'ms'), f('dist','Slide',60,180,5,'%'), fe('ease') ] },
+        { key:'pageFade', title:'② Page fades out',         fields:[ f('delay','Delay',0,600,10,'ms'), f('dur','Duration',80,600,10,'ms'), fe('ease') ] },
+        { key:'eyebrow',  title:'③ Eyebrow travels',        fields:[ f('delay','Delay',0,500,10,'ms'), f('dur','Duration',200,1400,10,'ms'), fe('ease') ] },
+        { key:'title',    title:'④ Title lands',            fields:[ f('delay','Delay',0,600,10,'ms'), f('dur','Duration',150,1000,10,'ms'), f('rise','Rise',0,80,2,'px'), fe('ease') ] },
+        { key:'content',  title:'⑤ Content below (stagger)',fields:[ f('delay','Delay',0,600,10,'ms'), f('step','Step',0,240,5,'ms'), f('dur','Duration',150,1000,10,'ms'), f('rise','Rise',0,80,2,'px'), fe('ease') ] },
+        { key:'railIn',   title:'⑥ Index rail flies in',    fields:[ f('delay','Delay',0,800,10,'ms'), f('dur','Duration',150,1000,10,'ms'), f('dist','Slide',10,120,2,'px'), fe('ease') ] },
+      ],
+      out: [
+        { key:'railOut',  title:'① Index rail exits',       fields:[ f('dur','Duration',120,900,10,'ms'), f('dist','Slide',10,120,2,'px'), fe('ease') ] },
+        { key:'zoom',     title:'② Body zooms / scrunches', fields:[ f('delay','Delay',0,600,10,'ms'), f('dur','Duration',200,1400,10,'ms'), f('scale','End scale',0.5,1,0.01,'×'), fe('ease') ] },
+        { key:'converge', title:'③ Image + eyebrow settle', fields:[ f('delay','Delay',0,600,10,'ms'), f('dur','Duration',200,1400,10,'ms'), fe('ease') ] },
+        { key:'railIn',   title:'④ Home rail flies in',     fields:[ f('delay','Delay',0,900,10,'ms'), f('dur','Duration',150,1000,10,'ms'), f('dist','Slide',60,180,5,'%'), fe('ease') ] },
+      ],
+    };
+    function f(k,label,min,max,step,unit){ return {k:k,label:label,min:min,max:max,step:step,unit:unit}; }
+    function fe(k){ return {k:k,label:'Ease',ease:true}; }
+
+    /* ── Global state ── */
+    var state = { speed:1, ease:'soft', reduce:false, tab:'in', scrubbing:false };
+
+    function d(v){ return v / state.speed; }
+    function EZ(key){ return EASES[ key==='auto' ? state.ease : key ] || EASES.soft; }
+
+    /* ── Build panel UI from schema ── */
+    (function buildPanel(){
+      ['in','out'].forEach(function(dir){
+        var host = $('tp-'+dir);
+        SCHEMA[dir].forEach(function(group){
+          var g = document.createElement('div'); g.className='grp';
+          var h = document.createElement('h3'); h.textContent=group.title; g.appendChild(h);
+          group.fields.forEach(function(fld){
+            var row = document.createElement('div'); row.className='row';
+            var lab = document.createElement('label'); lab.textContent=fld.label; row.appendChild(lab);
+            if (fld.ease){
+              row.classList.remove('row'); row.className='row wide';
+              var sel = document.createElement('select');
+              EASE_KEYS.forEach(function(k){ var o=document.createElement('option'); o.value=k; o.textContent=k; sel.appendChild(o); });
+              sel.value = CFG[dir][group.key][fld.k];
+              sel.addEventListener('change', function(){ CFG[dir][group.key][fld.k]=sel.value; });
+              row.appendChild(sel);
+            } else {
+              var inp = document.createElement('input'); inp.type='range'; inp.min=fld.min; inp.max=fld.max; inp.step=fld.step;
+              inp.value = CFG[dir][group.key][fld.k];
+              var val = document.createElement('span'); val.className='val';
+              var fmt = function(v){ return fld.unit==='×' ? (+v).toFixed(2) : (fld.unit==='%'||fld.unit==='px' ? Math.round(v)+'' : Math.round(v)+''); };
+              val.textContent = fmt(inp.value)+ (fld.unit==='ms'?'' : (fld.unit==='×'?'':'') );
+              val.textContent = fmt(inp.value);
+              inp.addEventListener('input', function(){ CFG[dir][group.key][fld.k]= (fld.step<1? parseFloat(inp.value): parseInt(inp.value,10)); val.textContent=fmt(inp.value); });
+              inp.setAttribute('data-cfg', dir+'.'+group.key+'.'+fld.k);
+              row.appendChild(inp); row.appendChild(val);
+            }
+            g.appendChild(row);
+          });
+          host.appendChild(g);
+        });
+      });
+      // master ease options
+      var me = $('masterEase');
+      EASE_KEYS.forEach(function(k){ var o=document.createElement('option'); o.value=k; o.textContent=k; me.appendChild(o); });
+      me.value = state.ease;
+      me.addEventListener('change', function(){ state.ease=me.value; });
+    })();
+
+    function syncPanelFromCFG(){
+      document.querySelectorAll('input[data-cfg]').forEach(function(inp){
+        var path = inp.getAttribute('data-cfg').split('.');
+        var v = CFG[path[0]][path[1]][path[2]];
+        inp.value = v;
+        inp.parentNode.querySelector('.val').textContent = (String(inp.step).indexOf('.')>-1? (+v).toFixed(2) : Math.round(v)+'');
+      });
+      document.querySelectorAll('#tp-in select, #tp-out select').forEach(function(sel){/* ease selects reset below */});
+      // reset ease selects
+      ['in','out'].forEach(function(dir){
+        var host=$('tp-'+dir);
+        var selects = host.querySelectorAll('select');
+        var idx=0;
+        SCHEMA[dir].forEach(function(group){
+          group.fields.forEach(function(fld){ if(fld.ease){ selects[idx].value = CFG[dir][group.key][fld.k]; idx++; } });
+        });
+      });
+    }
+
+    /* ── Animation engine ── */
+    var anims = [];
+    var totalDur = 0;
+    function cancelAll(){ anims.forEach(function(a){ try{a.cancel();}catch(e){} }); anims=[]; }
+    function createAnims(tracks, paused){
+      cancelAll();
+      totalDur = 0;
+      anims = tracks.map(function(t){
+        var delay = d(t.delay||0), dur = d(t.dur);
+        var a = t.el.animate(t.frames, { delay:delay, duration:dur, easing:EZ(t.ease), fill:'both' });
+        if (paused) a.pause();
+        totalDur = Math.max(totalDur, delay+dur);
+        return a;
+      });
+      return totalDur;
+    }
+    function rect(el){ return el.getBoundingClientRect(); }
+
+    /* ── Resting states ── */
+    function rest(view){
+      cancelAll();
+      var onHome = view==='home';
+      home.style.cssText = 'visibility:'+(onHome?'visible':'hidden')+';opacity:'+(onHome?'1':'0')+';transform:none;pointer-events:'+(onHome?'auto':'none')+';';
+      homeRail.style.cssText=''; homeContent.style.cssText='min-width:0;';
+      cs.style.cssText = 'visibility:'+(onHome?'hidden':'visible')+';opacity:'+(onHome?'0':'1')+';transform:none;pointer-events:'+(onHome?'none':'auto')+';';
+      csRail.style.cssText=''; csCol.style.cssText='min-width:0;';
+      [csEyebrow,csTitle,csHero].concat(csMetaBlocks()).forEach(function(el){ el.style.cssText=csBaseStyle(el); });
+      flyEyebrow.style.display='none'; flyImg.style.display='none';
+      cs.scrollTop = 0;
+      cur = view;
+    }
+    function csBaseStyle(el){ return el.className.indexOf('cs-eyebrow')>-1 ? 'margin:0 0 14px;' : ''; }
+    function csMetaBlocks(){ return [].slice.call(csCol.querySelectorAll('.cs-meta, .blk')); }
+    function contentEls(){ return [csHero].concat(csMetaBlocks()); }
+
+    function featureCardFor(project){ return document.querySelector('.feature-card[data-project="'+project+'"]'); }
+    function eyebrowSourceRect(tile){
+      var eb = tile.querySelector('.fc-eyebrow');
+      if (eb) return rect(eb);
+      var r = rect(tile); return { left:r.left, top:r.bottom+10, width:150, height:15 };
+    }
+
+    /* ══ INCOMING: build timeline (home → cs) ══ */
+    function prepareIn(tile){
+      var p = PROJECTS[tile.getAttribute('data-project')];
+      csEyebrow.textContent=p.eyebrow; csTitle.textContent=p.title; csHeroImg.src=p.img;
+
+      // lay cs out (transparent) to measure destination positions
+      cs.style.visibility='visible'; cs.style.opacity='0'; cs.style.transform='none'; cs.scrollTop=0;
+      home.style.visibility='visible'; home.style.opacity='1';
+
+      var ebSrc = eyebrowSourceRect(tile);
+      var ebDst = rect(csEyebrow);
+
+      var c = CFG.in;
+      // baseline hidden states for the incoming cs content
+      csEyebrow.style.opacity='0';
+      csTitle.style.opacity='0';
+      contentEls().forEach(function(el){ el.style.opacity='0'; });
+      csRail.style.opacity='0';
+
+      // fly-eyebrow clone sits on top, fades in as page leaves, then travels
+      flyEyebrow.textContent=p.eyebrow;
+      flyEyebrow.style.display='block';
+      flyEyebrow.style.left=ebSrc.left+'px'; flyEyebrow.style.top=ebSrc.top+'px';
+      flyEyebrow.style.opacity='0'; flyEyebrow.style.transform='none';
+      var dx = ebDst.left-ebSrc.left, dy = ebDst.top-ebSrc.top;
+
+      var tracks = [];
+      // ① rail out
+      tracks.push({ el:homeRail, ease:c.railOut.ease, delay:0, dur:c.railOut.dur,
+        frames:[{transform:'none',opacity:1},{transform:'translateX(-'+c.railOut.dist+'%)',opacity:0}] });
+      // ② page fades (home section out, cs bg in) — leaves only the flying eyebrow
+      var t2 = c.railOut.dur*0.5 + c.pageFade.delay;
+      tracks.push({ el:homeContent, ease:c.pageFade.ease, delay:t2, dur:c.pageFade.dur, frames:[{opacity:1},{opacity:0}] });
+      tracks.push({ el:cs, ease:c.pageFade.ease, delay:t2, dur:c.pageFade.dur, frames:[{opacity:0},{opacity:1}] });
+      tracks.push({ el:flyEyebrow, ease:'snappy', delay:t2, dur:Math.min(200,c.pageFade.dur), frames:[{opacity:0},{opacity:1}], _op:true });
+      // ③ eyebrow travels to destination
+      var t3 = t2 + c.pageFade.dur + c.eyebrow.delay;
+      tracks.push({ el:flyEyebrow, ease:c.eyebrow.ease, delay:t3, dur:c.eyebrow.dur,
+        frames:[{transform:'translate(0,0)'},{transform:'translate('+dx+'px,'+dy+'px)'}] });
+      var tArrive = t3 + c.eyebrow.dur;
+      // hand off flying → real eyebrow at arrival
+      tracks.push({ el:csEyebrow, ease:'linear', delay:tArrive-1, dur:2, frames:[{opacity:0},{opacity:1}] });
+      tracks.push({ el:flyEyebrow, ease:'linear', delay:tArrive-1, dur:2, frames:[{opacity:1},{opacity:0}], _op:true });
+      // ④ title lands
+      var t4 = tArrive + c.title.delay;
+      tracks.push({ el:csTitle, ease:c.title.ease, delay:t4, dur:c.title.dur,
+        frames:[{opacity:0,transform:'translateY('+c.title.rise+'px)'},{opacity:1,transform:'none'}] });
+      // ⑤ content stagger
+      var t5 = t4 + c.title.dur*0.35 + c.content.delay;
+      contentEls().forEach(function(el,i){
+        tracks.push({ el:el, ease:c.content.ease, delay:t5 + i*c.content.step, dur:c.content.dur,
+          frames:[{opacity:0,transform:'translateY('+c.content.rise+'px)'},{opacity:1,transform:'none'}] });
+      });
+      // ⑥ index rail flies in
+      var t6 = t4 + c.railIn.delay;
+      tracks.push({ el:csRail, ease:c.railIn.ease, delay:t6, dur:c.railIn.dur,
+        frames:[{opacity:0,transform:'translateX(-'+c.railIn.dist+'px)'},{opacity:1,transform:'none'}] });
+
+      return { tracks:tracks, dest:'cs', origin:'home' };
+    }
+
+    /* ══ OUTGOING: build timeline (cs → home) ══ */
+    function prepareOut(){
+      var project = curProject || 'lockers';
+      var card = featureCardFor(project);
+      try { card.scrollIntoView({block:'center'}); } catch(e){}
+
+      // measure
+      var heroR = rect(csHero);
+      var ebR   = rect(csEyebrow);
+      var media = card.querySelector('.fc-media');
+      var cardEb= card.querySelector('.fc-eyebrow');
+      var mediaR= rect(media), cardEbR= rect(cardEb);
+
+      home.style.visibility='visible'; home.style.opacity='1';
+      homeRail.style.opacity='0'; homeRail.style.transform='translateX(-'+CFG.out.railIn.dist+'%)';
+      cs.style.visibility='visible'; cs.style.opacity='1';
+
+      // overlays take over image + eyebrow; hide the real ones on the cs
+      csHeroImg.parentNode.style.opacity='0';  // hide real hero
+      csEyebrow.style.opacity='0';
+      flyImg.src=csHeroImg.src;
+      flyImg.style.display='block';
+      flyImg.style.left=heroR.left+'px'; flyImg.style.top=heroR.top+'px';
+      flyImg.style.width=heroR.width+'px'; flyImg.style.height=heroR.height+'px'; flyImg.style.borderRadius='14px';
+      flyEyebrow.textContent=csEyebrow.textContent;
+      flyEyebrow.style.display='block';
+      flyEyebrow.style.left=ebR.left+'px'; flyEyebrow.style.top=ebR.top+'px'; flyEyebrow.style.opacity='1'; flyEyebrow.style.transform='none';
+      var edx=cardEbR.left-ebR.left, edy=cardEbR.top-ebR.top;
+
+      var c = CFG.out;
+      var tracks = [];
+      // ① index rail exits
+      tracks.push({ el:csRail, ease:c.railOut.ease, delay:0, dur:c.railOut.dur,
+        frames:[{transform:'none',opacity:1},{transform:'translateX(-'+c.railOut.dist+'px)',opacity:0}] });
+      // ② body zooms out / scrunches — text folds away, cs bg reveals home
+      var t2 = c.zoom.delay;
+      tracks.push({ el:csCol, ease:c.zoom.ease, delay:t2, dur:c.zoom.dur,
+        frames:[{transform:'scale(1)',opacity:1},{transform:'scale('+c.zoom.scale+')',opacity:0}] });
+      tracks.push({ el:cs, ease:c.zoom.ease, delay:t2+c.zoom.dur*0.35, dur:c.zoom.dur*0.7, frames:[{opacity:1},{opacity:0}] });
+      // ③ image + eyebrow settle into the home feature card
+      var t3 = c.converge.delay;
+      tracks.push({ el:flyImg, ease:c.converge.ease, delay:t3, dur:c.converge.dur,
+        frames:[
+          {left:heroR.left+'px',top:heroR.top+'px',width:heroR.width+'px',height:heroR.height+'px',borderRadius:'14px'},
+          {left:mediaR.left+'px',top:mediaR.top+'px',width:mediaR.width+'px',height:mediaR.height+'px',borderRadius:'12px'}
+        ] });
+      tracks.push({ el:flyEyebrow, ease:c.converge.ease, delay:t3, dur:c.converge.dur,
+        frames:[{transform:'translate(0,0)'},{transform:'translate('+edx+'px,'+edy+'px)'}] });
+      // ④ home rail flies in
+      var t4 = Math.max(c.zoom.delay+c.zoom.dur, c.converge.delay+c.converge.dur) - 120 + c.railIn.delay*0 + c.railIn.delay;
+      t4 = c.railIn.delay + Math.max(t2+c.zoom.dur, t3+c.converge.dur) - c.converge.dur*0.5;
+      tracks.push({ el:homeRail, ease:c.railIn.ease, delay:c.railIn.delay + t3 + c.converge.dur*0.4, dur:c.railIn.dur,
+        frames:[{opacity:0,transform:'translateX(-'+c.railIn.dist+'%)'},{opacity:1,transform:'none'}] });
+
+      return { tracks:tracks, dest:'home', origin:'cs',
+        cleanup:function(){ csHeroImg.parentNode.style.opacity=''; } };
+    }
+
+    /* ── quick fade (reduced-motion) ── */
+    function quickFade(dest){
+      cancelAll();
+      var inc = dest==='cs'?cs:home, out = dest==='cs'?home:cs;
+      inc.style.visibility='visible';
+      var a = out.animate([{opacity:1},{opacity:0}],{duration:160,fill:'forwards'});
+      anims=[a];
+      return a.finished.catch(function(){}).then(function(){ rest(dest); });
+    }
+
+    /* ── run / scrub ── */
+    var cur='home', busy=false, curProject='lockers', lastTile=tiles[0], lastCleanup=null;
+    var scrubSpec=null;
+
+    function play(dir, tile){
+      if (busy) return;
+      exitScrub();
+      busy=true;
+      if (state.reduce){ quickFade(dir==='in'?'cs':'home').then(function(){ busy=false; }); return; }
+      var spec = dir==='in' ? prepareIn(tile) : prepareOut();
+      lastCleanup = spec.cleanup||null;
+      createAnims(spec.tracks, false);
+      Promise.all(anims.map(function(a){ return a.finished.catch(function(){}); })).then(function(){
+        if (state.scrubbing) return;
+        if (spec.cleanup) spec.cleanup();
+        rest(spec.dest); busy=false;
+      });
+    }
+
+    function enterScrub(){
+      if (scrubSpec) return;
+      var dir = state.tab;
+      // ensure we start from the origin view
+      rest(dir==='in'?'home':'cs');
+      if (dir==='out') { curProject = curProject||'lockers'; }
+      scrubSpec = dir==='in' ? prepareIn(lastTile) : prepareOut();
+      createAnims(scrubSpec.tracks, true);
+      state.scrubbing=true;
+    }
+    function scrubTo(pct){
+      enterScrub();
+      var t = (pct/100)*totalDur;
+      anims.forEach(function(a){ try{ a.currentTime=t; }catch(e){} });
+    }
+    function exitScrub(){
+      if (!state.scrubbing) return;
+      state.scrubbing=false;
+      if (scrubSpec && scrubSpec.cleanup) scrubSpec.cleanup();
+      var origin = scrubSpec ? scrubSpec.origin : 'home';
+      scrubSpec=null;
+      $('scrub').value=0; $('scrubVal').textContent='0%';
+      rest(origin);
+    }
+
+    /* ── wiring ── */
+    tiles.forEach(function(t){
+      t.addEventListener('click', function(){
+        if (cur!=='home' || busy) return;
+        lastTile=t; curProject=t.getAttribute('data-project');
+        play('in', t);
+      });
+    });
+    $('csBack').addEventListener('click', function(){ if (cur!=='cs'||busy) return; play('out'); });
+
+    // tabs
+    document.querySelector('.tabs').addEventListener('click', function(e){
+      var b=e.target.closest('button'); if(!b) return;
+      state.tab=b.getAttribute('data-tab');
+      [].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});
+      $('tp-in').classList.toggle('on', state.tab==='in');
+      $('tp-out').classList.toggle('on', state.tab==='out');
+      exitScrub();
+      rest(state.tab==='in'?'home':'cs');
+    });
+
+    // panel collapse
+    $('collapse').addEventListener('click', function(){ $('panel').classList.add('collapsed'); });
+    $('reopen').addEventListener('click', function(){ $('panel').classList.remove('collapsed'); });
+
+    // global controls
+    $('speed').addEventListener('input', function(){ state.speed=parseFloat(this.value); $('speedVal').textContent=state.speed.toFixed(2)+'×'; });
+    $('reduce').addEventListener('change', function(){ state.reduce=this.checked; });
+    $('scrub').addEventListener('input', function(){ scrubTo(parseFloat(this.value)); $('scrubVal').textContent=Math.round(this.value)+'%'; });
+    $('scrub').addEventListener('change', function(){ if(parseFloat(this.value)>=99.5){ exitScrub(); } });
+
+    $('replayIn').addEventListener('click', function(){ exitScrub(); rest('home'); requestAnimationFrame(function(){ requestAnimationFrame(function(){ play('in', lastTile); }); }); });
+    $('replayOut').addEventListener('click', function(){ exitScrub(); curProject=curProject||'lockers'; rest('cs'); requestAnimationFrame(function(){ requestAnimationFrame(function(){ play('out'); }); }); });
+
+    $('reset').addEventListener('click', function(){ CFG=JSON.parse(JSON.stringify(DEFAULT)); syncPanelFromCFG(); });
+
+    $('copy').addEventListener('click', function(){
+      var out = { global:{ speed:state.speed, masterEase:state.ease }, incoming:CFG.in, outgoing:CFG.out, eases:EASES };
+      var txt = '/* Rail hand-off choreography — export from tuner */\n' + JSON.stringify(out, null, 2);
+      if (navigator.clipboard) navigator.clipboard.writeText(txt);
+      var b=this, prev=b.textContent; b.textContent='Copied ✓'; b.classList.add('copied');
+      setTimeout(function(){ b.textContent=prev; b.classList.remove('copied'); }, 1400);
+    });
+
+    document.addEventListener('keydown', function(e){
+      if (e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return;
+      if (e.key==='1') $('replayIn').click();
+      if (e.key==='2') $('replayOut').click();
+    });
+
+    rest('home');
+  })();
+  </script>
+</body>
+</html>
