@@ -45,7 +45,7 @@ Particular focus on 0→1 problem-solving. Available for freelance / full-time c
 - Reimagined the tedious EU car accident claim form as a friendly chatbot for a project with Cocoon Experience
 - Led the concept and UX design of Woorti, a public transport app to help researchers using gamification for the Motiv project
 
-**Case study:** [TRQ DAD — Cocoon](https://adityagujaran.me/projects/trq-dad/) — Mobile chatbot for filing insurance claims after a car accident. Stripped verbose forms to their essentials. Skills: Service design, Conversational UI.
+**Case study:** [TRQ DAD — Cocoon](https://adityagujaran.me/trq-dad.html) — Mobile chatbot for filing insurance claims after a car accident. Stripped verbose forms to their essentials. Skills: Service design, Conversational UI.
 
 ---
 
@@ -82,7 +82,7 @@ BE in Information Technology | Jun 2011 | Mumbai, India
 | Lockers PUDO | Bounce | [lockers-reducing-cancellation.html](https://adityagujaran.me/lockers-reducing-cancellation.html) |
 | On-demand | Unbabel | [on-demand.html](https://adityagujaran.me/on-demand.html) |
 | The Decision Module | Unbabel | [decision-module.html](https://adityagujaran.me/decision-module.html) |
-| TRQ DAD | Cocoon (Freelance) | [trq-dad](https://adityagujaran.me/projects/trq-dad/) |
+| TRQ DAD | Cocoon (Freelance) | [trq-dad.html](https://adityagujaran.me/trq-dad.html) |
 
 ---
 
