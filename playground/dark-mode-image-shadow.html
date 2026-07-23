@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playground — dark-mode image shadow</title>
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Real production tokens (from style.css) ───────────────────── */
+    .stage[data-theme="dark"] {
+      --color-bg: #121212;
+      --color-surface: #1E1D1A;
+      --color-border: rgba(248, 246, 238, 0.10);
+      --color-text: #F8F6EE;
+      --color-text-muted: rgba(248, 246, 238, 0.45);
+      --color-primary: #ACA0E8;
+    }
+    .stage[data-theme="light"] {
+      --color-bg: #FFF3E8;
+      --color-surface: #FFE0C4;
+      --color-border: rgba(26, 42, 94, 0.10);
+      --color-text: #1A2A5E;
+      --color-text-muted: rgba(26, 42, 94, 0.48);
+      --color-primary: #2147CC;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      font-family: 'Manrope', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background: #0b0b0b;
+      color: #F8F6EE;
+    }
+
+    /* ── Control bar ───────────────────────────────────────────────── */
+    .bar {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 22px;
+      padding: 14px 20px;
+      background: rgba(18, 18, 18, 0.92);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(248, 246, 238, 0.10);
+    }
+    .bar .group { display: flex; align-items: center; gap: 10px; }
+    .bar .glabel {
+      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(248, 246, 238, 0.45); white-space: nowrap;
+    }
+
+    .seg { display: inline-flex; background: rgba(248,246,238,0.06); border-radius: 9px; padding: 3px; gap: 2px; }
+    .seg button {
+      font: inherit; font-size: 12.5px; font-weight: 500;
+      color: rgba(248,246,238,0.6); background: transparent;
+      border: 0; border-radius: 7px; padding: 7px 13px; cursor: pointer;
+      white-space: nowrap; transition: background 140ms ease, color 140ms ease;
+    }
+    .seg button:hover { color: #F8F6EE; }
+    .seg button[aria-pressed="true"] { background: #ACA0E8; color: #121212; }
+
+    .dials { display: flex; align-items: center; gap: 20px; transition: opacity 160ms ease; }
+    .dials.off { opacity: 0.32; pointer-events: none; }
+    .dial { display: flex; flex-direction: column; gap: 4px; width: 132px; }
+    .dial .row { display: flex; justify-content: space-between; align-items: baseline; }
+    .dial label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(248,246,238,0.45); }
+    .dial output { font-size: 11px; font-variant-numeric: tabular-nums; color: #ACA0E8; }
+    .dial input[type="range"] { width: 100%; accent-color: #ACA0E8; height: 18px; margin: 0; cursor: pointer; }
+
+    .copybtn {
+      font: inherit; font-size: 12px; font-weight: 600;
+      color: #121212; background: #ACA0E8;
+      border: 0; border-radius: 8px; padding: 9px 15px; cursor: pointer;
+      transition: transform 120ms ease, filter 120ms ease;
+    }
+    .copybtn:hover { filter: brightness(1.06); }
+    .copybtn:active { transform: scale(0.97); }
+    .copybtn.ok { background: #7bd88f; }
+
+    /* ── Side-by-side stages ───────────────────────────────────────── */
+    .board { display: grid; grid-template-columns: 1fr 1fr; }
+    .stage {
+      background: var(--color-bg); color: var(--color-text);
+      padding: 40px 40px 64px; min-height: calc(100vh - 60px);
+    }
+    .stage[data-theme="dark"]  { border-right: 1px solid rgba(255,255,255,0.06); }
+    .stage-tag {
+      font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--color-text-muted); margin: 0 0 26px;
+    }
+
+    .reading-col { max-width: 620px; margin: 0 auto; }
+    .eyebrow { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-primary); margin: 0 0 12px; }
+    h1.title { font-size: 30px; line-height: 1.12; letter-spacing: -0.03em; font-weight: 700; margin: 0 0 30px; }
+    .body { font-size: 15px; line-height: 1.6; color: var(--color-text); margin: 26px 0 0; }
+    .section-header { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin: 40px 0 0; }
+    .figcaption {
+      margin-top: 12px; font-size: 13px; letter-spacing: 0.04em;
+      color: var(--color-text-muted); text-align: center;
+    }
+
+    /* ── The image treatments (this is what we're comparing) ───────── */
+    .cs-hero-img-wrap {
+      margin-top: 34px; border-radius: 8px; overflow: hidden; background: #f4f4f6;
+    }
+    .cs-figure { margin: 40px 0; }
+    .cs-img-wrap { border-radius: 6px; overflow: hidden; background: #f4f4f6; }
+    .cs-hero-img, .cs-img { width: 100%; height: auto; display: block; }
+
+    /* dial-driven vars, seeded from JS */
+    .board {
+      --dark-rim: 0.10;
+      --dark-shadow-a: 0.55;
+      --dark-shadow-scale: 1;
+    }
+
+    /* CURRENT — pure-black shadow, same in both themes (the bug) */
+    .board[data-treatment="current"] .cs-hero-img-wrap { box-shadow: 0 24px 64px rgba(0,0,0,0.30); }
+    .board[data-treatment="current"] .cs-img-wrap      { box-shadow: 0 12px 40px rgba(0,0,0,0.22); }
+
+    /* A — flush, edge defined by theme-aware hairline, no shadow */
+    .board[data-treatment="a"] .cs-hero-img-wrap,
+    .board[data-treatment="a"] .cs-img-wrap {
+      box-shadow: none;
+      border: 1px solid var(--color-border);
+    }
+
+    /* B — theme-aware lift.
+       Light: the black drop shadow that already works.
+       Dark:  soft shadow + a light rim ring so it lifts off #121212. */
+    .board[data-treatment="b"] .stage[data-theme="light"] .cs-hero-img-wrap { box-shadow: 0 24px 64px rgba(0,0,0,0.30); }
+    .board[data-treatment="b"] .stage[data-theme="light"] .cs-img-wrap      { box-shadow: 0 12px 40px rgba(0,0,0,0.22); }
+    .board[data-treatment="b"] .stage[data-theme="dark"] .cs-hero-img-wrap {
+      box-shadow:
+        0 calc(24px * var(--dark-shadow-scale)) calc(64px * var(--dark-shadow-scale)) rgba(0,0,0,var(--dark-shadow-a)),
+        0 0 0 1px rgba(248,246,238,var(--dark-rim));
+    }
+    .board[data-treatment="b"] .stage[data-theme="dark"] .cs-img-wrap {
+      box-shadow:
+        0 calc(12px * var(--dark-shadow-scale)) calc(40px * var(--dark-shadow-scale)) rgba(0,0,0,var(--dark-shadow-a)),
+        0 0 0 1px rgba(248,246,238,var(--dark-rim));
+    }
+
+    @media (max-width: 900px) {
+      .board { grid-template-columns: 1fr; }
+      .stage { min-height: 0; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bar">
+    <div class="group">
+      <span class="glabel">Treatment</span>
+      <div class="seg" id="seg">
+        <button data-t="current" aria-pressed="true">Current</button>
+        <button data-t="a">A · Flush + hairline</button>
+        <button data-t="b">B · Theme-aware lift</button>
+      </div>
+    </div>
+
+    <div class="group dials off" id="dials">
+      <span class="glabel">Dark-mode&nbsp;B</span>
+      <div class="dial">
+        <div class="row"><label>Rim opacity</label><output id="o-rim">0.10</output></div>
+        <input type="range" id="d-rim" min="0" max="0.24" step="0.01" value="0.10" />
+      </div>
+      <div class="dial">
+        <div class="row"><label>Shadow opacity</label><output id="o-sa">0.55</output></div>
+        <input type="range" id="d-sa" min="0" max="0.8" step="0.01" value="0.55" />
+      </div>
+      <div class="dial">
+        <div class="row"><label>Shadow size</label><output id="o-sz">1.00×</output></div>
+        <input type="range" id="d-sz" min="0.5" max="1.6" step="0.05" value="1" />
+      </div>
+    </div>
+
+    <button class="copybtn" id="copy">Copy CSS</button>
+  </div>
+
+  <div class="board" id="board" data-treatment="current">
+    <!-- DARK stage -->
+    <section class="stage" data-theme="dark">
+      <p class="stage-tag">Dark mode · #121212</p>
+      <div class="reading-col">
+        <p class="eyebrow">TRQ · DAD</p>
+        <h1 class="title">How we created a friendly chatbot to submit a car insurance claim</h1>
+        <div class="cs-hero-img-wrap">
+          <img class="cs-hero-img" src="../project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="Hero" />
+        </div>
+        <p class="section-header">Mapping the problem space</p>
+        <p class="body">Field research and competitor analysis helped us visualize the whole experience of a car accident from the perspective of the customer.</p>
+        <figure class="cs-figure">
+          <div class="cs-img-wrap">
+            <img class="cs-img" src="../project%20content/3%20DAD%20Images%20for%20framer/7%20Hi-fidelity.png" alt="Hi-fidelity screens" loading="lazy" />
+          </div>
+          <figcaption class="figcaption">Hi-fidelity screens</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- LIGHT stage -->
+    <section class="stage" data-theme="light">
+      <p class="stage-tag">Light mode · #FFF3E8</p>
+      <div class="reading-col">
+        <p class="eyebrow">TRQ · DAD</p>
+        <h1 class="title">How we created a friendly chatbot to submit a car insurance claim</h1>
+        <div class="cs-hero-img-wrap">
+          <img class="cs-hero-img" src="../project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="Hero" />
+        </div>
+        <p class="section-header">Mapping the problem space</p>
+        <p class="body">Field research and competitor analysis helped us visualize the whole experience of a car accident from the perspective of the customer.</p>
+        <figure class="cs-figure">
+          <div class="cs-img-wrap">
+            <img class="cs-img" src="../project%20content/3%20DAD%20Images%20for%20framer/7%20Hi-fidelity.png" alt="Hi-fidelity screens" loading="lazy" />
+          </div>
+          <figcaption class="figcaption">Hi-fidelity screens</figcaption>
+        </figure>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    var board = document.getElementById('board');
+    var seg   = document.getElementById('seg');
+    var dials = document.getElementById('dials');
+
+    // Segmented control
+    seg.addEventListener('click', function (e) {
+      var btn = e.target.closest('button'); if (!btn) return;
+      [].forEach.call(seg.querySelectorAll('button'), function (b) {
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      board.setAttribute('data-treatment', btn.dataset.t);
+      dials.classList.toggle('off', btn.dataset.t !== 'b');
+    });
+
+    // Dials
+    function bind(id, out, fmt, cssVar) {
+      var el = document.getElementById(id), o = document.getElementById(out);
+      el.addEventListener('input', function () {
+        var v = parseFloat(el.value);
+        o.textContent = fmt(v);
+        board.style.setProperty(cssVar, el.value);
+      });
+    }
+    bind('d-rim', 'o-rim', function (v) { return v.toFixed(2); }, '--dark-rim');
+    bind('d-sa',  'o-sa',  function (v) { return v.toFixed(2); }, '--dark-shadow-a');
+    bind('d-sz',  'o-sz',  function (v) { return v.toFixed(2) + '×'; }, '--dark-shadow-scale');
+
+    // Copy CSS — emits the snippet for the selected treatment
+    document.getElementById('copy').addEventListener('click', function () {
+      var t = board.getAttribute('data-treatment');
+      var css;
+      if (t === 'a') {
+        css =
+'/* Option A — flush, edge defined by theme-aware hairline (case-study.css) */\n' +
+'.cs-hero-img-wrap { box-shadow: none; border: 1px solid var(--color-border); }\n' +
+'.cs-img           { box-shadow: none; border: 1px solid var(--color-border); }';
+      } else if (t === 'b') {
+        var rim = getComputedStyle(board).getPropertyValue('--dark-rim').trim();
+        var sa  = getComputedStyle(board).getPropertyValue('--dark-shadow-a').trim();
+        var sc  = parseFloat(getComputedStyle(board).getPropertyValue('--dark-shadow-scale').trim());
+        var hy = Math.round(24 * sc), hb = Math.round(64 * sc);
+        var fy = Math.round(12 * sc), fb = Math.round(40 * sc);
+        css =
+'/* Option B — theme-aware lift. Add to :root / [data-theme="light"] in style.css: */\n' +
+':root {\n' +
+'  --cs-hero-shadow: 0 ' + hy + 'px ' + hb + 'px rgba(0,0,0,' + sa + '), 0 0 0 1px rgba(248,246,238,' + rim + ');\n' +
+'  --cs-img-shadow:  0 ' + fy + 'px ' + fb + 'px rgba(0,0,0,' + sa + '), 0 0 0 1px rgba(248,246,238,' + rim + ');\n' +
+'}\n' +
+'[data-theme="light"] {\n' +
+'  --cs-hero-shadow: 0 24px 64px rgba(0,0,0,0.30);\n' +
+'  --cs-img-shadow:  0 12px 40px rgba(0,0,0,0.22);\n' +
+'}\n\n' +
+'/* Then in case-study.css: */\n' +
+'.cs-hero-img-wrap { box-shadow: var(--cs-hero-shadow); }\n' +
+'.cs-img           { box-shadow: var(--cs-img-shadow); }';
+      } else {
+        css = '/* "Current" is the existing shipped CSS — nothing to copy. Pick A or B. */';
+      }
+      navigator.clipboard.writeText(css).then(function () {
+        var b = document.getElementById('copy');
+        b.classList.add('ok'); b.textContent = 'Copied ✓';
+        setTimeout(function () { b.classList.remove('ok'); b.textContent = 'Copy CSS'; }, 1400);
+      });
+    });
+  </script>
+</body>
+</html>
