@@ -31,12 +31,6 @@
       eyebrow: ['Bounce', 'B2C', 'Locker PUDO', 'Prove PMF'],
     },
     {
-      slug: 'on-demand',
-      href: 'on-demand.html',
-      name: 'On-demand',
-      eyebrow: ['Unbabel', 'B2B', 'On-demand', 'Acquire new revenue'],
-    },
-    {
       slug: 'decision-module',
       href: 'decision-module.html',
       name: 'The Decision Module',
@@ -44,10 +38,9 @@
     },
     {
       slug: 'trq-dad',
-      href: 'https://adityagujaran.me/projects/trq-dad/',
+      href: 'trq-dad.html',
       name: 'TRQ DAD',
       eyebrow: ['Freelance', 'B2B', 'TRQ DAD', 'Increase ops efficiency'],
-      external: true,
     },
   ];
 

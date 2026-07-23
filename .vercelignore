@@ -1,2 +1,8 @@
 # Dev-only tooling — kept in the repo, never shipped to production.
 dev/
+
+# Archived / delisted projects — kept in the repo for reference, never deployed.
+# To resurrect a project, git mv its files back to the repo root (paths inside
+# are left intact so they work again once restored) and re-add it to the
+# homepage grid, feature sequence, projects.js registry, and LLM index.
+_archive/

@@ -1235,33 +1235,70 @@ body {
 }
 
 /* ─────────────────────────────────────────
-   CROSS-DOCUMENT VIEW TRANSITION
-   Opts every same-origin navigation into a native view
-   transition. The homepage → case-study morph is choreographed
-   in components/page-transition.js (it tags the clicked thumbnail
-   and the case-study hero with a shared view-transition-name so
-   the image morphs; everything else cross-fades).
+   CROSS-DOCUMENT VIEW TRANSITION — rail hand-off
+   Every same-origin navigation runs a native cross-document view
+   transition. The EYEBROW is the thread that stitches the homepage
+   and a case study together: the clicked project's eyebrow and the
+   case-study header eyebrow share one view-transition-name, so it
+   glides from one page to the other as its own group — which means it
+   stays put while everything else cross-fades ("left with just the
+   eyebrow"), then settles into its case-study slot. The two left rails
+   (home nav ⇄ case-study index) are their own groups that slide out to
+   the left and fly back in. components/page-transition.js names the one
+   eyebrow that participates (there are four on the homepage); the rails
+   and the case-study eyebrow are named statically below.
 
    Gated on prefers-reduced-motion so readers who opt out get plain
-   navigation. Browsers without cross-document view transitions
-   ignore the at-rule and navigate normally.
+   navigation. Browsers without cross-document view transitions ignore
+   all of this and navigate normally.
 ───────────────────────────────────────── */
 @view-transition { navigation: auto; }
 @media (prefers-reduced-motion: reduce) {
   @view-transition { navigation: none; }
 }
 
-/* Timing — a touch longer + softer than the 250ms UA default, to match
-   the site's easing. Only ever applies while a transition is running. */
-::view-transition-group(project-hero) {
-  animation-duration: 520ms;
+/* Shared / static names. Each appears once per document, so the browser
+   pairs them across the navigation. The clicked homepage feature-card
+   eyebrow is named dynamically in page-transition.js. */
+.cs-page [data-cs-eyebrow] { view-transition-name: project-eyebrow; }
+#rail                      { view-transition-name: home-rail; }
+.cs-rail                   { view-transition-name: index-rail; }
+/* The homepage feature-card eyebrow is an inline <span>; inline-block gives
+   it a single, capturable box (an inline element that wraps would be skipped
+   by the transition). Applied by page-transition.js only to the one that
+   takes part, and removed when the transition finishes. */
+.pt-eyebrow { view-transition-name: project-eyebrow; display: inline-block; }
+
+/* The eyebrow morph — the connective thread. Starts a beat after the
+   page begins cross-fading, so it reads as travelling to its slot. */
+::view-transition-group(project-eyebrow) {
+  animation-duration: 560ms;
+  animation-delay: 90ms;
   animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+/* Page cross-fade — everything that isn't its own group. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 420ms;
+  animation-duration: 400ms;
   animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+/* The left rails. Home nav and case-study index each live on only one
+   page, so on a forward nav the home rail is "old" (slides out) and the
+   index rail is "new" (flies in a beat later); on the way back it's the
+   reverse. Sliding — rather than a shared-name morph between two very
+   different rails — keeps them from warping into each other. */
+::view-transition-old(home-rail),
+::view-transition-old(index-rail) {
+  animation: rail-exit 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+::view-transition-new(home-rail),
+::view-transition-new(index-rail) {
+  animation: rail-enter 480ms cubic-bezier(0.22, 1, 0.36, 1) 150ms both;
+}
+@keyframes rail-exit  { to   { transform: translateX(-26px); opacity: 0; } }
+@keyframes rail-enter { from { transform: translateX(-26px); opacity: 0; } }
 
 /* ─────────────────────────────────────────
    PAGE EXIT TRANSITION

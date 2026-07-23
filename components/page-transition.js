@@ -1,78 +1,93 @@
 /* ─────────────────────────────────────────
-   PAGE TRANSITION — home ⇄ case study morph
-   Shared cross-document View Transition. When a project
-   thumbnail on the homepage is clicked, the clicked image
-   morphs into the case-study hero as the page navigates;
-   everything else cross-fades.
+   PAGE TRANSITION — home ⇄ case-study rail hand-off
+   Shared cross-document View Transition. The EYEBROW is the thread that
+   connects the two pages: the clicked project's eyebrow and the case-study
+   header eyebrow share one view-transition-name, so it glides between the
+   pages while everything else cross-fades and the left rails slide.
 
-   Mechanism (View Transitions API, level 2):
-     • style.css opts every same-origin navigation in via
-       `@view-transition { navigation: auto }` (reduced-motion gated).
-     • On the OLD page we give the participating element a shared
-       `view-transition-name`; on the NEW page we give its counterpart
-       the SAME name. The browser pairs them and animates between.
+   The rails and the case-study header eyebrow are named statically in
+   style.css. This script only names the one HOMEPAGE eyebrow that takes
+   part — there are four feature-card eyebrows, so a static name would be a
+   duplicate. We name exactly one, dynamically:
+     • forward (home → case study): the clicked feature card's eyebrow,
+       tagged in `pageswap`. (Grid tiles have no eyebrow → they just
+       cross-fade, which is the graceful path.)
+     • back (case study → home): the returning project's feature-card
+       eyebrow, tagged in `pagereveal` so it morphs from the header eyebrow
+       we just left. The project slug is stashed in sessionStorage on the
+       way out (survives the Back button, where document.referrer doesn't).
 
-   The same project image appears twice on the homepage (overview grid
-   + feature card), so the name can't be static — it would be a duplicate.
-   Instead we tag ONLY the clicked thumbnail, in `pageswap`, and tag the
-   case-study hero in `pagereveal` only when we arrived from the homepage.
-   Every other navigation (case study → case study, → home, direct load)
-   simply cross-fades.
-
-   Browsers without cross-document view transitions ignore all of this
-   and navigate normally — a clean progressive enhancement. Registered
-   from <head> so the pagereveal listener exists before first paint.
+   Registered from <head> so the pagereveal listener exists before first
+   paint. Browsers without cross-document view transitions ignore all of
+   this and navigate normally — a clean progressive enhancement.
 ───────────────────────────────────────── */
 (function () {
-  var NAME = 'project-hero';
-  var HERO = '.cs-hero-img';
+  /* The shared view-transition-name lives on the .pt-eyebrow class
+     (style.css); here we just add/remove that class. */
+  var KEY = 'pt:fromProject';
 
-  function url(href) {
-    try { return new URL(href, location.href); } catch (e) { return null; }
-  }
+  function url(href) { try { return new URL(href, location.href); } catch (e) { return null; } }
   function isInternal(u) { return u && u.origin === location.origin; }
-  function isCaseStudy(u) {
+  function isCaseStudyPath(u) {
     return isInternal(u) && /\.html$/.test(u.pathname) && !/(^|\/)index\.html?$/.test(u.pathname);
   }
-  function isHome(href) {
-    var u = url(href);
-    if (!isInternal(u)) return false;
-    return u.pathname === '/' || /(^|\/)index\.html?$/.test(u.pathname);
+  function slugOf(u) { return u ? u.pathname.replace(/^.*\//, '').replace(/\.html?$/, '') : ''; }
+  function onCaseStudy() { return document.body.classList.contains('cs-page'); }
+
+  function untagFeatureEyebrows() {
+    var nodes = document.querySelectorAll('.fc-eyebrow.pt-eyebrow');
+    for (var i = 0; i < nodes.length; i++) nodes[i].classList.remove('pt-eyebrow');
   }
 
-  /* Remember which thumbnail was clicked — it becomes the morph source.
-     Only plain primary-button clicks on internal case-study links qualify
-     (modifier / middle clicks open a new context and must not be tagged). */
-  var clickedImg = null;
+  /* Remember the clicked link so `pageswap` knows which eyebrow to tag.
+     Only plain primary-button clicks qualify — modifier / middle clicks
+     open a new context and must not participate. */
+  var clickedLink = null;
   document.addEventListener('click', function (e) {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     var link = e.target.closest && e.target.closest('a[href]');
-    if (!link || link.target === '_blank') return;
-    if (!isCaseStudy(url(link.href))) { clickedImg = null; return; }
-    clickedImg = link.querySelector('img') || null;
+    clickedLink = (link && link.target !== '_blank') ? link : null;
   }, true);
 
   /* OLD document, just before its snapshot is taken. */
   window.addEventListener('pageswap', function (e) {
-    if (!e.viewTransition) return;               // no transition happening
-    if (clickedImg) clickedImg.style.viewTransitionName = NAME;   // homepage → tag source
-    var hero = document.querySelector(HERO);     // leaving a case study → never a source
-    if (hero) hero.style.viewTransitionName = 'none';
+    if (!e.viewTransition) return;
+    if (onCaseStudy()) {
+      // Leaving a case study → remember the project so the homepage can
+      // morph the matching eyebrow back in on arrival.
+      try { sessionStorage.setItem(KEY, document.body.getAttribute('data-project') || ''); } catch (err) {}
+    } else if (clickedLink && isCaseStudyPath(url(clickedLink.href))) {
+      // Forward: tag the clicked feature card's eyebrow (grid tiles have none).
+      var eb = clickedLink.querySelector('.fc-eyebrow');
+      if (eb) eb.classList.add('pt-eyebrow');
+    }
   });
 
-  /* NEW document, before its first render. Only morph into the hero when
-     the reader came from the homepage; otherwise a plain cross-fade.
-     Also fires on back/forward-cache restores, where the DOM (and this
-     script's state) come back exactly as they were left — including the
-     thumbnail tagged in `pageswap`. Untag it, or the next click on a
-     different tile would put two elements in the old document with the
-     same view-transition-name, which makes the browser skip the
-     transition entirely. */
+  /* NEW document, before its first render. Also fires on back/forward-cache
+     restores, so we always clear stale state first — both the tagged
+     classes and the remembered link, or a later history navigation (no
+     new click) would re-tag the old eyebrow in `pageswap`. */
   window.addEventListener('pagereveal', function (e) {
-    if (clickedImg) { clickedImg.style.viewTransitionName = ''; clickedImg = null; }
+    untagFeatureEyebrows();
+    clickedLink = null;
     if (!e.viewTransition) return;
-    var hero = document.querySelector(HERO);
-    if (!hero) return;
-    hero.style.viewTransitionName = isHome(document.referrer) ? NAME : 'none';
+    if (!onCaseStudy()) {
+      // Back to the homepage: tag the returning project's eyebrow so it
+      // morphs from the case-study header eyebrow. Prefer the stashed slug
+      // (survives the Back button); fall back to the referrer.
+      var slug = '';
+      try { slug = sessionStorage.getItem(KEY) || ''; } catch (err) {}
+      if (!slug) slug = slugOf(url(document.referrer));
+      if (slug) {
+        var sel = (window.CSS && window.CSS.escape) ? window.CSS.escape(slug) : slug;
+        var eb = document.querySelector('.fc-eyebrow[data-eyebrow-for="' + sel + '"]');
+        if (eb) eb.classList.add('pt-eyebrow');
+      }
+      try { sessionStorage.removeItem(KEY); } catch (err2) {}
+      // Clean the class off once the animation is done (it's inline-block
+      // only for the capture); leaves the resting homepage untouched.
+      e.viewTransition.finished.then(untagFeatureEyebrows, function () {});
+    }
+    // The case-study header eyebrow is named statically in style.css.
   });
 })();

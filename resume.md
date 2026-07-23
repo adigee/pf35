@@ -33,8 +33,6 @@ Particular focus on 0→1 problem-solving. Available for freelance / full-time c
 - Remodelled a file translation touchpoint to serve a new use case
 - Crafted the interface to interact with Unbabel's award-winning quality estimation AI
 
-**Case study:** [On-demand — Unbabel](https://adityagujaran.me/on-demand.html) — Refactored and expanded a B2B translation platform to support Localisation after the acquisition of Lingo24. Two different customer mental models unified into one coherent product. Skills: Visual design, Systems thinking.
-
 **Case study:** [The Decision Module — Unbabel](https://adityagujaran.me/decision-module.html) — Made Unbabel's AI quality-estimation model operable by ops linguists without specialist engineers — translating ML reasoning into a legible, actionable UI. Skills: Interaction design, AI/ML interfaces.
 
 ---
@@ -45,7 +43,7 @@ Particular focus on 0→1 problem-solving. Available for freelance / full-time c
 - Reimagined the tedious EU car accident claim form as a friendly chatbot for a project with Cocoon Experience
 - Led the concept and UX design of Woorti, a public transport app to help researchers using gamification for the Motiv project
 
-**Case study:** [TRQ DAD — Cocoon](https://adityagujaran.me/projects/trq-dad/) — Mobile chatbot for filing insurance claims after a car accident. Stripped verbose forms to their essentials. Skills: Service design, Conversational UI.
+**Case study:** [TRQ DAD — Cocoon](https://adityagujaran.me/trq-dad.html) — Mobile chatbot for filing insurance claims after a car accident. Stripped verbose forms to their essentials. Skills: Service design, Conversational UI.
 
 ---
 
@@ -80,9 +78,8 @@ BE in Information Technology | Jun 2011 | Mumbai, India
 | Project | Company | URL |
 |---|---|---|
 | Lockers PUDO | Bounce | [lockers-reducing-cancellation.html](https://adityagujaran.me/lockers-reducing-cancellation.html) |
-| On-demand | Unbabel | [on-demand.html](https://adityagujaran.me/on-demand.html) |
 | The Decision Module | Unbabel | [decision-module.html](https://adityagujaran.me/decision-module.html) |
-| TRQ DAD | Cocoon (Freelance) | [trq-dad](https://adityagujaran.me/projects/trq-dad/) |
+| TRQ DAD | Cocoon (Freelance) | [trq-dad.html](https://adityagujaran.me/trq-dad.html) |
 
 ---
 
