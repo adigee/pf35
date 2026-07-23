@@ -623,7 +623,7 @@
 /* Figures */
 .cs-section > .cs-figure     { margin-top: 64px; margin-bottom: 0; }
 .cs-section > .cs-figure + * { margin-top: 64px; }
-.cs-figcaption               { margin-top: 8px; }
+.cs-figcaption               { margin-top: 16px; }
 
 /* Callout */
 .cs-section > .cs-callout     { margin-top: 64px; }
