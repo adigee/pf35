@@ -144,7 +144,6 @@
   margin-top: var(--sp-10);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.30);
   background: #f4f4f6;
   --_breakout: max(0px, calc((70vw - (720px - 4rem)) / 2));
   margin-left: calc(-1 * var(--_breakout));
@@ -199,12 +198,6 @@
   height: auto;
   display: block;
   border-radius: 6px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
-}
-
-/* Images with dark backgrounds look better without shadow */
-.cs-img--dark {
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.40);
 }
 
 .cs-figcaption {
