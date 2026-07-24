@@ -326,9 +326,13 @@
        Tune the size in one place via --feature-media-h. */
     .fc-media {
       position: relative;
-      height: var(--feature-media-h);
-      width: auto;
+      /* Height-driven target (65vh) capped to the content column so the media
+         never overflows and paints over the sticky rail. On wide columns the
+         width resolves to the height-driven value (height stays 65vh); on
+         narrow columns it clamps to 100% and the height shrinks with it. */
       aspect-ratio: var(--feature-media-ar);   /* frame proportions; image fills it exactly */
+      width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
+      height: auto;
       border-radius: 12px;
       overflow: hidden;
       background: var(--color-surface);
