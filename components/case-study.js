@@ -213,7 +213,26 @@
       initGate(payloadEl, shell, content);
     } else {
       buildRail(shell, content);   // open page — rail + TOC as usual
+      staggerToc();
     }
+  }
+
+  /* ── TOC INDEX STAGGER — "papapapapa" ──
+     After a home→case-study view transition, the index items in the left rail
+     pop in one at a time. Detected via document.referrer (set on link nav). */
+  function staggerToc() {
+    var fromHome = document.referrer && (
+      document.referrer.indexOf('index.html') !== -1 ||
+      document.referrer.replace(/\/$/, '') === location.origin
+    );
+    var motionOk = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!fromHome || !motionOk) return;
+    document.body.classList.add('from-transition');
+    /* Set per-item animation delays so every TOC link is covered. */
+    var links = document.querySelectorAll('.cs-toc-link');
+    links.forEach(function (link, i) {
+      link.style.animationDelay = (700 + i * 40) + 'ms';
+    });
   }
 
   /* ── PASSWORD GATE ── */
@@ -307,9 +326,10 @@
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', render);
-  } else {
-    render();
-  }
+  /* Build synchronously. This script sits at the end of <body>, so the DOM it
+     needs (.cs-shell, .cs-content, footer slot) is already parsed. Running now
+     — rather than deferring to DOMContentLoaded — puts the injected .cs-rail in
+     the page's first paint, which is what lets the cross-document View
+     Transition capture it and fly it in (see the rail hand-off in style.css). */
+  render();
 })();

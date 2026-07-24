@@ -437,6 +437,20 @@
 }
 .cs-toc-link.is-active { color: var(--color-text); }
 
+/* TOC index stagger — after a home→case-study view transition the
+   individual index items pop in one-by-one ("papapapapa"). Applied by
+   case-study.js via .from-transition on <body>. */
+.from-transition .cs-toc-link {
+  opacity: 0;
+  transform: scale(0.6) translateY(-6px);
+  animation: toc-pop 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+/* Delays set dynamically by staggerToc() in case-study.js */
+@keyframes toc-pop {
+  from { transform: scale(0.6) translateY(-6px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
 /* Smooth anchor jumps on the TOC (only on these pages) */
 @media (prefers-reduced-motion: no-preference) {
   html:has(.cs-page) { scroll-behavior: smooth; }
