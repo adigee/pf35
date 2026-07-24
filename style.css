@@ -1304,7 +1304,13 @@ main.content { view-transition-name: col-home; }
   from { transform: translateY(-60px); opacity: 0; }
 }
 
-/* NEW — home left rail slides in from the left (case-study → home). */
+/* NEW — home left rail slides in from the left (case-study → home).
+       Ease-out curve (fast start, decelerating settle) so the rail
+       feels responsive when returning home — the eye tracks the entry
+       then relaxes as it lands. Other transitions use a symmetrical
+       ease-in-out because they pair an exit and an entrance on different
+       elements; the rail has no paired exit (it already left), so a
+       bouncy ease-in-out would feel sluggish here. */
 ::view-transition-new(rail-home) {
   animation: rail-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both;
 }
