@@ -382,7 +382,7 @@ Located in the footer. Pill toggle (`border-radius: 9999px`) with a sliding knob
 **Structure:** `inline-flex` row — label text on the left, filled circle with SVG arrow on the right.
 
 ```html
-<a href="…" class="panel-cta [cs-link]">
+<a href="…" class="panel-cta">
   View project
   <span class="panel-cta-circle" aria-hidden="true">
     <svg viewBox="0 0 16 16">
@@ -405,7 +405,7 @@ Located in the footer. Pill toggle (`border-radius: 9999px`) with a sliding knob
 | Hover — text | Shifts to `--color-primary` (150ms ease) |
 | Top spacing | `margin-top: --sp-10` |
 
-**Variant:** Add class `cs-link` for internal page links — JS intercepts the click and plays the left-column exit transition before navigating. Omit `cs-link` for external links (use `target="_blank" rel="noopener"`).
+For external links, add `target="_blank" rel="noopener"`.
 
 ---
 
