@@ -55,14 +55,171 @@
         </dl>
 
         <!-- ── INTRODUCTION ── -->
-        <!-- ── GATED CONTENT ──
-             The sections below the hero are AES-256-GCM encrypted; the password
-             decrypts them client-side (see components/case-study.js). View-source
-             shows only ciphertext. Edit via: tools/lock.mjs unlock <page> "<pw>". -->
-        <div id="cs-locked-mount"></div>
-        <script type="application/json" id="cs-locked-data">
-        {"v":1,"iters":200000,"salt":"Fao7rIAz1zIyW5ly2WEVsw==","iv":"hvfhtrDtRMI8s/Yt","ct":"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"}
-        </script>
+        <section class="cs-section" id="introduction">
+          <p class="b-section-header">Introduction</p>
+          <p class="b-body">
+            A global leader creating a 2 sided marketplace for luggage storage - Bounce enables travelers store their bags in a local shop for a simple 5€ a day. With locations in over 100+ countries, Bounce had built a supply network with density in touristic city centres and airbnb dense neighbourhoods.
+          </p>
+          <p class="b-body">
+            The inevitable next stage in growing the supply network was to enable customers to store luggage at airports, train stations, bus stations but the marketplace model would not work here.
+          </p>
+          <p class="b-body">
+            In the summer 2024, I joined a PM and an engineer on the New Verticals team to build out the lockers product experience (later known as lockers pod)
+          </p>
+          <figure class="cs-figure">
+            <img class="cs-img" src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2000.png" alt="" loading="lazy" />
+          </figure>
+        </section>
+
+        <!-- ── MY ROLE ── -->
+        <section class="cs-section" id="my-role">
+          <p class="b-section-header">My role</p>
+          <p class="b-body">
+            My team was responsible for demonstrating how lockers would enable Bounce to enter transportation hubs and acquire the demand at the source. While most designers in Bounce either worked on demand or supply side of the marketplace, I was responsible for the end to end customer journey for lockers customers.
+          </p>
+          <p class="b-body">
+            I worked on acquisition, post-booking and support product experiences for lockers. I was also driving a continuous discovery practice that enabled the team to stay on top of the feedback and iterate quickly.
+          </p>
+        </section>
+
+        <!-- ── PROBLEM DEFINITION ── -->
+        <section class="cs-section" id="problem-definition">
+          <p class="b-section-header">Problem definition</p>
+          <p class="b-body">
+            Lockers is the natural customer expectation for luggage storage. However we still needed to help customers select the best location, find the locker, open it all through the Bounce app. By creating this product experience, we needed to prove that Bounce could provide a valuable service at transportation hubs.
+          </p>
+          <figure class="cs-figure">
+            <img class="cs-img" src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2001.png" alt="" loading="lazy" />
+          </figure>
+        </section>
+
+        <!-- ── APPROACH ── -->
+        <section class="cs-section" id="approach">
+          <p class="b-section-header">Approach</p>
+          <p class="b-body">
+            By launching with existing parcel locker networks, we were able to build and test the lockers product experience and prepare the Bounce app for a self service experience. It also enabled us to test the locker hypothesis evaluate the demand we were acquiring near train stations.
+          </p>
+          <p class="b-body">
+            Later in Q1 of 2025, we launched our first proprietary location that enabled us to further our thesis in launching and managing lockers as a business.
+          </p>
+          <p class="b-body">
+            Launching lockers at Bounce was kinda like pitching to build hotels at Airbnb. It went against the current in the marketplace company, meaning we needed to prove our approach at every step.
+          </p>
+
+          <figure class="cs-figure">
+            <img class="cs-img" src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2002.png" alt="" loading="lazy" />
+          </figure>
+          <h3 class="b-section-subheader">Parcel lockers are not built for luggage storage</h3>
+          <p class="b-body">
+            Since parcel lockers are designed for delivery by couriers and pickup by customers, we had work with these constraints to design a customer journey where a traveler would drop and pickup their bags.
+          </p>
+          <p class="b-body">
+            By hacking the drop-off and pickup flow, we were able to enable customers to use the existing parcel locker infrastructure for storing luggage.
+          </p>
+
+          <h3 class="b-section-subheader">Only it was off to a rocky start</h3>
+          <p class="b-body">
+            Our first launch was in Japan with a parcel network. Since Bounce offers free cancellation on all its bookings, we had a very high cancellation rate. The following week we launched a 2nd parcel network in Germany.
+          </p>
+          <p class="b-body">
+            Bringing down the cancellation rate across both geo's become the team's main north star metric. Becuase a low cancellation rate meant a product experience that served our customers looking to store bags. In essence, reducing the cancellation rate became the internal proxy for product market fit for lockers.
+          </p>
+          <figure class="cs-figure">
+            <img class="cs-img" src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2003.png" alt="" loading="lazy" />
+          </figure>
+          <figure class="cs-figure">
+            <img class="cs-img" src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2004.png" alt="" loading="lazy" />
+          </figure>
+        </section>
+
+        <!-- ── CONTINUOUS DISCOVERY ── -->
+        <section class="cs-section" id="continuous-discovery">
+          <p class="b-section-header">Continuous discovery</p>
+          <p class="b-body">
+            Since lockers was new to us and everyone at Bounce, all we had was assumptions and opinions. Also we saw all the cancellations coming in but we didn't know why? Where were the gaps in the customer journey? What were the main pain points? Why did our customer choose the lockers?
+          </p>
+          <p class="b-body">
+            I ran customer interviews every week to learning about what customers were doing out in the wild. Sharing these qualitative snippets helped me sharpen our product intuition and map out the customer's mental model.
+          </p>
+
+          <figure class="cs-figure">
+            <img class="cs-img" src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2005.png" alt="" loading="lazy" />
+          </figure>
+          <h3 class="b-section-subheader">Reworking the cancellation flow</h3>
+          <p class="b-body">
+            We refined the reasons in the cancellation flow for lockers and designed custom flows for each reason with the intention of it being a source of intel for us.
+          </p>
+          <p class="b-body">
+            With the new select set of reasons, we now knew which parts of the experience were lacking and helped us in prioritizing our intitiatives.
+          </p>
+          <figure class="cs-figure">
+            <img class="cs-img" src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2006.png" alt="" loading="lazy" />
+          </figure>
+          <p class="b-body">
+            Pretty soon clear pattens started to emerge in the data. Using this as direction, I steered my conversations to help us learn the customer's mental model on these themes.
+          </p>
+          <figure class="cs-figure">
+            <img class="cs-img" src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2007.png" alt="" loading="lazy" />
+          </figure>
+          <p class="b-body">
+            These fed into multiple iteratinos of many design initiatives acros the product surface to chip away at the cancellation rate
+          </p>
+          <figure class="cs-figure">
+            <img class="cs-img" src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2008.png" alt="" loading="lazy" />
+          </figure>
+        </section>
+
+        <!-- ── DESIGN DEEPDIVES ── -->
+        <section class="cs-section" id="design-deepdives">
+          <p class="b-section-header">Design deepdives</p>
+
+          <h3 class="b-section-subheader">Avoiding the timeout</h3>
+          <p class="b-body">
+            Parcel lockers have a 90 second timeout once the locker door is open. While this constraint exisits for leagal reasons, fir a luagge storage use-case this was siply not the expectatin.
+          </p>
+          <p class="b-body">
+            Customers would often open the locker, repack their bags and only store it in the locker, resulting in a timeout. A timeout in this case meant that the locker would not close and the customer could not store thier bags.
+          </p>
+          <p class="b-body">
+            Many iterations later, introducing a timer helped our customers feel the time constraint and created the appropriate tension that allowed cusotmers to successfully store their bags.
+          </p>
+          <figure class="cs-figure">
+            <img class="cs-img" src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2009.png" alt="" loading="lazy" />
+          </figure>
+
+          <h3 class="b-section-subheader">Locker naming and descriptions</h3>
+          <p class="b-body">
+            The dominant type of locker taxonomy was based on size, i.e S,M,L. Since parcel locker were not designed for bags, we started to match lockers to bags depending on bag type. Research also helped us understand that visualizing 30 cms in 3D space was a cognitively hard decision point.
+          </p>
+          <figure class="cs-figure">
+            <img class="cs-img" src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2010.png" alt="" loading="lazy" />
+          </figure>
+        </section>
+
+        <!-- ── OUTCOMES ── -->
+        <section class="cs-section" id="outcomes">
+          <p class="b-section-header">Outcomes</p>
+          <p class="b-body">
+            Over the course of Q4 and Q1, we steadily worked on reducing the cancellation rate bringing. Its important to mention that in parallel we were launching integrations with new networks. By the end of Q1, we had launched 6 networks in Japan, Germany, Austria, France, UK and Brazil.
+          </p>
+          <p class="b-body">
+            Every idea needed to work across all geo's bring the product closer to the the ideal expereince to store luaggge in a parcel locker.
+          </p>
+          <figure class="cs-figure">
+            <img class="cs-img" src="project%20content/4%20Lockers%20PUDO%20for%20framer/BNC%20Framer%2011.png" alt="" loading="lazy" />
+          </figure>
+        </section>
+
+        <!-- ── REFLECTIONS ── -->
+        <section class="cs-section" id="reflections">
+          <p class="b-section-header">Reflections</p>
+          <p class="b-body">
+            Mixed methods ftw! Blending quant and qual data shaped our product intuition, which is prob the most valuable asset for a team that was moving fast and had the autonomy to do so.
+          </p>
+          <p class="b-body">
+            Building out the experience for storing bags in parcel lockers helped to prepare our product for lockers overall. When we launched our own locker locations, the challenges were totally different! Our first week started wth many bugs and yet a low single digit cancellation, leading us to quickly pivot to customer acquisition and scaling new geos.
+          </p>
+        </section>
 
         <!-- ── FOOTER ── -->
         <div data-component="cs-footer"></div>

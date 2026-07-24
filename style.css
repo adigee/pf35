@@ -1233,5 +1233,96 @@ body {
   transition: background 300ms ease, color 300ms ease;
 }
 
+/* ─────────────────────────────────────────
+   HOME ⇄ CASE-STUDY TRANSITION — two-column rail hand-off
+   Native cross-document View Transitions. Every page is two columns — a left
+   "index" column (home nav rail ⇄ case-study TOC rail) and a right "content"
+   column — and each animates ON ITS OWN. Nothing morphs into anything else:
+   there are no shared view-transition-names, so the browser never tries to
+   interpolate one page's element into a differently-shaped one (that warp/pop
+   was why the earlier image-morph and eyebrow-morph attempts read as janky).
+
+   Choreography (asymmetric):
+     Home → case-study:
+       1. the home left rail flies out to the left,
+       2. the home right column dissolves to blank (staggered behind the rail),
+       3. the entire case-study page (both rail + content) slides in from the top.
+     Case-study → home:
+       1. the case-study left rail flies out to the left,
+       2. the case-study right column zooms out (scale + fade), revealing
+          the homepage right column underneath,
+       3. the homepage left rail zooms in, flying in from the left.
+
+   Pure CSS — no JS orchestration. The one supporting change lives in
+   components/case-study.js: it builds .cs-rail synchronously so the incoming
+   rail exists in first paint and can be captured here.
+
+   The ::view-transition-* pseudo-elements are styled by the DESTINATION
+   document, so these rules must live in style.css (the only stylesheet both
+   page types load). Browsers without cross-document view transitions ignore
+   the at-rule and navigate plainly; reduced-motion opts out explicitly.
+───────────────────────────────────────── */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}
+
+/* Names — static, one per page. Each appears in only one document, so on any
+   navigation the browser sees each as old-only (exits) or new-only (enters). */
+#rail        { view-transition-name: rail-home; }
+main.content { view-transition-name: col-home; }
+.cs-rail     { view-transition-name: rail-cs; }
+.cs-content  { view-transition-name: col-cs; }
+
+/* OLD — left rail flies out to the left (both directions). */
+::view-transition-old(rail-home),
+::view-transition-old(rail-cs) {
+  animation: rail-out 250ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+@keyframes rail-out { to { transform: translateX(-120%); opacity: 0; } }
+
+/* OLD — case-study content zooms out (case-study → home). */
+::view-transition-old(col-cs) {
+  animation: zoom-out 400ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes zoom-out { to { transform: scale(0.5); opacity: 0; } }
+
+/* OLD — home content dissolves to blank (home → case-study). */
+::view-transition-old(col-home) {
+  animation: col-out 200ms ease 50ms both;
+}
+@keyframes col-out { to { opacity: 0; } }
+
+/* NEW — case-study rail + content slide in from top (home → case-study). */
+::view-transition-new(rail-cs),
+::view-transition-new(col-cs) {
+  animation: page-in 450ms cubic-bezier(0.22, 1, 0.36, 1) 300ms both;
+}
+@keyframes page-in {
+  from { transform: translateY(-60px); opacity: 0; }
+}
+
+/* NEW — home left rail flies/zooms in from the left (case-study → home). */
+::view-transition-new(rail-home) {
+  animation: rail-in-zoom 350ms cubic-bezier(0.22, 1, 0.36, 1) 250ms both;
+}
+@keyframes rail-in-zoom {
+  from { transform: translateX(-120%) scale(0.9); opacity: 0; }
+}
+
+/* NEW — home content is revealed by the CS zoom-out; no fade-in. */
+::view-transition-new(col-home) {
+  animation: none;
+  opacity: 1;
+}
+
+/* Everything unnamed (page background, theme toggle, progress bar) is captured
+   as `root`. A short cross-fade — the background tokens match across pages, so
+   this is effectively invisible and just avoids a hard cut. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 200ms;
+}
+
 /* The floating light/dark toggle button (.theme-btn) and its
    styles live in components/theme.js so they inject on every page. */
