@@ -98,7 +98,7 @@
     };
 
     backdrop.addEventListener('click', requestClose);
-    img.addEventListener('pointerdown', onPointerDown);
+    if (!reduceMotion.matches) img.addEventListener('pointerdown', onPointerDown);
 
     if (reduceMotion.matches) {
       /* Plain fade — no morph, no drag tilt */
