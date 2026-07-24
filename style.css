@@ -1277,43 +1277,53 @@ main.content { view-transition-name: col-home; }
 /* OLD — left rail flies out to the left (both directions). */
 ::view-transition-old(rail-home),
 ::view-transition-old(rail-cs) {
-  animation: rail-out 250ms cubic-bezier(0.4, 0, 1, 1) both;
+  animation: rail-out 300ms cubic-bezier(0.65, 0, 0.35, 1) both;
 }
 @keyframes rail-out { to { transform: translateX(-120%); opacity: 0; } }
 
-/* OLD — case-study content zooms out (case-study → home). */
+/* OLD — case-study content slides up (case-study → home). Reverse of page-in. */
 ::view-transition-old(col-cs) {
-  animation: zoom-out 400ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation: slide-up 400ms cubic-bezier(0.65, 0, 0.35, 1) both;
 }
-@keyframes zoom-out { to { transform: scale(0.5); opacity: 0; } }
+@keyframes slide-up { to { transform: translateY(-60px); opacity: 0; } }
 
 /* OLD — home content dissolves to blank (home → case-study). */
 ::view-transition-old(col-home) {
-  animation: col-out 200ms ease 50ms both;
+  animation: col-out 200ms cubic-bezier(0.65, 0, 0.35, 1) 50ms both;
 }
 @keyframes col-out { to { opacity: 0; } }
 
-/* NEW — case-study rail + content slide in from top (home → case-study). */
+/* NEW — case-study rail + content slide in from top (home → case-study).
+       250ms delay so the old home content has fully faded before the new
+       content appears. */
 ::view-transition-new(rail-cs),
 ::view-transition-new(col-cs) {
-  animation: page-in 450ms cubic-bezier(0.22, 1, 0.36, 1) 300ms both;
+  animation: page-in 400ms cubic-bezier(0.65, 0, 0.35, 1) 250ms both;
 }
 @keyframes page-in {
   from { transform: translateY(-60px); opacity: 0; }
 }
 
-/* NEW — home left rail flies/zooms in from the left (case-study → home). */
+/* NEW — home left rail slides in from the left (case-study → home).
+       Ease-out curve (fast start, decelerating settle) so the rail
+       feels responsive when returning home — the eye tracks the entry
+       then relaxes as it lands. Other transitions use a symmetrical
+       ease-in-out because they pair an exit and an entrance on different
+       elements; the rail has no paired exit (it already left), so a
+       bouncy ease-in-out would feel sluggish here. */
 ::view-transition-new(rail-home) {
-  animation: rail-in-zoom 350ms cubic-bezier(0.22, 1, 0.36, 1) 250ms both;
+  animation: rail-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both;
 }
-@keyframes rail-in-zoom {
-  from { transform: translateX(-120%) scale(0.9); opacity: 0; }
+@keyframes rail-in {
+  from { transform: translateX(-120%); opacity: 0; }
 }
 
-/* NEW — home content is revealed by the CS zoom-out; no fade-in. */
+/* NEW — home content fades in after the CS content has cleared. */
 ::view-transition-new(col-home) {
-  animation: none;
-  opacity: 1;
+  animation: home-in 250ms cubic-bezier(0.65, 0, 0.35, 1) 200ms both;
+}
+@keyframes home-in {
+  from { opacity: 0; }
 }
 
 /* Everything unnamed (page background, theme toggle, progress bar) is captured
@@ -1321,7 +1331,8 @@ main.content { view-transition-name: col-home; }
    this is effectively invisible and just avoids a hard cut. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 200ms;
+  animation-duration: 250ms;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 /* The floating light/dark toggle button (.theme-btn) and its

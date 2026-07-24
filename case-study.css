@@ -443,7 +443,7 @@
 .from-transition .cs-toc-link {
   opacity: 0;
   transform: scale(0.6) translateY(-6px);
-  animation: toc-pop 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: toc-pop 300ms cubic-bezier(0.65, 0, 0.35, 1) both;
 }
 /* Delays set dynamically by staggerToc() in case-study.js */
 @keyframes toc-pop {
