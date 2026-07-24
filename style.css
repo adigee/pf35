@@ -23,6 +23,8 @@
   --color-accent:           #8E7FD1;
   --color-accent-on-accent: #121212;
 
+  --highlight-ink:          172, 160, 232;  /* highlighter marker RGB (lilac) */
+
   /* Typography */
   --font-display: 'Manrope', sans-serif;
   --font-body:    'Manrope', sans-serif;
@@ -104,6 +106,8 @@
 
   --color-accent:           #5B6FD6;
   --color-accent-on-accent: #FFF3E8;
+
+  --highlight-ink:          33, 71, 204;  /* highlighter marker RGB (cobalt) */
 }
 
 /* ─────────────────────────────────────────

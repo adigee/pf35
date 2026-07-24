@@ -172,10 +172,11 @@
       margin-top: var(--sp-8);
     }
     .rail-intro .tagline em {
-      color: var(--color-primary);
       font-style: normal;
       font-weight: 400;
     }
+    /* The "why behind the what" highlighter marker is owned by
+       components/text_highlight.js (see the [data-highlight] em below). */
     .rail-intro .location {
       font-size: 14px;
       font-weight: 400;
@@ -456,7 +457,7 @@
     <div class="rail-context">
       <div class="rail-intro">
         <p class="bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p>
-        <p class="tagline">the <em>why</em> behind the what,<br>has never been more important</p>
+        <p class="tagline">the <em data-highlight>why behind the what</em>,<br>has never been more important</p>
         <p class="location"><span data-tooltip="PT national · open to relocation">Based in Lisbon</span></p>
       </div>
     </div>
@@ -552,6 +553,9 @@
   <!-- Project registry — fills the feature-card eyebrows above so they
        stay in sync with the case-study headers (single source of truth). -->
   <script src="components/projects.js"></script>
+
+  <!-- Highlighter marker behind the tagline phrase (hydrates [data-highlight]). -->
+  <script src="components/text_highlight.js"></script>
 
   <!-- Tooltip — lightweight, theme-adaptive tooltip primitive -->
   <script src="components/tooltip.js"></script>
