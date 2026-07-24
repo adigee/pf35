@@ -538,6 +538,17 @@
 
   <!-- Theme toggle — injected by components/theme.js -->
 
+  <!-- Signal to case-study pages that we came from home (used by TOC stagger).
+       Catches link clicks, survives bfcache and back/forward navigation. -->
+  <script>
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('a[href]');
+      if (a && a.hostname === location.hostname && a.pathname !== '/' && a.pathname !== '/index.html') {
+        sessionStorage.setItem('fromHome', '1');
+      }
+    });
+  </script>
+
   <!-- Project registry — fills the feature-card eyebrows above so they
        stay in sync with the case-study headers (single source of truth). -->
   <script src="components/projects.js"></script>

@@ -219,19 +219,25 @@
 
   /* ── TOC INDEX STAGGER — "papapapapa" ──
      After a home→case-study view transition, the index items in the left rail
-     pop in one at a time. Detected via document.referrer (set on link nav). */
+     pop in one at a time. Detected via sessionStorage (set by a click handler
+     on the home page), which survives bfcache and back/forward navigation.
+     Falls back to document.referrer for non-click navigation (keyboard, etc.). */
   function staggerToc() {
-    var fromHome = document.referrer && (
-      document.referrer.indexOf('index.html') !== -1 ||
-      document.referrer.replace(/\/$/, '') === location.origin
-    );
+    var fromHome = sessionStorage.getItem('fromHome');
+    sessionStorage.removeItem('fromHome');
+    if (!fromHome) {
+      fromHome = document.referrer && (
+        document.referrer.indexOf('index.html') !== -1 ||
+        document.referrer.replace(/\/$/, '') === location.origin
+      );
+    }
     var motionOk = !matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!fromHome || !motionOk) return;
     document.body.classList.add('from-transition');
     /* Set per-item animation delays so every TOC link is covered. */
     var links = document.querySelectorAll('.cs-toc-link');
     links.forEach(function (link, i) {
-      link.style.animationDelay = (700 + i * 40) + 'ms';
+      link.style.animationDelay = (400 + i * 40) + 'ms';
     });
   }
 
