@@ -377,6 +377,16 @@
   transform: scale(0.6) translateY(-6px);
   animation: toc-pop 300ms cubic-bezier(0.65, 0, 0.35, 1) both;
 }
+/* …and the rail video avatar lands last, with the same slot-open +
+   circle-drop entrance it gets when arriving from home (.from-transition).
+   Delay set dynamically by staggerUnlockedToc() in case-study.js. */
+.cs-just-unlocked .csv {
+  overflow: hidden;   /* clip the circle to the opening slot */
+  animation: csv-open 520ms cubic-bezier(0.34, 1.45, 0.64, 1) both;
+}
+.cs-just-unlocked .csv-btn {
+  animation: csv-drop 520ms cubic-bezier(0.34, 1.45, 0.64, 1) both;
+}
 
 /* ── Full-page password modal (opened from the pill) ── */
 .cs-lock-modal {

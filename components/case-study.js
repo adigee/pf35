@@ -484,6 +484,26 @@
     links.forEach(function (link, i) {
       link.style.animationDelay = (i * 55) + 'ms';
     });
+
+    /* The video avatar lands LAST — its slot opens (pushing the TOC down)
+       and the circle drops in, just after the final TOC item's pop
+       completes (toc-pop runs 300ms). Same entrance as arriving from home
+       (see staggerToc); slot-open and circle-drop share one delay. */
+    var csv = document.querySelector('.csv');
+    if (csv) {
+      var last = (links.length - 1) * 55 + 300;
+      var delay = (last + 120) + 'ms';
+      var vbtn = csv.querySelector('.csv-btn');
+      csv.style.animationDelay = delay;
+      if (vbtn) vbtn.style.animationDelay = delay;
+      /* Once it lands, drop the entrance animation so its filled end-state
+          stops pinning transform/overflow (which would break hover + focus).
+          Also remove the body class — its TOC-link rule has done its job. */
+      csv.addEventListener('animationend', function (e) {
+        if (e.animationName === 'csv-open') { csv.style.overflow = 'visible'; csv.style.animation = 'none'; document.body.classList.remove('cs-just-unlocked'); }
+        if (e.animationName === 'csv-drop' && vbtn) { vbtn.style.animation = 'none'; }
+      });
+    }
   }
 
   var LOCK_ICON =
