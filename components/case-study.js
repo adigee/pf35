@@ -48,6 +48,15 @@
 
   var UNLOCK_COOKIE = 'cs_unlock';
 
+  /* ── RAIL VIDEO OVERVIEW ──
+     A single placeholder clip on every case study for now; the poster is the
+     same face as the homepage avatar. Per-project clips can override this
+     later (e.g. window.Projects.video(slug)). Paths are URL-encoded because
+     "project content" contains a space. */
+  var OVERVIEW_POSTER = 'project%20content/profile-photo.png';
+  var OVERVIEW_VIDEO  = 'project%20content/Sydney%20Makes%20an%20Omelet.mp4';
+  var RING_R = 56.75;   /* ring radius in the 116-unit viewBox (100px circle) */
+
   function slugify(s) {
     return String(s).toLowerCase().trim()
       .replace(/[^a-z0-9]+/g, '-')
@@ -114,10 +123,70 @@
       '<a href="index.html" class="cs-rail-back b-label-link" id="cs-back">' +
         ARROW_LEFT + 'Back to work' +
       '</a>' +
+      videoAvatarHtml() +
       '<nav class="cs-toc" aria-label="Contents">' + tocLinks + '</nav>';
     shell.insertBefore(rail, content);
 
+    wireVideoAvatar(rail);
     initTocSpy();
+  }
+
+  /* ── RAIL VIDEO AVATAR: markup + playback ──
+     Circular, playable identity avatar. Click plays it in place (stays a
+     circle, no fullscreen); the sticky rail keeps it on screen while reading. */
+  function videoAvatarHtml() {
+    return '' +
+      '<div class="csv" data-state="idle">' +
+        '<button class="csv-btn" type="button" aria-label="Play the project overview video">' +
+          '<video class="csv-video" playsinline preload="metadata" ' +
+            'poster="' + OVERVIEW_POSTER + '" src="' + OVERVIEW_VIDEO + '"></video>' +
+          '<svg class="csv-ring" viewBox="0 0 116 116" aria-hidden="true">' +
+            '<circle cx="58" cy="58" r="' + RING_R + '"></circle></svg>' +
+          '<span class="csv-play" aria-hidden="true"></span>' +
+        '</button>' +
+      '</div>';
+  }
+
+  function wireVideoAvatar(rail) {
+    var wrap = rail.querySelector('.csv');
+    if (!wrap) return;
+    var btn = wrap.querySelector('.csv-btn');
+    var video = wrap.querySelector('.csv-video');
+    var ring = wrap.querySelector('.csv-ring circle');
+    if (!btn || !video || !ring) return;
+
+    var C = 2 * Math.PI * RING_R;
+    ring.style.strokeDasharray = C;
+    ring.style.strokeDashoffset = C;   /* empty */
+
+    /* Smooth progress: rAF at 60fps, not the video's ~4×/sec timeupdate. */
+    var raf = null;
+    function tick() {
+      if (video.duration) ring.style.strokeDashoffset = C * (1 - video.currentTime / video.duration);
+      raf = requestAnimationFrame(tick);
+    }
+    function startRing() { if (!raf) raf = requestAnimationFrame(tick); }
+    function stopRing()  { if (raf) { cancelAnimationFrame(raf); raf = null; } }
+
+    btn.addEventListener('click', function () {
+      if (video.paused) {
+        video.muted = false;             /* click is the gesture → sound allowed */
+        wrap.dataset.state = 'playing';
+        startRing();
+        var p = video.play();
+        if (p && p.catch) p.catch(function () {});   /* ignore autoplay rejections */
+      } else {
+        video.pause();
+        wrap.dataset.state = 'paused';
+        stopRing();
+      }
+    });
+    video.addEventListener('ended', function () {
+      wrap.dataset.state = 'idle';
+      stopRing();
+      ring.style.strokeDashoffset = C;
+      video.currentTime = 0;
+    });
   }
 
   /* ── READING PROGRESS BAR ── */
@@ -239,6 +308,24 @@
     links.forEach(function (link, i) {
       link.style.animationDelay = (400 + i * 40) + 'ms';
     });
+
+    /* The video avatar lands LAST — its slot opens (pushing the TOC down) and
+       the circle drops in, just after the final TOC item's pop completes
+       (toc-pop runs 300ms). Slot-open and circle-drop share one delay. */
+    var csv = document.querySelector('.csv');
+    if (csv) {
+      var last = 400 + (links.length - 1) * 40 + 300;
+      var delay = (last + 120) + 'ms';
+      var vbtn = csv.querySelector('.csv-btn');
+      csv.style.animationDelay = delay;
+      if (vbtn) vbtn.style.animationDelay = delay;
+      /* Once it lands, drop the entrance animation so its filled end-state
+         stops pinning transform/overflow (which would break hover + focus). */
+      csv.addEventListener('animationend', function (e) {
+        if (e.animationName === 'csv-open') { csv.style.overflow = 'visible'; csv.style.animation = 'none'; }
+        if (e.animationName === 'csv-drop' && vbtn) { vbtn.style.animation = 'none'; }
+      });
+    }
   }
 
   /* ── PASSWORD GATE ── */
