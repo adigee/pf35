@@ -157,34 +157,51 @@
 
     var C = 2 * Math.PI * RING_R;
     ring.style.strokeDasharray = C;
-    ring.style.strokeDashoffset = C;   /* empty */
+    ring.style.strokeDashoffset = C;
 
-    /* Smooth progress: rAF at 60fps, not the video's ~4×/sec timeupdate. */
-    var raf = null;
-    function tick() {
-      if (video.duration) ring.style.strokeDashoffset = C * (1 - video.currentTime / video.duration);
-      raf = requestAnimationFrame(tick);
+    /* Smooth composited ring animation — one shot for the video's full
+       duration, driven by the Web Animations API (compositor thread,
+       no jitter). The animation is independent of video timing events. */
+    var anim = null;
+    var dur = 60;
+    function startRing() {
+      if (anim) anim.cancel();
+      anim = ring.animate(
+        [{ strokeDashoffset: C }, { strokeDashoffset: 0 }],
+        { duration: dur * 1000, easing: 'linear', fill: 'forwards' }
+      );
     }
-    function startRing() { if (!raf) raf = requestAnimationFrame(tick); }
-    function stopRing()  { if (raf) { cancelAnimationFrame(raf); raf = null; } }
+    function pauseRing()  { if (anim) anim.pause(); }
+    function resumeRing() { if (anim) anim.play(); }
+    function resetRing() {
+      if (anim) { anim.cancel(); anim = null; }
+      ring.style.strokeDashoffset = C;
+    }
+
+    video.addEventListener('loadedmetadata', function () {
+      if (video.duration && isFinite(video.duration)) dur = video.duration;
+    });
 
     btn.addEventListener('click', function () {
       if (video.paused) {
-        video.muted = false;             /* click is the gesture → sound allowed */
+        video.muted = false;
         wrap.dataset.state = 'playing';
-        startRing();
+        if (anim && anim.playState === 'paused') {
+          resumeRing();
+        } else {
+          startRing();
+        }
         var p = video.play();
-        if (p && p.catch) p.catch(function () {});   /* ignore autoplay rejections */
+        if (p && p.catch) p.catch(function () {});
       } else {
         video.pause();
         wrap.dataset.state = 'paused';
-        stopRing();
+        pauseRing();
       }
     });
     video.addEventListener('ended', function () {
       wrap.dataset.state = 'idle';
-      stopRing();
-      ring.style.strokeDashoffset = C;
+      resetRing();
       video.currentTime = 0;
     });
   }

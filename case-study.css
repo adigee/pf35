@@ -514,8 +514,8 @@
   border-color: transparent transparent transparent #141414;
 }
 .csv-btn:hover .csv-play { background: rgba(0, 0, 0, 0.12); }
-/* Progress ring — reinforces "short clip"; fills as the video plays.
-   Driven at 60fps from rAF in case-study.js (not the choppy timeupdate event). */
+/* Progress ring — filled with a composited Web Animations API animation
+   that completes in exactly the video's duration (no jitter). */
 .csv-ring {
   position: absolute;
   inset: -6px;
