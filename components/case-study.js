@@ -300,7 +300,7 @@
       var nextLink = footer.querySelector('#cs-footer-next');
       if (nextLink && next && !next.external) {
         nextLink.addEventListener('click', function () {
-          sessionStorage.setItem('fromHome', '1');
+          sessionStorage.setItem('triggerEntrance', '1');
         });
       }
     }
@@ -327,16 +327,16 @@
      navigation.
      Falls back to document.referrer for non-click navigation (keyboard, etc.). */
   function staggerToc() {
-    var fromHome = sessionStorage.getItem('fromHome');
-    sessionStorage.removeItem('fromHome');
-    if (!fromHome) {
-      fromHome = document.referrer && (
+    var triggerEntrance = sessionStorage.getItem('triggerEntrance');
+    sessionStorage.removeItem('triggerEntrance');
+    if (!triggerEntrance) {
+      triggerEntrance = document.referrer && (
         document.referrer.indexOf('index.html') !== -1 ||
         document.referrer.replace(/\/$/, '') === location.origin
       );
     }
     var motionOk = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!fromHome || !motionOk) return;
+    if (!triggerEntrance || !motionOk) return;
     document.body.classList.add('from-transition');
     /* Set per-item animation delays so every TOC link is covered. */
     var links = document.querySelectorAll('.cs-toc-link');
