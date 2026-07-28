@@ -290,6 +290,19 @@
           nextHtml +
         '</div>';
       slot.replaceWith(footer);
+
+      /* Replay the full entrance choreography (page-in → TOC stagger →
+         video-avatar drop) when arriving via "Next project": set the same
+         session flag the homepage sets, so staggerToc() fires on the
+         destination case study. Skipped for external write-ups — those open
+         in a new tab, and the flag would linger here and fire on an
+         unrelated visit later. */
+      var nextLink = footer.querySelector('#cs-footer-next');
+      if (nextLink && next && !next.external) {
+        nextLink.addEventListener('click', function () {
+          sessionStorage.setItem('triggerEntrance', '1');
+        });
+      }
     }
 
     /* ── READING PROGRESS BAR ── */
@@ -307,21 +320,23 @@
   }
 
   /* ── TOC INDEX STAGGER — "papapapapa" ──
-     After a home→case-study view transition, the index items in the left rail
-     pop in one at a time. Detected via sessionStorage (set by a click handler
-     on the home page), which survives bfcache and back/forward navigation.
+     After a home→case-study (or next-project→case-study) view transition,
+     the index items in the left rail pop in one at a time. Detected via
+     sessionStorage (set by click handlers on the home page and on each case
+     study's "Next project" button), which survives bfcache and back/forward
+     navigation.
      Falls back to document.referrer for non-click navigation (keyboard, etc.). */
   function staggerToc() {
-    var fromHome = sessionStorage.getItem('fromHome');
-    sessionStorage.removeItem('fromHome');
-    if (!fromHome) {
-      fromHome = document.referrer && (
+    var triggerEntrance = sessionStorage.getItem('triggerEntrance');
+    sessionStorage.removeItem('triggerEntrance');
+    if (!triggerEntrance) {
+      triggerEntrance = document.referrer && (
         document.referrer.indexOf('index.html') !== -1 ||
         document.referrer.replace(/\/$/, '') === location.origin
       );
     }
     var motionOk = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!fromHome || !motionOk) return;
+    if (!triggerEntrance || !motionOk) return;
     document.body.classList.add('from-transition');
     /* Set per-item animation delays so every TOC link is covered. */
     var links = document.querySelectorAll('.cs-toc-link');

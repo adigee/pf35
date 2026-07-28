@@ -545,7 +545,7 @@
     document.addEventListener('click', function (e) {
       var a = e.target.closest('a[href]');
       if (a && a.hostname === location.hostname && a.pathname !== '/' && a.pathname !== '/index.html') {
-        sessionStorage.setItem('fromHome', '1');
+        sessionStorage.setItem('triggerEntrance', '1');
       }
     });
   </script>
