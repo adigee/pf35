@@ -1,0 +1,15 @@
+import { chromium } from 'playwright-core';
+const url = process.argv[2];
+const out = process.argv[3];
+const fromHome = process.argv[4] === 'home';
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1440, height: 1500 }, deviceScaleFactor: 1 });
+const errs = [];
+page.on('console', m => { if (m.type()==='error') errs.push('CONSOLE: '+m.text()); });
+page.on('pageerror', e => errs.push('PAGEERROR: '+e.message));
+if (fromHome) await page.addInitScript(() => sessionStorage.setItem('fromHome','1'));
+await page.goto(url, { waitUntil: 'domcontentloaded' });
+await page.waitForTimeout(fromHome ? 2500 : 800);
+await page.screenshot({ path: out, fullPage: false });
+console.log(errs.length ? errs.join('\n') : 'no console/page errors');
+await browser.close();
