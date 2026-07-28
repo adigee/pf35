@@ -337,9 +337,11 @@
       csv.style.animationDelay = delay;
       if (vbtn) vbtn.style.animationDelay = delay;
       /* Once it lands, drop the entrance animation so its filled end-state
-         stops pinning transform/overflow (which would break hover + focus). */
+          stops pinning transform/overflow (which would break hover + focus).
+          Also remove the body class so sticky positioning can activate in
+          the responsive layout without conflicting with .from-transition. */
       csv.addEventListener('animationend', function (e) {
-        if (e.animationName === 'csv-open') { csv.style.overflow = 'visible'; csv.style.animation = 'none'; }
+        if (e.animationName === 'csv-open') { csv.style.overflow = 'visible'; csv.style.animation = 'none'; document.body.classList.remove('from-transition'); }
         if (e.animationName === 'csv-drop' && vbtn) { vbtn.style.animation = 'none'; }
       });
     }

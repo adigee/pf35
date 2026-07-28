@@ -635,8 +635,18 @@
     position: static;
     margin-bottom: var(--sp-8);
   }
-  .cs-rail-back { margin-bottom: 0; }
+  .cs-rail-back { margin-bottom: var(--sp-6); }
   .cs-toc { display: none; }   /* TOC folds away on small screens */
+  /* Avatar sticks to the top on mobile so the reader's face stays
+     visible while they scroll through the case study. */
+  .csv {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--color-bg);
+    padding: var(--sp-3) 0;
+    margin-bottom: 0;
+  }
   .cs-content { max-width: none; }
   .cs-meta { grid-template-columns: 1fr 1fr; }
 }
