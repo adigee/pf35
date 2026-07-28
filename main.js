@@ -201,7 +201,7 @@ function handlePanels() {
 (function () {
   if (!('IntersectionObserver' in window)) return;
   const vids = [...document.querySelectorAll('video')].filter(
-    v => !v.closest('.panel')
+    v => !v.closest('.panel') && !v.closest('.csv')
   );
   if (!vids.length) return;
   const io = new IntersectionObserver(function (entries) {
