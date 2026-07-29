@@ -62,8 +62,15 @@
     return PROJECTS[(p.index + 1) % PROJECTS.length];
   }
 
+  /* The previous project in the sequence, wrapping around. */
+  function prev(slug) {
+    var p = get(slug);
+    if (!p) return null;
+    return PROJECTS[(p.index - 1 + PROJECTS.length) % PROJECTS.length];
+  }
+
   window.PROJECTS = PROJECTS;
-  window.Projects = { get: get, eyebrow: eyebrow, next: next, SEP: SEP };
+  window.Projects = { get: get, eyebrow: eyebrow, next: next, prev: prev, SEP: SEP };
 
   /* Fill any element tagged with data-eyebrow-for="<slug>" from the
      registry. Used by the homepage feature cards so their eyebrows
