@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prototype — Drama A: Sparkle mode</title>
+
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../case-study.css" />
+  <script src="../components/head.js"></script>
+  <script src="../components/theme.js"></script>
+
+  <style>
+    /* ── PROTOTYPE: Add Drama — Direction A "Sparkle mode" ──
+       Toggle litters the tidy page with ✦ markers, one per drama beat,
+       DEALT OUT OF the circular avatar (the storyteller deals the dirt).
+       Click a marker → dark popover card with what actually went down.
+       Toggle off → the page returns to its calm, press-release self.
+    */
+
+    /* ── Add-drama toggle in the rail (under the TOC) ── */
+    .dm-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      margin-top: var(--sp-8);
+      padding: var(--sp-2) var(--sp-3);
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+    .dm-toggle:hover { color: var(--color-text); border-color: var(--color-text-muted); }
+    .dm-toggle[aria-pressed="true"] {
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+      background: var(--color-primary-muted);
+    }
+    .dm-toggle .dm-glyph { font-size: 11px; line-height: 1; }
+
+    /* ── ✦ badge on the circle while drama mode is on ── */
+    .csv { position: relative; }
+    .dm-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--color-primary);
+      color: var(--color-bg);
+      font-size: 12px;
+      line-height: 1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      transform: scale(0);
+      transition: transform 340ms cubic-bezier(0.34, 1.45, 0.64, 1) 240ms;
+      pointer-events: none;
+    }
+    .drama-on .dm-badge { transform: scale(1); }
+
+    /* ── Drama markers — inline after each section header ── */
+    .dm-marker {
+      display: inline-block;
+      margin-left: var(--sp-3);
+      padding: 2px 4px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--color-primary);
+      font-size: 15px;
+      line-height: 1;
+      vertical-align: middle;
+      -webkit-tap-highlight-color: transparent;
+      transform: scale(0) rotate(var(--rot, 0deg));
+      transition: transform 320ms cubic-bezier(0.34, 1.45, 0.64, 1), color 120ms ease;
+    }
+    .dm-marker.is-in { transform: scale(1) rotate(var(--rot, 0deg)); }
+    .dm-marker.is-out {
+      transform: scale(0) rotate(calc(var(--rot, 0deg) + 40deg));
+      transition: transform 200ms cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .dm-marker:hover { transform: scale(1.35) rotate(var(--rot, 0deg)); }
+    .dm-marker:focus-visible { outline: 2px solid var(--color-text); outline-offset: 2px; border-radius: 4px; }
+    .dm-marker[aria-expanded="true"] { transform: scale(1.25) rotate(var(--rot, 0deg)); }
+
+    /* ── Flyers — the ✦ clones dealt from the circle ── */
+    .dm-flyer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 70;
+      color: var(--color-primary);
+      font-size: 16px;
+      line-height: 1;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    /* ── Popover card — the story behind the marker ──
+       Same dark-surface language as components/tooltip.js so it reads
+       consistently in light AND dark mode. */
+    .dm-pop {
+      position: fixed;
+      z-index: 60;
+      width: 300px;
+      max-width: calc(100vw - 24px);
+      padding: var(--sp-4) var(--sp-5);
+      border-radius: 12px;
+      border: 1px solid rgba(248, 246, 238, 0.12);
+      background: #1E1D1A;
+      color: #F8F6EE;
+      box-shadow: 0 16px 40px -10px rgba(0,0,0,0.5), 0 3px 10px -3px rgba(0,0,0,0.3);
+      opacity: 0;
+      filter: blur(3px);
+      transform: translateY(-4px) scale(0.96);
+      transform-origin: top left;
+      transition: opacity 180ms cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 220ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .dm-pop.is-open { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
+    .dm-pop-title {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--color-primary);
+      margin-bottom: var(--sp-2);
+    }
+    .dm-pop-body { font-size: var(--text-sm); line-height: 1.5; margin: 0; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dm-marker, .dm-pop, .dm-badge { transition: opacity 160ms ease; }
+      .dm-marker { transform: none; opacity: 0; }
+      .dm-marker.is-in { transform: none; opacity: 1; }
+      .dm-marker.is-out { opacity: 0; }
+      .dm-pop { filter: none; transform: none; }
+    }
+
+    /* ── Prototype annotation ── */
+    .proto-note {
+      position: fixed;
+      bottom: var(--sp-6);
+      right: var(--sp-6);
+      padding: var(--sp-3) var(--sp-4);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-wide);
+      color: var(--color-text-muted);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      z-index: 100;
+      max-width: 300px;
+      line-height: 1.4;
+    }
+    .proto-note strong { color: var(--color-primary); font-weight: 600; }
+  </style>
+</head>
+
+<body class="cs-page" data-project="trq-dad">
+
+  <div class="cs-progress" id="cs-progress" aria-hidden="true"></div>
+
+  <main class="cs-main" id="cs-main">
+    <div class="cs-shell">
+
+      <!-- ── LEFT RAIL (manually built for this prototype) ── -->
+      <aside class="cs-rail">
+        <a class="cs-rail-back b-label-link" href="index.html">
+          <svg viewBox="0 0 16 16"><line x1="13" y1="8" x2="3" y2="8"/><polyline points="7 4 3 8 7 12"/></svg>
+          Back to work
+        </a>
+
+        <!-- Video avatar placeholder (already shipped) + drama badge -->
+        <div class="csv" style="pointer-events:none; opacity:0.85;">
+          <div class="csv-btn">
+            <div class="csv-video" style="background: var(--color-surface-2); border: 1px solid var(--color-border);"></div>
+            <div class="csv-play"></div>
+          </div>
+          <span class="dm-badge" aria-hidden="true">✦</span>
+        </div>
+
+        <!-- Auto-generated TOC -->
+        <nav class="cs-toc">
+          <a class="cs-toc-link b-label-link" href="#introduction">Introduction</a>
+          <a class="cs-toc-link b-label-link" href="#my-role">My role</a>
+          <a class="cs-toc-link b-label-link" href="#our-objective">Our objective</a>
+          <a class="cs-toc-link b-label-link" href="#mapping-the-problem-space">Mapping the problem space</a>
+          <a class="cs-toc-link b-label-link" href="#design-iteration-1">Design iteration 1</a>
+          <a class="cs-toc-link b-label-link" href="#design-iteration-2">Design iteration 2</a>
+          <a class="cs-toc-link b-label-link" href="#design-iteration-3">Design iteration 3</a>
+          <a class="cs-toc-link b-label-link" href="#reflections">Reflections</a>
+        </nav>
+
+        <!-- Add drama toggle -->
+        <button class="dm-toggle" id="dm-toggle" aria-pressed="false" type="button">
+          <span class="dm-glyph" aria-hidden="true">✦</span>
+          <span class="dm-toggle-label">Add drama</span>
+        </button>
+      </aside>
+
+      <!-- ── CONTENT COLUMN ── -->
+      <div class="cs-content" id="cs-content">
+
+        <p class="b-label">Freelance • B2B • TRQ DAD • Increase ops efficiency</p>
+        <h1 class="b-title--article">How we created a friendly chatbot to submit a car insurance claim</h1>
+
+        <div class="cs-hero-img-wrap">
+          <img class="cs-hero-img" src="../project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Tranquilidade digital accident declaration app" />
+        </div>
+
+        <dl class="cs-meta">
+          <div><dt>Timeline</dt><dd>2018</dd></div>
+          <div><dt>Role</dt><dd>Lead designer, mobile experience (Me!)</dd></div>
+          <div><dt>Team</dt><dd>Team of 3, embedded from Cocoon</dd></div>
+        </dl>
+
+        <section class="cs-section" id="introduction">
+          <p class="b-section-header">Introduction</p>
+          <p class="b-body">Insurance providers are aware that the two primary moments when a customer evaluates them are when they purchase the insurance and when they submit a claim.</p>
+          <p class="b-body">Tranquilidade is an old-school insurance company in Portugal and was our client for this project. Our stakeholders were keen to improve the customer experience of submitting a claim, and they wanted to do it through a mobile app.</p>
+        </section>
+
+        <section class="cs-section" id="my-role">
+          <p class="b-section-header">My role</p>
+          <p class="b-body">I was embedded in a team of three from Cocoon on this digital transformation project. My role was to conceptualise and design the resulting mobile experience.</p>
+          <p class="b-body">I was involved with onsite UX research, led the design of the solution, and moderated usability testing sessions.</p>
+        </section>
+
+        <section class="cs-section" id="our-objective">
+          <p class="b-section-header">Our objective</p>
+          <p class="b-body">Going through a car accident is an emotionally stressful event with significant life and financial impact. To help customers through this trying time, we wanted to dramatically simplify the process to submit a claim.</p>
+          <div class="cs-callout">
+            <p>Expectation that the insurance provider ‘has got my back’</p>
+          </div>
+        </section>
+
+        <section class="cs-section" id="mapping-the-problem-space">
+          <p class="b-section-header">Mapping the problem space</p>
+          <p class="b-body">Field research and competitor analysis helped us visualize the whole experience of a car accident from the perspective of the customer.</p>
+          <figure class="cs-figure">
+            <img class="cs-img" src="../project%20content/3%20DAD%20Images%20for%20framer/3%20journey%20map.png" alt="Customer journey map" loading="lazy" />
+            <figcaption class="cs-figcaption">Journey-mapping the whole experience of a car accident</figcaption>
+          </figure>
+        </section>
+
+        <section class="cs-section" id="design-iteration-1">
+          <p class="b-section-header">Design iteration 1</p>
+          <p class="b-body">With the objective to guide the customer through the process to file a claim, we settled on a chatbot form factor pretty early in the exploration.</p>
+          <figure class="cs-figure">
+            <img class="cs-img" src="../project%20content/3%20DAD%20Images%20for%20framer/6%20Lo%20fi%20POC.png" alt="Low-fidelity proof of concept" loading="lazy" />
+            <figcaption class="cs-figcaption">Low-fidelity proof of concept</figcaption>
+          </figure>
+        </section>
+
+        <section class="cs-section" id="design-iteration-2">
+          <p class="b-section-header">Design iteration 2</p>
+          <p class="b-body">On testing the above prototypes using think-alouds with 4 participants, we were able to validate the core hypothesis and collect feedback on the overall flow.</p>
+          <div class="cs-callout">
+            <p>“It’s kinda long”</p>
+          </div>
+          <figure class="cs-figure">
+            <img class="cs-img" src="../project%20content/3%20DAD%20Images%20for%20framer/7%20Hi-fidelity.png" alt="High-fidelity chatbot claims experience" loading="lazy" />
+            <figcaption class="cs-figcaption">The high-fidelity claims experience</figcaption>
+          </figure>
+        </section>
+
+        <section class="cs-section" id="design-iteration-3">
+          <p class="b-section-header">Design iteration 3</p>
+          <p class="b-body">Due to a healthy tension between the business analyst and me on the approach, we returned to the data to identify whether there were any other optimisations we could introduce.</p>
+          <div class="cs-outcomes">
+            <div><p class="cs-stat-num">27%</p><p class="cs-stat-desc">of claims were a single accident typology</p></div>
+            <div><p class="cs-stat-num">57%</p><p class="cs-stat-desc">came from just four accident types</p></div>
+            <div><p class="cs-stat-num">90%+</p><p class="cs-stat-desc">inferred with up to two questions</p></div>
+          </div>
+          <p class="b-body">By inferring the accident typology based on how the vehicles had impacted each other, we were able to detect over 90% of the accident types — allowing us to skip over all the remaining questions.</p>
+        </section>
+
+        <section class="cs-section" id="reflections">
+          <p class="b-section-header">Reflections</p>
+          <p class="b-body">Designing the DAD for Tranquilidade was a milestone project in my career, with insightful lessons for my design practice. Towards the end, we all truly felt like we had co-created this solution!</p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <div class="proto-note">
+    <strong>Direction A — Sparkle mode</strong><br/>
+    Click “✦ Add drama” in the rail. Markers are dealt out of the circle onto the page; click one for what actually went down.
+  </div>
+
+  <script>
+    (function () {
+      /* ── THE DRAMA BEATS — the messy truth behind each tidy section ── */
+      var BEATS = [
+        { section: 'introduction',
+          text: 'Tranquilidade didn’t ask for a chatbot. They asked for an app because “everyone has an app.” The first two weeks were spent quietly steering them off that idea without ever saying the word no.' },
+        { section: 'my-role',
+          text: '“Team of three” sounds nimble in a case study. In the room it meant there was nowhere to hide — every disagreement was personal, because there was no one else to absorb it.' },
+        { section: 'our-objective',
+          text: 'The “has got my back” framing nearly died in the first stakeholder review — one director called it “too emotional for insurance.” We kept the idea alive by renaming the slide and never mentioning it again.' },
+        { section: 'mapping-the-problem-space',
+          text: 'An insurance agent looked at our first journey map and laughed: “too pretty to be true.” He was right — we had mapped the process as designed, not as lived. We rebuilt it from actual accident reports.' },
+        { section: 'design-iteration-1',
+          text: 'The chatbot wasn’t a leap of vision — it was the third idea on the wall. The first two died in a stakeholder workshop that didn’t make it into this case study.' },
+        { section: 'design-iteration-2',
+          text: '“It’s kinda long” is the politest thing participants said. The session recordings are mostly sighing. Fifty questions felt clever in Figma and cruel in person.' },
+        { section: 'design-iteration-3',
+          text: 'The “healthy tension” with the business analyst was a two-week standoff — he kept cutting questions, I kept defending the flow. The 27% stat that made this project exists because neither of us would drop it.' },
+        { section: 'reflections',
+          text: '“Co-created” is true. It’s also the word you use once the arguments have been forgiven. We got there — but the roadmap had casualties.' }
+      ];
+      var ROTS = [-9, 6, -4, 10, -11, 5, -7, 8];   /* per-marker resting tilt */
+      var BACK_BEZIER = 'cubic-bezier(0.34, 1.45, 0.64, 1)';
+      var motionOk = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      var toggle = document.getElementById('dm-toggle');
+      var toggleLabel = toggle.querySelector('.dm-toggle-label');
+      var csvBtn = document.querySelector('.csv .csv-btn');
+      var dramaOn = false;
+      var markers = [];       /* live marker buttons, in DOM order */
+      var openPop = null;     /* the currently open popover element */
+      var openMarker = null;
+
+      /* ── MARKERS: build one inline per beat, hidden until dealt ── */
+      function buildMarkers() {
+        BEATS.forEach(function (beat, i) {
+          var section = document.getElementById(beat.section);
+          if (!section) return;
+          var header = section.querySelector('.b-section-header');
+          if (!header) return;
+          var m = document.createElement('button');
+          m.className = 'dm-marker';
+          m.type = 'button';
+          m.textContent = '✦';
+          m.style.setProperty('--rot', ROTS[i % ROTS.length] + 'deg');
+          m.setAttribute('aria-expanded', 'false');
+          m.setAttribute('aria-label', 'Drama: what actually went down in “' + header.textContent.trim() + '”');
+          m.dataset.beat = i;
+          m.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (openMarker === m) { closePop(); return; }
+            openPopFor(m, beat);
+          });
+          header.appendChild(m);
+          markers.push(m);
+        });
+      }
+
+      /* ── DEAL: flyers fly from the circle to each marker's home ── */
+      function dealMarkers() {
+        var from = csvBtn.getBoundingClientRect();
+        var fx = from.left + from.width / 2;
+        var fy = from.top + from.height / 2;
+        markers.forEach(function (m, i) {
+          var delay = i * 90;
+          if (!motionOk) {
+            setTimeout(function () { m.classList.add('is-in'); }, delay);
+            return;
+          }
+          /* measure the marker's final spot while it's still scale(0) —
+             its layout box is stable regardless of transform */
+          var r = m.getBoundingClientRect();
+          var tx = r.left + r.width / 2;
+          var ty = r.top + r.height / 2;
+          var flyer = document.createElement('span');
+          flyer.className = 'dm-flyer';
+          flyer.textContent = '✦';
+          flyer.style.transform = 'translate(' + (fx - 8) + 'px,' + (fy - 8) + 'px)';
+          document.body.appendChild(flyer);
+          var dx = tx - fx, dy = ty - fy;
+          var anim = flyer.animate([
+            { transform: 'translate(' + (fx - 8) + 'px,' + (fy - 8) + 'px) scale(0.4) rotate(0deg)', opacity: 0, offset: 0 },
+            { opacity: 1, offset: 0.12 },
+            { transform: 'translate(' + (fx - 8 + dx * 0.62) + 'px,' + (fy - 8 + dy * 0.62 - 34) + 'px) scale(1.15) rotate(24deg)', opacity: 1, offset: 0.62 },
+            { transform: 'translate(' + (fx - 8 + dx) + 'px,' + (fy - 8 + dy) + 'px) scale(1) rotate(' + ROTS[i % ROTS.length] + 'deg)', opacity: 1, offset: 1 }
+          ], {
+            duration: 560,
+            delay: delay,
+            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            fill: 'forwards'
+          });
+          anim.onfinish = function () {
+            flyer.remove();
+            m.classList.add('is-in');
+          };
+        });
+      }
+
+      /* ── SWEEP: markers fold away, page returns to calm ── */
+      function sweepMarkers() {
+        markers.forEach(function (m, i) {
+          m.style.transitionDelay = (i * 35) + 'ms';
+          m.classList.remove('is-in');
+          m.classList.add('is-out');
+        });
+        setTimeout(function () {
+          markers.forEach(function (m) { m.remove(); });
+          markers = [];
+        }, 200 + markers.length * 35 + 40);
+      }
+
+      /* ── POPOVER: one open at a time; Esc / outside / scroll closes ── */
+      function openPopFor(marker, beat) {
+        closePop(true);
+        var pop = document.createElement('div');
+        pop.className = 'dm-pop';
+        pop.setAttribute('role', 'status');
+        pop.innerHTML =
+          '<p class="dm-pop-title">✦ What actually went down</p>' +
+          '<p class="dm-pop-body">' + beat.text + '</p>';
+        document.body.appendChild(pop);
+
+        var r = marker.getBoundingClientRect();
+        var pw = 300;
+        var x = Math.min(Math.max(12, r.left - 12), window.innerWidth - pw - 12);
+        var y = r.bottom + 10;
+        /* flip above the marker if it would clip the viewport bottom */
+        if (y + 160 > window.innerHeight) y = Math.max(12, r.top - 10 - 160);
+        pop.style.left = x + 'px';
+        pop.style.top = y + 'px';
+
+        requestAnimationFrame(function () { pop.classList.add('is-open'); });
+        marker.setAttribute('aria-expanded', 'true');
+        openPop = pop;
+        openMarker = marker;
+      }
+      function closePop(immediate) {
+        if (!openPop) return;
+        var pop = openPop;
+        openPop = null;
+        if (openMarker) { openMarker.setAttribute('aria-expanded', 'false'); openMarker = null; }
+        if (immediate) { pop.remove(); return; }
+        pop.classList.remove('is-open');
+        setTimeout(function () { pop.remove(); }, 240);
+      }
+      document.addEventListener('click', function () { closePop(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closePop();
+      });
+      window.addEventListener('scroll', function () { closePop(); }, { passive: true });
+
+      /* ── THE TOGGLE ── */
+      toggle.addEventListener('click', function () {
+        dramaOn = !dramaOn;
+        toggle.setAttribute('aria-pressed', dramaOn ? 'true' : 'false');
+        toggleLabel.textContent = dramaOn ? 'Remove drama' : 'Add drama';
+        document.body.classList.toggle('drama-on', dramaOn);
+        closePop(true);
+        if (dramaOn) {
+          buildMarkers();
+          dealMarkers();
+        } else {
+          sweepMarkers();
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

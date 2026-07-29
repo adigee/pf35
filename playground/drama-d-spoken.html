@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prototype — Drama D: Spoken, not written</title>
+
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../case-study.css" />
+  <script src="../components/head.js"></script>
+  <script src="../components/theme.js"></script>
+
+  <style>
+    /* ── PROTOTYPE: Add Drama — Direction D "Spoken, not written" ──
+       The page stays clean; the dirt is TOLD, never published. Minimal ✦
+       markers appear next to each section — clicking one plays a 10–15s
+       beat IN THE CIRCLE (the storyteller's mouth). One circle, two
+       repertoires: the official overview + the messy beats.
+       (Prototype: beats are segments of the placeholder clip, with the
+       titles the real recordings would have.)
+    */
+
+    /* ── Add-drama toggle in the rail (under the TOC) ── */
+    .dm-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      margin-top: var(--sp-8);
+      padding: var(--sp-2) var(--sp-3);
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+    .dm-toggle:hover { color: var(--color-text); border-color: var(--color-text-muted); }
+    .dm-toggle[aria-pressed="true"] {
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+      background: var(--color-primary-muted);
+    }
+    .dm-toggle .dm-glyph { font-size: 11px; line-height: 1; }
+
+    /* ── Now-playing label under the circle ── */
+    .dm-now {
+      max-width: 160px;
+      margin-top: calc(-1 * var(--sp-8));
+      margin-bottom: var(--sp-8);
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-wide);
+      line-height: 1.5;
+      color: var(--color-text-muted);
+      opacity: 0;
+      transform: translateY(-3px);
+      transition: opacity 240ms ease, transform 240ms ease;
+    }
+    .dm-now.is-visible { opacity: 1; transform: translateY(0); }
+    .dm-now strong { color: var(--color-primary); font-weight: 600; }
+
+    /* ── Drama markers — deliberately quiet, the story lives in the circle ── */
+    .dm-marker {
+      display: inline-block;
+      margin-left: var(--sp-3);
+      padding: 2px 4px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--color-primary);
+      font-size: 13px;
+      line-height: 1;
+      vertical-align: middle;
+      -webkit-tap-highlight-color: transparent;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: opacity 240ms ease, transform 300ms cubic-bezier(0.34, 1.45, 0.64, 1), color 120ms ease;
+    }
+    .dm-marker.is-in { opacity: 1; transform: scale(1); }
+    .dm-marker:hover { transform: scale(1.3); }
+    .dm-marker:focus-visible { outline: 2px solid var(--color-text); outline-offset: 2px; border-radius: 4px; }
+    .dm-marker.is-active { transform: scale(1.25); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dm-marker { transition: opacity 120ms ease; transform: none; }
+      .dm-now { transition: opacity 120ms ease; transform: none; }
+    }
+
+    /* ── Prototype annotation ── */
+    .proto-note {
+      position: fixed;
+      bottom: var(--sp-6);
+      right: var(--sp-6);
+      padding: var(--sp-3) var(--sp-4);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-wide);
+      color: var(--color-text-muted);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      z-index: 100;
+      max-width: 300px;
+      line-height: 1.4;
+    }
+    .proto-note strong { color: var(--color-primary); font-weight: 600; }
+  </style>
+</head>
+
+<body class="cs-page" data-project="trq-dad">
+
+  <div class="cs-progress" id="cs-progress" aria-hidden="true"></div>
+
+  <main class="cs-main" id="cs-main">
+    <div class="cs-shell">
+
+      <!-- ── LEFT RAIL (manually built for this prototype) ── -->
+      <aside class="cs-rail">
+        <a class="cs-rail-back b-label-link" href="index.html">
+          <svg viewBox="0 0 16 16"><line x1="13" y1="8" x2="3" y2="8"/><polyline points="7 4 3 8 7 12"/></svg>
+          Back to work
+        </a>
+
+        <!-- REAL video avatar — the circle is the feature in this direction -->
+        <div class="csv" data-state="idle">
+          <button class="csv-btn" type="button" aria-label="Play the current drama beat">
+            <video class="csv-video" playsinline preload="metadata"
+              poster="../project%20content/profile-photo.png"
+              src="../project%20content/Sydney%20Makes%20an%20Omelet.mp4"></video>
+            <svg class="csv-ring" viewBox="0 0 116 116" aria-hidden="true">
+              <circle cx="58" cy="58" r="56.75"></circle>
+            </svg>
+            <span class="csv-play" aria-hidden="true"></span>
+          </button>
+        </div>
+        <p class="dm-now" id="dm-now" aria-live="polite"></p>
+
+        <!-- Auto-generated TOC -->
+        <nav class="cs-toc">
+          <a class="cs-toc-link b-label-link" href="#introduction">Introduction</a>
+          <a class="cs-toc-link b-label-link" href="#my-role">My role</a>
+          <a class="cs-toc-link b-label-link" href="#our-objective">Our objective</a>
+          <a class="cs-toc-link b-label-link" href="#mapping-the-problem-space">Mapping the problem space</a>
+          <a class="cs-toc-link b-label-link" href="#design-iteration-1">Design iteration 1</a>
+          <a class="cs-toc-link b-label-link" href="#design-iteration-2">Design iteration 2</a>
+          <a class="cs-toc-link b-label-link" href="#design-iteration-3">Design iteration 3</a>
+          <a class="cs-toc-link b-label-link" href="#reflections">Reflections</a>
+        </nav>
+
+        <!-- Add drama toggle -->
+        <button class="dm-toggle" id="dm-toggle" aria-pressed="false" type="button">
+          <span class="dm-glyph" aria-hidden="true">✦</span>
+          <span class="dm-toggle-label">Add drama</span>
+        </button>
+      </aside>
+
+      <!-- ── CONTENT COLUMN ── -->
+      <div class="cs-content" id="cs-content">
+
+        <p class="b-label">Freelance • B2B • TRQ DAD • Increase ops efficiency</p>
+        <h1 class="b-title--article">How we created a friendly chatbot to submit a car insurance claim</h1>
+
+        <div class="cs-hero-img-wrap">
+          <img class="cs-hero-img" src="../project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Tranquilidade digital accident declaration app" />
+        </div>
+
+        <dl class="cs-meta">
+          <div><dt>Timeline</dt><dd>2018</dd></div>
+          <div><dt>Role</dt><dd>Lead designer, mobile experience (Me!)</dd></div>
+          <div><dt>Team</dt><dd>Team of 3, embedded from Cocoon</dd></div>
+        </dl>
+
+        <section class="cs-section" id="introduction">
+          <p class="b-section-header">Introduction</p>
+          <p class="b-body">Insurance providers are aware that the two primary moments when a customer evaluates them are when they purchase the insurance and when they submit a claim.</p>
+          <p class="b-body">Tranquilidade is an old-school insurance company in Portugal and was our client for this project. Our stakeholders were keen to improve the customer experience of submitting a claim, and they wanted to do it through a mobile app.</p>
+        </section>
+
+        <section class="cs-section" id="my-role">
+          <p class="b-section-header">My role</p>
+          <p class="b-body">I was embedded in a team of three from Cocoon on this digital transformation project. My role was to conceptualise and design the resulting mobile experience.</p>
+          <p class="b-body">I was involved with onsite UX research, led the design of the solution, and moderated usability testing sessions.</p>
+        </section>
+
+        <section class="cs-section" id="our-objective">
+          <p class="b-section-header">Our objective</p>
+          <p class="b-body">Going through a car accident is an emotionally stressful event with significant life and financial impact. To help customers through this trying time, we wanted to dramatically simplify the process to submit a claim.</p>
+          <div class="cs-callout">
+            <p>Expectation that the insurance provider ‘has got my back’</p>
+          </div>
+        </section>
+
+        <section class="cs-section" id="mapping-the-problem-space">
+          <p class="b-section-header">Mapping the problem space</p>
+          <p class="b-body">Field research and competitor analysis helped us visualize the whole experience of a car accident from the perspective of the customer.</p>
+          <figure class="cs-figure">
+            <img class="cs-img" src="../project%20content/3%20DAD%20Images%20for%20framer/3%20journey%20map.png" alt="Customer journey map" loading="lazy" />
+            <figcaption class="cs-figcaption">Journey-mapping the whole experience of a car accident</figcaption>
+          </figure>
+        </section>
+
+        <section class="cs-section" id="design-iteration-1">
+          <p class="b-section-header">Design iteration 1</p>
+          <p class="b-body">With the objective to guide the customer through the process to file a claim, we settled on a chatbot form factor pretty early in the exploration.</p>
+          <figure class="cs-figure">
+            <img class="cs-img" src="../project%20content/3%20DAD%20Images%20for%20framer/6%20Lo%20fi%20POC.png" alt="Low-fidelity proof of concept" loading="lazy" />
+            <figcaption class="cs-figcaption">Low-fidelity proof of concept</figcaption>
+          </figure>
+        </section>
+
+        <section class="cs-section" id="design-iteration-2">
+          <p class="b-section-header">Design iteration 2</p>
+          <p class="b-body">On testing the above prototypes using think-alouds with 4 participants, we were able to validate the core hypothesis and collect feedback on the overall flow.</p>
+          <div class="cs-callout">
+            <p>“It’s kinda long”</p>
+          </div>
+          <figure class="cs-figure">
+            <img class="cs-img" src="../project%20content/3%20DAD%20Images%20for%20framer/7%20Hi-fidelity.png" alt="High-fidelity chatbot claims experience" loading="lazy" />
+            <figcaption class="cs-figcaption">The high-fidelity claims experience</figcaption>
+          </figure>
+        </section>
+
+        <section class="cs-section" id="design-iteration-3">
+          <p class="b-section-header">Design iteration 3</p>
+          <p class="b-body">Due to a healthy tension between the business analyst and me on the approach, we returned to the data to identify whether there were any other optimisations we could introduce.</p>
+          <div class="cs-outcomes">
+            <div><p class="cs-stat-num">27%</p><p class="cs-stat-desc">of claims were a single accident typology</p></div>
+            <div><p class="cs-stat-num">57%</p><p class="cs-stat-desc">came from just four accident types</p></div>
+            <div><p class="cs-stat-num">90%+</p><p class="cs-stat-desc">inferred with up to two questions</p></div>
+          </div>
+          <p class="b-body">By inferring the accident typology based on how the vehicles had impacted each other, we were able to detect over 90% of the accident types — allowing us to skip over all the remaining questions.</p>
+        </section>
+
+        <section class="cs-section" id="reflections">
+          <p class="b-section-header">Reflections</p>
+          <p class="b-body">Designing the DAD for Tranquilidade was a milestone project in my career, with insightful lessons for my design practice. Towards the end, we all truly felt like we had co-created this solution!</p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <div class="proto-note">
+    <strong>Direction D — Spoken, not written</strong><br/>
+    Click “✦ Add drama”, then any ✦ marker — the beat plays IN the circle. (Prototype: segments of the placeholder clip + the titles real recordings would have.)
+  </div>
+
+  <script>
+    (function () {
+      /* ── THE BEATS — what the recordings would be titled ── */
+      var BEATS = [
+        { section: 'introduction',              title: 'the app nobody asked for' },
+        { section: 'my-role',                   title: 'nowhere to hide' },
+        { section: 'our-objective',             title: 'the slide we renamed' },
+        { section: 'mapping-the-problem-space', title: 'too pretty to be true' },
+        { section: 'design-iteration-1',        title: 'idea number three' },
+        { section: 'design-iteration-2',        title: 'mostly sighing' },
+        { section: 'design-iteration-3',        title: 'the two-week standoff' },
+        { section: 'reflections',               title: 'forgiven, eventually' }
+      ];
+      var RING_R = 56.75;
+      var C = 2 * Math.PI * RING_R;
+
+      var toggle = document.getElementById('dm-toggle');
+      var toggleLabel = toggle.querySelector('.dm-toggle-label');
+      var nowEl = document.getElementById('dm-now');
+      var wrap = document.querySelector('.csv');
+      var btn = wrap.querySelector('.csv-btn');
+      var video = wrap.querySelector('.csv-video');
+      var ring = wrap.querySelector('.csv-ring circle');
+      ring.style.strokeDasharray = C;
+      ring.style.strokeDashoffset = C;
+
+      var dramaOn = false;
+      var markers = [];
+      var ringAnim = null;
+      var dur = 60;                    /* refined once metadata lands */
+      var current = -1;                /* active beat index, -1 = none */
+      var segLen = dur / BEATS.length;
+
+      video.addEventListener('loadedmetadata', function () {
+        if (video.duration && isFinite(video.duration)) {
+          dur = video.duration;
+          segLen = dur / BEATS.length;
+        }
+      });
+
+      /* ── RING — one composited run per beat segment (same technique
+            as the shipped avatar: WAAPI, no timeupdate jitter) ── */
+      function startRing() {
+        if (ringAnim) ringAnim.cancel();
+        ringAnim = ring.animate(
+          [{ strokeDashoffset: C }, { strokeDashoffset: 0 }],
+          { duration: segLen * 1000, easing: 'linear', fill: 'forwards' }
+        );
+      }
+      function resetRing() {
+        if (ringAnim) { ringAnim.cancel(); ringAnim = null; }
+        ring.style.strokeDashoffset = C;
+      }
+
+      function setNow(html) {
+        if (!html) { nowEl.classList.remove('is-visible'); nowEl.innerHTML = ''; return; }
+        nowEl.innerHTML = html;
+        nowEl.classList.add('is-visible');
+      }
+
+      /* ── PLAY A BEAT: seek to its segment, narrate, stop at the edge ── */
+      function playBeat(i) {
+        current = i;
+        markers.forEach(function (m, j) { m.classList.toggle('is-active', j === i); });
+        var start = i * segLen;
+        video.currentTime = start;
+        video.muted = false;
+        wrap.dataset.state = 'playing';
+        startRing();
+        var p = video.play();
+        if (p && p.catch) p.catch(function () {});
+        setNow('✦ beat ' + (i + 1) + '/' + BEATS.length + '<br/><strong>“' + BEATS[i].title + '”</strong>');
+      }
+      video.addEventListener('timeupdate', function () {
+        if (current < 0) return;
+        if (video.currentTime >= (current + 1) * segLen - 0.08) {
+          video.pause();
+          wrap.dataset.state = 'paused';
+          if (ringAnim) ringAnim.pause();
+        }
+      });
+
+      /* circle click = pause/resume the current beat */
+      btn.addEventListener('click', function () {
+        if (current < 0) return;
+        if (video.paused) {
+          wrap.dataset.state = 'playing';
+          if (ringAnim) ringAnim.play();
+          var p = video.play();
+          if (p && p.catch) p.catch(function () {});
+        } else {
+          video.pause();
+          wrap.dataset.state = 'paused';
+          if (ringAnim) ringAnim.pause();
+        }
+      });
+
+      /* ── MARKERS: quiet ✦ next to each header, appears when armed ── */
+      function armMarkers() {
+        BEATS.forEach(function (beat, i) {
+          var section = document.getElementById(beat.section);
+          var header = section && section.querySelector('.b-section-header');
+          if (!header) return;
+          var m = document.createElement('button');
+          m.className = 'dm-marker';
+          m.type = 'button';
+          m.textContent = '✦';
+          m.setAttribute('aria-label', 'Play the story behind “' + header.textContent.trim() + '”');
+          m.style.transitionDelay = (i * 55) + 'ms';
+          m.addEventListener('click', function () { playBeat(i); });
+          header.appendChild(m);
+          markers.push(m);
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () { m.classList.add('is-in'); });
+          });
+        });
+        setNow('pick a ✦ — the messy bits are told, not written');
+      }
+      function disarm() {
+        markers.forEach(function (m) { m.remove(); });
+        markers = [];
+        current = -1;
+        video.pause();
+        video.currentTime = 0;
+        wrap.dataset.state = 'idle';
+        resetRing();
+        setNow(null);
+      }
+
+      toggle.addEventListener('click', function () {
+        dramaOn = !dramaOn;
+        toggle.setAttribute('aria-pressed', dramaOn ? 'true' : 'false');
+        toggleLabel.textContent = dramaOn ? 'Remove drama' : 'Add drama';
+        if (dramaOn) armMarkers(); else disarm();
+      });
+    })();
+  </script>
+
+</body>
+</html>
