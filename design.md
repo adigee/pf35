@@ -221,22 +221,22 @@ The type scale adjusts at four breakpoints. Only heading tokens are overridden; 
 
 These classes encapsulate the full typographic treatment. Use these — do not reconstruct equivalent styles inline.
 
-| Class | Size | Weight | Leading | Tracking | Transform | Notes |
-|---|---|---|---|---|---|---|
-| `.b-label` | `--text-xs` | 500 | — | `--tracking-widest` | uppercase | Muted. Eyebrow / kicker above titles |
-| `.b-title` | `--text-2xl` | 700 | `--leading-snug` | `--tracking-snug` | — | Panel / large headings |
-| `.b-title--xl` | `--text-4xl` | 700 | `--leading-tight` | `--tracking-tight` | — | Hero title; case-study title (single-column) |
-| `.b-title--article` | `clamp(2.25→3.25rem)` | 700 | `--leading-tight` | `--tracking-snug` | — | Case-study hero title (two-column, responsive) |
-| `.b-section-header` | `--text-lg` | 700 | `--leading-normal` | — | — | Long-form section heading |
-| `.b-section-subheader` | `--text-base` | 600 | `--leading-body` | — | — | Sub-heading within a section |
-| `.b-body` | `--text-base` | 300 | `--leading-body` | — | — | Max-width 340px |
-| `.b-body-bold` | `--text-base` | 600 | `--leading-loose` | — | — | Emphasis within body |
-| `.b-body-caption` | `--text-sm` | 500 | `--leading-normal` | — | — | Captions |
-| `.b-body-small` | `--text-sm` | 300 | `--leading-medium` | — | — | Secondary content |
-| `.b-body-small-impact` | `--text-sm` | 700 | `--leading-medium` | — | — | Small but prominent |
-| `.b-link` | `--text-xs` | 400 | — | `--tracking-wide` | uppercase | Primary color |
-| `.b-label-link` | `--text-xs` | 500 | — | `--tracking-wider` | uppercase | Muted color → primary on hover. Quiet navigational/utility links |
-| `.b-tag` | `--text-2xs` | 400 | — | `--tracking-wide` | uppercase | Muted, bordered |
+| Class | Size | Weight | Leading | Tracking | Transform | Notes | Where used |
+|---|---|---|---|---|---|---|---|
+| `.b-label` | `--text-xs` | 500 | — | `--tracking-widest` | uppercase | Muted. Eyebrow / kicker above titles | Case-study hero eyebrow, all case studies (shared via `components/case-study.js`); homepage project-card eyebrows in `index.html` (as `.b-label.b-label-strong`) |
+| `.b-title` | `--text-2xl` | 700 | `--leading-snug` | `--tracking-snug` | — | Panel / large headings | H2 mid-page section titles in `decision-module.html` only |
+| `.b-title--xl` | `--text-4xl` | 700 | `--leading-tight` | `--tracking-tight` | — | Hero title; case-study title (single-column) | Defined in `style.css`, not currently used on any page |
+| `.b-title--article` | `clamp(2.25→3.25rem)` | 700 | `--leading-tight` | `--tracking-snug` | — | Case-study hero title (two-column, responsive) | Case-study hero H1, all case studies (`trq-dad.html`, `lockers-reducing-cancellation.html`, `decision-module.html`) and the shared template |
+| `.b-section-header` | `--text-lg` | 700 | `--leading-normal` | — | — | Long-form section heading | Case-study section headings, all case studies; also the case-study lock/gate modal title (`components/case-study.js`) |
+| `.b-section-subheader` | `--text-base` | 600 | `--leading-body` | — | — | Sub-heading within a section | Defined in `style.css`, not currently used on any page |
+| `.b-body` | `--text-base` | 300 | `--leading-body` | — | — | Max-width 340px | Case-study body paragraphs, all case studies |
+| `.b-body-bold` | `--text-base` | 600 | `--leading-loose` | — | — | Emphasis within body | Defined in `style.css`, not currently used on any page |
+| `.b-body-caption` | `--text-sm` | 500 | `--leading-normal` | — | — | Captions | Stat-block descriptions (`.cs-stat-desc`) in `trq-dad.html` and `decision-module.html` |
+| `.b-body-small` | `--text-sm` | 300 | `--leading-medium` | — | — | Secondary content | Defined in `style.css`, not currently used on any page |
+| `.b-body-small-impact` | `--text-sm` | 700 | `--leading-medium` | — | — | Small but prominent | Pull-quote / callout paragraphs in `trq-dad.html` and `decision-module.html` |
+| `.b-link` | `--text-xs` | 400 | — | `--tracking-wide` | uppercase | Primary color | Defined in `style.css`, not currently used on any page |
+| `.b-label-link` | `--text-xs` | 500 | — | `--tracking-wider` | uppercase | Muted color → primary on hover. Quiet navigational/utility links | Case-study rail "Back to work" link and table-of-contents links, all case studies (`components/case-study.js`) |
+| `.b-tag` | `--text-2xs` | 400 | — | `--tracking-wide` | uppercase | Muted, bordered | Hero tag chips in `decision-module.html` only |
 
 **Choosing a link style — two distinct roles:**
 
