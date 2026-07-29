@@ -764,12 +764,13 @@ a:hover {
   transform: rotate(45deg);
 }
 
-/* Back variant — circle on left, arrow points left, rotates -45° on hover */
+/* Back variant — circle on left, arrow points left, rotates +45° on hover
+   so the arrow angles upward (up-left) rather than down. */
 .panel-cta--back .panel-cta-circle {
   order: -1;
 }
 .panel-cta--back:hover .panel-cta-circle {
-  transform: rotate(-45deg);
+  transform: rotate(45deg);
 }
 .panel-cta-circle svg {
   width: 14px;

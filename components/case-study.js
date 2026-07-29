@@ -263,12 +263,25 @@
       eyebrowEl.textContent = window.Projects.eyebrow(slug);
     }
 
-    /* ── FOOTER: All projects ← → Next project ──
-       Always shown, even while locked — "Next project" simply lands on the
-       next case study, which runs its own gate if it is protected too. */
+    /* ── FOOTER: Previous ← → Next project ──
+       A carousel over the project registry: both arrows walk the sequence and
+       wrap around. Always shown, even while locked — each lands on a case
+       study that runs its own gate if it is protected too. */
     var slot = document.querySelector('[data-component="cs-footer"]');
     if (slot) {
+      var prev = (window.Projects && slug) ? window.Projects.prev(slug) : null;
       var next = (window.Projects && slug) ? window.Projects.next(slug) : null;
+
+      var prevHtml = '';
+      if (prev) {
+        var prevExt = prev.external ? ' target="_blank" rel="noopener"' : '';
+        prevHtml =
+          '<a href="' + prev.href + '" class="panel-cta panel-cta--back" id="cs-footer-prev"' + prevExt + '>' +
+            '<span class="panel-cta-circle" aria-hidden="true">' + ARROW_LEFT + '</span>' +
+            'Previous' +
+          '</a>';
+      }
+
       var nextHtml = '';
       if (next) {
         var ext = next.external ? ' target="_blank" rel="noopener"' : '';
@@ -283,26 +296,26 @@
       footer.className = 'cs-footer';
       footer.innerHTML =
         '<div class="cs-footer-nav">' +
-          '<a href="index.html" class="panel-cta panel-cta--back" id="cs-footer-back">' +
-            '<span class="panel-cta-circle" aria-hidden="true">' + ARROW_LEFT + '</span>' +
-            'All projects' +
-          '</a>' +
+          prevHtml +
           nextHtml +
         '</div>';
       slot.replaceWith(footer);
 
       /* Replay the full entrance choreography (page-in → TOC stagger →
-         video-avatar drop) when arriving via "Next project": set the same
+         video-avatar drop) when arriving via either arrow: set the same
          session flag the homepage sets, so staggerToc() fires on the
          destination case study. Skipped for external write-ups — those open
          in a new tab, and the flag would linger here and fire on an
          unrelated visit later. */
-      var nextLink = footer.querySelector('#cs-footer-next');
-      if (nextLink && next && !next.external) {
-        nextLink.addEventListener('click', function () {
-          sessionStorage.setItem('triggerEntrance', '1');
-        });
+      function wireEntranceReplay(link, target) {
+        if (link && target && !target.external) {
+          link.addEventListener('click', function () {
+            sessionStorage.setItem('triggerEntrance', '1');
+          });
+        }
       }
+      wireEntranceReplay(footer.querySelector('#cs-footer-prev'), prev);
+      wireEntranceReplay(footer.querySelector('#cs-footer-next'), next);
     }
 
     /* ── READING PROGRESS BAR ── */
