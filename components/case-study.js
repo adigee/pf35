@@ -393,7 +393,7 @@
         '<div class="cs-skel-line" style="width:96%"></div>' +
         '<div class="cs-skel-line" style="width:88%"></div>' +
         '<div class="cs-skel-line" style="width:92%"></div>' +
-        '<div class="cs-skel-block"></div>' +
+        /* '<div class="cs-skel-block"></div>' +  (figure placeholder — removed to keep the teaser compact) */
         '<div class="cs-skel-line" style="width:90%"></div>' +
         '<div class="cs-skel-line" style="width:70%"></div>' +
       '</div>';
