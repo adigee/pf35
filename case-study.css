@@ -219,8 +219,6 @@
 }
 
 .cs-callout p {
-  font-size: var(--text-sm);
-  line-height: var(--leading-body);
   color: var(--color-text);
   font-style: italic;
 }
