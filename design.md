@@ -229,7 +229,6 @@ These classes encapsulate the full typographic treatment. Use these — do not r
 | `.b-title--article` | `clamp(2.25→3.25rem)` | 700 | `--leading-tight` | `--tracking-snug` | — | Case-study hero title (two-column, responsive) |
 | `.b-section-header` | `--text-lg` | 700 | `--leading-normal` | — | — | Long-form section heading |
 | `.b-section-subheader` | `--text-base` | 600 | `--leading-body` | — | — | Sub-heading within a section |
-| `.b-company` | `--text-sm` | 400 | — | — | — | Muted color, company context |
 | `.b-body` | `--text-base` | 300 | `--leading-body` | — | — | Max-width 340px |
 | `.b-body-bold` | `--text-base` | 600 | `--leading-loose` | — | — | Emphasis within body |
 | `.b-body-caption` | `--text-sm` | 500 | `--leading-normal` | — | — | Captions |
@@ -238,7 +237,6 @@ These classes encapsulate the full typographic treatment. Use these — do not r
 | `.b-link` | `--text-xs` | 400 | — | `--tracking-wide` | uppercase | Primary color |
 | `.b-label-link` | `--text-xs` | 500 | — | `--tracking-wider` | uppercase | Muted color → primary on hover. Quiet navigational/utility links |
 | `.b-tag` | `--text-2xs` | 400 | — | `--tracking-wide` | uppercase | Muted, bordered |
-| `.b-aside` | `--text-sm` | 400 | — | — | — | Italic, muted |
 
 **Choosing a link style — two distinct roles:**
 
