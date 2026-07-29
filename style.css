@@ -14,7 +14,7 @@
   --color-border:           rgba(248, 246, 238, 0.10);   /* hairline defines dark cards */
 
   --color-text:             #F8F6EE;
-  --color-text-muted:       rgba(248, 246, 238, 0.45);
+  --color-text-muted:       rgba(248, 246, 238, 0.60);
   --color-text-subtle:      rgba(248, 246, 238, 0.20);
 
   --color-primary:          #ACA0E8;
@@ -103,7 +103,7 @@
   --color-border:           rgba(26, 42, 94, 0.10);
 
   --color-text:             #1A2A5E;
-  --color-text-muted:       rgba(26, 42, 94, 0.48);
+  --color-text-muted:       rgba(26, 42, 94, 0.68);
   --color-text-subtle:      rgba(26, 42, 94, 0.20);
 
   --color-primary:          #2147CC;
@@ -177,7 +177,7 @@ body {
   color: var(--color-text);
   font-family: var(--font-body);
   font-size: var(--text-base);
-  font-weight: 300;
+  font-weight: 400;
   line-height: var(--leading-normal);
   min-height: 100vh;
 }
@@ -390,6 +390,7 @@ a:hover {
 .b-body {
   font-size: var(--text-base);
   line-height: var(--leading-body);
+  max-width: 62ch;   /* readable measure — long-form line length cap */
 }
 .b-body + .b-body { margin-top: var(--sp-4); }
 
@@ -410,7 +411,7 @@ a:hover {
 /* Body small — regular */
 .b-body-small {
   font-size: var(--text-sm);
-  font-weight: 300;
+  font-weight: 400;
   line-height: var(--leading-medium);
 }
 
@@ -1179,8 +1180,6 @@ a:hover {
   .site-nav {
     padding: var(--sp-4) var(--sp-6);
   }
-
-  .b-body { max-width: 100%; }
 
   /* Reduce block vertical rhythm */
   .block-text {
