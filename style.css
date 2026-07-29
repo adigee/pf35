@@ -386,13 +386,6 @@ a:hover {
   margin-bottom: var(--sp-3);
 }
 
-/* Company */
-.b-company {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  margin-bottom: var(--sp-5);
-}
-
 /* Body */
 .b-body {
   font-size: var(--text-base);
@@ -517,14 +510,6 @@ a:hover {
   text-transform: uppercase;
   color: rgba(255,255,255,0.35);
   margin-top: var(--sp-2);
-}
-
-/* Italic aside */
-.b-aside {
-  font-style: italic;
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
-  margin-top: var(--sp-6);
 }
 
 /* Timeline (inside left col) */
