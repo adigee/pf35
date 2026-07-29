@@ -328,10 +328,12 @@
 .cs-lock-badge:hover { opacity: 0.86; transform: translateY(-1px); }
 .cs-lock-badge svg { width: 11px; height: 11px; display: block; }
 
-/* Frosted skeleton standing in for the sections (inside #cs-locked-mount). */
+/* Frosted skeleton standing in for the sections (inside #cs-locked-mount).
+   Kept compact: while locked the page is just a teaser, so the footer
+   should sit close under the hero instead of a viewport away. */
 .cs-locked-skeleton {
-  margin-top: var(--sp-16);
-  padding-top: var(--sp-16);
+  margin-top: var(--sp-10);
+  padding-top: var(--sp-10);
   border-top: 1px solid var(--color-border);
   filter: blur(7px);
   opacity: 0.55;
@@ -353,12 +355,17 @@
   margin-bottom: var(--sp-4);
 }
 .cs-skel-block {
-  height: 260px;
+  height: 120px;
   border-radius: 12px;
   background: var(--color-text-muted);
   opacity: 0.18;
-  margin: var(--sp-8) 0;
+  margin: var(--sp-6) 0;
 }
+
+/* Locked pages are short teasers — pull the footer up so it doesn't
+   strand a viewport of empty space under the skeleton. Beats the
+   .cs-content > * + * flow margin via the extra class. */
+.cs-is-locked .cs-content > .cs-footer { margin-top: var(--sp-10); }
 
 /* Skeleton index in the rail — real titles are inside the encrypted
    payload, so blurred bars hold the shape until unlock swaps in the TOC. */
