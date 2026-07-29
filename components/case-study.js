@@ -409,11 +409,18 @@
         /* '<div class="cs-skel-block"></div>' +  (figure placeholder — removed to keep the teaser compact) */
         '<div class="cs-skel-line" style="width:90%"></div>' +
         '<div class="cs-skel-line" style="width:70%"></div>' +
+      '</div>' +
+      '<div class="cs-teaser-chip">' +
+        '<div class="cs-gate-lock" aria-hidden="true">' + LOCK_ICON + '</div>' +
+        '<p class="b-section-header cs-gate-title">This case study is locked</p>' +
+        '<button type="button" class="cs-teaser-chip-btn btn btn--sm">Unlock</button>' +
       '</div>';
 
     var modal = buildModal(data, reveal);
     document.body.appendChild(modal.root);
     if (badge) badge.addEventListener('click', modal.open);
+    var chipBtn = mount.querySelector('.cs-teaser-chip-btn');
+    if (chipBtn) chipBtn.addEventListener('click', modal.open);
 
     /* Reveal: decrypt → close modal → swap skeletons for the real thing. */
     function reveal(html) {
@@ -474,7 +481,7 @@
     eyebrow.textContent = '';
     eyebrow.appendChild(span);
     var badge = document.createElement('button');
-    badge.className = 'cs-lock-badge';
+    badge.className = 'cs-lock-badge btn btn--xs';
     badge.type = 'button';
     badge.innerHTML = LOCK_BADGE_ICON + '<span>Locked</span>';
     eyebrow.appendChild(badge);
@@ -545,7 +552,7 @@
           '<input type="password" class="cs-gate-input" ' +
             'placeholder="design for what?" autocomplete="off" autocapitalize="off" ' +
             'spellcheck="false" aria-label="Password" />' +
-          '<button type="submit" class="cs-gate-btn">Unlock</button>' +
+          '<button type="submit" class="cs-gate-btn btn btn--md">Unlock</button>' +
         '</form>' +
         '<p class="cs-gate-error" role="alert" hidden>That password didn’t work. Try again.</p>' +
       '</div>';

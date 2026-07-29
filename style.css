@@ -23,6 +23,11 @@
   --color-accent:           #8E7FD1;
   --color-accent-on-accent: #121212;
 
+  /* Fixed, NOT theme-swapped — see .btn below. Buttons keep --color-primary
+     as their (theme-swapped) background, but the foreground stays white in
+     both themes, the same way .panel-cta-circle's icon is hardcoded white. */
+  --color-on-primary:       #fff;
+
   --highlight-ink:          172, 160, 232;  /* highlighter marker RGB (lilac) */
 
   /* Typography */
@@ -108,6 +113,50 @@
   --color-accent-on-accent: #FFF3E8;
 
   --highlight-ink:          33, 71, 204;  /* highlighter marker RGB (cobalt) */
+}
+
+/* ── COMPONENT: Button (.btn) ──────────────────────────────
+   The one filled-button treatment used everywhere on the site (pill
+   badges, form actions). Background is --color-primary (swaps with
+   theme: cobalt in light, lavender in dark); foreground is fixed
+   --color-on-primary (white in both) — the same pattern
+   .panel-cta-circle already uses for its hardcoded-white icon, so a
+   button never goes low-contrast in dark mode the way text-on-bg did.
+   Sizes: --xs (pill badges, 11px) · --sm (compact, 14px) ·
+   --md (standard form actions, 14px, more padding).
+──────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-mono);
+  font-weight: 600;   /* design.md Font Weight Usage: 600 — "bold accents within body" */
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 120ms ease;
+}
+.btn:hover { opacity: 0.86; }
+
+.btn--xs {
+  padding: 2px 10px;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  line-height: 1.15;
+}
+.btn--sm {
+  padding: 4px var(--sp-6);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-wider);
+}
+.btn--md {
+  padding: var(--sp-3) var(--sp-6);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-wider);
 }
 
 /* ─────────────────────────────────────────

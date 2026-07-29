@@ -304,28 +304,9 @@
   gap: var(--sp-3);
 }
 
-/* The pill — same type as the eyebrow (mono, 11px, widest tracking,
-   uppercase) but filled loud with the primary colour. */
-.cs-lock-badge {
-  appearance: none;
-  border: none;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55em;
-  padding: 2px 10px;
-  border-radius: 999px;
-  background: var(--color-primary);
-  color: var(--color-bg);
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  letter-spacing: var(--tracking-widest);
-  text-transform: uppercase;
-  line-height: 1.15;
-  transition: opacity 120ms ease, transform 120ms ease;
-}
-.cs-lock-badge:hover { opacity: 0.86; transform: translateY(-1px); }
+/* The pill — sizing/color come from the shared .btn .btn--xs (style.css);
+   this just adds the hover lift on top of the shared opacity dim. */
+.cs-lock-badge:hover { transform: translateY(-1px); }
 .cs-lock-badge svg { width: 11px; height: 11px; display: block; }
 
 /* Frosted skeleton standing in for the sections (inside #cs-locked-mount).
@@ -361,6 +342,31 @@
   opacity: 0.18;
   margin: var(--sp-6) 0;
 }
+
+/* Message + Unlock button floating on top of the skeleton — a second,
+   more visible entry point into the same modal the eyebrow badge opens.
+   A sibling of .cs-locked-skeleton (not a child), so the blur/opacity on
+   the skeleton never touches it. */
+#cs-locked-mount { position: relative; }
+.cs-teaser-chip {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(320px, 90%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-6) var(--sp-8);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.22);
+  text-align: center;
+}
+.cs-teaser-chip .cs-gate-lock { margin-bottom: 0; }
+.cs-teaser-chip .cs-gate-title { margin-bottom: 0; font-size: var(--text-base); }
 
 /* Locked pages are short teasers — pull the footer up so it doesn't
    strand a viewport of empty space under the skeleton. Beats the
@@ -507,21 +513,9 @@ html.cs-modal-open, html.cs-modal-open body { overflow: hidden; }
   box-shadow: 0 0 0 3px var(--color-primary-muted);
 }
 
-.cs-gate-btn {
-  flex-shrink: 0;
-  padding: 0 var(--sp-6);
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  letter-spacing: var(--tracking-wider);
-  text-transform: uppercase;
-  color: var(--color-bg);
-  background: var(--color-primary);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: opacity 120ms ease;
-}
-.cs-gate-btn:hover { opacity: 0.86; }
+/* Sizing/color come from the shared .btn .btn--md (style.css); this just
+   keeps the button from shrinking in the input+button flex row. */
+.cs-gate-btn { flex-shrink: 0; }
 .cs-gate-form.is-checking { opacity: 0.6; pointer-events: none; }
 
 .cs-gate-error {
