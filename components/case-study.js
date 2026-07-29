@@ -124,7 +124,7 @@
     rail.className = 'cs-rail';
     rail.innerHTML =
       '<a href="index.html" class="cs-rail-back b-label-link" id="cs-back">' +
-        ARROW_LEFT + 'Back to work' +
+        ARROW_LEFT + 'Back to home' +
       '</a>' +
       videoAvatarHtml() +
       '<nav class="cs-toc" aria-label="Contents">' + tocLinks + '</nav>';
@@ -438,7 +438,7 @@
     rail.className = 'cs-rail';
     rail.innerHTML =
       '<a href="index.html" class="cs-rail-back b-label-link" id="cs-back">' +
-        ARROW_LEFT + 'Back to work' +
+        ARROW_LEFT + 'Back to home' +
       '</a>' +
       '<nav class="cs-toc cs-toc--skeleton" aria-hidden="true">' + bars + '</nav>';
     shell.insertBefore(rail, content);
