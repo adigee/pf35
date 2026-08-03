@@ -120,7 +120,7 @@
         <section class="cs-section">
           <p class="b-section-header">Approach</p>
           <p class="b-body">
-            The QE model worked by predicting the quality of the every translated sentence
+            The QE model worked by predicting the quality of every translated sentence
             (or segment) and associating that predicted quality with a score, i.e quality
             estimate score (QE score).
           </p>
@@ -158,8 +158,8 @@
           <p class="b-body">
             The decision module would allow the ops team to configure only the skipping
             behaviour and contain all the skipping related logic and tradeoffs. This directed
-            the ops team to focus on the only they could control and simplified operating QE
-            though a single mental model - its skipping behaviour.
+            the ops team to focus on the only thing they could control and simplified operating QE
+            through a single mental model — its skipping behaviour.
           </p>
           <figure class="cs-figure">
             <img
@@ -180,7 +180,7 @@
             QE scores was that the ops team could never anticipate what the outcome would be.
           </p>
           <p class="b-body">
-            QE profiles was developed as an abstraction over the QE score based on the if the
+            QE profiles were developed as an abstraction over the QE score based on whether the
             translation would skip instead of looking at the score itself.
           </p>
           <p class="b-body">
@@ -235,18 +235,14 @@
           </p>
           <h3 class="b-section-subheader">Testing version 1</h3>
           <p class="b-body">
-            The above interface was tested with
+            The above interface was tested with 8 participants in a remote moderated
+            usability test. Each participant performed 2 distinct and independent tasks,
+            followed by open feedback and a post-mortem discussion.
           </p>
-          <ul class="cs-list">
-            <li>8 participants in a</li>
-            <li>Remote moderated usability test</li>
-            <li>2 distinct and independent tasks</li>
-            <li>Open feedback and post mortem was done in the end</li>
-          </ul>
           <h3 class="b-section-subheader">UXR Findings</h3>
           <p class="b-body">
-            The results of the test were very positive with most participants keen to use the
-            customers they managed. Most importantly, it enabled me to build a mental model on
+            The results of the test were very positive with most participants keen to apply
+            QE profiles to the customers they managed. Most importantly, it enabled me to build a mental model of
             how the ops team viewed QE and what their priorities were.
           </p>
         </section>
@@ -254,29 +250,28 @@
         <!-- ── DESIGN ITERATION 2 ── -->
         <section class="cs-section">
           <p class="b-section-header">Design iteration 2</p>
-          <h2 class="b-title">Cleaning up, and simplifying</h2>
+
           <p class="b-body">
             Armed with a higher level of confidence, I proceeded to clean up the interface
             and further simplify the design based on feedback from the usability tests.
           </p>
           <p class="b-body">
-            Primary design decisions that I took here were
+            The primary design decision I took here was to juxtapose the skip slider with
+            the volume of jobs being skipped — making the direct relationship between them
+            immediately visible.
           </p>
-          <ul class="cs-list">
-            <li>Juxtapose the skip slider with the volume of jobs being skipped. This is a direct relationship.</li>
-          </ul>
         </section>
 
         <!-- ── OUTCOMES ── -->
         <section class="cs-section">
           <p class="b-section-header">Outcomes</p>
-          <h2 class="b-title">Positive feedback, an uptick — and a handoff</h2>
+
           <p class="b-body">
             After wrapping up the designs, I handed over an instrumentation plan to the
             front end dev as my final contribution on this project.
           </p>
           <p class="b-body">
-            Feedback was positive on the the 2nd iteration and after deploy, there was
+            Feedback was positive on the 2nd iteration and after deploy, there was
             an uptick recorded in the activity in the decision module.
           </p>
           <p class="b-body">
@@ -289,13 +284,13 @@
         <!-- ── REFLECTIONS ── -->
         <section class="cs-section">
           <p class="b-section-header">Reflections</p>
-          <h2 class="b-title">Designing for a non-deterministic system</h2>
+
           <p class="b-body">
             Designing for a Human-AI interaction paradigm in 2022 (read pre chatGPT)
             presented fun new challenges and many opportunities for collaborative head
             scratching! Over the course of this project, I truly internalised the
             non-deterministic nature of the system powering the UI and the importance
-            of have well processed datasets (clean training data for example).
+            of having well-processed datasets (clean training data, for example).
           </p>
           <p class="b-body">
             During the course of UX testing, I also realised that no matter how many
