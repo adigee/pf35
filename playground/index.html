@@ -79,10 +79,11 @@
           Diagnoses why the shipped highlighter marker (<b>components/text_highlight.js</b>) grows an
           odd dark smear at its trailing edge on longer phrases — the darker "pen-tip" cap is baked
           into the same stretchy path as the body, so it scales with phrase width instead of staying
-          a constant size. Five side-by-side treatments: <b>A</b> current (bug reproduced), <b>B</b>
-          no cap, <b>C</b> soft gradient fade, <b>D</b> mirrored symmetric ends, and <b>E</b> a fixed-size
-          end cap decoupled from the stretch — the structural fix. Theme, phrase-length, hover-state
-          and cap-darkness dials to compare live.
+          a constant size. Six side-by-side treatments: <b>A</b> current (bug reproduced), <b>B</b>
+          no cap, <b>B2</b> no cap with the right edge mirrored to match the left's natural taper,
+          <b>C</b> soft gradient fade, <b>D</b> mirrored symmetric ends, and <b>E</b> a fixed-size
+          end cap decoupled from the stretch. Theme, phrase-length, hover-state and cap-darkness
+          dials to compare live.
         </p>
       </a>
 

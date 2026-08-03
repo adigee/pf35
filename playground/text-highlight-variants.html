@@ -106,7 +106,7 @@
     .v-head { display: flex; align-items: baseline; gap: 10px; margin: 0 0 4px; }
     .v-letter {
       display: inline-flex; align-items: center; justify-content: center;
-      width: 22px; height: 22px; border-radius: 50%;
+      min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px;
       background: var(--color-primary-muted); color: var(--color-primary);
       font-size: 12px; font-weight: 700;
     }
@@ -227,7 +227,12 @@
       {
         key: 'b',
         title: 'B — No end-cap',
-        desc: 'Delete the darker cap entirely — one flat colour, full stop. Simplest possible fix; loses the hand-drawn "pen lifting off" cue.'
+        desc: 'Delete the darker cap entirely — one flat colour, full stop. Simplest possible fix; loses the hand-drawn "pen lifting off" cue. Note the asymmetry: the left edge tapers in with a small lead-in before the first letter (the shape’s own left-edge curve), but the right edge is the original cap-shaped boundary — it stops flush/abrupt instead of tapering out, and on longer phrases can even fall short of the last letter.'
+      },
+      {
+        key: 'b2',
+        title: 'B2 — No end-cap, symmetric ends',
+        desc: 'Same flat colour as B, but the right edge is now a mirror of the left edge’s own taper (not the old cap-shaped boundary) — so both ends get the identical small lead-in/lead-out beat. This directly answers "can the right side match the left."'
       },
       {
         key: 'c',
@@ -267,6 +272,16 @@
           return (
             '<svg class="hl__ink" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 137 25">' +
               '<path class="hl__base" d="' + BASE_D + '"/>' +
+            '</svg>'
+          );
+        case 'b2':
+          return (
+            '<svg class="hl__ink" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 137 25">' +
+              '<mask id="' + id + '" maskUnits="userSpaceOnUse" x="0" y="0" width="74" height="25"><rect x="0" y="0" width="74" height="25" fill="white"/></mask>' +
+              '<path class="hl__base" mask="url(#' + id + ')" d="' + BASE_D + '"/>' +
+              '<g transform="translate(137,0) scale(-1,1)">' +
+                '<path class="hl__base" mask="url(#' + id + ')" d="' + BASE_D + '"/>' +
+              '</g>' +
             '</svg>'
           );
         case 'c':
