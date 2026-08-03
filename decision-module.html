@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Decision Module — Aditya Gujaran</title>
+  <title>Designing a UI to operate an AI Model — Aditya Gujaran</title>
   <meta name="description" content="Putting Unbabel's AI quality-estimation model in the hands of the ops team — making the model's reasoning legible without making it overwhelming." />
 
   <link rel="stylesheet" href="style.css" />
@@ -28,7 +28,7 @@
 
         <!-- Header — eyebrow filled from the project registry -->
         <p class="b-label" data-cs-eyebrow></p>
-        <h1 class="b-title--article">The Decision Module</h1>
+        <h1 class="b-title--article">Designing a UI to operate an AI Model</h1>
 
         <div class="cs-hero-img-wrap">
           <img
@@ -54,34 +54,18 @@
           </div>
         </dl>
 
-        <p class="cs-subtitle">Sr. Product Designer</p>
-        <div class="b-tags">
-          <span class="b-tag">Interaction Design</span>
-          <span class="b-tag">AI / ML</span>
-          <span class="b-tag">Operations</span>
-        </div>
-        <p class="cs-hero-desc">
-          Unbabel's AI quality estimation model needed specialist engineers to operate it —
-          a bottleneck that didn't scale. The brief was to put that control in the hands of
-          the ops team: making the model's reasoning legible without making it overwhelming.
-        </p>
-
         <!-- ── CONTEXT ── -->
         <section class="cs-section">
           <p class="b-section-header">Context</p>
-          <h2 class="b-title">An AI pipeline with a human in the loop</h2>
           <p class="b-body">
-            Unbabel combines machine translation with human post-editing to produce
-            high-quality translations at scale. At the centre of this pipeline sits
-            the Quality Estimation (QE) model — an AI system that scores every
-            translated segment and decides whether it needs a human editor to review it,
-            or whether it's good enough to pass directly to the customer.
+            Unbabel uses a multi-step translation pipeline that transforms text from the
+            source language into text in the target language, to produce customer specific
+            translations at scale and speed (&lt; 20 mins).
           </p>
           <p class="b-body">
-            That routing decision is everything. Send too much to human review and
-            turnaround slows; send too little and quality drops. Getting the threshold
-            right — and keeping it right across hundreds of customer pipelines — was the
-            operational challenge the team faced every day.
+            The QE model sits between the Machine translation (MT) and Human post edition steps.
+            It measures the quality of the MT translation and decides if the translation needs
+            to be further edited/improved by a human translator.
           </p>
           <figure class="cs-figure">
             <img
@@ -94,20 +78,33 @@
           </figure>
         </section>
 
-        <!-- ── PROBLEM ── -->
+        <!-- ── MY ROLE ── -->
         <section class="cs-section">
-          <p class="b-section-header">Problem</p>
-          <h2 class="b-title">The model worked. The interface didn't.</h2>
+          <p class="b-section-header">My role</p>
           <p class="b-body">
-            Configuring QE thresholds required engineering access. Every adjustment —
-            a new customer profile, a language-pair tweak, a sensitivity change —
-            went through a ticket to the ML team and waited in a queue. The ops team
-            had the domain knowledge to make these calls confidently, but no way to act on it.
+            My team was responsible for building the canvas experience and the modules in it
+            while the AI team built a service wrapping QE configurations for us to consume.
+            I collaborated with 2 product managers on this project, one on my team and one on
+            the AI team to ensure that interface aligned with user needs and with the underlying API.
           </p>
+
+          <div class="cs-callout">
+            <p class="b-body-small-impact">The model worked. The interface didn't.</p>
+          </div>
+
           <p class="b-body">
-            The user problem and the business goal pointed at the same solution:
-            surface QE as a lever that the ops team could operate directly,
-            without engineering involvement.
+            Designing a module for the workflow canvas brought with it a set of specific constraints.
+            I worked through them with the front end dev on my team and aligning with the designer
+            on the adjacent team who was working on other modules.
+          </p>
+        </section>
+
+        <!-- ── PROBLEM DEFINITION ── -->
+        <section class="cs-section">
+          <p class="b-section-header">Problem definition</p>
+          <p class="b-body">
+            To surface QE for the ops team, we needed to map how QE would benefit the customer
+            and then craft an interface that supported the ops team to make informed decisions.
           </p>
           <figure class="cs-figure">
             <img
@@ -116,25 +113,25 @@
               alt="Problem definition: enable ops team to use QE as a lever to customise translation pipelines"
               loading="lazy"
             />
-            <figcaption class="cs-figcaption">The framing — user problem and business goal converging on the same opportunity</figcaption>
           </figure>
         </section>
 
-        <!-- ── UNDERSTANDING THE MODEL ── -->
+        <!-- ── APPROACH ── -->
         <section class="cs-section">
-          <p class="b-section-header">Understanding the model</p>
-          <h2 class="b-title">Decision making based on a threshold</h2>
+          <p class="b-section-header">Approach</p>
           <p class="b-body">
-            The QE model produces two types of scores: a segment-level score for each
-            translated sentence, and a document-level score that aggregates across
-            the whole job. When a score falls below a set threshold, the segment is
-            routed to a human editor. Above the threshold, it skips review entirely.
+            The QE model worked by predicting the quality of every translated sentence
+            (or segment) and associating that predicted quality with a score, i.e quality
+            estimate score (QE score).
           </p>
           <p class="b-body">
-            The model also learns continuously — human edits feed back as annotations
-            that improve future scoring. This meant that how ops team members set
-            thresholds today would shape what the model learned tomorrow.
-            That feedback loop made the design challenge more significant, not less.
+            Aggregating the segment scores into a document level score allowed the model
+            to have an understanding of the overall quality of the translated text.
+          </p>
+          <p class="b-body">
+            Then, by evaluating the document level score against a threshold enabled the
+            QE model to decide if the translation needed human edition or if it was good
+            enough to skip human edition.
           </p>
           <figure class="cs-figure">
             <img
@@ -145,24 +142,24 @@
             />
             <figcaption class="cs-figcaption">Segment scores aggregate to a document score, which crosses a threshold to determine routing</figcaption>
           </figure>
-        </section>
-
-        <!-- ── STARTING POINT ── -->
-        <section class="cs-section">
-          <p class="b-section-header">Starting point</p>
-          <h2 class="b-title">Numeric controls nobody used</h2>
+          <h3 class="b-section-subheader">Introducing QE into the platform</h3>
           <p class="b-body">
-            The existing Decision Module was a WHEN / IS / THEN conditional logic form:
-            raw threshold inputs presented as bare number fields. It was built for
-            engineers, and it showed. Analytics confirmed what we already suspected —
-            the numeric QE controls were not being used. The interface assumed a mental
-            model that ops team members simply didn't have.
+            Since QE configurations would impact the overall pipeline's performance
+            (quality), it felt logical to introduce QE configurations in the
+            context of the entire pipeline.
           </p>
           <p class="b-body">
-            Discovery sessions revealed the core gap: ops team members understood the
-            <em>outcome</em> they wanted (fewer reviews for high-trust language pairs,
-            tighter scrutiny for sensitive customers) but had no framework for
-            translating that intent into a numeric threshold. The abstraction was wrong.
+            The QE model actually does two things - scores the translation and decides
+            if the translation should skip human post edition (based on that score). Since
+            we were only enabling configurations on the skipping behaviour, <em data-highlight>I proposed that
+            we visually separate QE into two modules</em>, giving rise to a brand new module that
+            we named as the decision module.
+          </p>
+          <p class="b-body">
+            The decision module would allow the ops team to configure only the skipping
+            behaviour and contain all the skipping related logic and tradeoffs. This directed
+            the ops team to focus on the only thing they could control and simplified operating QE
+            through a single mental model — its skipping behaviour.
           </p>
           <figure class="cs-figure">
             <img
@@ -171,26 +168,29 @@
               alt="Original Decision Module UI: WHEN / IS / THEN conditional form with raw numeric threshold inputs"
               loading="lazy"
             />
-            <figcaption class="cs-figcaption">The original interface — engineer-facing conditional logic that ops team members couldn't act on</figcaption>
           </figure>
         </section>
 
-        <!-- ── THE DESIGN PIVOT ── -->
+        <!-- ── INVERTING THE PARADIGM ── -->
         <section class="cs-section">
-          <p class="b-section-header">The design pivot</p>
-          <h2 class="b-title">From thresholds to profiles</h2>
+          <p class="b-section-header">Inverting the paradigm - "QE profiles"</p>
           <p class="b-body">
-            The key insight from research was that ops team members thought in
-            <em>postures</em>, not numbers. "We want to be conservative here" or
-            "this customer trusts our MT quality" — qualitative stances that implied
-            a direction on a spectrum.
+            Surfacing QE in the decision module resonated well but interacting with QE scores
+            and threshold decimals was not intuitive at all. The primary challenge with numeric
+            QE scores was that the ops team could never anticipate what the outcome would be.
           </p>
           <p class="b-body">
-            This led to the introduction of QE Profiles: a named spectrum from
-            Very Conservative to Very Aggressive, each mapping to a threshold range
-            behind the scenes. Choosing a profile meant choosing how much of the
-            translation volume would skip human review — a relationship the ops team
-            could reason about intuitively.
+            QE profiles were developed as an abstraction over the QE score based on whether the
+            translation would skip instead of looking at the score itself.
+          </p>
+          <p class="b-body">
+            This essentially inverted the paradigm and enabled us to <em data-highlight>interact with QE models
+            based on the outcome of their skipping behaviour</em>.
+          </p>
+          <p class="b-body">
+            Five QE profiles were developed by the AI team based on the skipping behaviour -
+            Very conservative, Conservative, Balanced, Aggressive, Very aggressive. As the name
+            suggests, more aggressive profiles would skip more translations.
           </p>
           <figure class="cs-figure">
             <img
@@ -203,192 +203,102 @@
           </figure>
         </section>
 
-        <!-- ── EXPLORATION ── -->
+        <!-- ── DESIGN ITERATION 1 ── -->
         <section class="cs-section">
-          <p class="b-section-header">Exploration</p>
-          <h2 class="b-title">Three directions, one constraint</h2>
+          <p class="b-section-header">Design iteration 1</p>
           <p class="b-body">
-            In the divergent phase we explored three concepts, each foregrounding a
-            different model of control. The first let users select a QE profile directly —
-            choosing a qualitative posture. The second let users target a skip volume —
-            expressing intent as a percentage of translations to pass without review.
-            The third focused on quality indication — letting users specify an
-            acceptable quality floor for skipped jobs.
+            QE profiles was a breakthrough in how we talked about QE internally and externally.
+            To rework the decision module with QE profiles instead of QE scores, I realised
+            I would need to start afresh.
           </p>
           <p class="b-body">
-            All three could theoretically work, but concept testing quickly revealed
-            that skip volume resonated most. It gave ops team members a concrete,
-            business-legible number to reason about — "we're skipping 34% of
-            translations" — without requiring them to understand threshold mathematics.
+            Brainstorming with the AI engineers led me to my first breakthrough - to use the
+            historical performance of the model. When the ops team would request them to intervene,
+            their process involved looking the quality of jobs skipped by the model in the past.
           </p>
-
-          <div class="cs-callout">
-            <p class="b-body-small-impact">"I don't know what 0.85 means, but I know what 30% fewer reviews means for my team's capacity."</p>
-          </div>
-
-          <figure class="cs-figure">
-            <img
-              class="cs-img cs-img--dark"
-              src="project%20content/2%20Decision%20module%20for%20framer/7%20Divergent%20designs.png"
-              alt="Three divergent design concepts: QE profile selection, skip volume targeting, quality floor indication"
-              loading="lazy"
-            />
-            <figcaption class="cs-figcaption">Three concept directions explored in parallel — each expressing a different model of control</figcaption>
-          </figure>
+          <p class="b-body">
+            After much debate and multiple design reviews, the consensus was to
+          </p>
+          <ul class="cs-list">
+            <li>Line up the QE profiles on a scale to explain linearity</li>
+            <li>Highlight the volume of translations that will be skipped</li>
+            <li>Visualise the quality breakdown of the skipped translations</li>
+            <li>Indicate the impact on the unit cost of translations</li>
+          </ul>
+          <p class="b-body">
+            In order to avoid working in circles, I decided to test this interface with the
+            ops team in a moderated usability test.
+          </p>
+          <p class="b-body">
+            Using this as a starting point, I developed visual concepts where the decision module
+            would allow you to simulate the outcome on a pipeline when the QE profile was switched.
+          </p>
+          <h3 class="b-section-subheader">Testing version 1</h3>
+          <p class="b-body">
+            The above interface was tested with 8 participants in a remote moderated
+            usability test. Each participant performed 2 distinct and independent tasks,
+            followed by open feedback and a post-mortem discussion.
+          </p>
+          <h3 class="b-section-subheader">UXR Findings</h3>
+          <p class="b-body">
+            The results of the test were very positive with most participants keen to apply
+            QE profiles to the customers they managed. Most importantly, it enabled me to build a mental model of
+            how the ops team viewed QE and what their priorities were.
+          </p>
         </section>
 
-        <!-- ── FIRST VERSION ── -->
+        <!-- ── DESIGN ITERATION 2 ── -->
         <section class="cs-section">
-          <p class="b-section-header">First version</p>
-          <h2 class="b-title">Profiles as levels of skip</h2>
-          <p class="b-body">
-            Decision Module v1 merged the profile and volume concepts: a 5-level
-            slider (corresponding to the QE profiles) with a live donut chart showing
-            the estimated percentage of translations that would skip review. Selecting
-            a level correlated directly to a skip volume, and a quality indicator
-            showed the estimated quality of the jobs being skipped.
-          </p>
-          <p class="b-body">
-            The donut chart gave ops team members a feedback loop — choose a level,
-            see the consequence — without having to reason about thresholds at all.
-            The design made the model's decision legible, not just configurable.
-          </p>
-          <figure class="cs-figure">
-            <img
-              class="cs-img cs-img--dark"
-              src="project%20content/2%20Decision%20module%20for%20framer/8%20Decision%20module%20v1.png"
-              alt="Decision Module v1: 5-level slider with donut chart showing skip volume and quality indicator"
-              loading="lazy"
-            />
-            <figcaption class="cs-figcaption">v1 — level selection drives a live skip volume preview, making consequences tangible</figcaption>
-          </figure>
-        </section>
+          <p class="b-section-header">Design iteration 2</p>
 
-        <!-- ── USER TESTING ── -->
-        <section class="cs-section">
-          <p class="b-section-header">User testing</p>
-          <h2 class="b-title">Two rounds, one critical fix</h2>
           <p class="b-body">
-            We ran two rounds of moderated usability testing with five ops team
-            members each. Round one established that the slider model was understood
-            and the donut chart was read correctly. What surfaced as a problem was
-            the profile labels themselves — "Level 1 through 5" carried no semantic
-            weight, and participants were reluctant to move away from the default
-            without understanding what they were moving towards.
+            Armed with a higher level of confidence, I proceeded to clean up the interface
+            and further simplify the design based on feedback from the usability tests.
           </p>
           <p class="b-body">
-            Round two introduced named levels ("Very conservative" through "Very
-            aggressive") and set "Balanced" as the preselected default. Confidence
-            scores in post-task questionnaires rose markedly. Participants described
-            the named profiles as giving them "permission to act" — the language
-            matched their mental model well enough that they trusted themselves to
-            make a decision.
+            The primary design decision I took here was to juxtapose the skip slider with
+            the volume of jobs being skipped — making the direct relationship between them
+            immediately visible.
           </p>
-
-          <div class="cs-img-pair">
-            <figure class="cs-figure">
-              <img
-                class="cs-img cs-img--dark"
-                src="project%20content/2%20Decision%20module%20for%20framer/9%20Test%20findings%201.png"
-                alt="Test findings round 1: usability issues with numeric level labels"
-                loading="lazy"
-              />
-              <figcaption class="cs-figcaption">Round 1 findings</figcaption>
-            </figure>
-            <figure class="cs-figure">
-              <img
-                class="cs-img cs-img--dark"
-                src="project%20content/2%20Decision%20module%20for%20framer/10%20Test%20findings%202.png"
-                alt="Test findings round 2: named profiles with Balanced default resolved confidence issues"
-                loading="lazy"
-              />
-              <figcaption class="cs-figcaption">Round 2 findings</figcaption>
-            </figure>
-          </div>
-        </section>
-
-        <!-- ── FINAL DESIGN ── -->
-        <section class="cs-section">
-          <p class="b-section-header">Final design</p>
-          <h2 class="b-title">Simple, autosaved, balanced by default</h2>
-          <p class="b-body">
-            The shipped design distilled the interaction to its essentials.
-            A single slider with five named levels, "Balanced" preselected. A donut
-            chart showing the live skip percentage. A "View quality" toggle to reveal
-            the estimated quality distribution of skipped segments — surfaced on demand
-            rather than always-on, reducing cognitive load for routine adjustments.
-          </p>
-          <p class="b-body">
-            All changes autosaved, removing the commit friction that had previously
-            made ops team members hesitant to experiment. The design reframed
-            configuration as an iterative, low-stakes act rather than a consequential
-            one-shot decision.
-          </p>
-
-          <div class="cs-img-pair">
-            <figure class="cs-figure">
-              <img
-                class="cs-img"
-                src="project%20content/2%20Decision%20module%20for%20framer/11%20Final%20designs.png"
-                alt="Final design: simplified slider with named levels and Balanced preselected by default"
-                loading="lazy"
-              />
-            </figure>
-            <figure class="cs-figure">
-              <img
-                class="cs-img"
-                src="project%20content/2%20Decision%20module%20for%20framer/12%20Final%20designs.png"
-                alt="Final design: View quality toggle and autosave behaviour"
-                loading="lazy"
-              />
-            </figure>
-          </div>
-          <p class="cs-figcaption" style="margin-top: var(--sp-3);">Named profiles, live skip preview, autosave — all changes low-friction and reversible</p>
         </section>
 
         <!-- ── OUTCOMES ── -->
         <section class="cs-section">
           <p class="b-section-header">Outcomes</p>
-          <h2 class="b-title">An uptick in usage — and in ownership</h2>
+
           <p class="b-body">
-            The clearest signal came from product analytics: usage of the Decision
-            Module spiked sharply after the redesign launched, and sustained. The ops
-            team was adjusting QE settings routinely, without engineering tickets,
-            treating the module as a genuine operational tool rather than a legacy
-            artefact to work around.
+            After wrapping up the designs, I handed over an instrumentation plan to the
+            front end dev as my final contribution on this project.
           </p>
           <p class="b-body">
-            More meaningfully, post-launch interviews surfaced a shift in how the team
-            described their relationship to the model. The language changed from
-            "we have to ask engineering to change that" to "we adjusted it last week."
-            The design hadn't just made a task easier — it had transferred a form of
-            operational ownership that hadn't existed before.
+            Feedback was positive on the 2nd iteration and after deploy, there was
+            an uptick recorded in the activity in the decision module.
           </p>
+          <p class="b-body">
+            While we monitored usage and opened channels for feedback to inform future
+            iterations, this project was closed with this deploy as we set about to build
+            other parts of the platform!
+          </p>
+        </section>
 
-          <div class="cs-outcomes">
-            <div>
-              <p class="cs-stat-num">↑ Usage</p>
-              <p class="cs-stat-desc b-body-caption">Sharp, sustained uptick in Decision Module interactions post-launch</p>
-            </div>
-            <div>
-              <p class="cs-stat-num">0 tickets</p>
-              <p class="cs-stat-desc b-body-caption">QE threshold changes handled directly by the ops team, without engineering</p>
-            </div>
-            <div>
-              <p class="cs-stat-num">Owned</p>
-              <p class="cs-stat-desc b-body-caption">Ops team described the model as something they operate, not something that happens to them</p>
-            </div>
-          </div>
+        <!-- ── REFLECTIONS ── -->
+        <section class="cs-section">
+          <p class="b-section-header">Reflections</p>
 
-          <figure class="cs-figure">
-            <img
-              class="cs-img cs-img--dark"
-              src="project%20content/2%20Decision%20module%20for%20framer/13%20Outcomes.png"
-              alt="Analytics graph showing a sharp uptick in Decision Module usage after the redesign launched"
-              loading="lazy"
-            />
-            <figcaption class="cs-figcaption">Usage analytics — the spike in adoption coincided precisely with the redesign launch</figcaption>
-          </figure>
+          <p class="b-body">
+            Designing for a Human-AI interaction paradigm in 2022 (read pre chatGPT)
+            presented fun new challenges and many opportunities for collaborative head
+            scratching! Over the course of this project, I truly internalised the
+            non-deterministic nature of the system powering the UI and the importance
+            of having well-processed datasets (clean training data, for example).
+          </p>
+          <p class="b-body">
+            During the course of UX testing, I also realised that no matter how many
+            guardrails we introduce, only after a period of experimentation and constant
+            tweaking, will the ops team gain the true confidence to rely on the decision
+            module for their customer needs. This was undoubtedly just the beginning of
+            this journey.
+          </p>
         </section>
 
         <!-- ── FOOTER (injected by components/case-study.js) ── -->
@@ -401,6 +311,7 @@
   <script src="components/projects.js"></script>
   <script src="components/case-study.js"></script>
   <script src="components/image-modal.js"></script>
+  <script src="components/text_highlight.js"></script>
   <script src="main.js" defer></script>
 
 </body>
