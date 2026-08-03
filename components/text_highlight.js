@@ -69,9 +69,26 @@
     for (var i = 0; i < els.length; i++) mark(els[i]);
   }
 
+  function observe() {
+    if (typeof MutationObserver === 'undefined') return;
+    new MutationObserver(function (mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        var added = mutations[i].addedNodes;
+        for (var j = 0; j < added.length; j++) {
+          var node = added[j];
+          if (node.nodeType !== 1) continue;
+          if (node.hasAttribute && node.hasAttribute('data-highlight')) { mark(node); continue; }
+          var els = node.querySelectorAll ? node.querySelectorAll('[data-highlight]') : [];
+          for (var k = 0; k < els.length; k++) mark(els[k]);
+        }
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', mount);
+    document.addEventListener('DOMContentLoaded', function () { mount(); observe(); });
   } else {
     mount();
+    observe();
   }
 })();
