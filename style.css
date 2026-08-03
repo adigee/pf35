@@ -14,7 +14,7 @@
   --color-border:           rgba(248, 246, 238, 0.10);   /* hairline defines dark cards */
 
   --color-text:             #F8F6EE;
-  --color-text-muted:       rgba(248, 246, 238, 0.45);
+  --color-text-muted:       rgba(248, 246, 238, 0.60);
   --color-text-subtle:      rgba(248, 246, 238, 0.20);
 
   --color-primary:          #ACA0E8;
@@ -22,6 +22,13 @@
 
   --color-accent:           #8E7FD1;
   --color-accent-on-accent: #121212;
+
+  /* Fixed, NOT theme-swapped — see .btn below. Buttons keep --color-primary
+     as their (theme-swapped) background, but the foreground stays white in
+     both themes, the same way .panel-cta-circle's icon is hardcoded white. */
+  --color-on-primary:       #fff;
+
+  --highlight-ink:          172, 160, 232;  /* highlighter marker RGB (lilac) */
 
   /* Typography */
   --font-display: 'Manrope', sans-serif;
@@ -80,7 +87,6 @@
      Circle:  36×36px, border-radius 50%, background --color-primary
               white SVG arrow; rotates 45° on hover
      Spacing: margin-top --sp-10 above component
-     Variant: add class cs-link for internal pages (exit transition)
   ─────────────────────────────────────────────────────────────────── */
 }
 
@@ -97,7 +103,7 @@
   --color-border:           rgba(26, 42, 94, 0.10);
 
   --color-text:             #1A2A5E;
-  --color-text-muted:       rgba(26, 42, 94, 0.48);
+  --color-text-muted:       rgba(26, 42, 94, 0.68);
   --color-text-subtle:      rgba(26, 42, 94, 0.20);
 
   --color-primary:          #2147CC;
@@ -105,6 +111,52 @@
 
   --color-accent:           #5B6FD6;
   --color-accent-on-accent: #FFF3E8;
+
+  --highlight-ink:          33, 71, 204;  /* highlighter marker RGB (cobalt) */
+}
+
+/* ── COMPONENT: Button (.btn) ──────────────────────────────
+   The one filled-button treatment used everywhere on the site (pill
+   badges, form actions). Background is --color-primary (swaps with
+   theme: cobalt in light, lavender in dark); foreground is fixed
+   --color-on-primary (white in both) — the same pattern
+   .panel-cta-circle already uses for its hardcoded-white icon, so a
+   button never goes low-contrast in dark mode the way text-on-bg did.
+   Sizes: --xs (pill badges, 11px) · --sm (compact, 14px) ·
+   --md (standard form actions, 14px, more padding).
+──────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-mono);
+  font-weight: 600;   /* design.md Font Weight Usage: 600 — "bold accents within body" */
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 120ms ease;
+}
+.btn:hover { opacity: 0.86; }
+
+.btn--xs {
+  padding: 2px 10px;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  line-height: 1.15;
+}
+.btn--sm {
+  padding: 4px var(--sp-6);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-wider);
+}
+.btn--md {
+  padding: var(--sp-3) var(--sp-6);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-wider);
 }
 
 /* ─────────────────────────────────────────
@@ -125,7 +177,7 @@ body {
   color: var(--color-text);
   font-family: var(--font-body);
   font-size: var(--text-base);
-  font-weight: 300;
+  font-weight: 400;
   line-height: var(--leading-normal);
   min-height: 100vh;
 }
@@ -334,17 +386,11 @@ a:hover {
   margin-bottom: var(--sp-3);
 }
 
-/* Company */
-.b-company {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  margin-bottom: var(--sp-5);
-}
-
 /* Body */
 .b-body {
   font-size: var(--text-base);
   line-height: var(--leading-body);
+  max-width: 62ch;   /* readable measure — long-form line length cap */
 }
 .b-body + .b-body { margin-top: var(--sp-4); }
 
@@ -365,7 +411,7 @@ a:hover {
 /* Body small — regular */
 .b-body-small {
   font-size: var(--text-sm);
-  font-weight: 300;
+  font-weight: 400;
   line-height: var(--leading-medium);
 }
 
@@ -465,14 +511,6 @@ a:hover {
   text-transform: uppercase;
   color: rgba(255,255,255,0.35);
   margin-top: var(--sp-2);
-}
-
-/* Italic aside */
-.b-aside {
-  font-style: italic;
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
-  margin-top: var(--sp-6);
 }
 
 /* Timeline (inside left col) */
@@ -761,12 +799,13 @@ a:hover {
   transform: rotate(45deg);
 }
 
-/* Back variant — circle on left, arrow points left, rotates -45° on hover */
+/* Back variant — circle on left, arrow points left, rotates +45° on hover
+   so the arrow angles upward (up-left) rather than down. */
 .panel-cta--back .panel-cta-circle {
   order: -1;
 }
 .panel-cta--back:hover .panel-cta-circle {
-  transform: rotate(-45deg);
+  transform: rotate(45deg);
 }
 .panel-cta-circle svg {
   width: 14px;
@@ -1142,8 +1181,6 @@ a:hover {
     padding: var(--sp-4) var(--sp-6);
   }
 
-  .b-body { max-width: 100%; }
-
   /* Reduce block vertical rhythm */
   .block-text {
     padding: var(--sp-12) var(--sp-6);
@@ -1235,101 +1272,105 @@ body {
 }
 
 /* ─────────────────────────────────────────
-   CROSS-DOCUMENT VIEW TRANSITION — rail hand-off
-   Every same-origin navigation runs a native cross-document view
-   transition. The EYEBROW is the thread that stitches the homepage
-   and a case study together: the clicked project's eyebrow and the
-   case-study header eyebrow share one view-transition-name, so it
-   glides from one page to the other as its own group — which means it
-   stays put while everything else cross-fades ("left with just the
-   eyebrow"), then settles into its case-study slot. The two left rails
-   (home nav ⇄ case-study index) are their own groups that slide out to
-   the left and fly back in. components/page-transition.js names the one
-   eyebrow that participates (there are four on the homepage); the rails
-   and the case-study eyebrow are named statically below.
+   HOME ⇄ CASE-STUDY TRANSITION — two-column rail hand-off
+   Native cross-document View Transitions. Every page is two columns — a left
+   "index" column (home nav rail ⇄ case-study TOC rail) and a right "content"
+   column — and each animates ON ITS OWN. Nothing morphs into anything else:
+   there are no shared view-transition-names, so the browser never tries to
+   interpolate one page's element into a differently-shaped one (that warp/pop
+   was why the earlier image-morph and eyebrow-morph attempts read as janky).
 
-   Gated on prefers-reduced-motion so readers who opt out get plain
-   navigation. Browsers without cross-document view transitions ignore
-   all of this and navigate normally.
+   Choreography (asymmetric):
+     Home → case-study:
+       1. the home left rail flies out to the left,
+       2. the home right column dissolves to blank (staggered behind the rail),
+       3. the entire case-study page (both rail + content) slides in from the top.
+     Case-study → home:
+       1. the case-study left rail flies out to the left,
+       2. the case-study right column zooms out (scale + fade), revealing
+          the homepage right column underneath,
+       3. the homepage left rail zooms in, flying in from the left.
+
+   Pure CSS — no JS orchestration. The one supporting change lives in
+   components/case-study.js: it builds .cs-rail synchronously so the incoming
+   rail exists in first paint and can be captured here.
+
+   The ::view-transition-* pseudo-elements are styled by the DESTINATION
+   document, so these rules must live in style.css (the only stylesheet both
+   page types load). Browsers without cross-document view transitions ignore
+   the at-rule and navigate plainly; reduced-motion opts out explicitly.
 ───────────────────────────────────────── */
 @view-transition { navigation: auto; }
 @media (prefers-reduced-motion: reduce) {
   @view-transition { navigation: none; }
 }
 
-/* Shared / static names. Each appears once per document, so the browser
-   pairs them across the navigation. The clicked homepage feature-card
-   eyebrow is named dynamically in page-transition.js. */
-.cs-page [data-cs-eyebrow] { view-transition-name: project-eyebrow; }
-#rail                      { view-transition-name: home-rail; }
-.cs-rail                   { view-transition-name: index-rail; }
-/* The homepage feature-card eyebrow is an inline <span>; inline-block gives
-   it a single, capturable box (an inline element that wraps would be skipped
-   by the transition). Applied by page-transition.js only to the one that
-   takes part, and removed when the transition finishes. */
-.pt-eyebrow { view-transition-name: project-eyebrow; display: inline-block; }
+/* Names — static, one per page. Each appears in only one document, so on any
+   navigation the browser sees each as old-only (exits) or new-only (enters). */
+#rail        { view-transition-name: rail-home; }
+main.content { view-transition-name: col-home; }
+.cs-rail     { view-transition-name: rail-cs; }
+.cs-content  { view-transition-name: col-cs; }
 
-/* The eyebrow morph — the connective thread. Starts a beat after the
-   page begins cross-fading, so it reads as travelling to its slot. */
-::view-transition-group(project-eyebrow) {
-  animation-duration: 560ms;
-  animation-delay: 90ms;
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+/* OLD — left rail flies out to the left (both directions). */
+::view-transition-old(rail-home),
+::view-transition-old(rail-cs) {
+  animation: rail-out 300ms cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+@keyframes rail-out { to { transform: translateX(-120%); opacity: 0; } }
+
+/* OLD — case-study content slides up (case-study → home). Reverse of page-in. */
+::view-transition-old(col-cs) {
+  animation: slide-up 400ms cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+@keyframes slide-up { to { transform: translateY(-60px); opacity: 0; } }
+
+/* OLD — home content dissolves to blank (home → case-study). */
+::view-transition-old(col-home) {
+  animation: col-out 200ms cubic-bezier(0.65, 0, 0.35, 1) 50ms both;
+}
+@keyframes col-out { to { opacity: 0; } }
+
+/* NEW — case-study rail + content slide in from top (home → case-study).
+       250ms delay so the old home content has fully faded before the new
+       content appears. */
+::view-transition-new(rail-cs),
+::view-transition-new(col-cs) {
+  animation: page-in 400ms cubic-bezier(0.65, 0, 0.35, 1) 250ms both;
+}
+@keyframes page-in {
+  from { transform: translateY(-60px); opacity: 0; }
 }
 
-/* Page cross-fade — everything that isn't its own group. */
+/* NEW — home left rail slides in from the left (case-study → home).
+       Ease-out curve (fast start, decelerating settle) so the rail
+       feels responsive when returning home — the eye tracks the entry
+       then relaxes as it lands. Other transitions use a symmetrical
+       ease-in-out because they pair an exit and an entrance on different
+       elements; the rail has no paired exit (it already left), so a
+       bouncy ease-in-out would feel sluggish here. */
+::view-transition-new(rail-home) {
+  animation: rail-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both;
+}
+@keyframes rail-in {
+  from { transform: translateX(-120%); opacity: 0; }
+}
+
+/* NEW — home content fades in after the CS content has cleared. */
+::view-transition-new(col-home) {
+  animation: home-in 250ms cubic-bezier(0.65, 0, 0.35, 1) 200ms both;
+}
+@keyframes home-in {
+  from { opacity: 0; }
+}
+
+/* Everything unnamed (page background, theme toggle, progress bar) is captured
+   as `root`. A short cross-fade — the background tokens match across pages, so
+   this is effectively invisible and just avoids a hard cut. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 400ms;
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* The left rails. Home nav and case-study index each live on only one
-   page, so on a forward nav the home rail is "old" (slides out) and the
-   index rail is "new" (flies in a beat later); on the way back it's the
-   reverse. Sliding — rather than a shared-name morph between two very
-   different rails — keeps them from warping into each other. */
-::view-transition-old(home-rail),
-::view-transition-old(index-rail) {
-  animation: rail-exit 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-::view-transition-new(home-rail),
-::view-transition-new(index-rail) {
-  animation: rail-enter 480ms cubic-bezier(0.22, 1, 0.36, 1) 150ms both;
-}
-@keyframes rail-exit  { to   { transform: translateX(-26px); opacity: 0; } }
-@keyframes rail-enter { from { transform: translateX(-26px); opacity: 0; } }
-
-/* ─────────────────────────────────────────
-   PAGE EXIT TRANSITION
-   Triggered by JS adding .is-exiting to body
-   before navigating to a case study page.
-   Fallback for browsers without cross-document view transitions.
-───────────────────────────────────────── */
-body.is-exiting {
-  overflow: hidden;
-  animation: none;
-}
-
-body.is-exiting .page-left {
-  opacity: 0;
-  transform: translateX(-28px);
-  transition: opacity 340ms ease, transform 340ms ease;
-  pointer-events: none;
-}
-
-body.is-exiting .panel {
-  opacity: 0 !important;
-  transition: opacity 240ms ease !important;
-  pointer-events: none;
-}
-
-/* Case study exit (back to homepage) */
-body.is-exiting .cs-main {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 300ms ease, transform 300ms ease;
-  pointer-events: none;
+  animation-duration: 250ms;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 /* The floating light/dark toggle button (.theme-btn) and its

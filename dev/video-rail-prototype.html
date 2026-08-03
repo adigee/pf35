@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prototype — Rail video overview</title>
+
+  <!-- Reuse the real design language so the rail/TOC look identical -->
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../case-study.css" />
+  <script src="../components/head.js"></script>
+  <script src="../components/theme.js"></script>
+
+  <style>
+    /* ─────────────────────────────────────────────
+       PROTOTYPE-ONLY styles for the rail video circle.
+       Everything else is inherited from the real CSS.
+       The clip is a PLACEHOLDER (a project screen-recording,
+       centre-cropped) standing in for the real 60-sec
+       talking-head. profile-photo.png is the poster frame,
+       matching the homepage avatar exactly.
+    ───────────────────────────────────────────── */
+
+    /* Sits in the rail, below "Back to work", above the TOC.
+       Explicit height lets the entrance collapse it to 0 and grow it back,
+       which is what pushes the TOC down. */
+    .csv {
+      margin: 0 0 var(--sp-12);
+      width: max-content;
+      height: 100px;
+    }
+
+    .csv-btn {
+      position: relative;
+      display: block;
+      width: 100px;
+      height: 100px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: none;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .csv-btn:hover { transform: scale(1.04); }
+    .csv-btn:focus-visible { outline: 2px solid var(--color-text); outline-offset: 4px; }
+
+    .csv-video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface, #1a1a1a);
+    }
+
+    /* Play affordance — a translucent disc + triangle, centred.
+       Fades away once it is playing. */
+    .csv-play {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.28);
+      transition: opacity 260ms var(--ease, ease), background 260ms ease;
+    }
+    .csv-play::before {
+      content: "";
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    }
+    .csv-play::after {
+      content: "";
+      position: absolute;
+      /* play triangle, nudged right to feel optically centred */
+      margin-left: 3px;
+      border-style: solid;
+      border-width: 7px 0 7px 12px;
+      border-color: transparent transparent transparent #141414;
+    }
+    .csv-btn:hover .csv-play { background: rgba(0, 0, 0, 0.12); }
+
+    /* Progress ring — reinforces "this is a short, 60-sec clip".
+       Drawn just outside the circle; fills as the video plays. */
+    .csv-ring {
+      position: absolute;
+      inset: -6px;
+      width: calc(100% + 12px);
+      height: calc(100% + 12px);
+      transform: rotate(-90deg);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 260ms ease;
+    }
+    .csv-ring circle {
+      fill: none;
+      stroke: var(--color-accent, #ACA0E8);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      /* dasharray/offset set in JS from the real circumference */
+    }
+
+    /* ── PLAYING state ── */
+    .csv[data-state="playing"] .csv-play { opacity: 0; pointer-events: none; }
+    .csv[data-state="playing"] .csv-ring { opacity: 1; }
+
+    /* ── PAUSED state — dim the play glyph back in, softer ── */
+    .csv[data-state="paused"] .csv-play { background: rgba(0, 0, 0, 0.18); }
+    .csv[data-state="paused"] .csv-ring { opacity: 1; }
+
+    /* ── ENTRANCE: the circle drops in from the top, LAST, after the TOC
+          has finished its "tuk-tuk" stagger. While the TOC animates, the
+          avatar takes up NO space (height 0), so the TOC sits in its natural
+          spot right under "Back to work". Then the avatar OPENS — its height
+          grows from 0, pushing the whole TOC down, while the circle drops
+          into the newly-opened slot. Both share the same JS-set delay.
+          Gated by .from-transition (only added when motion is OK). */
+    .from-transition .csv {
+      overflow: hidden;                 /* clip the circle to the opening slot */
+      animation: csv-open 520ms cubic-bezier(0.34, 1.45, 0.64, 1) both;
+      /* animation-delay set in JS, after the last TOC item lands */
+    }
+    .from-transition .csv-btn {
+      animation: csv-drop 520ms cubic-bezier(0.34, 1.45, 0.64, 1) both;
+      /* same delay as .csv (set in JS) */
+    }
+    /* The slot grows → pushes the TOC down */
+    @keyframes csv-open {
+      0%   { height: 0; margin-bottom: 0; }
+      100% { height: 100px; margin-bottom: var(--sp-12); }
+    }
+    /* The circle slides down into the slot as it opens */
+    @keyframes csv-drop {
+      0%   { transform: translateY(-104px); opacity: 0; }
+      28%  { opacity: 1; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .csv-btn, .csv-play, .csv-ring { transition: none; }
+      .from-transition .csv,
+      .from-transition .csv-btn { animation: none; overflow: visible; height: auto; }
+    }
+
+    /* Small "prototype" tag, corner — not part of the design */
+    .proto-tag {
+      position: fixed; z-index: 50; left: 12px; bottom: 12px;
+      font: 500 11px/1 var(--font-mono, monospace);
+      letter-spacing: .04em; text-transform: uppercase;
+      color: var(--color-text-muted); background: var(--color-bg);
+      border: 1px solid var(--color-border); border-radius: 999px;
+      padding: 6px 10px; opacity: .8;
+    }
+  </style>
+</head>
+
+<body class="cs-page" data-project="trq-dad">
+  <div class="cs-progress" id="cs-progress" aria-hidden="true"></div>
+
+  <main class="cs-main" id="cs-main">
+    <div class="cs-shell">
+
+      <!-- ── LEFT RAIL (hand-authored here to control the video + choreography;
+              in production this is injected by components/case-study.js) ── -->
+      <aside class="cs-rail">
+        <a href="../index.html" class="cs-rail-back b-label-link" id="cs-back">
+          <svg viewBox="0 0 16 16"><line x1="13" y1="8" x2="3" y2="8"/><polyline points="7 4 3 8 7 12"/></svg>
+          Back to work
+        </a>
+
+        <!-- THE NEW ELEMENT: circular, playable identity avatar -->
+        <div class="csv" id="csv" data-state="idle">
+          <button class="csv-btn" id="csv-btn" type="button"
+                  aria-label="Play the 60-second project overview">
+            <video class="csv-video" id="csv-video" playsinline preload="metadata"
+                   poster="../project%20content/profile-photo.png"
+                   src="../project%20content/4%20Lockers%20PUDO%20for%20framer/Lockers%20DOPU.mov"></video>
+            <svg class="csv-ring" viewBox="0 0 116 116" aria-hidden="true">
+              <circle id="csv-ring-c" cx="58" cy="58" r="56.75"></circle>
+            </svg>
+            <span class="csv-play" aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <nav class="cs-toc" aria-label="Contents">
+          <a class="cs-toc-link b-label-link" href="#introduction">Introduction</a>
+          <a class="cs-toc-link b-label-link" href="#the-brief">The brief</a>
+          <a class="cs-toc-link b-label-link" href="#my-role">My role</a>
+          <a class="cs-toc-link b-label-link" href="#the-work">The work</a>
+          <a class="cs-toc-link b-label-link" href="#the-outcome">The outcome</a>
+        </nav>
+      </aside>
+
+      <!-- ── CONTENT (filler, just enough to scroll & prove the sticky rail) ── -->
+      <div class="cs-content">
+        <p class="b-label" data-cs-eyebrow>Cocoon · 2024</p>
+        <h1 class="b-title--article">Rail video overview — prototype</h1>
+
+        <div class="cs-hero-img-wrap">
+          <img class="cs-hero-img" src="../project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="Hero" />
+        </div>
+
+        <section class="cs-section" id="introduction">
+          <p class="b-section-header">Introduction</p>
+          <p class="b-body">Scroll down — the circular avatar in the left rail stays with you (the rail is sticky), so the 60-second overview is always one click away while you skim. Click it to hear the pitch; click again to pause.</p>
+        </section>
+        <section class="cs-section" id="the-brief">
+          <p class="b-section-header">The brief</p>
+          <p class="b-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          <p class="b-body">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+        </section>
+        <section class="cs-section" id="my-role">
+          <p class="b-section-header">My role</p>
+          <p class="b-body">Sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+          <p class="b-body">Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+        </section>
+        <section class="cs-section" id="the-work">
+          <p class="b-section-header">The work</p>
+          <p class="b-body">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+          <p class="b-body">Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore.</p>
+        </section>
+        <section class="cs-section" id="the-outcome">
+          <p class="b-section-header">The outcome</p>
+          <p class="b-body">Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur.</p>
+          <p class="b-body">Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <span class="proto-tag">prototype · placeholder clip</span>
+
+  <script>
+    (function () {
+      var motionOk = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* ── ENTRANCE CHOREOGRAPHY ──
+         TOC items pop in one-by-one ("tuk-tuk-tuk"), reusing the real
+         toc-pop keyframe. The circle drops in LAST, after they finish. */
+      /* ── CLICK-TO-PLAY (in place, stays a circle, no fullscreen) ── */
+      var wrap  = document.getElementById('csv');
+      var btn   = document.getElementById('csv-btn');
+      var video = document.getElementById('csv-video');
+      var ring  = document.getElementById('csv-ring-c');
+
+      if (motionOk) {
+        document.body.classList.add('from-transition');
+        var links = document.querySelectorAll('.cs-toc-link');
+        var base = 400, step = 40, dur = 300; // mirrors case-study.js staggerToc
+        links.forEach(function (link, i) {
+          link.style.animationDelay = (base + i * step) + 'ms';
+        });
+        // avatar opens just after the last TOC item's animation completes;
+        // the slot-open and the circle-drop share one delay
+        var last = base + (links.length - 1) * step + dur;
+        var delay = (last + 120) + 'ms';
+        wrap.style.animationDelay = delay;
+        btn.style.animationDelay = delay;
+        // Once it lands, drop the entrance animation so hover/focus (which the
+        // filled animation would otherwise pin/clip) work normally again.
+        wrap.addEventListener('animationend', function (e) {
+          if (e.animationName === 'csv-open') { wrap.style.overflow = 'visible'; wrap.style.animation = 'none'; }
+          if (e.animationName === 'csv-drop') { btn.style.animation = 'none'; }
+        });
+      }
+
+      // Set up the progress ring from its real circumference
+      var R = 56.75, C = 2 * Math.PI * R;
+      ring.style.strokeDasharray = C;
+      ring.style.strokeDashoffset = C; // empty
+
+      /* Smooth progress ring: drive it from rAF (60fps) while playing, rather
+         than the video's timeupdate event (which only fires ~4×/sec → hiccups). */
+      var raf = null;
+      function tickRing() {
+        if (video.duration) {
+          var p = video.currentTime / video.duration;
+          ring.style.strokeDashoffset = C * (1 - p);
+        }
+        raf = requestAnimationFrame(tickRing);
+      }
+      function startRing() { if (!raf) raf = requestAnimationFrame(tickRing); }
+      function stopRing()  { if (raf) { cancelAnimationFrame(raf); raf = null; } }
+
+      btn.addEventListener('click', function () {
+        if (video.paused) {
+          video.muted = false;      // click is the user gesture → sound allowed
+          video.play().then(function () {
+            wrap.dataset.state = 'playing';
+            startRing();
+          }).catch(function () {
+            // If the placeholder codec won't play, still show the state change
+            wrap.dataset.state = 'playing';
+            startRing();
+          });
+        } else {
+          video.pause();
+          wrap.dataset.state = 'paused';
+          stopRing();
+        }
+      });
+
+      video.addEventListener('ended', function () {
+        wrap.dataset.state = 'idle';
+        stopRing();
+        ring.style.strokeDashoffset = C;
+        video.currentTime = 0;
+      });
+
+      /* ── reading-progress bar, so the page feels like a real case study ── */
+      window.addEventListener('scroll', function () {
+        var bar = document.getElementById('cs-progress');
+        var docH = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = (docH > 0 ? (scrollY / docH) * 100 : 0) + '%';
+      }, { passive: true });
+    })();
+  </script>
+</body>
+</html>

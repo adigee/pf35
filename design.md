@@ -64,7 +64,7 @@ Element:  <html data-theme="dark|light">
 | `--color-surface-2` | `#1A1916` | Secondary surface (elevated elements, tooltips) |
 | `--color-border` | `rgba(248, 246, 238, 0.08)` | Borders, dividers |
 | `--color-text` | `#F8F6EE` | Primary text |
-| `--color-text-muted` | `rgba(248, 246, 238, 0.45)` | Secondary text, labels, metadata |
+| `--color-text-muted` | `rgba(248, 246, 238, 0.60)` | Secondary text, labels, metadata |
 | `--color-text-subtle` | `rgba(248, 246, 238, 0.20)` | Tertiary text, placeholders, disabled |
 | `--color-primary` | `#ACA0E8` | Interactive: links, CTAs, active states |
 | `--color-primary-muted` | `rgba(172, 160, 232, 0.12)` | Primary backgrounds, soft highlights |
@@ -84,7 +84,7 @@ Element:  <html data-theme="dark|light">
 | `--color-surface-2` | `#FFD0A8` | Secondary surface |
 | `--color-border` | `rgba(26, 42, 94, 0.10)` | Borders, dividers |
 | `--color-text` | `#1A2A5E` | Primary text |
-| `--color-text-muted` | `rgba(26, 42, 94, 0.48)` | Secondary text, labels, metadata |
+| `--color-text-muted` | `rgba(26, 42, 94, 0.68)` | Secondary text, labels, metadata |
 | `--color-text-subtle` | `rgba(26, 42, 94, 0.20)` | Tertiary text, placeholders, disabled |
 | `--color-primary` | `#2147CC` | Interactive: links, CTAs, active states |
 | `--color-primary-muted` | `rgba(33, 71, 204, 0.11)` | Primary backgrounds, soft highlights |
@@ -196,8 +196,8 @@ The scale is deliberately non-linear. The gap between `--text-base` and `--text-
 
 | Weight | Used for |
 |---|---|
-| 300 | Body text default, light emphasis |
-| 400 | Standard body, timeline roles, skill names |
+| 300 | Large decorative text only (e.g., relation arrows) — never body or small text |
+| 400 | Body text default, timeline roles, skill names |
 | 500 | Body captions, image descriptions |
 | 600 | Nav name, bold accents within body |
 | 700 | All headings, display text, strong emphasis |
@@ -221,31 +221,29 @@ The type scale adjusts at four breakpoints. Only heading tokens are overridden; 
 
 These classes encapsulate the full typographic treatment. Use these — do not reconstruct equivalent styles inline.
 
-| Class | Size | Weight | Leading | Tracking | Transform | Notes |
-|---|---|---|---|---|---|---|
-| `.b-label` | `--text-xs` | 500 | — | `--tracking-widest` | uppercase | Muted. Eyebrow / kicker above titles |
-| `.b-title` | `--text-2xl` | 700 | `--leading-snug` | `--tracking-snug` | — | Panel / large headings |
-| `.b-title--xl` | `--text-4xl` | 700 | `--leading-tight` | `--tracking-tight` | — | Hero title; case-study title (single-column) |
-| `.b-title--article` | `clamp(2.25→3.25rem)` | 700 | `--leading-tight` | `--tracking-snug` | — | Case-study hero title (two-column, responsive) |
-| `.b-section-header` | `--text-lg` | 700 | `--leading-normal` | — | — | Long-form section heading |
-| `.b-section-subheader` | `--text-base` | 600 | `--leading-body` | — | — | Sub-heading within a section |
-| `.b-company` | `--text-sm` | 400 | — | — | — | Muted color, company context |
-| `.b-body` | `--text-base` | 300 | `--leading-body` | — | — | Max-width 340px |
-| `.b-body-bold` | `--text-base` | 600 | `--leading-loose` | — | — | Emphasis within body |
-| `.b-body-caption` | `--text-sm` | 500 | `--leading-normal` | — | — | Captions |
-| `.b-body-small` | `--text-sm` | 300 | `--leading-medium` | — | — | Secondary content |
-| `.b-body-small-impact` | `--text-sm` | 700 | `--leading-medium` | — | — | Small but prominent |
-| `.b-link` | `--text-xs` | 400 | — | `--tracking-wide` | uppercase | Primary color |
-| `.b-label-link` | `--text-xs` | 500 | — | `--tracking-wider` | uppercase | Muted color → primary on hover. Quiet navigational/utility links |
-| `.b-tag` | `--text-2xs` | 400 | — | `--tracking-wide` | uppercase | Muted, bordered |
-| `.b-aside` | `--text-sm` | 400 | — | — | — | Italic, muted |
+| Class | Size | Weight | Leading | Tracking | Transform | Notes | Where used |
+|---|---|---|---|---|---|---|---|
+| `.b-label` | `--text-xs` | 500 | — | `--tracking-widest` | uppercase | Muted. Eyebrow / kicker above titles | Case-study hero eyebrow, all case studies (shared via `components/case-study.js`); homepage project-card eyebrows in `index.html` (as `.b-label.b-label-strong`) |
+| `.b-title` | `--text-2xl` | 700 | `--leading-snug` | `--tracking-snug` | — | Panel / large headings | H2 mid-page section titles in `decision-module.html` only |
+| `.b-title--xl` | `--text-4xl` | 700 | `--leading-tight` | `--tracking-tight` | — | Hero title; case-study title (single-column) | Defined in `style.css`, not currently used on any page |
+| `.b-title--article` | `clamp(2.25→3.25rem)` | 700 | `--leading-tight` | `--tracking-snug` | — | Case-study hero title (two-column, responsive) | Case-study hero H1, all case studies (`trq-dad.html`, `lockers-reducing-cancellation.html`, `decision-module.html`) and the shared template |
+| `.b-section-header` | `--text-lg` | 700 | `--leading-normal` | — | — | Long-form section heading | Case-study section headings, all case studies; also the case-study lock/gate modal title (`components/case-study.js`) |
+| `.b-section-subheader` | `--text-base` | 600 | `--leading-body` | — | — | Sub-heading within a section | Defined in `style.css`, not currently used on any page |
+| `.b-body` | `--text-base` | 400 | `--leading-body` | — | — | Max-width 62ch | Case-study body paragraphs, all case studies |
+| `.b-body-bold` | `--text-base` | 600 | `--leading-loose` | — | — | Emphasis within body | Defined in `style.css`, not currently used on any page |
+| `.b-body-caption` | `--text-sm` | 500 | `--leading-normal` | — | — | Captions | Stat-block descriptions (`.cs-stat-desc`) in `trq-dad.html` and `decision-module.html` |
+| `.b-body-small` | `--text-sm` | 400 | `--leading-medium` | — | — | Secondary content | Defined in `style.css`, not currently used on any page |
+| `.b-body-small-impact` | `--text-sm` | 700 | `--leading-medium` | — | — | Small but prominent | Pull-quote / callout paragraphs in `trq-dad.html` and `decision-module.html` |
+| `.b-link` | `--text-xs` | 400 | — | `--tracking-wide` | uppercase | Primary color | Defined in `style.css`, not currently used on any page |
+| `.b-label-link` | `--text-xs` | 500 | — | `--tracking-wider` | uppercase | Muted color → primary on hover. Quiet navigational/utility links | Case-study rail "Back to work" link and table-of-contents links, all case studies (`components/case-study.js`) |
+| `.b-tag` | `--text-2xs` | 400 | — | `--tracking-wide` | uppercase | Muted, bordered | Hero tag chips in `decision-module.html` only |
 
 **Choosing a link style — two distinct roles:**
 
 - **`.b-link`** — an *inline call-to-action* link. Coloured (`--color-primary`) so it stands out within body copy. Use for "View project", external references, and other links meant to draw the eye.
 - **`.b-label-link`** — a *quiet navigational/utility* link. Reads as a label, not prose: uppercase, letter-spaced, muted, and only brightens to primary on hover. Use for back links, tables of contents, in-page nav, and any secondary wayfinding.
 
-**Rule:** All case-study wayfinding links — the rail "Back to work" link (`.cs-rail-back`) and every table-of-contents link (`.cs-toc-link`) — must carry `.b-label-link`. These links must **not** be styled in body type (`--text-sm`, weight 300); doing so makes them read as content rather than navigation and gives them too much visual weight. Component rules (`.cs-rail-back`, `.cs-toc-link`) carry layout only (flex, gaps, spacing, active state); all type comes from `.b-label-link`. The footer "All work" link is the exception — it is the [Panel CTA](#panel-cta-link-1) component, a deliberate prominent CTA, not a label link.
+**Rule:** All case-study wayfinding links — the rail "Back to work" link (`.cs-rail-back`) and every table-of-contents link (`.cs-toc-link`) — must carry `.b-label-link`. These links must **not** be styled in body type (`--text-sm`, weight 400); doing so makes them read as content rather than navigation and gives them too much visual weight. Component rules (`.cs-rail-back`, `.cs-toc-link`) carry layout only (flex, gaps, spacing, active state); all type comes from `.b-label-link`. The footer "All work" link is the exception — it is the [Panel CTA](#panel-cta-link-1) component, a deliberate prominent CTA, not a label link.
 
 ---
 
@@ -382,7 +380,7 @@ Located in the footer. Pill toggle (`border-radius: 9999px`) with a sliding knob
 **Structure:** `inline-flex` row — label text on the left, filled circle with SVG arrow on the right.
 
 ```html
-<a href="…" class="panel-cta [cs-link]">
+<a href="…" class="panel-cta">
   View project
   <span class="panel-cta-circle" aria-hidden="true">
     <svg viewBox="0 0 16 16">
@@ -405,7 +403,7 @@ Located in the footer. Pill toggle (`border-radius: 9999px`) with a sliding knob
 | Hover — text | Shifts to `--color-primary` (150ms ease) |
 | Top spacing | `margin-top: --sp-10` |
 
-**Variant:** Add class `cs-link` for internal page links — JS intercepts the click and plays the left-column exit transition before navigating. Omit `cs-link` for external links (use `target="_blank" rel="noopener"`).
+For external links, add `target="_blank" rel="noopener"`.
 
 ---
 
@@ -454,9 +452,11 @@ This project targets **WCAG 2.1 AA**.
 ### Known Checks
 
 - `--color-text` (`#F8F6EE`) on `--color-bg` (`#121212`) — high contrast, passes AAA
-- `--color-primary` (`#ACA0E8`) on `--color-bg` (`#121212`) — verify interactive text contrast ≥4.5:1
-- `--color-text-muted` (45% ivory on `#121212`) — decorative/secondary; must still pass 3:1 where conveying information
+- `--color-primary` (`#ACA0E8`) on `--color-bg` (`#121212`) — 8.0:1, passes AA for normal text
+- `--color-text-muted` dark (60% ivory) — 6.7:1 on `--color-bg`, 6.4:1 on `--color-surface` (`#1E1D1A`), 6.1:1 on `--color-surface-2` (`#26241F`) — passes AA for normal text on all dark surfaces
+- `--color-text-muted` light (68% navy) — 4.8:1 on `--color-bg`, 4.6:1 on `--color-surface`, 4.3:1 on `--color-surface-2` — passes AA for normal text on bg/surface; marginally below 4.5:1 only on surface-2 (passes AA-large and 3:1 UI)
 - Light mode: `--color-text` (`#1A2A5E`) on `--color-bg` (`#FFF3E8`) — passes
+- Raised 2026-07: muted was 45%/48% opacity (4.3:1 dark, 2.8:1 light on bg — light failed even the 3:1 floor for informational text)
 
 ### Rules
 
@@ -491,4 +491,4 @@ These rules are strict. They exist because this is a small, deliberate codebase 
 
 ---
 
-*Last updated: 2026-07-15*
+*Last updated: 2026-07-29*

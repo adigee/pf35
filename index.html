@@ -12,8 +12,6 @@
   <script src="components/head.js"></script>
   <!-- Injects the floating light/dark toggle -->
   <script src="components/theme.js"></script>
-  <!-- Home ⇄ case-study image morph (cross-document view transition) -->
-  <script src="components/page-transition.js"></script>
 
   <style>
     /* ─────────────────────────────────────────
@@ -174,10 +172,11 @@
       margin-top: var(--sp-8);
     }
     .rail-intro .tagline em {
-      color: var(--color-primary);
       font-style: normal;
       font-weight: 400;
     }
+    /* The "why behind the what" highlighter marker is owned by
+       components/text_highlight.js (see the [data-highlight] em below). */
     .rail-intro .location {
       font-size: 14px;
       font-weight: 400;
@@ -328,9 +327,13 @@
        Tune the size in one place via --feature-media-h. */
     .fc-media {
       position: relative;
-      height: var(--feature-media-h);
-      width: auto;
+      /* Height-driven target (65vh) capped to the content column so the media
+         never overflows and paints over the sticky rail. On wide columns the
+         width resolves to the height-driven value (height stays 65vh); on
+         narrow columns it clamps to 100% and the height shrinks with it. */
       aspect-ratio: var(--feature-media-ar);   /* frame proportions; image fills it exactly */
+      width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
+      height: auto;
       border-radius: 12px;
       overflow: hidden;
       background: var(--color-surface);
@@ -454,8 +457,8 @@
     <div class="rail-context">
       <div class="rail-intro">
         <p class="bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p>
-        <p class="tagline">the <em>why</em> behind the what,<br>has never been more important</p>
-        <p class="location">Based in Lisbon</p>
+        <p class="tagline">the <em data-highlight>why behind the what</em>,<br>has never been more important</p>
+        <p class="location"><span data-tooltip="PT national · open to relocation">Based in Lisbon</span></p>
       </div>
     </div>
 
@@ -536,9 +539,30 @@
 
   <!-- Theme toggle — injected by components/theme.js -->
 
+  <!-- Signal to case-study pages that we came from home (used by TOC stagger).
+       Catches link clicks, survives bfcache and back/forward navigation. -->
+  <script>
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('a[href]');
+      if (a && a.hostname === location.hostname && a.pathname !== '/' && a.pathname !== '/index.html') {
+        sessionStorage.setItem('triggerEntrance', '1');
+      }
+    });
+  </script>
+
   <!-- Project registry — fills the feature-card eyebrows above so they
        stay in sync with the case-study headers (single source of truth). -->
   <script src="components/projects.js"></script>
+
+  <!-- Image zoom: any image tagged class="zoomable" opens the drag-to-dismiss
+       modal. Self-contained (carries its own CSS). -->
+  <script src="components/image-modal.js"></script>
+
+  <!-- Highlighter marker behind the tagline phrase (hydrates [data-highlight]). -->
+  <script src="components/text_highlight.js"></script>
+
+  <!-- Tooltip — lightweight, theme-adaptive tooltip primitive -->
+  <script src="components/tooltip.js"></script>
 
   <!-- Avatar spin: an excited 2.5-turn entrance onto the caricature, then a
        calm half-turn settle back to the photo. The asymmetric enter/leave

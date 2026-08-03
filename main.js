@@ -201,7 +201,7 @@ function handlePanels() {
 (function () {
   if (!('IntersectionObserver' in window)) return;
   const vids = [...document.querySelectorAll('video')].filter(
-    v => !v.closest('.panel')
+    v => !v.closest('.panel') && !v.closest('.csv')
   );
   if (!vids.length) return;
   const io = new IntersectionObserver(function (entries) {
@@ -218,22 +218,6 @@ function handlePanels() {
    component — see components/theme.js. Kept out of
    main.js so it also runs on pages that don't load it.
 ───────────────────────────────────────── */
-
-/* ─────────────────────────────────────────
-   CASE STUDY PAGE TRANSITION
-   Intercepts .cs-link clicks on the homepage,
-   plays the column-exit animation, then navigates.
-───────────────────────────────────────── */
-(function () {
-  document.querySelectorAll('.cs-link').forEach(function (link) {
-    link.addEventListener('click', function (e) {
-      e.preventDefault();
-      var href = this.href;
-      document.body.classList.add('is-exiting');
-      setTimeout(function () { window.location.href = href; }, 380);
-    });
-  });
-})();
 
 /* ─────────────────────────────────────────
    LIVE TIMEZONE CLOCK — Lisbon / WET

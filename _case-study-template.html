@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="case-study.css" />
   <script src="components/head.js"></script>   <!-- fonts + llms link + analytics -->
   <script src="components/theme.js"></script>  <!-- light/dark toggle -->
-  <script src="components/page-transition.js"></script>  <!-- home ⇄ case-study morph -->
 </head>
 
 <!-- data-project MUST match this project's slug in components/projects.js.
@@ -45,7 +44,13 @@
           />
         </div>
 
-        <!-- Optional: <dl class="cs-meta"> … </dl>  or  <p class="cs-hero-desc"> … </p> -->
+        <!-- Optional three-column meta (Type / Highlights / Objective):
+        <dl class="cs-meta">
+          <div><dt>Type</dt><dd>…</dd></div>
+          <div><dt>Highlights</dt><dd>…</dd></div>
+          <div><dt>Objective</dt><dd>…</dd></div>
+        </dl>
+        or  <p class="cs-hero-desc"> … </p> -->
 
         <!-- ── SECTIONS ──
              One <section class="cs-section"> per part of the story.
@@ -67,6 +72,7 @@
 
   <script src="components/projects.js"></script>
   <script src="components/case-study.js"></script>
+  <script src="components/image-modal.js"></script>  <!-- site-wide image zoom (.cs-img / .cs-hero-img) -->
   <script src="main.js" defer></script>
 
 </body>
