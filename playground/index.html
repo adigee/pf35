@@ -70,6 +70,22 @@
     <div class="list">
 
       <!-- Newest first -->
+      <a class="card" href="text-highlight-variants.html">
+        <div class="card-top">
+          <p class="card-title">Text highlighter — end-cap treatments <span class="card-arrow">→</span></p>
+          <span class="card-date">2026-08-03</span>
+        </div>
+        <p class="card-desc">
+          Diagnoses why the shipped highlighter marker (<b>components/text_highlight.js</b>) grows an
+          odd dark smear at its trailing edge on longer phrases — the darker "pen-tip" cap is baked
+          into the same stretchy path as the body, so it scales with phrase width instead of staying
+          a constant size. Five side-by-side treatments: <b>A</b> current (bug reproduced), <b>B</b>
+          no cap, <b>C</b> soft gradient fade, <b>D</b> mirrored symmetric ends, and <b>E</b> a fixed-size
+          end cap decoupled from the stretch — the structural fix. Theme, phrase-length, hover-state
+          and cap-darkness dials to compare live.
+        </p>
+      </a>
+
       <a class="card" href="drama-a-sparkle.html">
         <div class="card-top">
           <p class="card-title">Add drama · A — Sparkle mode <span class="card-arrow">→</span></p>

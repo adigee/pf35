@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playground — highlighter marker variants</title>
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Real production tokens (from style.css) ───────────────────── */
+    .board[data-theme="dark"] {
+      --color-bg: #121212;
+      --color-surface: #1E1D1A;
+      --color-border: rgba(248, 246, 238, 0.10);
+      --color-text: #F8F6EE;
+      --color-text-muted: rgba(248, 246, 238, 0.60);
+      --color-primary: #ACA0E8;
+      --color-primary-muted: rgba(172, 160, 232, 0.12);
+      --color-accent-on-accent: #121212;
+      --highlight-ink: 172, 160, 232;
+    }
+    .board[data-theme="light"] {
+      --color-bg: #FFF3E8;
+      --color-surface: #FFE0C4;
+      --color-border: rgba(26, 42, 94, 0.10);
+      --color-text: #1A2A5E;
+      --color-text-muted: rgba(26, 42, 94, 0.68);
+      --color-primary: #2147CC;
+      --color-primary-muted: rgba(33, 71, 204, 0.11);
+      --color-accent-on-accent: #FFF3E8;
+      --highlight-ink: 33, 71, 204;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      font-family: 'Manrope', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background: #0b0b0b;
+      color: #F8F6EE;
+    }
+
+    /* ── Control bar ───────────────────────────────────────────────── */
+    .bar {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 22px;
+      padding: 14px 20px;
+      background: rgba(18, 18, 18, 0.92);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(248, 246, 238, 0.10);
+    }
+    .bar .group { display: flex; align-items: center; gap: 10px; }
+    .bar .glabel {
+      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(248, 246, 238, 0.45); white-space: nowrap;
+    }
+    .seg { display: inline-flex; background: rgba(248,246,238,0.06); border-radius: 9px; padding: 3px; gap: 2px; }
+    .seg button {
+      font: inherit; font-size: 12.5px; font-weight: 500;
+      color: rgba(248,246,238,0.6); background: transparent;
+      border: 0; border-radius: 7px; padding: 7px 13px; cursor: pointer;
+      white-space: nowrap; transition: background 140ms ease, color 140ms ease;
+    }
+    .seg button:hover { color: #F8F6EE; }
+    .seg button[aria-pressed="true"] { background: #ACA0E8; color: #121212; }
+
+    .dial { display: flex; flex-direction: column; gap: 4px; width: 150px; }
+    .dial .row { display: flex; justify-content: space-between; align-items: baseline; }
+    .dial label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(248,246,238,0.45); }
+    .dial output { font-size: 11px; font-variant-numeric: tabular-nums; color: #ACA0E8; }
+    .dial input[type="range"] { width: 100%; accent-color: #ACA0E8; height: 18px; margin: 0; cursor: pointer; }
+
+    .toggle { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: rgba(248,246,238,0.75); cursor: pointer; }
+    .toggle input { accent-color: #ACA0E8; cursor: pointer; }
+
+    /* ── Explainer ─────────────────────────────────────────────────── */
+    .explainer {
+      max-width: 900px; margin: 36px auto 0; padding: 0 32px;
+    }
+    .explainer h1 { font-size: 26px; letter-spacing: -0.02em; margin: 0 0 14px; }
+    .explainer .note {
+      font-size: 13.5px; line-height: 1.65; color: rgba(248,246,238,0.65);
+      background: #1E1D1A; border: 1px solid rgba(248,246,238,0.10); border-radius: 10px;
+      padding: 16px 18px; margin: 0 0 8px;
+    }
+    .explainer .note code { font-size: 12px; color: #ACA0E8; }
+    .explainer .note b { color: #F8F6EE; }
+
+    /* ── Board / variant rows ─────────────────────────────────────── */
+    .board {
+      max-width: 900px; margin: 28px auto 80px; padding: 0 32px;
+      background: var(--color-bg); color: var(--color-text);
+      border-radius: 14px;
+    }
+    .board-inner { padding: 8px 0 24px; }
+    .variant-row {
+      padding: 26px 26px 30px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .variant-row:first-child { padding-top: 30px; }
+    .variant-row:last-child { border-bottom: 0; }
+    .v-head { display: flex; align-items: baseline; gap: 10px; margin: 0 0 4px; }
+    .v-letter {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--color-primary-muted); color: var(--color-primary);
+      font-size: 12px; font-weight: 700;
+    }
+    .v-title { font-size: 15.5px; font-weight: 600; margin: 0; }
+    .v-desc { font-size: 12.5px; line-height: 1.55; color: var(--color-text-muted); margin: 4px 0 18px; max-width: 66ch; }
+
+    .demo-home {
+      font-size: 14px; line-height: 1.6; font-weight: 400; margin: 0 0 14px;
+    }
+    .demo-cs {
+      font-size: 16px; line-height: 1.6; font-style: italic; margin: 0;
+      padding: 14px 18px; background: var(--color-primary-muted);
+      border-left: 2px solid var(--color-primary); border-radius: 0 4px 4px 0;
+    }
+
+    footer.foot { max-width: 900px; margin: 0 auto 60px; padding: 0 32px; font-size: 12px; color: rgba(248,246,238,0.3); }
+    footer.foot a { color: #ACA0E8; }
+
+    /* ── Highlighter marker — shared shell ───────────────────────────
+       Same box model as components/text_highlight.js so every variant
+       sits identically behind the text. Only the SVG/fill treatment
+       (the part actually being compared) differs per .hl--X below. */
+    .hl { position: relative; display: inline-block; white-space: nowrap; }
+    .hl__ink {
+      position: absolute; left: -0.22em; top: -0.18em;
+      width: calc(100% + 0.44em); height: calc(100% + 0.30em);
+      pointer-events: none; z-index: 0;
+    }
+    .hl__cap-fixed {
+      position: absolute; right: -0.22em; top: -0.18em;
+      height: calc(100% + 0.30em); aspect-ratio: 16 / 25;
+      pointer-events: none; z-index: 0;
+    }
+    .hl__text { position: relative; z-index: 1; color: var(--color-accent-on-accent); }
+
+    .board { --cap-mix: 20; }
+
+    /* base swipe fill — identical across every variant */
+    .hl__base { fill: rgb(var(--highlight-ink)); transition: fill .2s ease; }
+
+    /* the darker "pen-tip" fill, intensity driven by the shared dial */
+    .hl__cap {
+      fill: color-mix(in srgb, rgb(var(--highlight-ink)) calc(100% - var(--cap-mix) * 1%), #000 calc(var(--cap-mix) * 1%));
+      transition: fill .2s ease;
+    }
+    .board.force-hover .hl__cap,
+    .hl:hover .hl__cap {
+      fill: color-mix(in srgb, rgb(var(--highlight-ink)) calc(100% - (var(--cap-mix) + 12) * 1%), #000 calc((var(--cap-mix) + 12) * 1%));
+    }
+    .board.force-hover .hl__base,
+    .hl:hover .hl__base {
+      fill: color-mix(in srgb, rgb(var(--highlight-ink)) 90%, #000 10%);
+    }
+
+    /* B has no cap layer at all, so nothing to darken on hover beyond base */
+  </style>
+</head>
+
+<body>
+  <div class="bar">
+    <div class="group">
+      <span class="glabel">Theme</span>
+      <div class="seg" id="seg-theme">
+        <button data-v="dark" aria-pressed="true">Dark</button>
+        <button data-v="light">Light</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <span class="glabel">Phrase length</span>
+      <div class="seg" id="seg-length">
+        <button data-v="short" aria-pressed="true">Short</button>
+        <button data-v="long">Long</button>
+      </div>
+    </div>
+
+    <label class="toggle">
+      <input type="checkbox" id="hover-toggle" />
+      Preview hover state
+    </label>
+
+    <div class="dial">
+      <div class="row"><label>Cap darkness</label><output id="o-mix">20%</output></div>
+      <input type="range" id="d-mix" min="0" max="45" step="1" value="20" />
+    </div>
+  </div>
+
+  <div class="explainer">
+    <h1>Why the current marker goes dark at the tail</h1>
+    <p class="note">
+      <b>components/text_highlight.js</b> draws one hand-drawn swipe (<code>viewBox 0 0 137 25</code>)
+      and stretches it to the phrase's exact box with <code>preserveAspectRatio="none"</code> — width
+      scales, height doesn't. A darker masked "cap" near <code>x 127–134</code> (~5% of the shape) is
+      meant to read as the pen lifting off the page. Because that cap is baked into the <b>same</b>
+      stretchy path as the body, its pixel width scales with however long the phrase is — on a short
+      phrase it's a small, believable tip; on a long one it stretches into a wide, smeared dark patch
+      at the trailing (right, in LTR) edge. That's the "dark edge towards the back." <b>A</b> below
+      reproduces this exactly; <b>B–E</b> are different fixes.
+    </p>
+  </div>
+
+  <div class="board" id="board" data-theme="dark">
+    <div class="board-inner" id="rows"></div>
+  </div>
+
+  <footer class="foot">Lives on the <b>playground</b> branch — see <a href="index.html">index</a>. Nothing here ships to main.</footer>
+
+  <script>
+    var BASE_D = 'M0.823 22.9875C2.12222 24.6601 14.0523 22.9134 20.6665 22.8763L128.906 22.7028C130.406 22.7028 131.393 21.5171 131.665 20.5217C132.23 17.1425 132.726 15.8892 133.13 13.4661C133.535 11.043 133.968 8.40162 134.203 5.66436C134.217 5.49971 134.26 5.06964 134.295 4.58343C134.381 3.39728 133.639 2.52232 132.734 2.4758C116.977 1.66595 41.6503 1.76509 35.412 1.80003L15.5684 1.91116C11.8498 1.93197 5.72888 1.36927 3.82068 2.63216C2.72881 3.35479 2.59275 6.24212 2.32068 7.23742C1.75573 9.30088 1.72532 10.0775 1.32068 12.5006C0.916036 14.9237 1.31844 14.4746 0.820683 17.1061C0.438628 19.1258 -0.67937 21.0533 0.823 22.9875Z';
+    var CAP_D  = 'M127.344 9.39259L128.769 4.51684C129.117 3.32662 129.861 2.41258 130.788 2.03755C132.066 1.11494 136.73 3.72151 136.815 6.80107L134.862 20.0174C134.547 22.1468 133.13 23.6842 131.481 23.6842C130.537 23.6842 129.745 22.7462 129.646 21.5107L126.973 13.0932C126.873 11.8384 127 10.5705 127.344 9.39259Z';
+
+    var VARIANTS = [
+      {
+        key: 'a',
+        title: 'A — Current (baseline)',
+        desc: 'Exactly what ships today: one stretchy path, dark cap masked onto its right end. Reproduced here so you can compare it directly against the fixes.'
+      },
+      {
+        key: 'b',
+        title: 'B — No end-cap',
+        desc: 'Delete the darker cap entirely — one flat colour, full stop. Simplest possible fix; loses the hand-drawn "pen lifting off" cue.'
+      },
+      {
+        key: 'c',
+        title: 'C — Soft gradient fade',
+        desc: 'Keeps the cap region but fills it with a gradient (ink colour → darker) instead of a hard mask edge, so the transition softens instead of reading as a seam.'
+      },
+      {
+        key: 'd',
+        title: 'D — Mirrored, symmetric ends',
+        desc: 'Mirrors the same cap treatment onto the left end too. A shaded tip at both ends reads as intentional pen-stroke shading, not an accidental smudge on one side.'
+      },
+      {
+        key: 'e',
+        title: 'E — Fixed-size end cap (structural fix)',
+        desc: 'Splits the cap into its own overlay pinned to the right edge with a fixed aspect ratio (tied to line-height, not phrase width) so it never stretches — the actual root-cause fix. Recommended.'
+      }
+    ];
+
+    var PHRASES = {
+      home: { short: 'why', long: 'why behind the what' },
+      cs:   { short: 'cut churn', long: 'cut voluntary churn by 65% in one quarter' }
+    };
+
+    var seq = 0;
+
+    function svgFor(variant, id) {
+      switch (variant) {
+        case 'a':
+          return (
+            '<svg class="hl__ink" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 137 25">' +
+              '<path class="hl__base" d="' + BASE_D + '"/>' +
+              '<mask id="' + id + '" maskUnits="userSpaceOnUse" x="127" y="0" width="7" height="24"><path d="' + CAP_D + '" fill="white"/></mask>' +
+              '<path class="hl__cap" mask="url(#' + id + ')" d="' + BASE_D + '"/>' +
+            '</svg>'
+          );
+        case 'b':
+          return (
+            '<svg class="hl__ink" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 137 25">' +
+              '<path class="hl__base" d="' + BASE_D + '"/>' +
+            '</svg>'
+          );
+        case 'c':
+          return (
+            '<svg class="hl__ink" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 137 25">' +
+              '<path class="hl__base" d="' + BASE_D + '"/>' +
+              '<linearGradient id="' + id + '-fade" gradientUnits="userSpaceOnUse" x1="120" y1="0" x2="127" y2="0">' +
+                '<stop offset="0" stop-color="black"/><stop offset="1" stop-color="white"/>' +
+              '</linearGradient>' +
+              '<mask id="' + id + '" maskUnits="userSpaceOnUse" x="120" y="0" width="17" height="24">' +
+                '<path d="' + CAP_D + '" fill="white"/>' +
+                '<rect x="120" y="0" width="7" height="25" fill="url(#' + id + '-fade)"/>' +
+              '</mask>' +
+              '<path class="hl__cap" mask="url(#' + id + ')" d="' + BASE_D + '"/>' +
+            '</svg>'
+          );
+        case 'd':
+          return (
+            '<svg class="hl__ink" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 137 25">' +
+              '<path class="hl__base" d="' + BASE_D + '"/>' +
+              '<mask id="' + id + 'r" maskUnits="userSpaceOnUse" x="127" y="0" width="7" height="24"><path d="' + CAP_D + '" fill="white"/></mask>' +
+              '<path class="hl__cap" mask="url(#' + id + 'r)" d="' + BASE_D + '"/>' +
+              '<g transform="translate(137,0) scale(-1,1)">' +
+                '<mask id="' + id + 'l" maskUnits="userSpaceOnUse" x="127" y="0" width="7" height="24"><path d="' + CAP_D + '" fill="white"/></mask>' +
+                '<path class="hl__cap" mask="url(#' + id + 'l)" d="' + BASE_D + '"/>' +
+              '</g>' +
+            '</svg>'
+          );
+        case 'e':
+          return (
+            '<svg class="hl__ink" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 137 25">' +
+              '<path class="hl__base" d="' + BASE_D + '"/>' +
+            '</svg>' +
+            '<svg class="hl__cap-fixed" aria-hidden="true" viewBox="121 0 16 25" preserveAspectRatio="xMaxYMid meet">' +
+              '<path class="hl__base" d="' + BASE_D + '"/>' +
+              '<mask id="' + id + '" maskUnits="userSpaceOnUse" x="127" y="0" width="7" height="24"><path d="' + CAP_D + '" fill="white"/></mask>' +
+              '<path class="hl__cap" mask="url(#' + id + ')" d="' + BASE_D + '"/>' +
+            '</svg>'
+          );
+      }
+    }
+
+    function mark(el, variant) {
+      var id = 'cap-' + (++seq);
+      el.classList.add('hl');
+      el.innerHTML = svgFor(variant, id) + '<span class="hl__text"></span>';
+    }
+
+    function setText(el, text) {
+      el.querySelector('.hl__text').textContent = text;
+    }
+
+    var rows = document.getElementById('rows');
+    var registry = []; // { homeEl, csEl }
+
+    VARIANTS.forEach(function (v) {
+      var row = document.createElement('div');
+      row.className = 'variant-row';
+      row.innerHTML =
+        '<p class="v-head"><span class="v-letter">' + v.key.toUpperCase() + '</span><span class="v-title">' + v.title + '</span></p>' +
+        '<p class="v-desc">' + v.desc + '</p>' +
+        '<p class="demo-home">the <em class="hl-home"></em>, has never been more important</p>' +
+        '<p class="demo-cs">we managed to "<em class="hl-cs"></em>" — case study callout</p>';
+      rows.appendChild(row);
+
+      var homeEl = row.querySelector('.hl-home');
+      var csEl = row.querySelector('.hl-cs');
+      mark(homeEl, v.key);
+      mark(csEl, v.key);
+      registry.push({ home: homeEl, cs: csEl });
+    });
+
+    function applyLength(len) {
+      registry.forEach(function (r) {
+        setText(r.home, PHRASES.home[len]);
+        setText(r.cs, PHRASES.cs[len]);
+      });
+    }
+    applyLength('short');
+
+    function segBind(id, cb) {
+      var seg = document.getElementById(id);
+      seg.addEventListener('click', function (e) {
+        var btn = e.target.closest('button'); if (!btn) return;
+        [].forEach.call(seg.querySelectorAll('button'), function (b) {
+          b.setAttribute('aria-pressed', String(b === btn));
+        });
+        cb(btn.dataset.v);
+      });
+    }
+
+    var board = document.getElementById('board');
+    segBind('seg-theme', function (v) { board.setAttribute('data-theme', v); });
+    segBind('seg-length', function (v) { applyLength(v); });
+
+    document.getElementById('hover-toggle').addEventListener('change', function (e) {
+      board.classList.toggle('force-hover', e.target.checked);
+    });
+
+    var mixSlider = document.getElementById('d-mix');
+    var mixOut = document.getElementById('o-mix');
+    mixSlider.addEventListener('input', function () {
+      board.style.setProperty('--cap-mix', mixSlider.value);
+      mixOut.textContent = mixSlider.value + '%';
+    });
+  </script>
+</body>
+</html>
