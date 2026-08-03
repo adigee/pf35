@@ -162,6 +162,39 @@
     }
 
     /* B has no cap layer at all, so nothing to darken on hover beyond base */
+
+    /* ── Line-wrap section ──────────────────────────────────────────── */
+    .wrap-section { padding: 8px 26px 32px; border-top: 1px solid var(--color-border); margin-top: 4px; }
+    .wrap-head { font-size: 15.5px; font-weight: 600; margin: 24px 0 6px; color: var(--color-text); }
+    .wrap-desc { font-size: 12.5px; line-height: 1.6; color: var(--color-text-muted); margin: 0 0 22px; max-width: 70ch; }
+    .wrap-desc code { font-size: 11.5px; }
+    .wrap-demos { display: flex; flex-wrap: wrap; gap: 24px; }
+    .wrap-demo { width: 230px; }
+    .wrap-demo-label {
+      font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--color-text-muted); margin: 0 0 8px;
+    }
+    .wrap-demo-shell {
+      width: 100%; overflow: hidden;
+      border: 1px dashed var(--color-border); border-radius: 8px;
+      padding: 14px; background: var(--color-surface);
+    }
+    .wrap-demo-shell .demo-home { margin: 0; }
+    .wrap-demo-note { font-size: 11.5px; line-height: 1.55; color: var(--color-text-muted); margin: 8px 0 0; }
+
+    /* "If forced to wrap" — drop nowrap and cap the box so it must wrap internally */
+    .force-wrap .hl { white-space: normal; max-width: 108px; vertical-align: top; }
+
+    /* Wrap-safe fallback — plain CSS background, no SVG, safe across line breaks */
+    .hl-safe {
+      font-style: normal;
+      background: rgb(var(--highlight-ink));
+      color: var(--color-accent-on-accent);
+      padding: 0.05em 0.28em;
+      border-radius: 3px;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+    }
   </style>
 </head>
 
@@ -210,6 +243,37 @@
 
   <div class="board" id="board" data-theme="dark">
     <div class="board-inner" id="rows"></div>
+
+    <div class="wrap-section">
+      <p class="wrap-head">What happens if the phrase wraps to a second line?</p>
+      <p class="wrap-desc">
+        Short answer: today it can't <i>break mid-phrase</i> — <code>components/text_highlight.js</code>
+        sets <code>white-space: nowrap</code> on the highlight span, so the browser treats the whole
+        marked phrase as one atomic unit. On a narrow column it either jumps down to its own line as a
+        whole, or — if even a full line isn't wide enough — overflows past the edge. If that guard were
+        removed so the phrase could wrap internally, the single stretchy SVG background doesn't know
+        about the line break: it just stretches across the full two-line bounding box, ignoring the
+        actual ragged shape of the wrapped text underneath. Shown live, using the real homepage tagline
+        at a narrow (mobile-rail) width:
+      </p>
+      <div class="wrap-demos">
+        <div class="wrap-demo">
+          <p class="wrap-demo-label">Current — nowrap (jumps as a whole)</p>
+          <div class="wrap-demo-shell"><p class="demo-home" id="wrap-current">the <em class="hl-w1"></em>, has never been more important</p></div>
+          <p class="wrap-demo-note">The marked phrase never splits — it either drops to its own line whole, or overflows the column if it can't fit on one line at all.</p>
+        </div>
+        <div class="wrap-demo">
+          <p class="wrap-demo-label">If forced to wrap mid-phrase</p>
+          <div class="wrap-demo-shell"><p class="demo-home force-wrap" id="wrap-forced">the <em class="hl-w2"></em>, has never been more important</p></div>
+          <p class="wrap-demo-note">Removing <code>nowrap</code> lets the words break, but the background is one shape stretched over both lines — it smears across the gap and ignores the shorter second line's actual width.</p>
+        </div>
+        <div class="wrap-demo">
+          <p class="wrap-demo-label">Wrap-safe fallback (per-line background)</p>
+          <div class="wrap-demo-shell" style="width:150px"><p class="demo-home" id="wrap-safe">the <em class="hl-safe">why behind the what</em>, has never been more important</p></div>
+          <p class="wrap-demo-note">Plain CSS background + <code>box-decoration-break: clone</code> — each line fragment gets its own independent rounded background. No hand-drawn texture, but it never breaks.</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <footer class="foot">Lives on the <b>playground</b> branch — see <a href="index.html">index</a>. Nothing here ships to main.</footer>
@@ -353,6 +417,11 @@
       mark(csEl, v.key);
       registry.push({ home: homeEl, cs: csEl });
     });
+
+    mark(document.querySelector('.hl-w1'), 'b2');
+    setText(document.querySelector('.hl-w1'), 'why behind the what');
+    mark(document.querySelector('.hl-w2'), 'b2');
+    setText(document.querySelector('.hl-w2'), 'why behind the what');
 
     function applyLength(len) {
       registry.forEach(function (r) {
