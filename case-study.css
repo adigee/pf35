@@ -731,7 +731,7 @@ html.cs-modal-open, html.cs-modal-open body { overflow: hidden; }
   --_breakout: 0px;
 }
 
-/* ── PROJECT META (Timeline / Role / Team) ── */
+/* ── PROJECT META (Type / Highlights / Objective) ── */
 .cs-meta {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
