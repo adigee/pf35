@@ -9,20 +9,28 @@
    The exact same primitives are used to decrypt in the browser via
    the Web Crypto API — keep the two in sync (see case-study.js).
 
-   Editing a gated page later — the cycle is:
-       node tools/lock.mjs unlock <page>.html "<password>"   ← restore editable HTML
-       …edit the sections in <page>.html normally…
-       node tools/lock.mjs lock   <page>.html "<password>"   ← re-encrypt
+   Editing a gated page later — the normal cycle is now just:
+       node tools/lock.mjs extract <page>.html   ← writes .context/<page>.plain.html (read-only, live page untouched)
+       …edit that plaintext file…
+       node tools/lock.mjs relock  <page>.html   ← re-encrypt from it
+
+   The password argument is optional on every command — if omitted, it's
+   looked up in .context/lock-secrets.json (gitignored) by filename. Pass a
+   password explicitly to override the stored one.
 
    Commands
      lock    — encrypt a page's sections for the first time. Also saves a
                plaintext copy to .context/<page>.plain.html (gitignored).
-     unlock  — decrypt a locked page back to editable HTML (needs the password).
+     unlock  — decrypt a locked page back to editable HTML in place (needs
+               the password). Leaves the live page unencrypted on disk until
+               you lock/relock it again — prefer "extract" for routine edits.
+     extract — read-only: decrypts the live page's payload into
+               .context/<page>.plain.html without touching the live page.
      relock  — re-encrypt from .context/<page>.plain.html without touching
                the page's current ciphertext (handy after editing that copy).
 
    Nothing here ships to the browser; only the JSON payload it writes into
-   the page does. Keep the .context/*.plain.html copies (and the password) safe.
+   the page does. Keep the .context/*.plain.html copies (and lock-secrets.json) safe.
 ───────────────────────────────────────── */
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { basename, join } from 'node:path';
@@ -32,6 +40,19 @@ const ITERS = 200000;                    // PBKDF2 rounds — matches case-study
 const START = '<section class="cs-section"';   // matches both `">` and `" id="…">`
 const FOOTER = '<div data-component="cs-footer">';
 const MOUNT = '<div id="cs-locked-mount"></div>';
+const SECRETS_PATH = join('.context', 'lock-secrets.json');
+
+// Optional password lookup by filename, so the actual reader password never
+// has to be typed for routine edits. Falls back to undefined (caller errors).
+function lookupPassword(file) {
+  if (!existsSync(SECRETS_PATH)) return undefined;
+  try {
+    const secrets = JSON.parse(readFileSync(SECRETS_PATH, 'utf8'));
+    return secrets[basename(file)];
+  } catch {
+    return undefined;
+  }
+}
 
 function encrypt(plaintext, password) {
   const salt = randomBytes(16);
@@ -163,10 +184,33 @@ function unlock(file, password) {
   console.log(`    node tools/lock.mjs lock ${file} "<password>"`);
 }
 
-const [mode, file, password] = process.argv.slice(2);
-const commands = { lock, unlock, relock };
-if (!commands[mode] || !file || !password) {
-  console.error('Usage: node tools/lock.mjs <lock|unlock|relock> <page>.html "<password>"');
+// Read-only: decrypts the live page's payload straight into
+// .context/<page>.plain.html. Never modifies the live page.
+function extract(file, password) {
+  const html = readFileSync(file, 'utf8');
+  const bounds = payloadBounds(html);
+  if (!bounds) {
+    console.error(`✗ ${file} is not locked (no encrypted payload found).`);
+    process.exit(1);
+  }
+  let sections;
+  try { sections = decrypt(bounds.payload, password); }
+  catch { console.error('✗ Wrong password — could not decrypt.'); process.exit(1); }
+
+  if (!existsSync('.context')) mkdirSync('.context', { recursive: true });
+  writeFileSync(plainPath(file), sections);
+  console.log(`✓ Extracted ${file} → ${plainPath(file)} (live page untouched)`);
+}
+
+const [mode, file, passwordArg] = process.argv.slice(2);
+const commands = { lock, unlock, relock, extract };
+if (!commands[mode] || !file) {
+  console.error('Usage: node tools/lock.mjs <lock|unlock|relock|extract> <page>.html ["<password>"]');
+  process.exit(1);
+}
+const password = passwordArg || lookupPassword(file);
+if (!password) {
+  console.error(`✗ No password given and none found in ${SECRETS_PATH} for ${basename(file)}.`);
   process.exit(1);
 }
 commands[mode](file, password);
