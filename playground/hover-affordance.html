@@ -123,16 +123,20 @@
     .board {
       --a-offset: 3px;
       --a-thickness: 1px;
+      --a-rest-pct: 20%;
       --b-rest: var(--color-text-muted);
       --c-size: 4px;
       --c-gap: 6px;
     }
 
     /* A — dotted underline, same mechanics as the site's real <a> style,
-       dotted instead of solid so it reads as "reveals info" not "navigates". */
+       dotted instead of solid so it reads as "reveals info" not "navigates".
+       Rest color is a tunable % mix of --color-text (not the --color-border
+       hairline token, which is fixed at a barely-there 10%) so it can sit
+       darker/more visible without hand-picking a new rgba per theme. */
     .board[data-treatment="a"] .b-tt-anchor {
       text-decoration: underline dotted;
-      text-decoration-color: var(--color-border);
+      text-decoration-color: color-mix(in srgb, var(--color-text) var(--a-rest-pct), transparent);
       text-underline-offset: var(--a-offset);
       text-decoration-thickness: var(--a-thickness);
       transition: text-decoration-color 120ms ease;
@@ -178,15 +182,19 @@
     <div class="group">
       <span class="glabel">Treatment</span>
       <div class="seg" id="seg">
-        <button data-t="current" aria-pressed="true">Current · none</button>
-        <button data-t="a">A · Dotted underline</button>
+        <button data-t="current">Current · none</button>
+        <button data-t="a" aria-pressed="true">A · Dotted underline</button>
         <button data-t="b">B · Muted color</button>
         <button data-t="c">C · Trailing dot</button>
       </div>
     </div>
 
-    <div class="group dials off" id="dials-a">
+    <div class="group dials" id="dials-a">
       <span class="glabel">A</span>
+      <div class="dial">
+        <div class="row"><label>Rest opacity</label><output id="o-pct">20%</output></div>
+        <input type="range" id="d-pct" min="8" max="45" step="1" value="20" />
+      </div>
       <div class="dial">
         <div class="row"><label>Offset</label><output id="o-off">3px</output></div>
         <input type="range" id="d-off" min="1" max="6" step="0.5" value="3" />
@@ -210,7 +218,7 @@
     </div>
 
     <label class="check">
-      <input type="checkbox" id="cursor-help" />
+      <input type="checkbox" id="cursor-help" checked />
       cursor: help
     </label>
 
@@ -225,7 +233,7 @@
     <code>[data-tooltip]</code> trigger, so whichever wins needs no new markup.
   </p>
 
-  <div class="board" id="board" data-treatment="current" data-cursor="">
+  <div class="board" id="board" data-treatment="a" data-cursor="help">
     <!-- DARK stage -->
     <section class="stage" data-theme="dark">
       <p class="stage-tag">Dark mode · #121212</p>
@@ -295,18 +303,19 @@
       board.setAttribute('data-cursor', cursorCb.checked ? 'help' : '');
     });
 
-    function bind(id, out, fmt, cssVar) {
+    function bind(id, out, fmt, cssVar, unit) {
       var el = document.getElementById(id), o = document.getElementById(out);
       el.addEventListener('input', function () {
         var v = parseFloat(el.value);
         o.textContent = fmt(v);
-        board.style.setProperty(cssVar, el.value + 'px');
+        board.style.setProperty(cssVar, el.value + unit);
       });
     }
-    bind('d-off',  'o-off',  function (v) { return v + 'px'; }, '--a-offset');
-    bind('d-thk',  'o-thk',  function (v) { return v + 'px'; }, '--a-thickness');
-    bind('d-size', 'o-size', function (v) { return v + 'px'; }, '--c-size');
-    bind('d-gap',  'o-gap',  function (v) { return v + 'px'; }, '--c-gap');
+    bind('d-pct',  'o-pct',  function (v) { return v + '%'; },  '--a-rest-pct', '%');
+    bind('d-off',  'o-off',  function (v) { return v + 'px'; }, '--a-offset', 'px');
+    bind('d-thk',  'o-thk',  function (v) { return v + 'px'; }, '--a-thickness', 'px');
+    bind('d-size', 'o-size', function (v) { return v + 'px'; }, '--c-size', 'px');
+    bind('d-gap',  'o-gap',  function (v) { return v + 'px'; }, '--c-gap', 'px');
 
     document.getElementById('copy').addEventListener('click', function () {
       var t = board.getAttribute('data-treatment');
@@ -315,12 +324,14 @@
       if (t === 'a') {
         var off = getComputedStyle(board).getPropertyValue('--a-offset').trim();
         var thk = getComputedStyle(board).getPropertyValue('--a-thickness').trim();
+        var pct = getComputedStyle(board).getPropertyValue('--a-rest-pct').trim();
         css =
 '/* Option A — dotted underline. Add to the injected stylesheet in components/tooltip.js,\n' +
-'   next to the existing .b-tt-anchor rule: */\n' +
+'   next to the existing .b-tt-anchor rule. Rest color is a ' + pct + ' mix of --color-text\n' +
+'   (darker/more visible than the --color-border hairline, which sits at a fixed 10%): */\n' +
 '.b-tt-anchor {\n' +
 '  text-decoration: underline dotted;\n' +
-'  text-decoration-color: var(--color-border);\n' +
+'  text-decoration-color: color-mix(in srgb, var(--color-text) ' + pct + ', transparent);\n' +
 '  text-underline-offset: ' + off + ';\n' +
 '  text-decoration-thickness: ' + thk + ';\n' +
 '  transition: text-decoration-color 120ms ease;\n' +
