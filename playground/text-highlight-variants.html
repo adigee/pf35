@@ -140,6 +140,15 @@
       height: calc(100% + 0.30em); aspect-ratio: 16 / 25;
       pointer-events: none; z-index: 0;
     }
+    /* G — fixed-aspect taper overlays, pinned to each end, sized off
+       line-height (not phrase width) so the taper never stretches. */
+    .hl__taper-fixed {
+      position: absolute; top: -0.18em;
+      height: calc(100% + 0.30em); aspect-ratio: 18 / 25;
+      pointer-events: none; z-index: 0;
+    }
+    .hl__taper-fixed.is-left { left: -0.22em; }
+    .hl__taper-fixed.is-right { right: -0.22em; }
     .hl__text { position: relative; z-index: 1; color: var(--color-accent-on-accent); }
 
     .board { --cap-mix: 20; }
@@ -239,6 +248,18 @@
       at the trailing (right, in LTR) edge. That's the "dark edge towards the back." <b>A</b> below
       reproduces this exactly; <b>B–E</b> are different fixes.
     </p>
+    <p class="note">
+      <b>Update — B2 shipped, then a new artifact turned up.</b> B2 mirrors the shape's own left-edge
+      taper onto the right so both ends match. But that taper is a <i>proportional</i> cut — roughly
+      11% of the 137-unit viewBox — carved diagonally across the <i>full height</i>, from the top edge
+      down to the bottom edge in close to a straight line. Because <code>preserveAspectRatio="none"</code>
+      scales width independently of height, that diagonal's on-screen length grows with phrase length while
+      its steepness flattens out — on real case-study copy it stretches into a long, shallow, dead-straight
+      bevel at each end instead of a short, steep, wobbly one. Combined with the hard rectangular mask cut
+      that crops it, the outline reads as flat facets meeting at sharp corners — a polygon, not a rounded
+      swipe. That's the "pentagon." <b>F, G, H</b> below are three different responses, after B2's own
+      row.
+    </p>
   </div>
 
   <div class="board" id="board" data-theme="dark">
@@ -282,6 +303,31 @@
     var BASE_D = 'M0.823 22.9875C2.12222 24.6601 14.0523 22.9134 20.6665 22.8763L128.906 22.7028C130.406 22.7028 131.393 21.5171 131.665 20.5217C132.23 17.1425 132.726 15.8892 133.13 13.4661C133.535 11.043 133.968 8.40162 134.203 5.66436C134.217 5.49971 134.26 5.06964 134.295 4.58343C134.381 3.39728 133.639 2.52232 132.734 2.4758C116.977 1.66595 41.6503 1.76509 35.412 1.80003L15.5684 1.91116C11.8498 1.93197 5.72888 1.36927 3.82068 2.63216C2.72881 3.35479 2.59275 6.24212 2.32068 7.23742C1.75573 9.30088 1.72532 10.0775 1.32068 12.5006C0.916036 14.9237 1.31844 14.4746 0.820683 17.1061C0.438628 19.1258 -0.67937 21.0533 0.823 22.9875Z';
     var CAP_D  = 'M127.344 9.39259L128.769 4.51684C129.117 3.32662 129.861 2.41258 130.788 2.03755C132.066 1.11494 136.73 3.72151 136.815 6.80107L134.862 20.0174C134.547 22.1468 133.13 23.6842 131.481 23.6842C130.537 23.6842 129.745 22.7462 129.646 21.5107L126.973 13.0932C126.873 11.8384 127 10.5705 127.344 9.39259Z';
 
+    // F — stadium/pill: flat top+bottom (with a slight hand-drawn wobble), fully
+    // rounded (elliptical) ends. Single closed path, left-right symmetric by
+    // construction, so no mask/mirror trick is needed the way B2 needed one.
+    var F_D = 'M18,3 C40,2.3 68,3.4 92,2.7 C105,2.4 119,2.8 119,3 ' +
+              'C129,3 137,7 137,12.5 C137,18 129,22 119,22 ' +
+              'C99,22.6 63,21.5 40,22.3 C28,22.6 18,22 18,22 ' +
+              'C8,22 0,18 0,12.5 C0,7 8,3 18,3 Z';
+
+    // G — clamped ends: a plain flat wavy middle (no taper baked in) plus two
+    // fixed-aspect-ratio taper overlays (see .hl__taper-fixed) pinned to each
+    // end, re-using one taper shape (mirrored for the right side).
+    var G_MID_D   = 'M0,3 C25,2.3 60,3.4 78,2.7 C90,2.4 101,2.8 101,3 L101,22 ' +
+                     'C90,22.6 60,21.5 40,22.3 C25,22.6 0,22 0,22 Z';
+    var G_TAPER_D = 'M18,3 C8,3 0,7 0,12.5 C0,18 8,22 18,22 L18,3 Z';
+
+    // H — hand-drawn parallelogram: top and bottom edges are shifted by the
+    // same constant offset (a true skew, not a mirrored taper), so it reads
+    // as one confident stroke drawn at a steady angle. Skew kept to ~5% of
+    // the viewBox width so the diagonal stays inside the existing 0.22em
+    // inset instead of cutting across real glyphs on long phrases.
+    var H_D = 'M8,3.6 C32,2.4 62,3.6 88,2.7 C104,2.2 120,2.8 132.5,3.6 ' +
+              'L136,4.6 L129.3,21.3 ' +
+              'C118,22.4 90,21.4 63,22.5 C42,23.3 20,22.1 4.7,21.4 ' +
+              'L0.7,20.3 L7,4.3 Z';
+
     var VARIANTS = [
       {
         key: 'a',
@@ -312,6 +358,21 @@
         key: 'e',
         title: 'E — Fixed-size end cap (structural fix)',
         desc: 'Splits the cap into its own overlay pinned to the right edge with a fixed aspect ratio (tied to line-height, not phrase width) so it never stretches — the actual root-cause fix. Recommended.'
+      },
+      {
+        key: 'f',
+        title: 'F — Smooth pill taper',
+        desc: 'Redraws the shape from scratch as a stadium/pill: flat top and bottom with genuinely rounded (elliptical) ends, instead of a nearly-straight diagonal bevel. An ellipse stays curved under any amount of anisotropic stretch — it can never flatten into a straight facet the way B2\'s taper does, so there\'s no pentagon at any phrase length. Simplest of the three fixes: one path, no mask or mirror trick needed.'
+      },
+      {
+        key: 'g',
+        title: 'G — Clamped ends (structural fix, taper version of E)',
+        desc: 'Same principle as E, applied to the taper instead of the cap: the two ends are separate fixed-aspect-ratio overlays (sized off line-height, never off phrase width) and the middle is a plain flat stretchy fill. The most bulletproof against distortion — the ends are pixel-identical regardless of phrase length. Trade-off: on long phrases the fixed taper is such a small fraction of the total width that it barely reads anymore; the mark starts to look like a plain rounded rectangle.'
+      },
+      {
+        key: 'h',
+        title: 'H — Hand-drawn parallelogram',
+        desc: 'Different direction, not a patch on B2: a true parallelogram lean — top and bottom edges shifted by the same constant offset, like a marker dragged across the page at a steady angle, italic-style. Reads as one confident, intentional stroke instead of a shape trying to hide its own seams. The skew is kept small (~5% of width) so it stays inside the existing 0.22em inset and never cuts into real glyphs, even on long phrases.'
       }
     ];
 
@@ -383,6 +444,30 @@
               '<path class="hl__base" d="' + BASE_D + '"/>' +
               '<mask id="' + id + '" maskUnits="userSpaceOnUse" x="127" y="0" width="7" height="24"><path d="' + CAP_D + '" fill="white"/></mask>' +
               '<path class="hl__cap" mask="url(#' + id + ')" d="' + BASE_D + '"/>' +
+            '</svg>'
+          );
+        case 'f':
+          return (
+            '<svg class="hl__ink" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 137 25">' +
+              '<path class="hl__base" d="' + F_D + '"/>' +
+            '</svg>'
+          );
+        case 'g':
+          return (
+            '<svg class="hl__ink" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 101 25">' +
+              '<path class="hl__base" d="' + G_MID_D + '"/>' +
+            '</svg>' +
+            '<svg class="hl__taper-fixed is-left" aria-hidden="true" viewBox="0 0 18 25" preserveAspectRatio="xMinYMid meet">' +
+              '<path class="hl__base" d="' + G_TAPER_D + '"/>' +
+            '</svg>' +
+            '<svg class="hl__taper-fixed is-right" aria-hidden="true" viewBox="0 0 18 25" preserveAspectRatio="xMaxYMid meet">' +
+              '<g transform="translate(18,0) scale(-1,1)"><path class="hl__base" d="' + G_TAPER_D + '"/></g>' +
+            '</svg>'
+          );
+        case 'h':
+          return (
+            '<svg class="hl__ink" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 137 25">' +
+              '<path class="hl__base" d="' + H_D + '"/>' +
             '</svg>'
           );
       }
