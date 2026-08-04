@@ -46,7 +46,7 @@
           </div>
           <div>
             <dt>Highlights</dt>
-            <dd>Design harness for a QE model</dd>
+            <dd>Finding the right abstraction</dd>
           </div>
           <div>
             <dt>Objective</dt>
@@ -151,8 +151,8 @@
           <p class="b-body">
             The QE model actually does two things - scores the translation and decides
             if the translation should skip human post edition (based on that score). Since
-            we were only enabling configurations on the skipping behaviour, <em data-highlight>I proposed that
-            we visually separate QE into two modules</em>, giving rise to a brand new module that
+            we were only enabling configurations on the skipping behaviour, I proposed that
+            <em data-highlight>we visually separate QE into two modules</em>, giving rise to a brand new module that
             we named as the decision module.
           </p>
           <p class="b-body">
@@ -184,8 +184,8 @@
             translation would skip instead of looking at the score itself.
           </p>
           <p class="b-body">
-            This essentially inverted the paradigm and enabled us to <em data-highlight>interact with QE models
-            based on the outcome of their skipping behaviour</em>.
+            This essentially inverted the paradigm and enabled us to interact with QE models
+            based on <em data-highlight>the outcome of their skipping behaviour.</em>
           </p>
           <p class="b-body">
             Five QE profiles were developed by the AI team based on the skipping behaviour -
@@ -216,6 +216,14 @@
             historical performance of the model. When the ops team would request them to intervene,
             their process involved looking the quality of jobs skipped by the model in the past.
           </p>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/2%20Decision%20module%20for%20framer/7%20Divergent%20designs.png"
+              alt="Divergent designs"
+              loading="lazy"
+            />
+          </figure>
           <p class="b-body">
             After much debate and multiple design reviews, the consensus was to
           </p>
@@ -225,6 +233,14 @@
             <li>Visualise the quality breakdown of the skipped translations</li>
             <li>Indicate the impact on the unit cost of translations</li>
           </ul>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/2%20Decision%20module%20for%20framer/8%20Decision%20module%20v1.png"
+              alt="Decision module v1"
+              loading="lazy"
+            />
+          </figure>
           <p class="b-body">
             In order to avoid working in circles, I decided to test this interface with the
             ops team in a moderated usability test.
@@ -233,12 +249,32 @@
             Using this as a starting point, I developed visual concepts where the decision module
             would allow you to simulate the outcome on a pipeline when the QE profile was switched.
           </p>
-          <h3 class="b-section-subheader">Testing version 1</h3>
+        </section>
+
+        <!-- ── TESTING VERSION 1 ── -->
+        <section class="cs-section">
+          <p class="b-section-header">Testing version 1</p>
           <p class="b-body">
             The above interface was tested with 8 participants in a remote moderated
             usability test. Each participant performed 2 distinct and independent tasks,
             followed by open feedback and a post-mortem discussion.
           </p>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/2%20Decision%20module%20for%20framer/9%20Test%20findings%201.png"
+              alt="Test findings 1"
+              loading="lazy"
+            />
+          </figure>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/2%20Decision%20module%20for%20framer/10%20Test%20findings%202.png"
+              alt="Test findings 2"
+              loading="lazy"
+            />
+          </figure>
           <h3 class="b-section-subheader">UXR Findings</h3>
           <p class="b-body">
             The results of the test were very positive with most participants keen to apply
@@ -260,6 +296,22 @@
             the volume of jobs being skipped — making the direct relationship between them
             immediately visible.
           </p>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/2%20Decision%20module%20for%20framer/11%20Final%20designs.png"
+              alt="Final designs"
+              loading="lazy"
+            />
+          </figure>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/2%20Decision%20module%20for%20framer/12%20Final%20designs.png"
+              alt="Final designs"
+              loading="lazy"
+            />
+          </figure>
         </section>
 
         <!-- ── OUTCOMES ── -->
@@ -279,19 +331,30 @@
             iterations, this project was closed with this deploy as we set about to build
             other parts of the platform!
           </p>
+          <figure class="cs-figure">
+            <img
+              class="cs-img cs-img--dark"
+              src="project%20content/2%20Decision%20module%20for%20framer/13%20Outcomes.png"
+              alt="Outcomes"
+              loading="lazy"
+            />
+          </figure>
         </section>
 
         <!-- ── REFLECTIONS ── -->
         <section class="cs-section">
-          <p class="b-section-header">Reflections</p>
+          <p class="b-section-header" style="display:inline-block">Reflections</p><span class="b-label" style="margin-left:0.6em;vertical-align:middle;margin-bottom:0">(updated 2026)</span>
 
           <p class="b-body">
-            Designing for a Human-AI interaction paradigm in 2022 (read pre chatGPT)
-            presented fun new challenges and many opportunities for collaborative head
-            scratching! Over the course of this project, I truly internalised the
-            non-deterministic nature of the system powering the UI and the importance
-            of having well-processed datasets (clean training data, for example).
+            Designing for an <span data-tooltip="Human in the loop">HITL</span> interaction paradigm in 2022 was a very fun project.
+            I keep this project in my portfolio because working through this with ML engineers shaped many of my
+            instincts around
           </p>
+          <ul class="cs-list">
+            <li>designing with AI models,</li>
+            <li>designing abstractions on top of AI models,</li>
+            <li>truly internalizing the non-deterministic nature of the system.</li>
+          </ul>
           <p class="b-body">
             During the course of UX testing, I also realised that no matter how many
             guardrails we introduce, only after a period of experimentation and constant
@@ -312,6 +375,7 @@
   <script src="components/case-study.js"></script>
   <script src="components/image-modal.js"></script>
   <script src="components/text_highlight.js"></script>
+  <script src="components/tooltip.js"></script>
   <script src="main.js" defer></script>
 
 </body>
