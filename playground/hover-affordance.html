@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playground — tooltip hover affordance</title>
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Real production tokens + components — this sandbox is styled by the
+       actual site stylesheet and the actual tooltip/highlight scripts, not
+       a re-creation. Only the treatment rules below (and the demo chrome)
+       are new. -->
+  <link rel="stylesheet" href="../style.css" />
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      background: #0b0b0b;
+      color: #F8F6EE;
+    }
+
+    /* ── Control bar ───────────────────────────────────────────────── */
+    .bar {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 22px;
+      padding: 14px 20px;
+      background: rgba(18, 18, 18, 0.92);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(248, 246, 238, 0.10);
+    }
+    .bar .group { display: flex; align-items: center; gap: 10px; }
+    .bar .glabel {
+      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(248, 246, 238, 0.45); white-space: nowrap;
+    }
+
+    .seg { display: inline-flex; background: rgba(248,246,238,0.06); border-radius: 9px; padding: 3px; gap: 2px; }
+    .seg button {
+      font: inherit; font-size: 12.5px; font-weight: 500;
+      color: rgba(248,246,238,0.6); background: transparent;
+      border: 0; border-radius: 7px; padding: 7px 13px; cursor: pointer;
+      white-space: nowrap; transition: background 140ms ease, color 140ms ease;
+    }
+    .seg button:hover { color: #F8F6EE; }
+    .seg button[aria-pressed="true"] { background: #ACA0E8; color: #121212; }
+
+    .check { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: rgba(248,246,238,0.75); cursor: pointer; }
+    .check input { accent-color: #ACA0E8; cursor: pointer; }
+
+    .dials { display: flex; align-items: center; gap: 20px; transition: opacity 160ms ease; }
+    .dials.off { opacity: 0.32; pointer-events: none; }
+    .dial { display: flex; flex-direction: column; gap: 4px; width: 118px; }
+    .dial .row { display: flex; justify-content: space-between; align-items: baseline; }
+    .dial label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(248,246,238,0.45); }
+    .dial output { font-size: 11px; font-variant-numeric: tabular-nums; color: #ACA0E8; }
+    .dial input[type="range"] { width: 100%; accent-color: #ACA0E8; height: 18px; margin: 0; cursor: pointer; }
+
+    .copybtn {
+      font: inherit; font-size: 12px; font-weight: 600;
+      color: #121212; background: #ACA0E8;
+      border: 0; border-radius: 8px; padding: 9px 15px; cursor: pointer;
+      margin-left: auto;
+      transition: transform 120ms ease, filter 120ms ease;
+    }
+    .copybtn:hover { filter: brightness(1.06); }
+    .copybtn:active { transform: scale(0.97); }
+    .copybtn.ok { background: #7bd88f; }
+
+    .note {
+      font-size: 11.5px; line-height: 1.5; color: rgba(248,246,238,0.4);
+      padding: 10px 20px; border-bottom: 1px solid rgba(248,246,238,0.08);
+      background: rgba(255,255,255,0.02);
+    }
+    .note b { color: rgba(248,246,238,0.7); font-weight: 600; }
+
+    /* ── Side-by-side stages ───────────────────────────────────────── */
+    .board { display: grid; grid-template-columns: 1fr 1fr; }
+    .stage {
+      background: var(--color-bg); color: var(--color-text);
+      padding: 44px 44px 80px; min-height: calc(100vh - 96px);
+    }
+    .stage[data-theme="dark"]  { border-right: 1px solid rgba(255,255,255,0.06); }
+    .stage-tag {
+      font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--color-text-muted); margin: 0 0 30px;
+    }
+    .col { max-width: 380px; }
+
+    /* ── Demo 1: real rail reproduction (identity + bio + tagline + location) */
+    .demo-name { font-size: 16px; line-height: var(--leading-normal); font-weight: 700; letter-spacing: var(--tracking-snug); margin: 0; }
+    .demo-name .role { color: var(--color-primary); }
+    .demo-bio { font-size: 14px; line-height: var(--leading-body); margin-top: 22px; max-width: 34ch; }
+    .demo-tagline { font-size: 14px; line-height: var(--leading-body); margin-top: 22px; }
+    .demo-tagline em { font-style: normal; font-weight: 400; }
+    .demo-location { font-size: 14px; font-weight: 400; color: var(--color-text); margin-top: 22px; }
+
+    .demo-divider { border: 0; border-top: 1px dashed var(--color-border); margin: 40px 0; }
+    .demo-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-subtle); margin: 0 0 12px; }
+
+    /* ── Demo 2: inline within a body paragraph (case-study voice) */
+    .demo-para { font-size: 15px; line-height: 1.65; color: var(--color-text); margin: 0; }
+
+    /* ── Demo 3: small label context (project-card scale) */
+    .demo-chip-row { display: flex; align-items: baseline; gap: 8px; margin-top: 4px; }
+    .demo-chip-title { font-size: 15px; font-weight: 600; color: var(--color-text); }
+    .demo-chip-meta { font-size: 12.5px; color: var(--color-text-muted); }
+
+    @media (max-width: 900px) {
+      .board { grid-template-columns: 1fr; }
+      .stage { min-height: 0; }
+    }
+
+    /* ── THE TREATMENTS — this is what we're comparing ──────────────
+       All three key off .b-tt-anchor, the class tooltip.js already adds
+       to every [data-tooltip] trigger — zero new markup either way. */
+    .board {
+      --a-offset: 3px;
+      --a-thickness: 1px;
+      --b-rest: var(--color-text-muted);
+      --c-size: 4px;
+      --c-gap: 6px;
+    }
+
+    /* A — dotted underline, same mechanics as the site's real <a> style,
+       dotted instead of solid so it reads as "reveals info" not "navigates". */
+    .board[data-treatment="a"] .b-tt-anchor {
+      text-decoration: underline dotted;
+      text-decoration-color: var(--color-border);
+      text-underline-offset: var(--a-offset);
+      text-decoration-thickness: var(--a-thickness);
+      transition: text-decoration-color 120ms ease;
+    }
+    .board[data-treatment="a"] .b-tt-anchor:hover,
+    .board[data-treatment="a"] .b-tt-anchor:focus-visible {
+      text-decoration-color: var(--color-primary);
+    }
+
+    /* B — color-only: muted at rest, full text color on hover. */
+    .board[data-treatment="b"] .b-tt-anchor {
+      color: var(--b-rest);
+      transition: color 120ms ease;
+    }
+    .board[data-treatment="b"] .b-tt-anchor:hover,
+    .board[data-treatment="b"] .b-tt-anchor:focus-visible {
+      color: var(--color-text);
+    }
+
+    /* C — small trailing dot after the trigger text. */
+    .board[data-treatment="c"] .b-tt-anchor::after {
+      content: '';
+      display: inline-block;
+      width: var(--c-size); height: var(--c-size);
+      border-radius: 50%;
+      background: var(--color-text-subtle);
+      margin-left: var(--c-gap);
+      vertical-align: super;
+      transition: background 120ms ease;
+    }
+    .board[data-treatment="c"] .b-tt-anchor:hover::after,
+    .board[data-treatment="c"] .b-tt-anchor:focus-visible::after {
+      background: var(--color-primary);
+    }
+
+    /* Optional cursor toggle — independent of treatment. */
+    .board[data-cursor="help"] .b-tt-anchor { cursor: help; }
+  </style>
+</head>
+
+<body>
+  <div class="bar">
+    <div class="group">
+      <span class="glabel">Treatment</span>
+      <div class="seg" id="seg">
+        <button data-t="current" aria-pressed="true">Current · none</button>
+        <button data-t="a">A · Dotted underline</button>
+        <button data-t="b">B · Muted color</button>
+        <button data-t="c">C · Trailing dot</button>
+      </div>
+    </div>
+
+    <div class="group dials off" id="dials-a">
+      <span class="glabel">A</span>
+      <div class="dial">
+        <div class="row"><label>Offset</label><output id="o-off">3px</output></div>
+        <input type="range" id="d-off" min="1" max="6" step="0.5" value="3" />
+      </div>
+      <div class="dial">
+        <div class="row"><label>Thickness</label><output id="o-thk">1px</output></div>
+        <input type="range" id="d-thk" min="0.5" max="2.5" step="0.25" value="1" />
+      </div>
+    </div>
+
+    <div class="group dials off" id="dials-c">
+      <span class="glabel">C</span>
+      <div class="dial">
+        <div class="row"><label>Dot size</label><output id="o-size">4px</output></div>
+        <input type="range" id="d-size" min="2" max="8" step="1" value="4" />
+      </div>
+      <div class="dial">
+        <div class="row"><label>Gap</label><output id="o-gap">6px</output></div>
+        <input type="range" id="d-gap" min="2" max="12" step="1" value="6" />
+      </div>
+    </div>
+
+    <label class="check">
+      <input type="checkbox" id="cursor-help" />
+      cursor: help
+    </label>
+
+    <button class="copybtn" id="copy">Copy CSS</button>
+  </div>
+
+  <p class="note">
+    Hover/focus any underlined, muted, or dotted phrase below — the tooltip pill is the
+    <b>real</b> <code>components/tooltip.js</code>, unmodified. Only the affordance
+    (what signals "this is hoverable" before you touch it) is being compared. All three
+    key off <code>.b-tt-anchor</code>, the class the script already adds to every
+    <code>[data-tooltip]</code> trigger, so whichever wins needs no new markup.
+  </p>
+
+  <div class="board" id="board" data-treatment="current" data-cursor="">
+    <!-- DARK stage -->
+    <section class="stage" data-theme="dark">
+      <p class="stage-tag">Dark mode · #121212</p>
+      <div class="col">
+        <p class="demo-name">Aditya Gujaran<br /><span class="role">Product designer</span></p>
+        <p class="demo-bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p>
+        <p class="demo-tagline">the <em data-highlight>why behind the what</em>,<br />has never been more important</p>
+        <p class="demo-location"><span data-tooltip="PT national · open to relocation">Based in Lisbon</span></p>
+
+        <hr class="demo-divider" />
+        <p class="demo-label">Inline in a case-study paragraph</p>
+        <p class="demo-para">Across three overlapping projects the team leaned on <span data-tooltip="Async handoffs across GMT, CET, and PST — no daily standup">a loosely synchronous workflow</span> to keep design and engineering moving without a daily standup.</p>
+
+        <hr class="demo-divider" />
+        <p class="demo-label">Small label, project-card scale</p>
+        <div class="demo-chip-row">
+          <span class="demo-chip-title">TRQ · DAD</span>
+          <span class="demo-chip-meta">Lead designer <span data-tooltip="Sole designer on a 4-person cross-functional pod">(solo)</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIGHT stage -->
+    <section class="stage" data-theme="light">
+      <p class="stage-tag">Light mode · #FFF3E8</p>
+      <div class="col">
+        <p class="demo-name">Aditya Gujaran<br /><span class="role">Product designer</span></p>
+        <p class="demo-bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p>
+        <p class="demo-tagline">the <em data-highlight>why behind the what</em>,<br />has never been more important</p>
+        <p class="demo-location"><span data-tooltip="PT national · open to relocation">Based in Lisbon</span></p>
+
+        <hr class="demo-divider" />
+        <p class="demo-label">Inline in a case-study paragraph</p>
+        <p class="demo-para">Across three overlapping projects the team leaned on <span data-tooltip="Async handoffs across GMT, CET, and PST — no daily standup">a loosely synchronous workflow</span> to keep design and engineering moving without a daily standup.</p>
+
+        <hr class="demo-divider" />
+        <p class="demo-label">Small label, project-card scale</p>
+        <div class="demo-chip-row">
+          <span class="demo-chip-title">TRQ · DAD</span>
+          <span class="demo-chip-meta">Lead designer <span data-tooltip="Sole designer on a 4-person cross-functional pod">(solo)</span></span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="../components/text_highlight.js"></script>
+  <script src="../components/tooltip.js"></script>
+  <script>
+    var board   = document.getElementById('board');
+    var seg     = document.getElementById('seg');
+    var dialsA  = document.getElementById('dials-a');
+    var dialsC  = document.getElementById('dials-c');
+    var cursorCb = document.getElementById('cursor-help');
+
+    seg.addEventListener('click', function (e) {
+      var btn = e.target.closest('button'); if (!btn) return;
+      [].forEach.call(seg.querySelectorAll('button'), function (b) {
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      var t = btn.dataset.t;
+      board.setAttribute('data-treatment', t);
+      dialsA.classList.toggle('off', t !== 'a');
+      dialsC.classList.toggle('off', t !== 'c');
+    });
+
+    cursorCb.addEventListener('change', function () {
+      board.setAttribute('data-cursor', cursorCb.checked ? 'help' : '');
+    });
+
+    function bind(id, out, fmt, cssVar) {
+      var el = document.getElementById(id), o = document.getElementById(out);
+      el.addEventListener('input', function () {
+        var v = parseFloat(el.value);
+        o.textContent = fmt(v);
+        board.style.setProperty(cssVar, el.value + 'px');
+      });
+    }
+    bind('d-off',  'o-off',  function (v) { return v + 'px'; }, '--a-offset');
+    bind('d-thk',  'o-thk',  function (v) { return v + 'px'; }, '--a-thickness');
+    bind('d-size', 'o-size', function (v) { return v + 'px'; }, '--c-size');
+    bind('d-gap',  'o-gap',  function (v) { return v + 'px'; }, '--c-gap');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      var t = board.getAttribute('data-treatment');
+      var cursor = cursorCb.checked;
+      var css;
+      if (t === 'a') {
+        var off = getComputedStyle(board).getPropertyValue('--a-offset').trim();
+        var thk = getComputedStyle(board).getPropertyValue('--a-thickness').trim();
+        css =
+'/* Option A — dotted underline. Add to the injected stylesheet in components/tooltip.js,\n' +
+'   next to the existing .b-tt-anchor rule: */\n' +
+'.b-tt-anchor {\n' +
+'  text-decoration: underline dotted;\n' +
+'  text-decoration-color: var(--color-border);\n' +
+'  text-underline-offset: ' + off + ';\n' +
+'  text-decoration-thickness: ' + thk + ';\n' +
+'  transition: text-decoration-color 120ms ease;\n' +
+'}\n' +
+'.b-tt-anchor:hover, .b-tt-anchor:focus-visible {\n' +
+'  text-decoration-color: var(--color-primary);\n' +
+'}' +
+(cursor ? '\n.b-tt-anchor { cursor: help; }' : '');
+      } else if (t === 'b') {
+        css =
+'/* Option B — muted color. Add to components/tooltip.js: */\n' +
+'.b-tt-anchor {\n' +
+'  color: var(--color-text-muted);\n' +
+'  transition: color 120ms ease;\n' +
+'}\n' +
+'.b-tt-anchor:hover, .b-tt-anchor:focus-visible {\n' +
+'  color: var(--color-text);\n' +
+'}' +
+(cursor ? '\n.b-tt-anchor { cursor: help; }' : '');
+      } else if (t === 'c') {
+        var size = getComputedStyle(board).getPropertyValue('--c-size').trim();
+        var gap  = getComputedStyle(board).getPropertyValue('--c-gap').trim();
+        css =
+'/* Option C — trailing dot. Add to components/tooltip.js: */\n' +
+'.b-tt-anchor::after {\n' +
+'  content: "";\n' +
+'  display: inline-block;\n' +
+'  width: ' + size + '; height: ' + size + ';\n' +
+'  border-radius: 50%;\n' +
+'  background: var(--color-text-subtle);\n' +
+'  margin-left: ' + gap + ';\n' +
+'  vertical-align: super;\n' +
+'  transition: background 120ms ease;\n' +
+'}\n' +
+'.b-tt-anchor:hover::after, .b-tt-anchor:focus-visible::after {\n' +
+'  background: var(--color-primary);\n' +
+'}' +
+(cursor ? '\n.b-tt-anchor { cursor: help; }' : '');
+      } else {
+        css = '/* "Current" is the existing shipped behaviour — no affordance. Pick A, B, or C. */';
+      }
+      navigator.clipboard.writeText(css).then(function () {
+        var b = document.getElementById('copy');
+        b.classList.add('ok'); b.textContent = 'Copied ✓';
+        setTimeout(function () { b.classList.remove('ok'); b.textContent = 'Copy CSS'; }, 1400);
+      });
+    });
+  </script>
+</body>
+</html>

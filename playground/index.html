@@ -70,6 +70,22 @@
     <div class="list">
 
       <!-- Newest first -->
+      <a class="card" href="hover-affordance.html">
+        <div class="card-top">
+          <p class="card-title">Tooltip hover affordance <span class="card-arrow">→</span></p>
+          <span class="card-date">2026-08-04</span>
+        </div>
+        <p class="card-desc">
+          "Based in Lisbon" uses <b>[data-tooltip]</b> but has zero visual cue that it's
+          hoverable. Three lightweight affordances compared live (dark + light, three
+          contexts: rail location, inline paragraph, small label): <b>A — dotted underline</b>
+          (same mechanics as the site's real link underline, dotted instead of solid),
+          <b>B — muted color</b>, <b>C — trailing dot</b>. All key off <b>.b-tt-anchor</b>,
+          the class <b>tooltip.js</b> already adds to every trigger, so whichever wins
+          needs zero new markup — just a few CSS rules baked into the component.
+        </p>
+      </a>
+
       <a class="card" href="text-highlight-variants.html">
         <div class="card-top">
           <p class="card-title">Text highlighter — end-cap treatments <span class="card-arrow">→</span></p>
