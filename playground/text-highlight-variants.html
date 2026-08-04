@@ -311,22 +311,30 @@
               'C99,22.6 63,21.5 40,22.3 C28,22.6 18,22 18,22 ' +
               'C8,22 0,18 0,12.5 C0,7 8,3 18,3 Z';
 
-    // G — clamped ends: a plain flat wavy middle (no taper baked in) plus two
-    // fixed-aspect-ratio taper overlays (see .hl__taper-fixed) pinned to each
-    // end, re-using one taper shape (mirrored for the right side).
-    var G_MID_D   = 'M0,3 C25,2.3 60,3.4 78,2.7 C90,2.4 101,2.8 101,3 L101,22 ' +
-                     'C90,22.6 60,21.5 40,22.3 C25,22.6 0,22 0,22 Z';
-    var G_TAPER_D = 'M18,3 C8,3 0,7 0,12.5 C0,18 8,22 18,22 L18,3 Z';
+    // G/H share this middle body: fixed-ends structural approach (never
+    // stretches — see .hl__taper-fixed), revised v2 after the first pass read
+    // as too clean/"sanitary." The wobble is now irregular and asymmetric
+    // top-vs-bottom (not a repeating mirrored wave) to read as hand tremor
+    // rather than a vector squiggle.
+    var GH_MID_D = 'M0,4 C10,2.2 20,3.8 28,2.6 C40,3.9 55,2.1 68,3.3 C80,2.5 92,3.7 101,3 ' +
+                   'L101,21.5 C88,23 75,21 63,22.8 C50,21.3 38,23.2 25,21.6 C15,22.7 6,21.2 0,22 Z';
 
-    // H — hand-drawn parallelogram: top and bottom edges are shifted by the
-    // same constant offset (a true skew, not a mirrored taper), so it reads
-    // as one confident stroke drawn at a steady angle. Skew kept to ~5% of
-    // the viewBox width so the diagonal stays inside the existing 0.22em
-    // inset instead of cutting across real glyphs on long phrases.
-    var H_D = 'M8,3.6 C32,2.4 62,3.6 88,2.7 C104,2.2 120,2.8 132.5,3.6 ' +
-              'L136,4.6 L129.3,21.3 ' +
-              'C118,22.4 90,21.4 63,22.5 C42,23.3 20,22.1 4.7,21.4 ' +
-              'L0.7,20.3 L7,4.3 Z';
+    // G — rounded organic dab at each end: a blunt, slightly lopsided
+    // touchdown (left) and a softer, uneven lift-off (right) — not mirror
+    // copies of each other, since a real hand doesn't produce symmetric ends.
+    var G_L_D = 'M18,4 C10,3.2 3,4.6 1,9 C-0.4,13 0.6,17.2 4.2,20.4 C8,23.2 14,22.1 18,21.6 L18,4 Z';
+    var G_R_D = 'M0,3.7 C7,3 13,4.3 15.6,7.4 C18,10.2 17.6,15.4 15.2,18.6 C12.4,22.3 6,23 0,21.4 L0,3.7 Z';
+
+    // H — chisel-tip flick: same clamped-end structure as G, but each tip has
+    // a couple of short straight facets (what a flat chisel nib actually
+    // leaves) instead of a continuous curve — a hint of the angled, dragged
+    // quality the parallelogram was reaching for, without a whole-shape skew
+    // and without ever growing past its fixed size, so it can't cut into
+    // glyphs on long phrases the way the v1 parallelogram did.
+    var H_L_D = 'M18,3.4 C12,2.9 7,3.4 4,5.2 L1.3,8.7 L1.6,13.4 L1,17.8 ' +
+                'C3.4,20.7 10,22 18,21.6 L18,3.4 Z';
+    var H_R_D = 'M0,3.9 C6,3.3 11.5,3.9 14.5,5.8 L17,8.6 L16.4,12.8 L17.6,16.5 ' +
+                'C14.8,20 8,22.2 0,21.6 L0,3.9 Z';
 
     var VARIANTS = [
       {
@@ -366,13 +374,13 @@
       },
       {
         key: 'g',
-        title: 'G — Clamped ends (structural fix, taper version of E)',
-        desc: 'Same principle as E, applied to the taper instead of the cap: the two ends are separate fixed-aspect-ratio overlays (sized off line-height, never off phrase width) and the middle is a plain flat stretchy fill. The most bulletproof against distortion — the ends are pixel-identical regardless of phrase length. Trade-off: on long phrases the fixed taper is such a small fraction of the total width that it barely reads anymore; the mark starts to look like a plain rounded rectangle.'
+        title: 'G — Clamped ends, rounded dab (structural fix, v2)',
+        desc: 'Same principle as E, applied to the taper instead of the cap: the two ends are separate fixed-aspect-ratio overlays (sized off line-height, never off phrase width) and the middle is a plain flat stretchy fill — bulletproof against distortion at any phrase length. v2: the first pass used a clean quarter-ellipse at both ends and read as too tidy/vector-perfect. This one uses an uneven, slightly lopsided "dab" — and, importantly, the left and right ends are no longer mirror copies of each other, since a real hand never produces two identical ends. The middle\'s wobble is now irregular too (no repeating wave).'
       },
       {
         key: 'h',
-        title: 'H — Hand-drawn parallelogram',
-        desc: 'Different direction, not a patch on B2: a true parallelogram lean — top and bottom edges shifted by the same constant offset, like a marker dragged across the page at a steady angle, italic-style. Reads as one confident, intentional stroke instead of a shape trying to hide its own seams. The skew is kept small (~5% of width) so it stays inside the existing 0.22em inset and never cuts into real glyphs, even on long phrases.'
+        title: 'H — Clamped ends, chisel-tip flick (v2, replaces the parallelogram)',
+        desc: 'The v1 "true parallelogram" (whole shape skewed like italics) is gone — that math was wrong on two counts: the skew was steep enough to read as a digital effect, not a hand stroke, and because it was proportional to phrase width, on long phrases it grew enough to cut across the last couple of letters. This v2 keeps H\'s answer to "what does an actual highlighter stroke look like" but rebuilds it on G\'s clamped-end structure: fixed-size overlays that can\'t ever stretch, each with a couple of short straight facets (what a flat chisel nib leaves) instead of a smooth curve — enough to hint at an angled, dragged stroke without the whole shape leaning, and without any risk of touching real glyphs.'
       }
     ];
 
@@ -455,19 +463,25 @@
         case 'g':
           return (
             '<svg class="hl__ink" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 101 25">' +
-              '<path class="hl__base" d="' + G_MID_D + '"/>' +
+              '<path class="hl__base" d="' + GH_MID_D + '"/>' +
             '</svg>' +
             '<svg class="hl__taper-fixed is-left" aria-hidden="true" viewBox="0 0 18 25" preserveAspectRatio="xMinYMid meet">' +
-              '<path class="hl__base" d="' + G_TAPER_D + '"/>' +
+              '<path class="hl__base" d="' + G_L_D + '"/>' +
             '</svg>' +
             '<svg class="hl__taper-fixed is-right" aria-hidden="true" viewBox="0 0 18 25" preserveAspectRatio="xMaxYMid meet">' +
-              '<g transform="translate(18,0) scale(-1,1)"><path class="hl__base" d="' + G_TAPER_D + '"/></g>' +
+              '<path class="hl__base" d="' + G_R_D + '"/>' +
             '</svg>'
           );
         case 'h':
           return (
-            '<svg class="hl__ink" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 137 25">' +
-              '<path class="hl__base" d="' + H_D + '"/>' +
+            '<svg class="hl__ink" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 101 25">' +
+              '<path class="hl__base" d="' + GH_MID_D + '"/>' +
+            '</svg>' +
+            '<svg class="hl__taper-fixed is-left" aria-hidden="true" viewBox="0 0 18 25" preserveAspectRatio="xMinYMid meet">' +
+              '<path class="hl__base" d="' + H_L_D + '"/>' +
+            '</svg>' +
+            '<svg class="hl__taper-fixed is-right" aria-hidden="true" viewBox="0 0 18 25" preserveAspectRatio="xMaxYMid meet">' +
+              '<path class="hl__base" d="' + H_R_D + '"/>' +
             '</svg>'
           );
       }
