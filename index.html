@@ -209,62 +209,6 @@
     }
     .rail-nav a:hover { color: var(--color-primary); }
 
-    /* Resume — reads as a third nav item; PDF/MD fly out on hover */
-    .rail-resume {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      width: fit-content;
-      margin-top: 2px;   /* same rhythm as the WORK/ABOUT list above */
-      flex-shrink: 0;
-    }
-    .rail-resume .rr-label {
-      font-size: 18px;
-      letter-spacing: var(--tracking-wide);
-      text-transform: uppercase;
-      color: var(--color-text);
-      cursor: default;
-      transition: color 240ms var(--ease);
-    }
-    .rail-resume:hover .rr-label { color: var(--color-primary); }
-
-    /* Fly-out — absolute so it reserves no space until revealed.
-       Sits flush against the label's right edge (padding, not margin,
-       makes the gap) so there's no dead zone to lose the hover in. */
-    .rr-flyout {
-      position: absolute;
-      left: 100%;
-      top: 50%;
-      transform: translateY(-50%);
-      display: inline-flex;
-      align-items: center;
-      gap: var(--sp-4);
-      padding-left: var(--sp-4);
-      white-space: nowrap;
-    }
-    .rail-resume .rr-link {
-      display: inline-flex;
-      align-items: center;
-      font-size: var(--text-base);
-      letter-spacing: var(--tracking-wide);
-      color: var(--color-text-muted);
-      opacity: 0;
-      transform: translateX(-8px);
-      pointer-events: none;
-      transition: opacity 260ms var(--ease), transform 260ms var(--ease), color 240ms var(--ease);
-    }
-    .rail-resume:hover .rr-link { opacity: 1; transform: none; pointer-events: auto; }
-    .rail-resume:hover .rr-link:nth-of-type(2) { transition-delay: 70ms; }   /* MD trails PDF */
-    .rail-resume .rr-link:hover { color: var(--color-primary); }
-    .rail-resume .rr-icon { font-size: 16px; }
-
-    /* Touch / no-hover devices can't reveal a flyout — keep the
-       resume links laid out and visible so they stay reachable. */
-    @media (hover: none) {
-      .rr-flyout { position: static; transform: none; }
-      .rail-resume .rr-link { opacity: 1; transform: none; pointer-events: auto; }
-    }
-
     /* ── RIGHT COLUMN ──────────────────────── */
     .content {
       min-width: 0;   /* let the grid inside shrink instead of overflowing */
@@ -443,28 +387,6 @@
       }
       .rail-nav a { font-size: var(--text-sm); letter-spacing: var(--tracking-wide); }
 
-      /* WORK/ABOUT are now the fixed top bar (out of flow), so the nav's
-         top margin no longer spaces RESUME away from the intro. Restore
-         that gap so RESUME isn't glued under "Based in Lisbon" — matching
-         the spacing it has when all three links sit in the rail.
-         There's no hover to fly the links out here, so decompose the row
-         into a stacked list: RESUME heading, then PDF and MD as their own
-         tappable options. */
-      .rail-resume {
-        margin-top: var(--sp-8);
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .rail-resume .rr-flyout {
-        position: static;
-        transform: none;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--sp-3);
-        padding-left: 0;
-        margin-top: var(--sp-3);
-      }
-      .rail-resume .rr-link { opacity: 1; transform: none; pointer-events: auto; }
     }
 
     /* ─────────────────────────────────────────
@@ -694,14 +616,14 @@
     </section>
 
     <!-- ── ABOUT ──────────────────────────────── -->
-    <section class="about" id="about" data-section="about">
+    <section class="about" id="about">
       <h2 class="about-heading">I am here to design and define.</h2>
       <p class="about-body">I work at the overlap of product strategy, user research, interaction design, and visual craft — with a particular fondness for the 0→1 problem, the moment before the product exists.</p>
       <p class="about-body">I believe good design is argued for, not just executed. The best outcomes come from designers who can speak business and researchers who can speak design.</p>
     </section>
 
     <!-- ── RESUME ─────────────────────────────── -->
-    <section class="resume" id="resume" data-section="resume">
+    <section class="resume" id="resume">
       <p class="resume-bio">I am a business oriented product designer and digital storyteller.</p>
       <p class="resume-bio">I have 10+ years of experience across B2B and B2C, in startups and consulting.</p>
 
@@ -742,7 +664,7 @@
           <div class="resume-dates">2015 – 2013</div>
           <div class="resume-content">
             <div class="resume-role">Experience designer at Novabase</div>
-            <p class="resume-desc">Projects in telecom, Urban mobilty</p>
+            <p class="resume-desc">Projects in telecom, Urban mobility</p>
           </div>
         </li>
         <li class="resume-item">
