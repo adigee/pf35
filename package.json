@@ -2,5 +2,8 @@
   "devDependencies": {
     "@playwright/browser-chromium": "^1.62.0",
     "playwright-core": "^1.62.0"
+  },
+  "allowScripts": {
+    "@playwright/browser-chromium@1.62.0": true
   }
 }

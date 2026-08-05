@@ -368,13 +368,15 @@
 
     /* ── THEME TOGGLE (fixed, bottom-right) ── */
     /* ─────────────────────────────────────────
-       RESPONSIVE — phone (≤ 720px)
+       RESPONSIVE — stacked rail (≤ 1023px)
        Rail collapses to a top header; nav persists as a
-       fixed translucent top bar.
+       fixed translucent top bar. Runs right up to the
+       1024px desktop switch so there's no gap viewport
+       where the rail is stacked but the nav isn't fixed.
     ───────────────────────────────────────── */
-    @media (max-width: 720px) {
+    @media (max-width: 1023px) {
       /* Rail already stacks on top via the base layout;
-         just tighten it for phones. */
+         just tighten it for phones/tablets. */
       .rail-avatar { width: 72px; height: 72px; }
       .rail-context { flex: none; min-height: 0; margin-top: var(--sp-5); }
       .rail-intro .bio, .rail-intro .tagline, .rail-intro .location { margin-top: var(--sp-5); }
