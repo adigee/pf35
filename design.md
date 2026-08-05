@@ -227,8 +227,8 @@ These classes encapsulate the full typographic treatment. Use these — do not r
 | `.b-title` | `--text-2xl` | 700 | `--leading-snug` | `--tracking-snug` | — | Panel / large headings | H2 mid-page section titles in `decision-module.html` only |
 | `.b-title--xl` | `--text-4xl` | 700 | `--leading-tight` | `--tracking-tight` | — | Hero title; case-study title (single-column) | Defined in `style.css`, not currently used on any page |
 | `.b-title--article` | `clamp(2.25→3.25rem)` | 700 | `--leading-tight` | `--tracking-snug` | — | Case-study hero title (two-column, responsive) | Case-study hero H1, all case studies (`trq-dad.html`, `lockers-reducing-cancellation.html`, `decision-module.html`) and the shared template |
-| `.b-section-header` | `--text-lg` | 700 | `--leading-normal` | — | — | Long-form section heading | Case-study section headings, all case studies; also the case-study lock/gate modal title (`components/case-study.js`) |
-| `.b-section-subheader` | `--text-base` | 600 | `--leading-body` | — | — | Sub-heading within a section | Defined in `style.css`, not currently used on any page |
+| `.b-section-header` | `--text-lg` | 700 | `--leading-normal` | — | — | Long-form section heading | Case-study section headings, all case studies; also the case-study lock/gate modal title (`components/case-study.js`); homepage intro headline in `index.html` |
+| `.b-section-subheader` | `--text-base` | 600 | `--leading-body` | — | — | Sub-heading within a section | Homepage intro subheadline in `index.html`; section sub-headings in `decision-module.html` (as `<h3>`) |
 | `.b-body` | `--text-base` | 400 | `--leading-body` | — | — | Max-width 62ch | Case-study body paragraphs, all case studies |
 | `.b-body-bold` | `--text-base` | 600 | `--leading-loose` | — | — | Emphasis within body | Defined in `style.css`, not currently used on any page |
 | `.b-body-caption` | `--text-sm` | 500 | `--leading-normal` | — | — | Captions | Stat-block descriptions (`.cs-stat-desc`) in `trq-dad.html` and `decision-module.html` |

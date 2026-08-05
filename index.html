@@ -91,6 +91,7 @@
       .rail-intro .bio { max-width: 34ch; }   /* readable measure in the narrow rail */
     }
 
+
     /* Persistent identity block — avatar + name */
     .rail-identity { flex-shrink: 0; }
     .rail-avatar-link {
@@ -191,6 +192,26 @@
       margin-top: var(--sp-8);
     }
 
+    /* ── RAIL CONTEXT REVEAL ────────────────
+       At the top of the page the intro text lives in the right-column
+       overview and the rail shows only identity + nav (a blank middle).
+       Once the overview scrolls up past the reveal threshold (approaching
+       the first project) the same text pops into the rail, so it stays
+       reachable while the user is browsing the work. Driven by the
+       rail--context-visible class toggled in the scroll script below;
+       this CSS is the no-JS fallback (always visible). */
+    .rail-context {
+      transition: opacity 500ms var(--ease), transform 500ms var(--ease);
+    }
+    .rail:not(.rail--context-visible) .rail-context {
+      opacity: 0;
+      transform: translateY(18px);
+      pointer-events: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rail-context { transition: none; }
+    }
+
     /* ── NAV (rail bottom) ─────────────────── */
     .rail-nav {
       display: flex;
@@ -216,31 +237,21 @@
 
     /* Overview grid — flows from the top, like Julie's */
     .overview { width: 100%; }
-    /* Overview placeholder — width-matched to the feature cards below
-       (height-driven frame) so everything lines up as one column. */
-    .overview p {
+    /* ── INTRO hero ───────────────────────────
+       Built from the design-system text classes (design.md §3):
+       .b-section-header headline → .b-section-subheader subheadline.
+       Type, weight, colour, and margins come from the classes; these
+       rules carry layout + spacing only. Width is matched to the
+       feature cards below (height-driven frame) so the column lines
+       up. The headline's own margin-bottom sets the gap. */
+    .overview-headline,
+    .overview-subhead {
       width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
-      margin: 0 auto;
-      color: var(--color-text-muted);
+      margin-inline: auto;
+      text-align: center;
     }
-    .overview .overview-bio {
-      font-size: var(--text-lg);
-      line-height: var(--leading-body);
-    }
-    .overview .overview-tagline {
-      font-size: var(--text-lg);
-      line-height: var(--leading-body);
-      margin-top: var(--sp-5);
-      color: var(--color-text);
-    }
-    .overview .overview-location {
-      font-size: 14px;
-      margin-top: var(--sp-5);
-      color: var(--color-text);
-    }
-    .overview .overview-location span {
-      color: var(--color-text-muted);
-    }
+    .overview-subhead { margin-top: 0; }
+    .overview-subhead em { font-style: normal; }   /* [data-highlight] phrase — no italics */
     /* Nudge the grid down from the top edge so it doesn't hug
        the very top of the page (desktop only — on mobile the
        rail stacks above it and provides its own spacing). */
@@ -555,7 +566,7 @@
 
     <div class="rail-context">
       <div class="rail-intro">
-        <p class="bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p>
+        <!-- <p class="bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p> -->
         <p class="tagline">the <em data-highlight>why behind the what</em>,<br>has never been more important</p>
         <p class="location"><span data-tooltip="PT national · open to relocation">Based in Lisbon</span></p>
       </div>
@@ -571,11 +582,12 @@
   <!-- ── RIGHT COLUMN ──────────────────────── -->
   <main class="content">
 
-    <!-- Overview text (placeholder) -->
+    <!-- Intro — design-system hero (design.md §3): .b-section-header
+         headline → .b-section-subheader subheadline. The subhead's phrase
+         is highlit and auto-sweeps in 200ms after the page shows. -->
     <section class="overview" id="overview">
-      <p class="overview-bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p>
-      <p class="overview-tagline">the why behind the what,<br>has never been more important</p>
-      <p class="overview-location">Based in Lisbon <span>PT national · open to relocation</span></p>
+      <h1 class="b-section-header overview-headline">Builder with a design practice that focuses on rigorous, rapid UX research to enable high velocity product delivery.</h1>
+      <p class="b-section-subheader overview-subhead">the <em data-highlight data-highlight-auto="200">why behind the what</em>,<br>has never been more important</p>
     </section>
 
     <!-- Feature sequence -->
@@ -757,6 +769,37 @@
       }, { rootMargin: '-25% 0px -55% 0px', threshold: 0 });
 
       sections.forEach(function (s) { io.observe(s.el); });
+    })();
+  </script>
+
+  <!-- Rail intro-text reveal: while the overview (intro) section fills the
+       viewport the rail stays clean (photo, name, nav). Once the overview has
+       scrolled up past a threshold — on the way to the first project — the
+       same intro text pops into the rail and stays for the rest of the page.
+       Desktop-only: below 1024px the rail isn't sticky, so the text stays put. -->
+  <script>
+    (function () {
+      var mq = window.matchMedia('(min-width: 1024px)');
+      var rail = document.getElementById('rail');
+      var overview = document.getElementById('overview');
+      if (!mq || !rail || !overview) return;
+
+      var rafPending = false;
+      function update() {
+        rafPending = false;
+        var rect = overview.getBoundingClientRect();
+        // Reveal once ~40% of the intro section has scrolled past the top edge.
+        rail.classList.toggle('rail--context-visible', rect.top < -rect.height * 0.4);
+      }
+      function onScroll() {
+        if (!mq.matches) { rail.classList.remove('rail--context-visible'); return; }
+        if (rafPending) return;
+        rafPending = true;
+        requestAnimationFrame(update);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      onScroll();
     })();
   </script>
 
