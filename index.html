@@ -37,7 +37,7 @@
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
       --feature-media-h: 65vh;        /* thumbnail height (% of viewport) */
       --feature-media-ar: 4 / 3;  /* thumbnail frame: width / height */
-      --feature-align: center;        /* feature card alignment */
+      --feature-align: flex-start;        /* feature card alignment */
     }
 
     body {
@@ -247,8 +247,6 @@
     .overview-headline,
     .overview-subhead {
       width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
-      margin-inline: auto;
-      text-align: center;
     }
     .overview-subhead { margin-top: 0; }
     .overview-subhead em { font-style: normal; }   /* [data-highlight] phrase — no italics */
@@ -573,7 +571,7 @@
     </div>
 
     <nav class="rail-nav" aria-label="Section navigation">
-      <a href="#overview" data-section-link="overview">WORK</a>
+      <a href="#portfolio" data-section-link="portfolio">WORK</a>
       <a href="#about"    data-section-link="about">ABOUT</a>
       <a href="#resume"   data-section-link="resume">RESUME</a>
     </nav>
@@ -590,7 +588,9 @@
       <p class="b-section-subheader overview-subhead">the <em data-highlight data-highlight-auto="200">why behind the what</em>,<br>has never been more important</p>
     </section>
 
-    <!-- Feature sequence -->
+    <!-- Feature sequence — the portfolio. Its top edge is the WORK nav's
+         anchor: WORK only becomes selected once you've scrolled past here. -->
+    <section class="portfolio" id="portfolio">
     <section class="feature">
       <a class="feature-card" href="lockers-reducing-cancellation.html">
         <div class="fc-media">
@@ -626,6 +626,7 @@
         </div>
       </a>
     </section>
+    </section><!-- /.portfolio -->
 
     <!-- ── ABOUT ──────────────────────────────── -->
     <section class="about" id="about">
@@ -722,10 +723,12 @@
   <!-- Tooltip — lightweight, theme-adaptive tooltip primitive -->
   <script src="components/tooltip.js"></script>
 
-  <!-- Section scroll-spy — highlights the rail nav link whose
-       section is currently in view. Uses IntersectionObserver
-       with a top-biased rootMargin so the "active" section is
-       the one whose top has crossed ~25% of the viewport. -->
+  <!-- Section scroll-spy — highlights the rail nav link whose section has
+       scrolled up past the top edge of the viewport. A link only becomes
+       active once you've actually scrolled into its section, so nothing is
+       selected at the top of the page: WORK stays quiet until the portfolio
+       has scrolled past the threshold (the moment its top hits the viewport
+       top — the same spot clicking WORK jumps to). -->
   <script>
     (function () {
       var navLinks = document.querySelectorAll('.rail-nav a[data-section-link]');
@@ -739,36 +742,33 @@
       });
       if (!sections.length) return;
 
-      // Track which sections are currently intersecting.
-      var visible = new Set();
+      // A section is active once its top crosses the top edge of the
+      // viewport. The last (DOM order) section past the line wins, so
+      // scrolling into ABOUT hands the highlight over from WORK.
+      var LINE = 0;
+      var rafPending = false;
 
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (e.isIntersecting) visible.add(e.target.id);
-          else visible.delete(e.target.id);
-        });
-        // Pick the first visible section in DOM order, or fall back
-        // to the last one scrolled past (the closest one above the line).
+      function update() {
+        rafPending = false;
         var activeId = null;
         sections.forEach(function (s) {
-          if (visible.has(s.id)) {
-            if (!activeId) activeId = s.id;
-          }
+          if (s.el.getBoundingClientRect().top < LINE) activeId = s.id;
         });
-        if (!activeId) {
-          var pick = null;
-          sections.forEach(function (s) {
-            var top = s.el.getBoundingClientRect().top;
-            if (top < window.innerHeight * 0.25) pick = s.id;
-          });
-          activeId = pick;
-        }
         navLinks.forEach(function (link) {
           link.classList.toggle('is-active', link.getAttribute('data-section-link') === activeId);
         });
-      }, { rootMargin: '-25% 0px -55% 0px', threshold: 0 });
+      }
 
-      sections.forEach(function (s) { io.observe(s.el); });
+      function onScroll() {
+        if (rafPending) return;
+        rafPending = true;
+        requestAnimationFrame(update);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      window.addEventListener('load', onScroll);
+      update();
     })();
   </script>
 
