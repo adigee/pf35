@@ -32,6 +32,7 @@
 
     :root {
       --rail-w: 354px;
+      --rail-avatar-size: 100px;
       --page-pad: 40px;
       --page-max: 1440px;   /* whole layout (rail + grid) centers within this */
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -93,7 +94,19 @@
 
 
     /* Persistent identity block — avatar + name */
-    .rail-identity { flex-shrink: 0; }
+    .rail-identity {
+      flex-shrink: 0;
+      /* #top (the avatar's "back to top" target) sits var(--page-pad) into
+         the document via .home-shell's own padding. Without this, the
+         browser's native anchor-scroll brings #top flush with the viewport
+         top — scrolling var(--page-pad) further than a fresh page load
+         would. .rail is sticky so it visually absorbs that extra scroll and
+         looks unchanged, but .content isn't sticky and shifts up underneath
+         it, breaking the name/headline alignment. This tells the anchor
+         scroll to stop var(--page-pad) short, landing back at the same
+         scrollY: 0 resting state as a fresh load. */
+      scroll-margin-top: var(--page-pad);
+    }
     .rail-avatar-link {
       display: inline-block;
       line-height: 0;
@@ -109,7 +122,7 @@
     .rail-avatar {
       position: relative;
       display: block;
-      width: 100px; height: 100px;
+      width: var(--rail-avatar-size); height: var(--rail-avatar-size);
       transform-style: preserve-3d;
       transform: rotateY(0deg);
       transition: transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -250,11 +263,15 @@
     }
     .overview-subhead { margin-top: 0; }
     .overview-subhead em { font-style: normal; }   /* [data-highlight] phrase — no italics */
-    /* Nudge the grid down from the top edge so it doesn't hug
-       the very top of the page (desktop only — on mobile the
-       rail stacks above it and provides its own spacing). */
+    /* Nudge the grid down to bring the headline's cap-height into optical
+       alignment with the name (desktop only — on mobile the rail stacks
+       above it and provides its own spacing). Derived from the rail's own
+       stack — avatar height + the --sp-8 gap before .name, the same gap
+       token used for every other rail spacing (nav, context, tagline,
+       location) — rather than a pixel guess, so it stays correct if the
+       avatar size ever changes. */
     @media (min-width: 1024px) {
-      .overview { padding-top: 112px; }
+      .overview { padding-top: calc(var(--rail-avatar-size) + var(--sp-8)); }
     }
     /* Explicit responsive columns + minmax(0,1fr).
        The minmax(0,…) is the classic trick: it lets tracks
@@ -379,8 +396,15 @@
       /* Rail already stacks on top via the base layout;
          just tighten it for phones/tablets. */
       .rail-avatar { width: 72px; height: 72px; }
-      .rail-context { flex: none; min-height: 0; margin-top: var(--sp-5); }
-      .rail-intro .bio, .rail-intro .tagline, .rail-intro .location { margin-top: var(--sp-5); }
+      /* The reveal-on-scroll script only runs ≥1024px (see the script near
+         the closing body tag), so below that .rail-context sits permanently
+         in its hidden (opacity: 0) state. Left in flow, that invisible box
+         still reserves its full height — the "blank middle" that's meant to
+         separate identity from nav on desktop's sticky rail — which on
+         mobile (rail stacked, not sticky) shows up as a dead gap between the
+         name and the hero headline. Its text is already duplicated in the
+         .overview-subhead, so just take it out of flow here. */
+      .rail-context { display: none; }
 
       .feature { display: block; min-height: 0; padding: var(--sp-12) 0 0; }
       .fc-media { height: auto; width: 100%; aspect-ratio: 4 / 3; }   /* phones: size by width again */
