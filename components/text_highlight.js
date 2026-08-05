@@ -37,11 +37,26 @@
         'transition:clip-path 0.15s ease;}' +
       '.highlight__base{fill:rgb(var(--highlight-ink,172,160,232));transition:fill .25s ease;}' +
       '.highlight:hover .highlight__base{fill:color-mix(in srgb,rgb(var(--highlight-ink,172,160,232)) 90%,#000 10%);}' +
-      '.highlight__text{position:relative;z-index:1;color:var(--color-accent-on-accent);}' +
-      '.highlight.removing .highlight__ink{clip-path:inset(0 100% 0 0);transition:clip-path 0.12s ease;}' +
-      '.highlight.redrawing .highlight__ink{animation:highlight-sweep 0.45s cubic-bezier(0.22,1,0.36,1) forwards;}' +
+      /* --color-accent-on-accent is, by design, the same value as the page
+         background (it's meant to read only against the ink). So the text
+         colour has to be kept in sync with the ink's clip-path any time the
+         mark peels off or redraws — otherwise the text goes invisible
+         against the bare background instead of just losing its marker. */
+      '.highlight__text{position:relative;z-index:1;color:var(--color-accent-on-accent);' +
+        'transition:color 0.25s cubic-bezier(0.65,0,0.35,1);}' +
+      '.highlight.removing .highlight__ink{clip-path:inset(0 100% 0 0);transition:clip-path 0.25s cubic-bezier(0.65,0,0.35,1);}' +
+      '.highlight.removing .highlight__text{color:var(--color-text);}' +
+      '.highlight.redrawing .highlight__ink{animation:highlight-sweep 1.4s cubic-bezier(0.65,0,0.35,1) forwards;}' +
+      '.highlight.redrawing .highlight__text{animation:hl-text-in 1.4s cubic-bezier(0.65,0,0.35,1) forwards;}' +
+      /* On-load sweep (data-highlight-auto): the phrase loads in its normal
+         colour, then as the marker sweeps in the text animates into its
+         on-marker colour — so it ends pixel-identical to every other
+         highlight on the site (solid marker, accent-on-accent text). */
+      '.highlight.auto-sweep .highlight__ink{clip-path:inset(0 100% 0 0);transition:none;}' +
+      '.highlight.auto-sweep .highlight__text{color:var(--color-text);transition:none;}' +
+      '@keyframes hl-text-in{from{color:var(--color-text);}to{color:var(--color-accent-on-accent);}}' +
       '@keyframes highlight-sweep{0%{clip-path:inset(0 100% 0 0);}100%{clip-path:inset(0 0 0 0);}}' +
-      '@media (prefers-reduced-motion: reduce){.highlight__base{transition:none;}.highlight.redrawing .highlight__ink{animation:none;}}';
+      '@media (prefers-reduced-motion: reduce){.highlight__base{transition:none;}.highlight__text{transition:none;}.highlight.redrawing .highlight__ink{animation:none;}.highlight.redrawing .highlight__text{animation:none;}}';
     (document.head || document.documentElement).appendChild(style);
   }
 
@@ -93,6 +108,30 @@
         }, { once: true });
       }, { once: true });
     });
+
+    /* ── On-load sweep ──
+       Opt in with data-highlight-auto="<delay ms>" (default 200). The marker
+       is held hidden while the phrase loads in its normal colour; after the
+       delay the marker sweeps in (same motion as a click replay) and the
+       text animates into its on-marker colour in sync — ending identical to
+       every other highlight. Skipped under prefers-reduced-motion. */
+    var auto = el.getAttribute('data-highlight-auto');
+    if (auto !== null &&
+        window.matchMedia &&
+        !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var delay = parseInt(auto, 10);
+      if (isNaN(delay) || delay < 0) delay = 200;
+      el.classList.add('auto-sweep');
+      setTimeout(function () {
+        if (!el.classList.contains('auto-sweep')) return;
+        el.classList.add('redrawing');
+        var ink = el.querySelector('.highlight__ink');
+        if (ink) ink.addEventListener('animationend', function () {
+          el.classList.remove('redrawing');
+          el.classList.remove('auto-sweep');
+        }, { once: true });
+      }, delay);
+    }
   }
 
   function mount() {

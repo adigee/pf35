@@ -227,8 +227,8 @@ These classes encapsulate the full typographic treatment. Use these — do not r
 | `.b-title` | `--text-2xl` | 700 | `--leading-snug` | `--tracking-snug` | — | Panel / large headings | H2 mid-page section titles in `decision-module.html` only |
 | `.b-title--xl` | `--text-4xl` | 700 | `--leading-tight` | `--tracking-tight` | — | Hero title; case-study title (single-column) | Defined in `style.css`, not currently used on any page |
 | `.b-title--article` | `clamp(2.25→3.25rem)` | 700 | `--leading-tight` | `--tracking-snug` | — | Case-study hero title (two-column, responsive) | Case-study hero H1, all case studies (`trq-dad.html`, `lockers-reducing-cancellation.html`, `decision-module.html`) and the shared template |
-| `.b-section-header` | `--text-lg` | 700 | `--leading-normal` | — | — | Long-form section heading | Case-study section headings, all case studies; also the case-study lock/gate modal title (`components/case-study.js`) |
-| `.b-section-subheader` | `--text-base` | 600 | `--leading-body` | — | — | Sub-heading within a section | Defined in `style.css`, not currently used on any page |
+| `.b-section-header` | `--text-lg` | 700 | `--leading-normal` | — | — | Long-form section heading | Case-study section headings, all case studies; also the case-study lock/gate modal title (`components/case-study.js`); homepage intro headline in `index.html` |
+| `.b-section-subheader` | `--text-base` | 600 | `--leading-body` | — | — | Sub-heading within a section | Homepage intro subheadline in `index.html`; section sub-headings in `decision-module.html` (as `<h3>`) |
 | `.b-body` | `--text-base` | 400 | `--leading-body` | — | — | Max-width 62ch | Case-study body paragraphs, all case studies |
 | `.b-body-bold` | `--text-base` | 600 | `--leading-loose` | — | — | Emphasis within body | Defined in `style.css`, not currently used on any page |
 | `.b-body-caption` | `--text-sm` | 500 | `--leading-normal` | — | — | Captions | Stat-block descriptions (`.cs-stat-desc`) in `trq-dad.html` and `decision-module.html` |
@@ -416,6 +416,20 @@ When panels are hidden on mobile (`≤768px`), `.mobile-visual` cards replace th
 - `.mobile-visual--plain` — default background
 - `.mobile-visual--img` — image container with shadow
 
+### Case Studies — Reading Rhythm
+
+Case-study content uses a three-tier vertical rhythm inside `.cs-section`. The spacing matches the semantic weight of each transition, not a single uniform gap.
+
+| Transition | Token | Value | Role |
+|---|---|---|---|
+| paragraph → paragraph | `--sp-4` | 16px | continuation of prose |
+| list → next element | `--sp-6` | 24px | end of a related group |
+| section break (figure / callout / outcomes → next) | `--sp-16` | 64px | new section |
+
+Within `.cs-section`, the fallback is `margin-top: 16px` (`.cs-section > * + *`); the table above shows the overrides layered on top.
+
+**List (`cs-list`):** bullet lists are inline content, not structural blocks. They use `padding-left: var(--sp-6)` (24px) for the indent. The 24px trailing margin aligns with the list's own indent token and sits one tier above the paragraph rhythm, one tier below the section break.
+
 ---
 
 ## 8. Responsive Behavior
@@ -491,4 +505,4 @@ These rules are strict. They exist because this is a small, deliberate codebase 
 
 ---
 
-*Last updated: 2026-07-29*
+*Last updated: 2026-08-04*

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Highlighter — Timing Dial Lab</title>
+<style>
+  :root {
+    --color-bg: #121212;
+    --color-text: #F8F6EE;
+    --color-text-muted: rgba(248, 246, 238, 0.60);
+    --highlight-ink: 172, 160, 232;
+    --ink: #ACA0E8;
+    /* Live values driven by the dials; the real component ignores these,
+       so an override stylesheet below re-points its timings at them. */
+    --t-remove: 0.25s;
+    --t-redraw: 1.4s;
+    --t-curve: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3.5rem 1.5rem 4rem;
+  }
+
+  .page { width: 100%; max-width: 780px; }
+
+  /* ── Header ─────────────────────────── */
+  .eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75rem;
+  }
+  .lede {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 56ch;
+    margin-bottom: 2.5rem;
+  }
+  .lede code { color: var(--ink); font-size: 0.85em; }
+
+  /* ── Floating dial kit sidebar ──────── */
+  .lab {
+    position: fixed;
+    top: 1.25rem;
+    right: 1.25rem;
+    width: 224px;
+    background: #1B1B1F;
+    border: 1px solid rgba(248, 246, 238, 0.12);
+    border-radius: 14px;
+    padding: 1rem 1.1rem 1.15rem;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+    z-index: 50;
+  }
+  .lab__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.9rem;
+  }
+  .lab__title {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .lab__toggle {
+    appearance: none;
+    background: transparent;
+    border: 1px solid rgba(248, 246, 238, 0.2);
+    color: var(--color-text-muted);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 0.6rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .lab__toggle:hover { border-color: var(--ink); color: var(--ink); }
+
+  .lab.collapsed { cursor: pointer; }
+  .lab.collapsed .lab__body,
+  .lab.collapsed .lab__controls,
+  .lab.collapsed .lab__note { display: none; }
+
+  .dials {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem 0.6rem;
+    justify-items: center;
+    margin-bottom: 0.75rem;
+  }
+  .dial { display: flex; flex-direction: column; align-items: center; }
+
+  .knob { width: 92px; height: 92px; position: relative; cursor: grab; touch-action: none; }
+  .knob:active { cursor: grabbing; }
+
+  .knob__ring { position: absolute; inset: 0; }
+  .knob__body { position: absolute; inset: 6px; border-radius: 50%; }
+  .knob__pointer {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 2px;
+    height: 50%;
+    margin-left: -1px;
+    border-radius: 2px;
+    background: var(--ink);
+    transform-origin: 50% 100%;
+    box-shadow: 0 0 6px rgba(172, 160, 232, 0.45);
+  }
+  .knob__hub {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 50%;
+    background: #1B1B1F;
+    border: 2px solid rgba(172, 160, 232, 0.55);
+  }
+  .knob__readout {
+    margin-top: 0.3rem;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    min-width: 4ch;
+    text-align: center;
+  }
+  .knob__readout small { font-size: 0.65em; color: var(--color-text-muted); font-weight: 500; }
+  .knob__label {
+    margin-top: 0.2rem;
+    font-size: 0.5625rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+
+  .lab__controls { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .lab__curve {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin: 0.15rem 0 0.85rem;
+  }
+  .lab__curve .knob__label { margin-top: 0; }
+  .curve {
+    appearance: none;
+    width: 100%;
+    background: #121216;
+    color: var(--color-text);
+    border: 1px solid rgba(248, 246, 238, 0.2);
+    border-radius: 8px;
+    padding: 0.45rem 0.6rem;
+    font: inherit;
+    font-size: 0.72rem;
+    cursor: pointer;
+    background-image: linear-gradient(45deg, transparent 50%, var(--color-text-muted) 50%),
+                      linear-gradient(135deg, var(--color-text-muted) 50%, transparent 50%);
+    background-position: calc(100% - 14px) 55%, calc(100% - 9px) 55%;
+    background-size: 5px 5px;
+    background-repeat: no-repeat;
+  }
+  .curve:hover { border-color: rgba(172, 160, 232, 0.7); }
+  .curve:focus { outline: none; border-color: var(--ink); }
+  .curve option { background: #121216; color: var(--color-text); }
+
+  .btn {
+    appearance: none;
+    background: transparent;
+    color: var(--color-text);
+    border: 1px solid rgba(248, 246, 238, 0.22);
+    border-radius: 999px;
+    padding: 0.45rem 0.9rem;
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  }
+  .btn:hover { border-color: rgba(172, 160, 232, 0.7); color: var(--ink); }
+  .btn--primary { background: var(--ink); border-color: var(--ink); color: #121212; font-weight: 600; }
+  .btn--primary:hover { color: #121212; }
+
+  .lab__note {
+    margin-top: 0.8rem;
+    font-size: 0.625rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+  }
+  .lab__note code { color: var(--ink); }
+
+  /* ── Text panel ─────────────────────── */
+  .text-panel {
+    border: 1px solid rgba(248, 246, 238, 0.10);
+    border-radius: 14px;
+    padding: 2.75rem 2.5rem;
+  }
+  .text-panel__label {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 1.75rem;
+  }
+  .text-block {
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.75;
+    letter-spacing: -0.015em;
+  }
+  .text-block p + p { margin-top: 1.4rem; }
+  .text-block p { color: var(--color-text-muted); }
+  .text-block p strong { color: var(--color-text); font-weight: 700; }
+  .highlight { cursor: pointer; }
+
+  .hint {
+    margin-top: 2rem;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Before / after compare ─────────── */
+  .compare { margin-top: 2.75rem; }
+  .compare__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .compare__head .text-panel__label { margin-bottom: 0; }
+  .compare__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .compare__card {
+    border: 1px solid rgba(248, 246, 238, 0.10);
+    border-radius: 12px;
+    padding: 1.5rem 1.4rem;
+  }
+  /* "Before" freezes the shipped timings locally; "After" inherits the live dials. */
+  .compare-before { --t-remove: 0.25s; --t-redraw: 1.4s; --t-curve: cubic-bezier(0.65, 0, 0.35, 1); }
+  .compare__tag {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 1.1rem;
+  }
+  .compare__tag::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    align-self: center;
+    background: var(--color-text-muted);
+    flex: none;
+  }
+  .compare-after .compare__tag::before {
+    background: var(--ink);
+    box-shadow: 0 0 8px rgba(172, 160, 232, 0.6);
+  }
+  .compare__spec {
+    color: var(--color-text-muted);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .compare__phrase {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+  .compare__phrase strong { color: var(--color-text); }
+
+  @media (max-width: 760px) {
+    body { padding: 1rem 1rem 3rem; }
+    .lab {
+      position: static;
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto 1.75rem;
+    }
+    .lab.collapsed { width: 100%; }
+    .compare__grid { grid-template-columns: 1fr; }
+  }
+
+  /* Re-point the real component's timings at the dial values. */
+  .highlight__ink { transition: clip-path var(--t-remove) var(--t-curve) !important; }
+  .highlight.redrawing .highlight__ink {
+    animation: highlight-sweep var(--t-redraw) var(--t-curve) forwards !important;
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating dial kit -->
+<div class="lab" id="lab">
+  <div class="lab__head">
+    <span class="lab__title">Timing lab</span>
+    <button class="lab__toggle" id="lab-toggle" aria-label="Collapse timing lab">&#10005;</button>
+  </div>
+
+  <div class="lab__body">
+    <div class="dials">
+      <div class="dial">
+        <div class="knob" id="knob-remove">
+          <svg class="knob__ring" viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="54" fill="none"
+                    stroke="rgba(172,160,232,0.35)" stroke-width="2"
+                    stroke-dasharray="2 7.42" />
+          </svg>
+          <div class="knob__body">
+            <div class="knob__pointer"></div>
+            <div class="knob__hub"></div>
+          </div>
+        </div>
+        <div class="knob__readout"><span class="readout">250</span><small> ms</small></div>
+        <div class="knob__label">Swipe away</div>
+      </div>
+
+      <div class="dial">
+        <div class="knob" id="knob-redraw">
+          <svg class="knob__ring" viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="54" fill="none"
+                    stroke="rgba(172,160,232,0.35)" stroke-width="2"
+                    stroke-dasharray="2 7.42" />
+          </svg>
+          <div class="knob__body">
+            <div class="knob__pointer"></div>
+            <div class="knob__hub"></div>
+          </div>
+        </div>
+        <div class="knob__readout"><span class="readout">1400</span><small> ms</small></div>
+        <div class="knob__label">Redraw sweep</div>
+      </div>
+    </div>
+
+    <div class="lab__curve">
+      <label class="knob__label" for="curve">Curve</label>
+      <select class="curve" id="curve"></select>
+    </div>
+
+    <div class="lab__controls">
+      <button class="btn btn--primary" id="redraw-all">Redraw all phrases</button>
+      <button class="btn" id="compare-go">Compare before / after</button>
+      <button class="btn" id="reset">Reset to production</button>
+    </div>
+    <p class="lab__note">Drag a dial to turn it. Settings are remembered on reload (URL: <code>?remove=&amp;redraw=&amp;curve=</code>).</p>
+  </div>
+</div>
+
+<div class="page">
+  <div class="eyebrow">Playground — dev/highlighter-dial-lab.html</div>
+  <h1>Highlighter timing lab</h1>
+  <p class="lede">
+    The sidebar drives the real <code>components/text_highlight.js</code> component.
+    <strong>Swipe away</strong> sets how fast the marker retracts,
+    <strong>redraw sweep</strong> sets the click-replay speed, and the
+    <strong>curve</strong> dropdown swaps the easing (your motion-kit curves first).
+    Click any phrase to test.
+  </p>
+
+  <div class="text-panel">
+    <div class="text-panel__label">Real copy, real lengths</div>
+    <div class="text-block">
+      <p>Sometimes the whole trick is a single word — <strong>make it <em data-highlight>tiny</em>.</strong></p>
+      <p>Customers arrived to a hub, found no space, and <em data-highlight>bailed</em> at the exact moment we needed them most.</p>
+      <p>Good onboarding is the <em data-highlight>why behind the what</em> — the reason a detail exists at all.</p>
+      <p>A hold-and-confirm flow reserved a locker for the traveller’s window so they <em data-highlight>never arrived to a wall of full units</em>.</p>
+      <p>Cancellations dropped, hub conversion rose, and the lockers pod became <em data-highlight>the template Bounce used to enter its first three transportation hubs</em>.</p>
+      <p>We chose to <em data-highlight>visually separate QE into two modules, giving rise to a brand new module that owns the outcome of their skipping behaviour</em>.</p>
+    </div>
+    <p class="hint">Click any highlighted phrase to replay the remove + redraw cycle at the current dial settings.</p>
+  </div>
+
+  <div class="compare" id="compare">
+    <div class="compare__head">
+      <span class="text-panel__label">Before / After — same phrase, same moment</span>
+      <button class="btn" id="compare-play">Play both</button>
+    </div>
+    <div class="compare__grid">
+      <div class="compare__card compare-before">
+        <div class="compare__tag">Before <span class="compare__spec">250ms / 1400ms · Ease-in-out — even — currently shipped</span></div>
+        <p class="compare__phrase">A hold-and-confirm flow reserved a locker for the traveller’s window so they <strong><em data-highlight>never arrived to a wall of full units</em></strong>.</p>
+      </div>
+      <div class="compare__card compare-after">
+        <div class="compare__tag">After <span class="compare__spec" id="compare-spec">250ms / 900ms — your dials</span></div>
+        <p class="compare__phrase">A hold-and-confirm flow reserved a locker for the traveller’s window so they <strong><em data-highlight>never arrived to a wall of full units</em></strong>.</p>
+      </div>
+    </div>
+    <p class="hint">Click a phrase to replay it. “Play both” runs the two cards at exactly the same moment.</p>
+  </div>
+</div>
+
+<script src="../components/text_highlight.js"></script>
+<script>
+  (function () {
+    function initKnob(root, opts) {
+      var body = root.querySelector('.knob__body');
+      var readout = root.parentElement.querySelector('.readout');
+      var range = opts.max - opts.min;
+      var angle;
+
+      function angleForValue(v) { return -135 + (v - opts.min) / range * 270; }
+      function valueForAngle(a) { return opts.min + (a + 135) / 270 * range; }
+      function clampA(a) { return Math.min(135, Math.max(-135, a)); }
+      function snap(v) { return Math.round(v / opts.step) * opts.step; }
+
+      function pointerAngle(e) {
+        var r = body.getBoundingClientRect();
+        return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
+      }
+
+      function render(a, skipChange) {
+        angle = clampA(a);
+        body.style.transform = 'rotate(' + angle + 'deg)';
+        var v = snap(valueForAngle(angle));
+        readout.textContent = Math.round(v);
+        if (!skipChange) opts.onChange(v);
+      }
+
+      var dragging = false, grabOffset = 0;
+      body.addEventListener('pointerdown', function (e) {
+        dragging = true;
+        grabOffset = angle - pointerAngle(e);
+        body.setPointerCapture(e.pointerId);
+        e.preventDefault();
+      });
+      body.addEventListener('pointermove', function (e) {
+        if (dragging) render(pointerAngle(e) + grabOffset);
+      });
+      function endDrag() { dragging = false; }
+      body.addEventListener('pointerup', endDrag);
+      body.addEventListener('pointercancel', endDrag);
+
+      render(angleForValue(opts.initial), true);
+      return { set: function (v) { render(angleForValue(v)); } };
+    }
+
+    var qp = (function () { try { return new URLSearchParams(location.search); } catch (e) { return null; } })();
+
+    /* Curves: the portfolio's own motion-kit curves first, then the CSS basics. */
+    var CURVES = {
+      'decel':  { name: 'Decelerate — settles',      fn: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+      'overshoot': { name: 'Overshoot — wobble',     fn: 'cubic-bezier(0.34, 1.56, 0.64, 1)' },
+      'snappy': { name: 'Snappy out',                fn: 'cubic-bezier(0.16, 1, 0.3, 1)' },
+      'inout':  { name: 'Ease-in-out — even',        fn: 'cubic-bezier(0.65, 0, 0.35, 1)' },
+      'ease-out':   { name: 'Ease-out',              fn: 'ease-out' },
+      'ease-in':    { name: 'Ease-in',               fn: 'ease-in' },
+      'ease-in-out':{ name: 'Ease-in-out',           fn: 'ease-in-out' },
+      'linear': { name: 'Linear',                    fn: 'linear' }
+    };
+
+    function readStored(key, fallback) {
+      try {
+        if (qp && qp.has(key)) {
+          var raw = qp.get(key);
+          if (key === 'curve') {
+            if (CURVES[raw]) return raw;
+          } else {
+            var fromUrl = parseFloat(raw);
+            if (!isNaN(fromUrl)) return fromUrl;
+          }
+        }
+        var saved = JSON.parse(localStorage.getItem('hl-timing-lab') || 'null');
+        if (saved && saved[key] !== undefined && saved[key] !== null) {
+          if (key === 'curve') {
+            if (CURVES[saved[key]]) return saved[key];
+          } else if (typeof saved[key] === 'number') return saved[key];
+        }
+      } catch (e) {}
+      return fallback;
+    }
+
+    /* Read ALL stored values before any knob initializes, so the first
+       knob's init can't overwrite another knob's saved value. */
+    var state = {
+      remove: readStored('remove', 250),
+      redraw: readStored('redraw', 1400),
+      curve: readStored('curve', 'inout')
+    };
+
+    document.documentElement.style.setProperty('--t-remove', state.remove + 'ms');
+    document.documentElement.style.setProperty('--t-redraw', state.redraw + 'ms');
+    document.documentElement.style.setProperty('--t-curve', CURVES[state.curve].fn);
+
+    function persist() {
+      try { localStorage.setItem('hl-timing-lab', JSON.stringify(state)); } catch (e) {}
+    }
+    if (qp && (qp.has('remove') || qp.has('redraw') || qp.has('curve'))) persist();
+
+    function curveName(key) { return CURVES[key].name; }
+
+    function updateCompareSpec() {
+      var el = document.getElementById('compare-spec');
+      if (el) el.textContent = state.remove + 'ms / ' + state.redraw + 'ms · ' + curveName(state.curve) + ' — your dials';
+    }
+
+    var removeKnob = initKnob(document.getElementById('knob-remove'), {
+      min: 50, max: 600, step: 10, initial: state.remove,
+      onChange: function (v) {
+        state.remove = v;
+        document.documentElement.style.setProperty('--t-remove', v + 'ms');
+        persist();
+        updateCompareSpec();
+      }
+    });
+    var redrawKnob = initKnob(document.getElementById('knob-redraw'), {
+      min: 200, max: 2500, step: 25, initial: state.redraw,
+      onChange: function (v) {
+        state.redraw = v;
+        document.documentElement.style.setProperty('--t-redraw', v + 'ms');
+        persist();
+        updateCompareSpec();
+      }
+    });
+
+    var curveSel = document.getElementById('curve');
+    Object.keys(CURVES).forEach(function (key) {
+      var opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = CURVES[key].name;
+      curveSel.appendChild(opt);
+    });
+    curveSel.value = state.curve;
+    curveSel.addEventListener('change', function () {
+      state.curve = curveSel.value;
+      document.documentElement.style.setProperty('--t-curve', CURVES[state.curve].fn);
+      persist();
+      updateCompareSpec();
+    });
+
+    updateCompareSpec();
+
+    var lab = document.getElementById('lab');
+    var labToggle = document.getElementById('lab-toggle');
+    labToggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var collapsed = lab.classList.toggle('collapsed');
+      labToggle.innerHTML = collapsed ? '&#9881;' : '&#10005;';
+    });
+    lab.addEventListener('click', function (e) {
+      if (lab.classList.contains('collapsed') && e.target === lab) {
+        lab.classList.remove('collapsed');
+        labToggle.innerHTML = '&#10005;';
+      }
+    });
+
+    function highlights() {
+      return Array.prototype.slice.call(document.querySelectorAll('[data-highlight]'));
+    }
+
+    document.getElementById('redraw-all').addEventListener('click', function () {
+      highlights().forEach(function (el) {
+        if (!el.classList.contains('removing') && !el.classList.contains('redrawing')) el.click();
+      });
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      removeKnob.set(250);
+      redrawKnob.set(1400);
+      state.curve = 'inout';
+      curveSel.value = 'inout';
+      document.documentElement.style.setProperty('--t-curve', CURVES.inout.fn);
+      persist();
+      updateCompareSpec();
+    });
+
+    function compareEls() {
+      return Array.prototype.slice.call(document.querySelectorAll('.compare [data-highlight]'));
+    }
+    function replay(el) {
+      if (!el.classList.contains('removing') && !el.classList.contains('redrawing')) el.click();
+    }
+    document.getElementById('compare-play').addEventListener('click', function () {
+      compareEls().forEach(replay);
+    });
+    document.getElementById('compare-go').addEventListener('click', function () {
+      document.getElementById('compare').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('compare-play').click();
+    });
+  })();
+</script>
+</body>
+</html>

@@ -32,12 +32,13 @@
 
     :root {
       --rail-w: 354px;
+      --rail-avatar-size: 100px;
       --page-pad: 40px;
       --page-max: 1440px;   /* whole layout (rail + grid) centers within this */
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
       --feature-media-h: 65vh;        /* thumbnail height (% of viewport) */
       --feature-media-ar: 4 / 3;  /* thumbnail frame: width / height */
-      --feature-align: center;        /* feature card alignment */
+      --feature-align: flex-start;        /* feature card alignment */
     }
 
     body {
@@ -91,8 +92,21 @@
       .rail-intro .bio { max-width: 34ch; }   /* readable measure in the narrow rail */
     }
 
+
     /* Persistent identity block — avatar + name */
-    .rail-identity { flex-shrink: 0; }
+    .rail-identity {
+      flex-shrink: 0;
+      /* #top (the avatar's "back to top" target) sits var(--page-pad) into
+         the document via .home-shell's own padding. Without this, the
+         browser's native anchor-scroll brings #top flush with the viewport
+         top — scrolling var(--page-pad) further than a fresh page load
+         would. .rail is sticky so it visually absorbs that extra scroll and
+         looks unchanged, but .content isn't sticky and shifts up underneath
+         it, breaking the name/headline alignment. This tells the anchor
+         scroll to stop var(--page-pad) short, landing back at the same
+         scrollY: 0 resting state as a fresh load. */
+      scroll-margin-top: var(--page-pad);
+    }
     .rail-avatar-link {
       display: inline-block;
       line-height: 0;
@@ -108,7 +122,7 @@
     .rail-avatar {
       position: relative;
       display: block;
-      width: 100px; height: 100px;
+      width: var(--rail-avatar-size); height: var(--rail-avatar-size);
       transform-style: preserve-3d;
       transform: rotateY(0deg);
       transition: transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -191,6 +205,26 @@
       margin-top: var(--sp-8);
     }
 
+    /* ── RAIL CONTEXT REVEAL ────────────────
+       At the top of the page the intro text lives in the right-column
+       overview and the rail shows only identity + nav (a blank middle).
+       Once the overview scrolls up past the reveal threshold (approaching
+       the first project) the same text pops into the rail, so it stays
+       reachable while the user is browsing the work. Driven by the
+       rail--context-visible class toggled in the scroll script below;
+       this CSS is the no-JS fallback (always visible). */
+    .rail-context {
+      transition: opacity 500ms var(--ease), transform 500ms var(--ease);
+    }
+    .rail:not(.rail--context-visible) .rail-context {
+      opacity: 0;
+      transform: translateY(18px);
+      pointer-events: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rail-context { transition: none; }
+    }
+
     /* ── NAV (rail bottom) ─────────────────── */
     .rail-nav {
       display: flex;
@@ -216,36 +250,28 @@
 
     /* Overview grid — flows from the top, like Julie's */
     .overview { width: 100%; }
-    /* Overview placeholder — width-matched to the feature cards below
-       (height-driven frame) so everything lines up as one column. */
-    .overview p {
+    /* ── INTRO hero ───────────────────────────
+       Built from the design-system text classes (design.md §3):
+       .b-section-header headline → .b-section-subheader subheadline.
+       Type, weight, colour, and margins come from the classes; these
+       rules carry layout + spacing only. Width is matched to the
+       feature cards below (height-driven frame) so the column lines
+       up. The headline's own margin-bottom sets the gap. */
+    .overview-headline,
+    .overview-subhead {
       width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
-      margin: 0 auto;
-      color: var(--color-text-muted);
     }
-    .overview .overview-bio {
-      font-size: var(--text-lg);
-      line-height: var(--leading-body);
-    }
-    .overview .overview-tagline {
-      font-size: var(--text-lg);
-      line-height: var(--leading-body);
-      margin-top: var(--sp-5);
-      color: var(--color-text);
-    }
-    .overview .overview-location {
-      font-size: 14px;
-      margin-top: var(--sp-5);
-      color: var(--color-text);
-    }
-    .overview .overview-location span {
-      color: var(--color-text-muted);
-    }
-    /* Nudge the grid down from the top edge so it doesn't hug
-       the very top of the page (desktop only — on mobile the
-       rail stacks above it and provides its own spacing). */
+    .overview-subhead { margin-top: 0; }
+    .overview-subhead em { font-style: normal; }   /* [data-highlight] phrase — no italics */
+    /* Nudge the grid down to bring the headline's cap-height into optical
+       alignment with the name (desktop only — on mobile the rail stacks
+       above it and provides its own spacing). Derived from the rail's own
+       stack — avatar height + the --sp-8 gap before .name, the same gap
+       token used for every other rail spacing (nav, context, tagline,
+       location) — rather than a pixel guess, so it stays correct if the
+       avatar size ever changes. */
     @media (min-width: 1024px) {
-      .overview { padding-top: 112px; }
+      .overview { padding-top: calc(var(--rail-avatar-size) + var(--sp-8)); }
     }
     /* Explicit responsive columns + minmax(0,1fr).
        The minmax(0,…) is the classic trick: it lets tracks
@@ -359,16 +385,26 @@
 
     /* ── THEME TOGGLE (fixed, bottom-right) ── */
     /* ─────────────────────────────────────────
-       RESPONSIVE — phone (≤ 720px)
+       RESPONSIVE — stacked rail (≤ 1023px)
        Rail collapses to a top header; nav persists as a
-       fixed translucent top bar.
+       fixed solid top bar (matches .site-nav's opaque
+       --color-bg treatment — see style.css). Runs right up to the
+       1024px desktop switch so there's no gap viewport
+       where the rail is stacked but the nav isn't fixed.
     ───────────────────────────────────────── */
-    @media (max-width: 720px) {
+    @media (max-width: 1023px) {
       /* Rail already stacks on top via the base layout;
-         just tighten it for phones. */
+         just tighten it for phones/tablets. */
       .rail-avatar { width: 72px; height: 72px; }
-      .rail-context { flex: none; min-height: 0; margin-top: var(--sp-5); }
-      .rail-intro .bio, .rail-intro .tagline, .rail-intro .location { margin-top: var(--sp-5); }
+      /* The reveal-on-scroll script only runs ≥1024px (see the script near
+         the closing body tag), so below that .rail-context sits permanently
+         in its hidden (opacity: 0) state. Left in flow, that invisible box
+         still reserves its full height — the "blank middle" that's meant to
+         separate identity from nav on desktop's sticky rail — which on
+         mobile (rail stacked, not sticky) shows up as a dead gap between the
+         name and the hero headline. Its text is already duplicated in the
+         .overview-subhead, so just take it out of flow here. */
+      .rail-context { display: none; }
 
       .feature { display: block; min-height: 0; padding: var(--sp-12) 0 0; }
       .fc-media { height: auto; width: 100%; aspect-ratio: 4 / 3; }   /* phones: size by width again */
@@ -377,12 +413,19 @@
 
       /* ── Persistent nav — fixed top bar, always visible ── */
       body { padding-top: 54px; }
+      /* .rail-nav is a `position: fixed` child of this flex container.
+         Because .rail itself never establishes a stacking context, the
+         browser stacks the fixed nav using .rail's position in the DOM
+         (before .content) instead of the nav's own z-index — so once the
+         page scrolls, the feature cards (later in the DOM) paint over the
+         "fixed" nav instead of under it. Giving .rail its own stacking
+         context puts the whole rail — nav included — above .content. */
+      .rail { position: relative; z-index: 1; }
       .rail-nav {
         position: fixed; left: 0; right: 0; top: 0; z-index: 25;
         flex-direction: row; justify-content: space-around; gap: 0; margin: 0;
         padding: calc(var(--sp-3) + env(safe-area-inset-top, 0px)) var(--sp-4) var(--sp-3);
-        background: color-mix(in srgb, var(--color-bg) 82%, transparent);
-        backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+        background: var(--color-bg);
         border-bottom: 1px solid var(--color-border);
       }
       .rail-nav a { font-size: var(--text-sm); letter-spacing: var(--tracking-wide); }
@@ -555,14 +598,14 @@
 
     <div class="rail-context">
       <div class="rail-intro">
-        <p class="bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p>
-        <p class="tagline">the <em data-highlight>why behind the what</em>,<br>has never been more important</p>
+        <!-- <p class="bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p> -->
+        <p class="tagline">the <em data-highlight>why behind the what</em><br>has never been more important</p>
         <p class="location"><span data-tooltip="PT national · open to relocation">Based in Lisbon</span></p>
       </div>
     </div>
 
     <nav class="rail-nav" aria-label="Section navigation">
-      <a href="#overview" data-section-link="overview">WORK</a>
+      <a href="#portfolio" data-section-link="portfolio">WORK</a>
       <a href="#about"    data-section-link="about">ABOUT</a>
       <a href="#resume"   data-section-link="resume">RESUME</a>
     </nav>
@@ -571,14 +614,17 @@
   <!-- ── RIGHT COLUMN ──────────────────────── -->
   <main class="content">
 
-    <!-- Overview text (placeholder) -->
+    <!-- Intro — design-system hero (design.md §3): .b-section-header
+         headline → .b-section-subheader subheadline. The subhead's phrase
+         is highlit and auto-sweeps in 1000ms after the page shows. -->
     <section class="overview" id="overview">
-      <p class="overview-bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p>
-      <p class="overview-tagline">the why behind the what,<br>has never been more important</p>
-      <p class="overview-location">Based in Lisbon <span>PT national · open to relocation</span></p>
+      <h1 class="b-section-header overview-headline">Builder with a design practice that focuses on rigorous, rapid UX research to enable high velocity product delivery.</h1>
+      <p class="b-section-subheader overview-subhead">the <em data-highlight data-highlight-auto="1000">why behind the what</em><br>has never been more important</p>
     </section>
 
-    <!-- Feature sequence -->
+    <!-- Feature sequence — the portfolio. Its top edge is the WORK nav's
+         anchor: WORK only becomes selected once you've scrolled past here. -->
+    <section class="portfolio" id="portfolio">
     <section class="feature">
       <a class="feature-card" href="lockers-reducing-cancellation.html">
         <div class="fc-media">
@@ -614,6 +660,7 @@
         </div>
       </a>
     </section>
+    </section><!-- /.portfolio -->
 
     <!-- ── ABOUT ──────────────────────────────── -->
     <section class="about" id="about">
@@ -710,10 +757,12 @@
   <!-- Tooltip — lightweight, theme-adaptive tooltip primitive -->
   <script src="components/tooltip.js"></script>
 
-  <!-- Section scroll-spy — highlights the rail nav link whose
-       section is currently in view. Uses IntersectionObserver
-       with a top-biased rootMargin so the "active" section is
-       the one whose top has crossed ~25% of the viewport. -->
+  <!-- Section scroll-spy — highlights the rail nav link whose section has
+       scrolled up past the top edge of the viewport. A link only becomes
+       active once you've actually scrolled into its section, so nothing is
+       selected at the top of the page: WORK stays quiet until the portfolio
+       has scrolled past the threshold (the moment its top hits the viewport
+       top — the same spot clicking WORK jumps to). -->
   <script>
     (function () {
       var navLinks = document.querySelectorAll('.rail-nav a[data-section-link]');
@@ -727,36 +776,64 @@
       });
       if (!sections.length) return;
 
-      // Track which sections are currently intersecting.
-      var visible = new Set();
+      // A section is active once its top crosses the top edge of the
+      // viewport. The last (DOM order) section past the line wins, so
+      // scrolling into ABOUT hands the highlight over from WORK.
+      var LINE = 0;
+      var rafPending = false;
 
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (e.isIntersecting) visible.add(e.target.id);
-          else visible.delete(e.target.id);
-        });
-        // Pick the first visible section in DOM order, or fall back
-        // to the last one scrolled past (the closest one above the line).
+      function update() {
+        rafPending = false;
         var activeId = null;
         sections.forEach(function (s) {
-          if (visible.has(s.id)) {
-            if (!activeId) activeId = s.id;
-          }
+          if (s.el.getBoundingClientRect().top < LINE) activeId = s.id;
         });
-        if (!activeId) {
-          var pick = null;
-          sections.forEach(function (s) {
-            var top = s.el.getBoundingClientRect().top;
-            if (top < window.innerHeight * 0.25) pick = s.id;
-          });
-          activeId = pick;
-        }
         navLinks.forEach(function (link) {
           link.classList.toggle('is-active', link.getAttribute('data-section-link') === activeId);
         });
-      }, { rootMargin: '-25% 0px -55% 0px', threshold: 0 });
+      }
 
-      sections.forEach(function (s) { io.observe(s.el); });
+      function onScroll() {
+        if (rafPending) return;
+        rafPending = true;
+        requestAnimationFrame(update);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      window.addEventListener('load', onScroll);
+      update();
+    })();
+  </script>
+
+  <!-- Rail intro-text reveal: while the overview (intro) section fills the
+       viewport the rail stays clean (photo, name, nav). Once the overview has
+       scrolled up past a threshold — on the way to the first project — the
+       same intro text pops into the rail and stays for the rest of the page.
+       Desktop-only: below 1024px the rail isn't sticky, so the text stays put. -->
+  <script>
+    (function () {
+      var mq = window.matchMedia('(min-width: 1024px)');
+      var rail = document.getElementById('rail');
+      var overview = document.getElementById('overview');
+      if (!mq || !rail || !overview) return;
+
+      var rafPending = false;
+      function update() {
+        rafPending = false;
+        var rect = overview.getBoundingClientRect();
+        // Reveal once ~40% of the intro section has scrolled past the top edge.
+        rail.classList.toggle('rail--context-visible', rect.top < -rect.height * 0.4);
+      }
+      function onScroll() {
+        if (!mq.matches) { rail.classList.remove('rail--context-visible'); return; }
+        if (rafPending) return;
+        rafPending = true;
+        requestAnimationFrame(update);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      onScroll();
     })();
   </script>
 

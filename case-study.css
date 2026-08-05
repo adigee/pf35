@@ -896,4 +896,4 @@ html.cs-modal-open, html.cs-modal-open body { overflow: hidden; }
 /* List */
 .cs-section > .b-label     { margin-top: 24px; }
 .cs-section > .cs-list     { margin-top: 16px; }
-.cs-section > .cs-list + * { margin-top: 64px; }
+.cs-section > .cs-list + * { margin-top: var(--sp-6); }
