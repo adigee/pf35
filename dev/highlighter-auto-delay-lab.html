@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Highlighter — On-load Sweep Delay Lab</title>
+<style>
+  :root {
+    --color-bg: #121212;
+    --color-text: #F8F6EE;
+    --color-text-muted: rgba(248, 246, 238, 0.60);
+    --highlight-ink: 172, 160, 232;
+    --ink: #ACA0E8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3.5rem 1.5rem 4rem;
+  }
+  .page { width: 100%; max-width: 780px; }
+
+  .eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75rem;
+  }
+  .lede {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 56ch;
+    margin-bottom: 2.5rem;
+  }
+  .lede code { color: var(--ink); font-size: 0.85em; }
+
+  /* ── Floating dial ───────────────────── */
+  .lab {
+    position: fixed;
+    top: 1.25rem;
+    right: 1.25rem;
+    width: 224px;
+    background: #1B1B1F;
+    border: 1px solid rgba(248, 246, 238, 0.12);
+    border-radius: 14px;
+    padding: 1rem 1.1rem 1.15rem;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+    z-index: 50;
+  }
+  .lab__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.9rem;
+  }
+  .lab__title {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .lab__toggle {
+    appearance: none;
+    background: transparent;
+    border: 1px solid rgba(248, 246, 238, 0.2);
+    color: var(--color-text-muted);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 0.6rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .lab__toggle:hover { border-color: var(--ink); color: var(--ink); }
+  .lab.collapsed { cursor: pointer; }
+  .lab.collapsed .lab__body { display: none; }
+
+  .knob { width: 116px; height: 116px; position: relative; cursor: grab; touch-action: none; margin: 0 auto; }
+  .knob:active { cursor: grabbing; }
+  .knob__ring { position: absolute; inset: 0; }
+  .knob__body { position: absolute; inset: 7px; border-radius: 50%; }
+  .knob__pointer {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 2px;
+    height: 50%;
+    margin-left: -1px;
+    border-radius: 2px;
+    background: var(--ink);
+    transform-origin: 50% 100%;
+    box-shadow: 0 0 6px rgba(172, 160, 232, 0.45);
+  }
+  .knob__hub {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 13px;
+    height: 13px;
+    margin: -6.5px 0 0 -6.5px;
+    border-radius: 50%;
+    background: #1B1B1F;
+    border: 2px solid rgba(172, 160, 232, 0.55);
+  }
+  .knob__readout {
+    margin-top: 0.4rem;
+    font-variant-numeric: tabular-nums;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-align: center;
+  }
+  .knob__readout small { font-size: 0.65em; color: var(--color-text-muted); font-weight: 500; }
+  .knob__label {
+    margin-top: 0.2rem;
+    font-size: 0.5625rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+
+  .lab__controls { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.9rem; }
+  .btn {
+    appearance: none;
+    background: transparent;
+    color: var(--color-text);
+    border: 1px solid rgba(248, 246, 238, 0.22);
+    border-radius: 999px;
+    padding: 0.45rem 0.9rem;
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  }
+  .btn:hover { border-color: rgba(172, 160, 232, 0.7); color: var(--ink); }
+  .btn--primary { background: var(--ink); border-color: var(--ink); color: #121212; font-weight: 600; }
+  .btn--primary:hover { color: #121212; }
+
+  .lab__note {
+    margin-top: 0.8rem;
+    font-size: 0.625rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+  }
+  .lab__note code { color: var(--ink); }
+
+  /* ── Copy panels ─────────────────────── */
+  .panel {
+    border: 1px solid rgba(248, 246, 238, 0.10);
+    border-radius: 14px;
+    padding: 2.5rem 2.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .panel__tag {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 1.6rem;
+  }
+  .panel__tag code { color: var(--ink); }
+
+  /* Overview subhead styling (mirrors index.html .overview-subhead) */
+  .subhead {
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.6;
+    letter-spacing: -0.015em;
+    color: var(--color-text);
+  }
+  /* Left rail tagline styling (mirrors index.html .tagline) */
+  .tagline {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+  .hint {
+    margin-top: 1.5rem;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 760px) {
+    body { padding: 1rem 1rem 3rem; }
+    .lab { position: static; width: 100%; max-width: 420px; margin: 0 auto 1.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating dial -->
+<div class="lab" id="lab">
+  <div class="lab__head">
+    <span class="lab__title">Auto-sweep delay</span>
+    <button class="lab__toggle" id="lab-toggle" aria-label="Collapse dial">&#10005;</button>
+  </div>
+  <div class="lab__body">
+    <div class="knob" id="knob-delay">
+      <svg class="knob__ring" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="54" fill="none"
+                stroke="rgba(172,160,232,0.35)" stroke-width="2"
+                stroke-dasharray="2 7.42" />
+      </svg>
+      <div class="knob__body">
+        <div class="knob__pointer"></div>
+        <div class="knob__hub"></div>
+      </div>
+    </div>
+    <div class="knob__readout"><span class="readout">600</span><small> ms</small></div>
+    <div class="knob__label">Delay before sweep</div>
+
+    <div class="lab__controls">
+      <button class="btn btn--primary" id="replay">Replay sweep</button>
+      <button class="btn" id="reset">Reset to production (200)</button>
+    </div>
+    <p class="lab__note">Production value: <code>data-highlight-auto="200"</code> (index.html). Dragging the dial re-sweeps the phrase below. URL: <code>?delay=</code>.</p>
+  </div>
+</div>
+
+<div class="page">
+  <div class="eyebrow">Playground — dev/highlighter-auto-delay-lab.html</div>
+  <h1>On-load sweep delay lab</h1>
+  <p class="lede">
+    Drives the real <code>components/text_highlight.js</code> component via
+    <code>data-highlight-auto</code>. Dial the pause between the phrase appearing
+    and the marker sweeping in. The top panel re-runs the sweep whenever you
+    drag the dial; the rail panel is the no-delay reference.
+  </p>
+
+  <div class="panel">
+    <div class="panel__tag">Overview subhead · <code>data-highlight-auto="<span id="spec">600</span>"</code></div>
+    <p class="subhead">the <em id="demo" data-highlight data-highlight-auto="600">why behind the what</em><br>has never been more important</p>
+    <p class="hint">Click the phrase to replay remove + redraw at the current delay.</p>
+  </div>
+
+  <div class="panel">
+    <div class="panel__tag">Left rail tagline · no <code>data-highlight-auto</code> (reference)</div>
+    <p class="tagline">the <em data-highlight>why behind the what</em><br>has never been more important</p>
+  </div>
+</div>
+
+<script src="../components/text_highlight.js"></script>
+<script>
+  (function () {
+    var qp = (function () { try { return new URLSearchParams(location.search); } catch (e) { return null; } })();
+
+    function readDelay() {
+      if (qp && qp.has('delay')) {
+        var fromUrl = parseInt(qp.get('delay'), 10);
+        if (!isNaN(fromUrl) && fromUrl >= 0) return fromUrl;
+      }
+      try {
+        var saved = JSON.parse(localStorage.getItem('hl-auto-delay-lab') || 'null');
+        if (saved && typeof saved === 'number') return saved;
+      } catch (e) {}
+      return 600;
+    }
+
+    var delay = readDelay();
+    var knob = document.getElementById('knob-delay');
+    var body = knob.querySelector('.knob__body');
+    var readout = document.querySelector('.readout');
+    var MIN = 0, MAX = 2000, STEP = 50, RANGE = MAX - MIN;
+
+    function angleForValue(v) { return -135 + (v - MIN) / RANGE * 270; }
+    function valueForAngle(a) { return MIN + (a + 135) / 270 * RANGE; }
+    function clampA(a) { return Math.min(135, Math.max(-135, a)); }
+    function snap(v) { return Math.round(v / STEP) * STEP; }
+    function pointerAngle(e) {
+      var r = body.getBoundingClientRect();
+      return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
+    }
+    function render(a, skipChange) {
+      var angle = clampA(a);
+      body.style.transform = 'rotate(' + angle + 'deg)';
+      var v = snap(valueForAngle(angle));
+      readout.textContent = v;
+      if (!skipChange) onChange(v);
+    }
+
+    var dragging = false, grabOffset = 0;
+    body.addEventListener('pointerdown', function (e) {
+      dragging = true;
+      grabOffset = angleForValue(delay) - pointerAngle(e);
+      body.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+    body.addEventListener('pointermove', function (e) { if (dragging) render(pointerAngle(e) + grabOffset); });
+    body.addEventListener('pointerup', function () { dragging = false; });
+    body.addEventListener('pointercancel', function () { dragging = false; });
+
+    function setDelay(v) {
+      delay = v;
+      document.getElementById('spec').textContent = v;
+      try { localStorage.setItem('hl-auto-delay-lab', JSON.stringify(v)); } catch (e) {}
+      if (qp && !qp.has('delay')) history.replaceState(null, '', '?delay=' + v);
+    }
+
+    var rebuildTimer = null;
+    function onChange(v) {
+      setDelay(v);
+      clearTimeout(rebuildTimer);
+      rebuildTimer = setTimeout(rebuild, 120);
+    }
+
+    function rebuild() {
+      var demo = document.getElementById('demo');
+      var fresh = document.createElement('em');
+      fresh.setAttribute('data-highlight', '');
+      fresh.setAttribute('data-highlight-auto', delay);
+      fresh.textContent = 'why behind the what';
+      demo.replaceWith(fresh);
+      fresh.id = 'demo';
+    }
+
+    document.getElementById('replay').addEventListener('click', rebuild);
+
+    document.getElementById('reset').addEventListener('click', function () {
+      render(angleForValue(200));
+      setDelay(200);
+      rebuild();
+    });
+
+    document.getElementById('lab-toggle').addEventListener('click', function (e) {
+      e.stopPropagation();
+      var collapsed = document.getElementById('lab').classList.toggle('collapsed');
+      this.innerHTML = collapsed ? '&#9881;' : '&#10005;';
+    });
+    document.getElementById('lab').addEventListener('click', function (e) {
+      var lab = document.getElementById('lab');
+      if (lab.classList.contains('collapsed') && e.target === lab) {
+        lab.classList.remove('collapsed');
+        document.getElementById('lab-toggle').innerHTML = '&#10005;';
+      }
+    });
+
+    document.getElementById('spec').textContent = delay;
+    readout.textContent = delay;
+    render(angleForValue(delay), true);
+  })();
+</script>
+</body>
+</html>
