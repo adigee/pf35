@@ -56,7 +56,7 @@
       '.highlight.auto-sweep .highlight__text{color:var(--color-text);transition:none;}' +
       '@keyframes hl-text-in{from{color:var(--color-text);}to{color:var(--color-accent-on-accent);}}' +
       '@keyframes highlight-sweep{0%{clip-path:inset(0 100% 0 0);}100%{clip-path:inset(0 0 0 0);}}' +
-      '@media (prefers-reduced-motion: reduce){.highlight__base{transition:none;}.highlight.redrawing .highlight__ink{animation:none;}}';
+      '@media (prefers-reduced-motion: reduce){.highlight__base{transition:none;}.highlight__text{transition:none;}.highlight.redrawing .highlight__ink{animation:none;}.highlight.redrawing .highlight__text{animation:none;}}';
     (document.head || document.documentElement).appendChild(style);
   }
 
