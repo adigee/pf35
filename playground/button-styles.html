@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aditya Gujaran — Designer (Button styles playground)</title>
+  <meta name="robots" content="noindex" />
+  <meta name="description" content="Aditya Gujaran — product designer in Lisbon. Selected work in UX research, interaction design, and 0→1 product." />
+
+  <link rel="stylesheet" href="../style.css" />
+  <!-- Shared fonts + analytics (Umami, Vercel) + llms discovery link.
+       head.js also applies the saved theme before first paint. -->
+  <script src="../components/head.js"></script>
+  <!-- Injects the floating light/dark toggle -->
+  <script src="../components/theme.js"></script>
+
+  <style>
+    /* ─────────────────────────────────────────
+       HOMEPAGE
+       Fixed left rail + scroll-driven right column.
+       Grid overview  →  feature sequence.
+       The rail is fully static — nothing in it changes
+       as the right column scrolls.
+       Reuses tokens from style.css only.
+    ───────────────────────────────────────── */
+
+    /* Smooth anchor-jump for the rail nav. Respects
+       reduced-motion (a hard jump is the right call there). */
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+
+    :root {
+      --rail-w: 354px;
+      --rail-avatar-size: 100px;
+      --page-pad: 40px;
+      --page-max: 1440px;   /* whole layout (rail + grid) centers within this */
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --feature-media-h: 65vh;        /* thumbnail height (% of viewport) */
+      --feature-media-ar: 4 / 3;  /* thumbnail frame: width / height */
+      --feature-align: flex-start;        /* feature card alignment */
+    }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── PAGE SHELL ────────────────────────────
+       One centered container holds everything, so
+       rail + grid move as a unit with symmetric
+       margins on wide monitors (Julie's pattern).
+    ─────────────────────────────────────────── */
+    .home-shell {
+      max-width: var(--page-max);
+      margin-inline: auto;
+      padding: var(--page-pad);
+    }
+    /* Rail + content is itself a grid.
+       Mobile-first: one column (rail stacks on top).
+       ≥1024px: rail column + fluid content column.   */
+    .home-cols {
+      display: grid;
+      gap: var(--sp-10);
+    }
+    @media (min-width: 1024px) {
+      .home-cols {
+        grid-template-columns: var(--rail-w) minmax(0, 1fr);
+        gap: var(--sp-16);
+        align-items: start;
+      }
+    }
+
+    /* ── LEFT RAIL ─────────────────────────── */
+    .rail {
+      display: flex;
+      flex-direction: column;
+    }
+    /* On desktop the rail becomes a sticky column so it
+       stays in view while the grid scrolls (what the old
+       position:fixed did — but now it's part of the grid). */
+    @media (min-width: 1024px) {
+      .rail {
+        position: sticky;
+        top: var(--page-pad);
+        height: calc(100vh - var(--page-pad) * 2);
+      }
+      .rail-intro .bio { max-width: 34ch; }   /* readable measure in the narrow rail */
+    }
+
+
+    /* Persistent identity block — avatar + name */
+    .rail-identity {
+      flex-shrink: 0;
+      /* #top (the avatar's "back to top" target) sits var(--page-pad) into
+         the document via .home-shell's own padding. Without this, the
+         browser's native anchor-scroll brings #top flush with the viewport
+         top — scrolling var(--page-pad) further than a fresh page load
+         would. .rail is sticky so it visually absorbs that extra scroll and
+         looks unchanged, but .content isn't sticky and shifts up underneath
+         it, breaking the name/headline alignment. This tells the anchor
+         scroll to stop var(--page-pad) short, landing back at the same
+         scrollY: 0 resting state as a fresh load. */
+      scroll-margin-top: var(--page-pad);
+    }
+    .rail-avatar-link {
+      display: inline-block;
+      line-height: 0;
+      border-radius: 50%;
+      perspective: 750px;   /* depth for the 3D spin */
+    }
+    /* Spinning top: a two-faced disc. Which face rests up depends on theme —
+       dark rests on the photo (spins to the caricature), light rests on the
+       caricature (spins to the photo). Entering spins it 2.5 turns and lands
+       on the far face; leaving is a quick half-turn settle back. The
+       asymmetric enter/leave timing is driven by the inline avatar-spin
+       script — this CSS is the no-JS fallback. */
+    .rail-avatar {
+      position: relative;
+      display: block;
+      width: var(--rail-avatar-size); height: var(--rail-avatar-size);
+      transform-style: preserve-3d;
+      transform: rotateY(0deg);
+      transition: transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .rail-avatar-face {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid var(--color-border);
+      backface-visibility: hidden;
+    }
+    /* Dark (default): photo up front, caricature on the back. */
+    .rail-avatar-face--art { transform: rotateY(180deg); }
+    /* Light: caricature up front, photo on the back. */
+    [data-theme="light"] .rail-avatar-face--art  { transform: rotateY(0deg); }
+    [data-theme="light"] .rail-avatar-face--photo { transform: rotateY(180deg); }
+    .rail-avatar-link:hover .rail-avatar { transform: rotateY(-900deg); }
+    /* Motion-sensitive visitors get a plain crossfade, no spin. Flatten both
+       faces and drive visibility by opacity per theme, mirroring the resting
+       face of the spin: dark rests on the photo (reveals the caricature),
+       light rests on the caricature (reveals the photo). */
+    @media (prefers-reduced-motion: reduce) {
+      .rail-avatar { transition: none; }
+      .rail-avatar-link:hover .rail-avatar { transform: none; }
+      .rail-avatar-face {
+        backface-visibility: visible;
+        transition: opacity 240ms var(--ease);
+      }
+      /* Flatten both faces — the [data-theme] selector matches the per-theme
+         rotateY rules' specificity and wins by source order, so neither face
+         stays flipped (which would render the headshot mirrored). */
+      [data-theme] .rail-avatar-face { transform: none; }
+      /* Dark: photo at rest, caricature on hover. */
+      .rail-avatar-face--art { opacity: 0; }
+      .rail-avatar-link:hover .rail-avatar-face--art { opacity: 1; }
+      /* Light: caricature at rest, photo on hover (art stacks above photo,
+         so its opacity is what gates which one shows). */
+      [data-theme="light"] .rail-avatar-face--art { opacity: 1; }
+      [data-theme="light"] .rail-avatar-link:hover .rail-avatar-face--art { opacity: 0; }
+    }
+    .rail-identity .name {
+      font-size: 16px;
+      line-height: var(--leading-normal);
+      font-weight: 700;
+      letter-spacing: var(--tracking-snug);
+      margin-top: var(--sp-8);
+    }
+    .rail-identity .name .role { color: var(--color-primary); }
+
+    /* Intro caption — static, fills the space above the nav */
+    .rail-context {
+      flex: 1;
+      margin-top: var(--sp-8);
+    }
+    .rail-intro .bio {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: var(--leading-body);
+      max-width: 60ch;   /* readable measure when stacked (Julie uses 60ch);
+                            tightened to 34ch in the desktop rail (see ≥1024px) */
+    }
+    .rail-intro .tagline {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: var(--leading-body);
+      margin-top: var(--sp-8);
+    }
+    .rail-intro .tagline em {
+      font-style: normal;
+      font-weight: 400;
+    }
+    /* The "why behind the what" highlighter marker is owned by
+       components/text_highlight.js (see the [data-highlight] em below). */
+    .rail-intro .location {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--color-text);
+      margin-top: var(--sp-8);
+    }
+
+    /* ── RAIL CONTEXT REVEAL ────────────────
+       At the top of the page the intro text lives in the right-column
+       overview and the rail shows only identity + nav (a blank middle).
+       Once the overview scrolls up past the reveal threshold (approaching
+       the first project) the same text pops into the rail, so it stays
+       reachable while the user is browsing the work. Driven by the
+       rail--context-visible class toggled in the scroll script below;
+       this CSS is the no-JS fallback (always visible). */
+    .rail-context {
+      transition: opacity 500ms var(--ease), transform 500ms var(--ease);
+    }
+    .rail:not(.rail--context-visible) .rail-context {
+      opacity: 0;
+      transform: translateY(18px);
+      pointer-events: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rail-context { transition: none; }
+    }
+
+    /* ── NAV (rail bottom) ─────────────────── */
+    .rail-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: var(--sp-8);
+      flex-shrink: 0;
+    }
+    .rail-nav a {
+      position: relative;
+      font-size: 18px;
+      letter-spacing: var(--tracking-wide);
+      color: var(--color-text);
+      width: fit-content;
+      transition: color 240ms var(--ease);
+    }
+    .rail-nav a:hover { color: var(--color-primary); }
+
+    /* ── RIGHT COLUMN ──────────────────────── */
+    .content {
+      min-width: 0;   /* let the grid inside shrink instead of overflowing */
+    }
+
+    /* Overview grid — flows from the top, like Julie's */
+    .overview { width: 100%; }
+    /* ── INTRO hero ───────────────────────────
+       Built from the design-system text classes (design.md §3):
+       .b-section-header headline → .b-section-subheader subheadline.
+       Type, weight, colour, and margins come from the classes; these
+       rules carry layout + spacing only. Width is matched to the
+       feature cards below (height-driven frame) so the column lines
+       up. The headline's own margin-bottom sets the gap. */
+    .overview-headline,
+    .overview-subhead {
+      width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
+    }
+    .overview-subhead { margin-top: 0; }
+    .overview-subhead em { font-style: normal; }   /* [data-highlight] phrase — no italics */
+    /* Nudge the grid down to bring the headline's cap-height into optical
+       alignment with the name (desktop only — on mobile the rail stacks
+       above it and provides its own spacing). Derived from the rail's own
+       stack — avatar height + the --sp-8 gap before .name, the same gap
+       token used for every other rail spacing (nav, context, tagline,
+       location) — rather than a pixel guess, so it stays correct if the
+       avatar size ever changes. */
+    @media (min-width: 1024px) {
+      .overview { padding-top: calc(var(--rail-avatar-size) + var(--sp-8)); }
+    }
+    /* Explicit responsive columns + minmax(0,1fr).
+       The minmax(0,…) is the classic trick: it lets tracks
+       shrink below their content so wide images never blow
+       out the columns.
+       1 col (phones) → 2 col (≥640px). With only 4 projects
+       we cap at 2 so there's no orphan 4th tile. When you add
+       a 5th/6th project, uncomment the 1280px rule for 3-up. */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--sp-6);
+      width: 100%;
+    }
+    @media (min-width: 640px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .tile {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);   /* hairline defines dark tiles */
+      display: block;
+    }
+    /* Static thumbnails — no hover zoom or label reveal.
+       The feature cards below carry the project captions. */
+    .tile img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    /* Feature sequence — live-media card + caption below */
+    .feature {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: var(--sp-16) 0;
+    }
+    /* Centered column: proportional thumbnail on top, caption centered below. */
+    .feature-card {
+      display: flex;
+      flex-direction: column;
+      align-items: var(--feature-align, center);
+      width: 100%;
+    }
+
+    /* Media frame — holds a looping video (or static image fallback).
+       Height-driven: fixed thumbnail height, and the WIDTH follows the image's
+       aspect ratio so it stays a proper thumbnail (no panoramic crop).
+       Tune the size in one place via --feature-media-h. */
+    .fc-media {
+      position: relative;
+      aspect-ratio: var(--feature-media-ar);   /* frame proportions; image fills it exactly */
+      width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
+      height: auto;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--color-surface);
+    }
+    .fc-media img,
+    .fc-media video {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 700ms var(--ease);
+    }
+    .feature-card:hover .fc-media img,
+    .feature-card:hover .fc-media video { transform: scale(1.03); }
+
+    /* Hover scrim — primary wash + "View project" call to action */
+    .fc-scrim {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: color-mix(in srgb, var(--color-primary) 50%, transparent);
+      opacity: 0;
+      transition: opacity 320ms var(--ease);
+    }
+    .feature-card:hover .fc-scrim,
+    .feature-card:focus-visible .fc-scrim { opacity: 1; }
+    .fc-cta {
+      display: inline-flex; align-items: center; gap: var(--sp-2);
+      font-size: var(--text-base); font-weight: 600;
+      letter-spacing: var(--tracking-wide);
+      color: #fff; text-shadow: 0 1px 14px rgba(0,0,0,0.35);
+      transform: translateY(6px);
+      transition: transform 320ms var(--ease);
+    }
+    .feature-card:hover .fc-cta { transform: none; }
+    .fc-cta .material-symbols-rounded { font-size: 20px; }
+
+    /* Caption below the media — single .b-label eyebrow, no title */
+    .fc-caption { margin-top: var(--sp-5); }
+    .fc-eyebrow {
+      margin-bottom: 0;                 /* below-media caption — no trailing gap */
+      transition: color 240ms var(--ease);
+    }
+    .feature-card:hover .fc-eyebrow { color: var(--color-primary); }
+
+    /* Closing spacer so the last project can center */
+    .tail { height: 30vh; }
+
+    @media (max-width: 1023px) {
+      .rail-avatar { width: 72px; height: 72px; }
+      .rail-context { display: none; }
+
+      .feature { display: block; min-height: 0; padding: var(--sp-12) 0 0; }
+      .fc-media { height: auto; width: 100%; aspect-ratio: 4 / 3; }   /* phones: size by width again */
+      .feature-card:hover .fc-scrim { opacity: 0; }
+
+      body { padding-top: 54px; }
+      .rail { position: relative; z-index: 1; }
+      .rail-nav {
+        position: fixed; left: 0; right: 0; top: 0; z-index: 25;
+        flex-direction: row; justify-content: space-around; gap: 0; margin: 0;
+        padding: calc(var(--sp-3) + env(safe-area-inset-top, 0px)) var(--sp-4) var(--sp-3);
+        background: var(--color-bg);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .rail-nav a { font-size: var(--text-sm); letter-spacing: var(--tracking-wide); }
+    }
+
+    .rail-nav a.is-active {
+      color: var(--color-primary);
+    }
+
+    .about {
+      padding: var(--sp-24) 0 var(--sp-16);
+      max-width: 640px;
+    }
+    .about-heading {
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      line-height: var(--leading-snug);
+      letter-spacing: var(--tracking-snug);
+      color: var(--color-text);
+      margin-bottom: var(--sp-6);
+    }
+    .about-body {
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      color: var(--color-text);
+      max-width: 56ch;
+    }
+    .about-body + .about-body { margin-top: var(--sp-4); }
+
+    .resume {
+      padding: var(--sp-24) 0 var(--sp-24);
+      max-width: 720px;
+    }
+    .resume-bio {
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      color: var(--color-text);
+      max-width: 60ch;
+    }
+    .resume-bio + .resume-bio { margin-top: var(--sp-4); }
+
+    .resume-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-3);
+      margin: var(--sp-10) 0 var(--sp-12);
+    }
+    .resume-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: 10px var(--sp-5);
+      border-radius: 999px;
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid var(--color-border);
+      transition: color 200ms var(--ease), border-color 200ms var(--ease), background 200ms var(--ease);
+    }
+    .resume-btn:hover {
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+      background: var(--color-primary-muted);
+    }
+    .resume-btn .material-symbols-rounded {
+      font-size: 18px;
+    }
+
+    .resume-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: 132px minmax(0, 1fr);
+      column-gap: var(--sp-8);
+      row-gap: var(--sp-10);
+    }
+    .resume-item {
+      display: contents;   /* children participate directly in the grid */
+    }
+    .resume-dates {
+      font-size: var(--text-base);
+      color: var(--color-text);
+      line-height: var(--leading-body);
+      padding-top: 2px;   /* optical alignment with the role line */
+    }
+    .resume-content {
+      min-width: 0;
+    }
+    .resume-role {
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      color: var(--color-text);
+    }
+    .resume-role .resume-tag {
+      color: var(--color-text-muted);
+    }
+    .resume-desc {
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      color: var(--color-text);
+      margin-top: var(--sp-2);
+    }
+
+    @media (max-width: 720px) {
+      .about, .resume { padding: var(--sp-16) 0; }
+      .about-heading { font-size: var(--text-lg); }
+      .resume-buttons { margin: var(--sp-8) 0 var(--sp-12); }
+      .resume-list {
+        grid-template-columns: 1fr;
+        row-gap: var(--sp-3);
+      }
+      .resume-item {
+        display: block;
+        padding-bottom: var(--sp-6);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .resume-item:last-child { border-bottom: none; padding-bottom: 0; }
+      .resume-dates { padding-top: 0; margin-bottom: var(--sp-1); }
+      .resume-desc { padding-left: 0; }
+    }
+
+    /* ═════════════════════════════════════════════════════════════
+       PLAYGROUND — button style dial kit
+       Scoped entirely to .resume-btn via [data-btn-variant] on <body>.
+       Baseline (no attribute / "current") is the untouched CSS above.
+       Fixed panel, own glass styling so it reads on both themes.
+    ═══════════════════════════════════════════════════════════════ */
+    body[data-btn-variant="fill-white"] .resume-btn:hover {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-on-primary);
+    }
+    body[data-btn-variant="fill-dark"] .resume-btn:hover {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--btn-fill-dark-text, #121212);
+    }
+    /* Invert: fill = the page's own text colour, text = the page's own bg
+       colour — already the inverse-contrast pair per theme, so this reads
+       as "white button on black" in dark mode and the mirrored high-contrast
+       treatment in light mode, with no hardcoded hex. */
+    body[data-btn-variant="invert"] .resume-btn {
+      background: var(--color-text);
+      border-color: var(--color-text);
+      color: var(--color-bg);
+    }
+    body[data-btn-variant="invert"] .resume-btn:hover {
+      opacity: 0.86;
+    }
+
+    #btn-dial {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 999;
+      width: 216px;
+      padding: 14px;
+      background: rgba(18, 18, 18, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(248, 246, 238, 0.12);
+      border-radius: 12px;
+      font-family: 'Manrope', sans-serif;
+      color: #F8F6EE;
+    }
+    #btn-dial .dial-label {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(248, 246, 238, 0.45);
+      margin-bottom: 8px;
+    }
+    #btn-dial .dial-seg {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: rgba(248, 246, 238, 0.06);
+      border-radius: 9px;
+      padding: 3px;
+    }
+    #btn-dial .dial-seg button {
+      font: inherit;
+      font-size: 12.5px;
+      text-align: left;
+      color: rgba(248, 246, 238, 0.65);
+      background: transparent;
+      border: 0;
+      border-radius: 7px;
+      padding: 7px 9px;
+      cursor: pointer;
+      transition: background 140ms ease, color 140ms ease;
+    }
+    #btn-dial .dial-seg button:hover { color: #F8F6EE; }
+    #btn-dial .dial-seg button[aria-pressed="true"] {
+      background: #ACA0E8;
+      color: #121212;
+      font-weight: 600;
+    }
+    #btn-dial .dial-jump {
+      display: block;
+      margin-top: 10px;
+      font-size: 11.5px;
+      color: rgba(248, 246, 238, 0.5);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      cursor: pointer;
+    }
+    #btn-dial .dial-jump:hover { color: #F8F6EE; }
+    @media (max-width: 1023px) {
+      #btn-dial { top: auto; bottom: 16px; right: 16px; left: 16px; width: auto; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── PLAYGROUND DIAL KIT ───────────────────
+       Switches which hover/fill treatment .resume-btn uses, live, so the
+       two real download pills in the Resume section can be compared in
+       place against the real layout/theme rather than in an isolated demo. -->
+  <div id="btn-dial">
+    <p class="dial-label">Resume button style</p>
+    <div class="dial-seg" role="group" aria-label="Button style variant">
+      <button type="button" data-variant="current" aria-pressed="true">Current (outline)</button>
+      <button type="button" data-variant="fill-white">Hover fill · white text</button>
+      <button type="button" data-variant="fill-dark">Hover fill · dark text</button>
+      <button type="button" data-variant="invert">Invert (high contrast)</button>
+    </div>
+    <span class="dial-jump" id="dial-jump">Jump to Resume ↓</span>
+  </div>
+  <script>
+    (function () {
+      var seg = document.querySelector('#btn-dial .dial-seg');
+      var jump = document.getElementById('dial-jump');
+      if (!seg) return;
+      seg.addEventListener('click', function (e) {
+        var btn = e.target.closest('button[data-variant]');
+        if (!btn) return;
+        var variant = btn.getAttribute('data-variant');
+        if (variant === 'current') {
+          document.body.removeAttribute('data-btn-variant');
+        } else {
+          document.body.setAttribute('data-btn-variant', variant);
+        }
+        seg.querySelectorAll('button').forEach(function (b) {
+          b.setAttribute('aria-pressed', String(b === btn));
+        });
+      });
+      if (jump) {
+        jump.addEventListener('click', function () {
+          var el = document.getElementById('resume');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+    })();
+  </script>
+
+  <div class="home-shell">
+   <div class="home-cols">
+
+  <!-- ── LEFT RAIL ──────────────────────────── -->
+  <aside class="rail" id="rail">
+    <div class="rail-identity" id="top">
+      <a class="rail-avatar-link" href="#top" aria-label="Back to top">
+        <span class="rail-avatar">
+          <img class="rail-avatar-face rail-avatar-face--photo" src="../project%20content/profile-photo.png" alt="Aditya Gujaran" />
+          <img class="rail-avatar-face rail-avatar-face--art" src="../project%20content/profile-caricature.png" alt="" aria-hidden="true" />
+        </span>
+      </a>
+      <p class="name">Aditya Gujaran<br><span class="role">Product designer</span></p>
+    </div>
+
+    <div class="rail-context">
+      <div class="rail-intro">
+        <p class="tagline">the <em data-highlight>why behind the what</em><br>has never been more important</p>
+        <p class="location"><span data-tooltip="PT national · open to relocation">Based in Lisbon</span></p>
+      </div>
+    </div>
+
+    <nav class="rail-nav" aria-label="Section navigation">
+      <a href="#portfolio" data-section-link="portfolio">WORK</a>
+      <a href="#about"    data-section-link="about">ABOUT</a>
+      <a href="#resume"   data-section-link="resume">RESUME</a>
+    </nav>
+  </aside>
+
+  <!-- ── RIGHT COLUMN ──────────────────────── -->
+  <main class="content">
+
+    <section class="overview" id="overview">
+      <h1 class="b-section-header overview-headline">Builder with a design practice that focuses on rigorous, rapid UX research to enable high velocity product delivery.</h1>
+      <p class="b-section-subheader overview-subhead">the <em data-highlight data-highlight-auto="1000">why behind the what</em><br>has never been more important</p>
+    </section>
+
+    <section class="portfolio" id="portfolio">
+    <section class="feature">
+      <a class="feature-card" href="../lockers-reducing-cancellation.html">
+        <div class="fc-media">
+          <img src="../project%20content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO.png" alt="Bounce — Lockers PUDO" />
+          <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
+        </div>
+        <div class="fc-caption">
+          <span class="fc-eyebrow b-label b-label-strong" data-eyebrow-for="lockers-reducing-cancellation"></span>
+        </div>
+      </a>
+    </section>
+
+    <section class="feature">
+      <a class="feature-card" href="../decision-module.html">
+        <div class="fc-media">
+          <img src="../project%20content/2%20Decision%20module%20for%20framer/Thumbnail%20-%20decision%20module.png" alt="Decision Module — Unbabel" />
+          <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
+        </div>
+        <div class="fc-caption">
+          <span class="fc-eyebrow b-label b-label-strong" data-eyebrow-for="decision-module"></span>
+        </div>
+      </a>
+    </section>
+
+    <section class="feature">
+      <a class="feature-card" href="../trq-dad.html">
+        <div class="fc-media">
+          <img src="../project%20content/3%20DAD%20Images%20for%20framer/Thumbnail%20-%20TRQ%20DAD.png" alt="TRQ DAD — Cocoon" />
+          <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
+        </div>
+        <div class="fc-caption">
+          <span class="fc-eyebrow b-label b-label-strong" data-eyebrow-for="trq-dad"></span>
+        </div>
+      </a>
+    </section>
+    </section><!-- /.portfolio -->
+
+    <!-- ── ABOUT ──────────────────────────────── -->
+    <section class="about" id="about">
+      <h2 class="about-heading">I am here to design and define.</h2>
+      <p class="about-body">I work at the overlap of product strategy, user research, interaction design, and visual craft — with a particular fondness for the 0→1 problem, the moment before the product exists.</p>
+      <p class="about-body">I believe good design is argued for, not just executed. The best outcomes come from designers who can speak business and researchers who can speak design.</p>
+    </section>
+
+    <!-- ── RESUME ─────────────────────────────── -->
+    <section class="resume" id="resume">
+      <p class="resume-bio">I am a business oriented product designer and digital storyteller.</p>
+      <p class="resume-bio">I have 10+ years of experience across B2B and B2C, in startups and consulting.</p>
+
+      <div class="resume-buttons">
+        <a class="resume-btn" href="https://drive.google.com/file/d/1FJDZI8xlQgeWfl7zgbS3LjaTYYZJbWh3/view" target="_blank" rel="noopener">
+          <span class="material-symbols-rounded">download</span>
+          <span>RESUME.PDF</span>
+        </a>
+        <a class="resume-btn" href="../resume.md" target="_blank" rel="noopener">
+          <span class="material-symbols-rounded">download</span>
+          <span>RESUME.MD</span>
+        </a>
+      </div>
+
+      <ol class="resume-list">
+        <li class="resume-item">
+          <div class="resume-dates">2025 – 2024</div>
+          <div class="resume-content">
+            <div class="resume-role">Sr. Product designer at Bounce <span class="resume-tag">B2C / mobile</span></div>
+            <p class="resume-desc">Built the lockers product from 0 to 1 (250K ARR)</p>
+          </div>
+        </li>
+        <li class="resume-item">
+          <div class="resume-dates">2023 – 2020</div>
+          <div class="resume-content">
+            <div class="resume-role">Sr. Product designer at Unbabel <span class="resume-tag">B2B / desktop</span></div>
+            <p class="resume-desc">Built internal tooling for linguists (5 products total)</p>
+          </div>
+        </li>
+        <li class="resume-item">
+          <div class="resume-dates">2019 – 2016</div>
+          <div class="resume-content">
+            <div class="resume-role">Freelance at Cocoon Experience and With Company</div>
+            <p class="resume-desc">Projects in Insurance, Healthcare, Retail</p>
+          </div>
+        </li>
+        <li class="resume-item">
+          <div class="resume-dates">2015 – 2013</div>
+          <div class="resume-content">
+            <div class="resume-role">Experience designer at Novabase</div>
+            <p class="resume-desc">Projects in telecom, Urban mobility</p>
+          </div>
+        </li>
+        <li class="resume-item">
+          <div class="resume-dates">Summer 2012</div>
+          <div class="resume-content">
+            <div class="resume-role">UX Researcher at Google</div>
+            <p class="resume-desc">Embedded in the Google+ Photos and Events team. Conducted formative research and usability testing.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <div class="tail"></div>
+  </main>
+
+   </div><!-- /.home-cols -->
+  </div><!-- /.home-shell -->
+
+  <!-- Theme toggle — injected by components/theme.js -->
+
+  <script>
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('a[href]');
+      if (a && a.hostname === location.hostname && a.pathname !== '/' && a.pathname !== '/index.html') {
+        sessionStorage.setItem('triggerEntrance', '1');
+      }
+    });
+  </script>
+
+  <script src="../components/projects.js"></script>
+  <script src="../components/image-modal.js"></script>
+  <script src="../components/text_highlight.js"></script>
+  <script src="../components/tooltip.js"></script>
+
+  <script>
+    (function () {
+      var navLinks = document.querySelectorAll('.rail-nav a[data-section-link]');
+      if (!navLinks.length) return;
+
+      var sections = [];
+      navLinks.forEach(function (link) {
+        var id = link.getAttribute('data-section-link');
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el, link: link });
+      });
+      if (!sections.length) return;
+
+      var LINE = 0;
+      var rafPending = false;
+
+      function update() {
+        rafPending = false;
+        var activeId = null;
+        sections.forEach(function (s) {
+          if (s.el.getBoundingClientRect().top < LINE) activeId = s.id;
+        });
+        navLinks.forEach(function (link) {
+          link.classList.toggle('is-active', link.getAttribute('data-section-link') === activeId);
+        });
+      }
+
+      function onScroll() {
+        if (rafPending) return;
+        rafPending = true;
+        requestAnimationFrame(update);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      window.addEventListener('load', onScroll);
+      update();
+    })();
+  </script>
+
+  <script>
+    (function () {
+      var mq = window.matchMedia('(min-width: 1024px)');
+      var rail = document.getElementById('rail');
+      var overview = document.getElementById('overview');
+      if (!mq || !rail || !overview) return;
+
+      var rafPending = false;
+      function update() {
+        rafPending = false;
+        var rect = overview.getBoundingClientRect();
+        rail.classList.toggle('rail--context-visible', rect.top < -rect.height * 0.4);
+      }
+      function onScroll() {
+        if (!mq.matches) { rail.classList.remove('rail--context-visible'); return; }
+        if (rafPending) return;
+        rafPending = true;
+        requestAnimationFrame(update);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      onScroll();
+    })();
+  </script>
+
+  <script>
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var link = document.querySelector('.rail-avatar-link');
+      var disc = link && link.querySelector('.rail-avatar');
+      if (!disc) return;
+
+      var ENTER_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
+      var LEAVE_EASE = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
+      var ENTER_MS = 1200;
+      var LEAVE_MS = 500;
+      var SPIN = -900;
+      var landTimer;
+
+      link.addEventListener('mouseenter', function () {
+        clearTimeout(landTimer);
+        disc.style.transition = 'transform ' + ENTER_MS + 'ms ' + ENTER_EASE;
+        disc.style.transform = 'rotateY(' + SPIN + 'deg)';
+        landTimer = setTimeout(function () {
+          disc.style.transition = 'none';
+          disc.style.transform = 'rotateY(-180deg)';
+          void disc.offsetWidth;
+        }, ENTER_MS);
+      });
+
+      link.addEventListener('mouseleave', function () {
+        clearTimeout(landTimer);
+        disc.style.transition = 'transform ' + LEAVE_MS + 'ms ' + LEAVE_EASE;
+        disc.style.transform = 'rotateY(0deg)';
+      });
+    })();
+  </script>
+</body>
+</html>
