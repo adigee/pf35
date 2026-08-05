@@ -416,6 +416,20 @@ When panels are hidden on mobile (`≤768px`), `.mobile-visual` cards replace th
 - `.mobile-visual--plain` — default background
 - `.mobile-visual--img` — image container with shadow
 
+### Case Studies — Reading Rhythm
+
+Case-study content uses a three-tier vertical rhythm inside `.cs-section`. The spacing matches the semantic weight of each transition, not a single uniform gap.
+
+| Transition | Token | Value | Role |
+|---|---|---|---|
+| paragraph → paragraph | `--sp-4` | 16px | continuation of prose |
+| list → next element | `--sp-6` | 24px | end of a related group |
+| section break (figure / callout / outcomes → next) | `--sp-16` | 64px | new section |
+
+Within `.cs-section`, the fallback is `margin-top: 16px` (`.cs-section > * + *`); the table above shows the overrides layered on top.
+
+**List (`cs-list`):** bullet lists are inline content, not structural blocks. They use `padding-left: var(--sp-6)` (24px) for the indent. The 24px trailing margin aligns with the list's own indent token and sits one tier above the paragraph rhythm, one tier below the section break.
+
 ---
 
 ## 8. Responsive Behavior
@@ -491,4 +505,4 @@ These rules are strict. They exist because this is a small, deliberate codebase 
 
 ---
 
-*Last updated: 2026-07-29*
+*Last updated: 2026-08-04*
