@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rail — Intro Text Reveal on Scroll</title>
+<style>
+  /* ─────────────────────────────────────────
+     RAIL INTRO-REVEAL — exploration
+     Idea: on page load the intro text lives only in the
+     right-column overview (the "intro section"). The left
+     rail shows just identity + nav — a blank middle. Once the
+     overview scrolls up past a threshold (heading toward the
+     first project), the same text pops into the rail and stays
+     there, easily reachable while browsing the work. Scrolling
+     back to the top hides it again.
+
+     Mechanism: a .rail--context-visible class toggled on scroll;
+     .rail-context fades + slides up via CSS transition.
+     Desktop-only (≥1024px, where the rail is sticky); below that
+     the text is always visible. Reduced-motion gets an instant
+     swap. This file inlines the whole homepage shell so the idea
+     can be played with in isolation.
+  ───────────────────────────────────────── */
+
+  :root {
+    --color-bg: #121212;
+    --color-surface: #1E1D1A;
+    --color-border: rgba(248, 246, 238, 0.10);
+    --color-text: #F8F6EE;
+    --color-text-muted: rgba(248, 246, 238, 0.60);
+    --color-primary: #ACA0E8;
+    --font-body: 'Manrope', system-ui, sans-serif;
+    --sp-1: 0.25rem; --sp-2: 0.5rem; --sp-3: 0.75rem; --sp-4: 1rem;
+    --sp-5: 1.25rem; --sp-6: 1.5rem; --sp-8: 2rem; --sp-10: 2.5rem;
+    --sp-12: 3rem; --sp-16: 4rem;
+    --text-sm: 0.875rem; --text-base: 1rem; --text-lg: 1.75rem; --text-2xl: 2.75rem;
+    --leading-body: 1.6; --leading-normal: 1.4;
+    --tracking-snug: -0.02em; --tracking-wide: 0.04em;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --rail-w: 354px;
+    --page-pad: 40px;
+    --page-max: 1440px;
+    --feature-media-h: 65vh;
+    --feature-media-ar: 4 / 3;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .home-shell {
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding: var(--page-pad);
+  }
+  .home-cols { display: grid; gap: var(--sp-10); }
+  @media (min-width: 1024px) {
+    .home-cols {
+      grid-template-columns: var(--rail-w) minmax(0, 1fr);
+      gap: var(--sp-16);
+      align-items: start;
+    }
+  }
+
+  /* ── LEFT RAIL ── */
+  .rail { display: flex; flex-direction: column; }
+  @media (min-width: 1024px) {
+    .rail {
+      position: sticky;
+      top: var(--page-pad);
+      height: calc(100vh - var(--page-pad) * 2);
+    }
+  }
+
+  .rail-avatar {
+    display: block;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  .rail-identity .name {
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    font-weight: 700;
+    letter-spacing: var(--tracking-snug);
+    margin-top: var(--sp-8);
+  }
+  .rail-identity .name .role { color: var(--color-primary); }
+
+  /* The middle block — blank at the top, pops in on scroll. */
+  .rail-context {
+    flex: 1;
+    margin-top: var(--sp-8);
+    transition: opacity 500ms var(--ease), transform 500ms var(--ease);
+  }
+  .rail:not(.rail--context-visible) .rail-context {
+    opacity: 0;
+    transform: translateY(18px);
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) { .rail-context { transition: none; } }
+
+  .rail-intro .bio {
+    font-size: 14px;
+    line-height: var(--leading-body);
+    max-width: 34ch;
+  }
+  .rail-intro .tagline {
+    font-size: 14px;
+    line-height: var(--leading-body);
+    margin-top: var(--sp-8);
+  }
+  .rail-intro .tagline em { font-style: normal; color: var(--color-primary); }
+  .rail-intro .location {
+    font-size: 14px;
+    margin-top: var(--sp-8);
+  }
+
+  .rail-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: var(--sp-8);
+    flex-shrink: 0;
+  }
+  .rail-nav a {
+    font-size: 18px;
+    letter-spacing: var(--tracking-wide);
+    width: fit-content;
+    transition: color 240ms var(--ease);
+  }
+  .rail-nav a:hover { color: var(--color-primary); }
+
+  /* ── RIGHT COLUMN ── */
+  .content { min-width: 0; }
+
+  .overview { width: 100%; }
+  .overview-headline,
+  .overview-subhead {
+    width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
+    margin-inline: auto;
+    text-align: center;
+  }
+  .overview-headline { font-size: var(--text-lg); line-height: var(--leading-body); font-weight: 400; }
+  .overview-subhead { font-size: var(--text-lg); line-height: var(--leading-body); margin-top: var(--sp-5); }
+  .overview-subhead em { font-style: normal; color: var(--color-primary); }
+  @media (min-width: 1024px) { .overview { padding-top: 112px; } }
+
+  /* Project placeholders — tall so there's plenty to scroll */
+  .feature {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-16) 0;
+  }
+  .ph {
+    width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
+    aspect-ratio: var(--feature-media-ar);
+    border-radius: 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+  .tail { height: 30vh; }
+
+  /* ── MOBILE: rail stacks as a header; nav goes to a fixed top bar ── */
+  @media (max-width: 1024px) {
+    .rail-context { flex: none; }
+  }
+  @media (max-width: 720px) {
+    body { padding-top: 54px; }
+    .rail-avatar { width: 72px; height: 72px; }
+    .rail-nav {
+      position: fixed; left: 0; right: 0; top: 0; z-index: 25;
+      flex-direction: row; justify-content: space-around; gap: 0; margin: 0;
+      padding: var(--sp-3) var(--sp-4);
+      background: rgba(18, 18, 18, 0.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .rail-nav a { font-size: var(--text-sm); letter-spacing: var(--tracking-wide); }
+    .feature { min-height: 0; padding: var(--sp-12) 0 0; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="home-shell">
+   <div class="home-cols">
+
+  <!-- ── LEFT RAIL ──────────────────────────── -->
+  <aside class="rail" id="rail">
+    <div class="rail-identity" id="top">
+      <img class="rail-avatar" src="https://placehold.co/100x100/1E1D1A/F8F6EE?text=AD" alt="" />
+      <p class="name">Aditya Gujaran<br><span class="role">Product designer</span></p>
+    </div>
+
+    <div class="rail-context">
+      <div class="rail-intro">
+        <p class="bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p>
+        <p class="tagline">the <em>why behind the what</em>,<br>has never been more important</p>
+        <p class="location">Based in Lisbon</p>
+      </div>
+    </div>
+
+    <nav class="rail-nav" aria-label="Section navigation">
+      <a href="#overview">WORK</a>
+      <a href="#about">ABOUT</a>
+      <a href="#resume">RESUME</a>
+    </nav>
+  </aside>
+
+  <!-- ── RIGHT COLUMN ──────────────────────── -->
+  <main class="content">
+
+    <section class="overview" id="overview">
+      <h1 class="overview-headline">Builder with a design practice that focuses on rigorous, rapid UX research to enable high velocity product delivery.</h1>
+      <p class="overview-subhead">the <em>why behind the what</em>,<br>has never been more important</p>
+    </section>
+
+    <section class="feature" id="about"><div class="ph">Project — Lockers PUDO</div></section>
+    <section class="feature"><div class="ph">Project — Decision Module</div></section>
+    <section class="feature" id="resume"><div class="ph">Project — TRQ DAD</div></section>
+
+    <div class="tail"></div>
+  </main>
+
+   </div><!-- /.home-cols -->
+  </div><!-- /.home-shell -->
+
+  <script>
+    /* Rail intro-text reveal — see header comment. */
+    (function () {
+      var mq = window.matchMedia('(min-width: 1024px)');
+      var rail = document.getElementById('rail');
+      var overview = document.getElementById('overview');
+      if (!mq || !rail || !overview) return;
+
+      var rafPending = false;
+      function update() {
+        rafPending = false;
+        var rect = overview.getBoundingClientRect();
+        // Reveal once ~40% of the intro section has scrolled past the top edge.
+        rail.classList.toggle('rail--context-visible', rect.top < -rect.height * 0.4);
+      }
+      function onScroll() {
+        if (!mq.matches) { rail.classList.remove('rail--context-visible'); return; }
+        if (rafPending) return;
+        rafPending = true;
+        requestAnimationFrame(update);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      onScroll();
+    })();
+  </script>
+</body>
+</html>

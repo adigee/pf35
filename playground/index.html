@@ -70,6 +70,22 @@
     <div class="list">
 
       <!-- Newest first -->
+      <a class="card" href="rail-intro-reveal.html">
+        <div class="card-top">
+          <p class="card-title">Rail — intro text reveal on scroll <span class="card-arrow">→</span></p>
+          <span class="card-date">2026-08-05</span>
+        </div>
+        <p class="card-desc">
+          Homepage left-rail idea: on page load the intro text lives only in the right-column
+          overview (the "intro section") and the rail shows just identity + nav — a blank middle.
+          Once the overview scrolls up past a threshold (heading toward the first project), the
+          same text pops into the rail and stays, easily reachable while browsing the work;
+          scrolling back up hides it again. Fade + slide-up via a <b>.rail--context-visible</b>
+          class toggled on scroll. Desktop-only (the rail is sticky ≥1024px); reduced-motion
+          gets an instant swap.
+        </p>
+      </a>
+
       <a class="card" href="intro-section-text-styles.html">
         <div class="card-top">
           <p class="card-title">Homepage intro — text-style architecture <span class="card-arrow">→</span></p>
