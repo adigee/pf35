@@ -22,6 +22,14 @@
    light palette turned it into an orange chip, so the colours are
    deliberately fixed (only the font-size token is inherited).
 
+   Hover affordance: every trigger gets a dotted underline (25% mix
+   of --color-text at rest, brightening to --color-primary on
+   hover/focus) plus a help cursor, so the text reads as hoverable
+   before the tooltip ever opens. Dotted rather than solid so it
+   can't be mistaken for a real link (solid underline) or for the
+   [data-highlight] marker. Chosen over color/glyph alternatives in
+   playground/hover-affordance.html on the `playground` branch.
+
    Load it like the other chrome components:
      <script src="components/tooltip.js"></script>
 ───────────────────────────────────────── */
@@ -35,7 +43,13 @@
      define motion vars. */
   var style = document.createElement('style');
   style.textContent =
-    '.b-tt-anchor{position:relative;display:inline-block;}' +
+    '.b-tt-anchor{position:relative;display:inline-block;' +
+    'text-decoration:underline dotted;' +
+    'text-decoration-color:color-mix(in srgb, var(--color-text) 25%, transparent);' +
+    'text-underline-offset:3px;text-decoration-thickness:1px;' +
+    'cursor:help;transition:text-decoration-color 120ms ease;}' +
+    '.b-tt-anchor:hover,.b-tt-anchor:focus-visible{' +
+    'text-decoration-color:var(--color-primary);}' +
 
     '.b-tt{position:absolute;z-index:30;pointer-events:none;' +
     'max-width:260px;width:max-content;' +

@@ -32,11 +32,16 @@
       '.highlight{position:relative;display:inline-block;white-space:nowrap;}' +
       '.highlight__ink{position:absolute;left:-0.22em;top:-0.18em;' +
         'width:calc(100% + 0.44em);height:calc(100% + 0.30em);' +
-        'pointer-events:none;z-index:0;}' +
+        'pointer-events:none;z-index:0;' +
+        'clip-path:inset(0 0 0 0);' +
+        'transition:clip-path 0.15s ease;}' +
       '.highlight__base{fill:rgb(var(--highlight-ink,172,160,232));transition:fill .25s ease;}' +
       '.highlight:hover .highlight__base{fill:color-mix(in srgb,rgb(var(--highlight-ink,172,160,232)) 90%,#000 10%);}' +
       '.highlight__text{position:relative;z-index:1;color:var(--color-accent-on-accent);}' +
-      '@media (prefers-reduced-motion: reduce){.highlight__base{transition:none;}}';
+      '.highlight.removing .highlight__ink{clip-path:inset(0 100% 0 0);transition:clip-path 0.12s ease;}' +
+      '.highlight.redrawing .highlight__ink{animation:highlight-sweep 0.45s cubic-bezier(0.22,1,0.36,1) forwards;}' +
+      '@keyframes highlight-sweep{0%{clip-path:inset(0 100% 0 0);}100%{clip-path:inset(0 0 0 0);}}' +
+      '@media (prefers-reduced-motion: reduce){.highlight__base{transition:none;}.highlight.redrawing .highlight__ink{animation:none;}}';
     (document.head || document.documentElement).appendChild(style);
   }
 
@@ -70,6 +75,24 @@
     /* Set text via textContent so any characters in the source are escaped. */
     el.querySelector('.highlight__text').textContent = text;
     el.setAttribute('data-highlight-ready', '1');
+
+    el.addEventListener('click', function () {
+      if (el.classList.contains('redrawing')) return;
+
+      el.classList.add('removing');
+
+      var ink = el.querySelector('.highlight__ink');
+      if (!ink) return;
+
+      ink.addEventListener('transitionend', function onRemoveDone() {
+        el.classList.remove('removing');
+        el.classList.add('redrawing');
+
+        ink.addEventListener('animationend', function () {
+          el.classList.remove('redrawing');
+        }, { once: true });
+      }, { once: true });
+    });
   }
 
   function mount() {
