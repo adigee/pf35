@@ -38,8 +38,8 @@
       '.highlight__base{fill:rgb(var(--highlight-ink,172,160,232));transition:fill .25s ease;}' +
       '.highlight:hover .highlight__base{fill:color-mix(in srgb,rgb(var(--highlight-ink,172,160,232)) 90%,#000 10%);}' +
       '.highlight__text{position:relative;z-index:1;color:var(--color-accent-on-accent);}' +
-      '.highlight.removing .highlight__ink{clip-path:inset(0 100% 0 0);transition:clip-path 0.12s ease;}' +
-      '.highlight.redrawing .highlight__ink{animation:highlight-sweep 0.45s cubic-bezier(0.22,1,0.36,1) forwards;}' +
+      '.highlight.removing .highlight__ink{clip-path:inset(0 100% 0 0);transition:clip-path 0.25s cubic-bezier(0.65,0,0.35,1);}' +
+      '.highlight.redrawing .highlight__ink{animation:highlight-sweep 1.4s cubic-bezier(0.65,0,0.35,1) forwards;}' +
       '@keyframes highlight-sweep{0%{clip-path:inset(0 100% 0 0);}100%{clip-path:inset(0 0 0 0);}}' +
       '@media (prefers-reduced-motion: reduce){.highlight__base{transition:none;}.highlight.redrawing .highlight__ink{animation:none;}}';
     (document.head || document.documentElement).appendChild(style);
