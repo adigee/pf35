@@ -112,10 +112,6 @@
     /* Starts 680ms in (600ms rail + 80ms gap) so the column visibly follows
        the rail rather than racing it. */
     .content { animation: column-slide-up 620ms var(--ease) 680ms both; }
-    @media (prefers-reduced-motion: reduce) {
-      .rail, .rail-identity, .content { animation: none; }
-    }
-
     /* ── LEFT RAIL ─────────────────────────── */
     .rail {
       display: flex;
@@ -477,6 +473,12 @@
       }
       .rail-nav a { font-size: var(--text-sm); letter-spacing: var(--tracking-wide); }
 
+    }
+
+    /* Keep after the ≤1023px block so reduced-motion wins over the
+       mobile .rail-identity animation by source order. */
+    @media (prefers-reduced-motion: reduce) {
+      .rail, .rail-identity, .content { animation: none; }
     }
 
     /* ─────────────────────────────────────────
