@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word Cycle — Headline Playground</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="components/head.js"></script>
+  <script src="components/theme.js"></script>
+
+  <style>
+    /* ─────────────────────────────────────────
+       WORD CYCLE — PARKED EXPLORATION
+       Captured from the homepage headline dial kit
+       (continuous → rigorous → rapid cycling in one
+       slot, in context). Saved on the playground
+       branch for later review; the live homepage is
+       restored to its committed state.
+    ───────────────────────────────────────── */
+
+    :root {
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --feature-media-h: 65vh;      /* homepage token, for the headline width */
+      --feature-media-ar: 4 / 3;
+    }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── PAGE SHELL — homepage overview context ── */
+    .pg-shell {
+      max-width: 1440px;
+      margin-inline: auto;
+      padding: 40px;
+    }
+    .pg-note {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      font-weight: 600;
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: var(--sp-8);
+    }
+    .overview { width: 100%; }
+    .overview-headline,
+    .overview-subhead {
+      width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
+    }
+    .overview-subhead { margin-top: 0; }
+    .overview-subhead em { font-style: normal; }
+    @media (min-width: 1024px) {
+      .overview { padding-top: 112px; }
+    }
+
+    /* ── HEADLINE WORD CYCLE ───────────────────
+       Same implementation as the homepage dial kit.
+       The incoming face overlays absolutely so the line
+       never collapses; only variants are toggleable
+       from the .pg-dial panel (bottom-left). */
+    .cycle-word {
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+      white-space: nowrap;
+      vertical-align: baseline;
+    }
+    .cycle-word .cw-face { display: block; white-space: nowrap; }
+    .cycle-word.js-cyc .cw-face { will-change: transform, opacity; }
+    .cycle-word.js-cyc .cw-face.is-in { position: absolute; top: 0; left: 0; }
+    .cycle-word.js-cyc { transition: width var(--cw-dur, 460ms) var(--ease); }
+
+    /* Flip — split-flap, train-station board: chars hinge down in sequence. */
+    .cycle-word[data-variant="flip"] { perspective: 480px; }
+    .cycle-word[data-variant="flip"] .cw-face.is-in .cw-char {
+      display: inline-block;
+      transform-origin: 50% 0;
+      transform: rotateX(-92deg);
+      opacity: 0;
+    }
+    .cycle-word[data-variant="flip"].js-cyc .cw-face.is-in .cw-char {
+      animation: cw-flip-in var(--cw-dur, 460ms) cubic-bezier(0.4, 0.1, 0.2, 1) both;
+      animation-delay: calc(var(--cw-i) * var(--cw-stagger, 34ms));
+    }
+    @keyframes cw-flip-in {
+      0%   { opacity: 0; transform: rotateX(-92deg); }
+      100% { opacity: 1; transform: rotateX(0deg); }
+    }
+    .cycle-word[data-variant="flip"] .cw-face.is-out {
+      animation: cw-flip-out 300ms cubic-bezier(0.4, 0.1, 0.2, 1) both;
+    }
+    @keyframes cw-flip-out { to { opacity: 0; transform: rotateX(92deg); } }
+
+    /* Roll — words ride up through the slot, rolling into each other. */
+    .cycle-word[data-variant="roll"] .cw-face.is-in {
+      animation: cw-roll-in var(--cw-dur, 440ms) var(--ease) both;
+    }
+    .cycle-word[data-variant="roll"] .cw-face.is-out {
+      animation: cw-roll-out var(--cw-dur, 440ms) var(--ease) both;
+    }
+    @keyframes cw-roll-in  { from { opacity: 0; transform: translateY(115%); } to { opacity: 1; transform: none; } }
+    @keyframes cw-roll-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-115%); } }
+
+    /* Fade — soft crossfade with a slight drift. */
+    .cycle-word[data-variant="fade"] .cw-face.is-in {
+      animation: cw-fade-in var(--cw-dur, 520ms) var(--ease) both;
+    }
+    .cycle-word[data-variant="fade"] .cw-face.is-out {
+      animation: cw-fade-out var(--cw-dur, 520ms) var(--ease) both;
+    }
+    @keyframes cw-fade-in  { from { opacity: 0; transform: translateY(0.35em); } to { opacity: 1; transform: none; } }
+    @keyframes cw-fade-out { from { opacity: 1; } to { opacity: 0; transform: translateY(-0.35em); } }
+
+    /* Cycle off — plain original text, no slot. */
+    .cycle-word.is-static { overflow: visible; white-space: normal; }
+    .cycle-word.is-static .cw-face { position: static; opacity: 1; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cycle-word .cw-face { animation: none !important; opacity: 1 !important; transform: none !important; }
+    }
+
+    /* ── DIAL KIT (fixed, bottom-left) ───────── */
+    .pg-dial {
+      position: fixed;
+      left: 24px; bottom: 24px;
+      z-index: 30;
+      max-width: min(360px, calc(100vw - 48px));
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: var(--sp-4) var(--sp-5);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+      font-family: var(--font-mono);
+    }
+    .pg-dial__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-3);
+    }
+    .pg-dial__title {
+      font-size: var(--text-2xs);
+      font-weight: 600;
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    .pg-dial__toggle {
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      padding: 2px;
+      display: grid;
+      place-items: center;
+      transition: transform 240ms var(--ease);
+    }
+    .pg-dial__toggle .material-symbols-rounded { font-size: 18px; }
+    .pg-dial.is-collapsed .pg-dial__toggle { transform: rotate(180deg); }
+    .pg-dial__body {
+      margin-top: var(--sp-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+    .pg-dial.is-collapsed .pg-dial__body { display: none; }
+    .pg-row { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+    .pg-row__label {
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+      color: var(--color-text-subtle);
+      width: 52px;
+      flex-shrink: 0;
+    }
+    .pg-pill {
+      font-size: var(--text-2xs);
+      font-weight: 600;
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface-2);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: color 200ms var(--ease), border-color 200ms var(--ease), background 200ms var(--ease);
+    }
+    .pg-pill:hover { color: var(--color-primary); border-color: var(--color-primary); }
+    .pg-pill.is-active {
+      color: var(--color-on-primary);
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    @media (max-width: 1023px) {
+      .pg-shell { padding: 24px; }
+      .overview { padding-top: 48px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="pg-shell">
+    <p class="pg-note">Parked exploration · headline word cycle · continuous → rigorous → rapid</p>
+
+    <!-- The homepage overview, in context. The cycling slot is the only change. -->
+    <section class="overview" id="overview">
+      <h1 class="b-section-header overview-headline">Product builder with a design practice that anchors on <span class="cycle-word" id="cycleWord" data-words="continuous|rigorous|rapid" data-variant="flip"><span class="cw-face is-current">continuous</span></span> UX research to enable high velocity product delivery.</h1>
+      <p class="b-section-subheader overview-subhead">the <em>why behind the what</em><br>has never been more important</p>
+    </section>
+  </main>
+
+  <!-- ── PLAYGROUND DIAL: HEADLINE CYCLE ────── -->
+  <div class="pg-dial" id="pgDial">
+    <div class="pg-dial__head">
+      <span class="pg-dial__title">Playground · Headline cycle</span>
+      <button class="pg-dial__toggle" id="pgDialToggle" aria-label="Collapse panel">
+        <span class="material-symbols-rounded">chevron_left</span>
+      </button>
+    </div>
+    <div class="pg-dial__body">
+      <div class="pg-row">
+        <span class="pg-row__label">Cycle</span>
+        <button class="pg-pill is-active" data-cw-cycle="on">On</button>
+        <button class="pg-pill" data-cw-cycle="off">Off</button>
+      </div>
+      <div class="pg-row">
+        <span class="pg-row__label">Variant</span>
+        <button class="pg-pill is-active" data-cw-variant="flip">Flip</button>
+        <button class="pg-pill" data-cw-variant="roll">Roll</button>
+        <button class="pg-pill" data-cw-variant="fade">Fade</button>
+      </div>
+      <div class="pg-row">
+        <span class="pg-row__label">Pace</span>
+        <button class="pg-pill is-active" data-cw-pace="rapid">Rapid</button>
+        <button class="pg-pill" data-cw-pace="steady">Steady</button>
+        <button class="pg-pill" data-cw-pace="relaxed">Relaxed</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cycles continuous → rigorous → rapid in the headline. Reduced motion
+       swaps words instantly. -->
+  <script>
+    (function () {
+      var slot = document.getElementById('cycleWord');
+      if (!slot) return;
+
+      var WORDS = (slot.getAttribute('data-words') || 'continuous|rigorous|rapid').split('|');
+      var REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      var variant = slot.getAttribute('data-variant') || 'flip';
+      var pace = 'rapid';
+      var running = true;
+      var idx = 1;
+      var timer = null;
+
+      var PACES = {
+        rapid:   { dur: 360,  stagger: 26, interval: 1900 },
+        steady:  { dur: 460,  stagger: 38, interval: 2400 },
+        relaxed: { dur: 620,  stagger: 54, interval: 3200 }
+      };
+
+      function applyPace() {
+        var p = PACES[pace];
+        slot.style.setProperty('--cw-dur', (REDUCE ? 0 : p.dur) + 'ms');
+        slot.style.setProperty('--cw-stagger', (REDUCE ? 0 : p.stagger) + 'ms');
+      }
+
+      // Flip animates characters (train-station board); roll/fade animate the
+      // whole word. Build the incoming face accordingly.
+      function makeFace(word, cls) {
+        var f = document.createElement('span');
+        f.className = 'cw-face' + (cls ? ' ' + cls : '');
+        if (variant === 'flip') {
+          for (var c = 0; c < word.length; c++) {
+            var ch = document.createElement('span');
+            ch.className = 'cw-char';
+            ch.style.setProperty('--cw-i', c);
+            ch.textContent = word[c];
+            f.appendChild(ch);
+          }
+        } else {
+          f.textContent = word;
+        }
+        return f;
+      }
+
+      function swap() {
+        var nextWord = WORDS[idx];
+        var out = slot.querySelector('.cw-face.is-current');
+        var inc = makeFace(nextWord, 'is-in');
+        slot.appendChild(inc);
+        if (out) {
+          out.classList.remove('is-current');
+          out.classList.add('is-out');
+        }
+
+        if (REDUCE) {
+          if (out) out.remove();
+          inc.classList.remove('is-in');
+          inc.classList.add('is-current');
+        } else {
+          var p = PACES[pace];
+          var settle = p.dur + p.stagger * nextWord.length + 140;
+          setTimeout(function () {
+            if (out) out.remove();
+            inc.classList.remove('is-in');
+            inc.classList.add('is-current');
+          }, settle);
+        }
+        idx = (idx + 1) % WORDS.length;
+      }
+
+      function schedule() {
+        clearTimeout(timer);
+        if (!running) return;
+        timer = setTimeout(function () { swap(); schedule(); }, PACES[pace].interval);
+      }
+
+      // Cycle off → show the original three-word list; on → rebuild the slot.
+      function renderStatic() {
+        clearTimeout(timer);
+        slot.classList.add('is-static');
+        slot.innerHTML = '';
+        slot.textContent = WORDS.join(', ');
+      }
+      function renderCycle() {
+        slot.classList.remove('is-static');
+        slot.innerHTML = '';
+        idx = 0;
+        slot.appendChild(makeFace(WORDS[0], 'is-current'));
+      }
+
+      // Dial wiring — pills set state only; the live element doesn't change.
+      var variantBtns = document.querySelectorAll('[data-cw-variant]');
+      for (var v = 0; v < variantBtns.length; v++) {
+        variantBtns[v].addEventListener('click', function () {
+          for (var x = 0; x < variantBtns.length; x++) variantBtns[x].classList.remove('is-active');
+          this.classList.add('is-active');
+          variant = this.getAttribute('data-cw-variant');
+          slot.setAttribute('data-variant', variant);
+        });
+      }
+
+      var paceBtns = document.querySelectorAll('[data-cw-pace]');
+      for (var p = 0; p < paceBtns.length; p++) {
+        paceBtns[p].addEventListener('click', function () {
+          for (var y = 0; y < paceBtns.length; y++) paceBtns[y].classList.remove('is-active');
+          this.classList.add('is-active');
+          pace = this.getAttribute('data-cw-pace');
+          applyPace();
+          schedule();
+        });
+      }
+
+      var cycleBtns = document.querySelectorAll('[data-cw-cycle]');
+      for (var c = 0; c < cycleBtns.length; c++) {
+        cycleBtns[c].addEventListener('click', function () {
+          for (var z = 0; z < cycleBtns.length; z++) cycleBtns[z].classList.remove('is-active');
+          this.classList.add('is-active');
+          running = this.getAttribute('data-cw-cycle') === 'on';
+          if (running) renderCycle(); else renderStatic();
+          schedule();
+        });
+      }
+
+      // Collapse toggle for the dial panel.
+      var dial = document.getElementById('pgDial');
+      var dialToggle = document.getElementById('pgDialToggle');
+      if (dial && dialToggle) {
+        dialToggle.addEventListener('click', function () {
+          dial.classList.toggle('is-collapsed');
+        });
+      }
+
+      slot.classList.add('js-cyc');
+      applyPace();
+      schedule();
+    })();
+  </script>
+</body>
+</html>
