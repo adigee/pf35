@@ -46,6 +46,10 @@
       color: var(--color-text);
       font-family: var(--font-body);
       -webkit-font-smoothing: antialiased;
+      /* The rail's load-in animation (below) translates fully off-canvas to
+         the left; without this a transformed-but-still-laid-out element can
+         push a horizontal scrollbar onto the page for the ~600ms it runs. */
+      overflow-x: hidden;
     }
 
     a { color: inherit; text-decoration: none; }
@@ -73,6 +77,35 @@
         gap: var(--sp-16);
         align-items: start;
       }
+    }
+
+    /* ── PAGE LOAD ANIMATION ───────────────────
+       Three-beat entrance: the rail flies in from fully off-canvas left,
+       then the whole right column (hero + portfolio cards, as one unit)
+       slides up from the bottom, then the "why behind the what" phrase
+       highlight-sweeps in (see data-highlight-auto on .overview-subhead
+       below — its delay is timed to land after the column settles).
+       Ends each keyframe on `transform: none` rather than e.g.
+       translateX(0): a non-none transform value makes an element a
+       containing block for `position: fixed` descendants, which would
+       otherwise hijack .rail-nav's fixed mobile top-bar positioning
+       (see the ≤1023px rail-nav rules below) even after settling.
+       Tuned + verified in playground/homepage-load-animation.html on
+       the `playground` branch. */
+    @keyframes rail-fly-in {
+      from { transform: translateX(-140%); opacity: 0; }
+      to   { transform: none; opacity: 1; }
+    }
+    @keyframes column-slide-up {
+      from { transform: translateY(110px); opacity: 0; }
+      to   { transform: none; opacity: 1; }
+    }
+    .rail { animation: rail-fly-in 600ms var(--ease) both; }
+    /* Starts 680ms in (600ms rail + 80ms gap) so the column visibly follows
+       the rail rather than racing it. */
+    .content { animation: column-slide-up 620ms var(--ease) 680ms both; }
+    @media (prefers-reduced-motion: reduce) {
+      .rail, .content { animation: none; }
     }
 
     /* ── LEFT RAIL ─────────────────────────── */
@@ -589,10 +622,13 @@
 
     <!-- Intro — design-system hero (design.md §3): .b-section-header
          headline → .b-section-subheader subheadline. The subhead's phrase
-         is highlit and auto-sweeps in 1000ms after the page shows. -->
+         is highlit and auto-sweeps in — beat 3 of the page load animation.
+         1520ms = 600 (rail fly-in) + 80 (gap) + 620 (column slide-up) + 220
+         (gap), timed to land after the column settles; see the PAGE LOAD
+         ANIMATION rules above. -->
     <section class="overview" id="overview">
       <h1 class="b-section-header overview-headline">Product builder with a design practice that anchors on continuous, rigorous, rapid UX research to enable high velocity product delivery.</h1>
-      <p class="b-section-subheader overview-subhead">the <em data-highlight data-highlight-auto="1000">why behind the what</em><br>has never been more important</p>
+      <p class="b-section-subheader overview-subhead">the <em data-highlight data-highlight-auto="1520">why behind the what</em><br>has never been more important</p>
     </section>
 
     <!-- Feature sequence — the portfolio. Its top edge is the WORK nav's
@@ -713,6 +749,25 @@
       if (a && a.hostname === location.hostname && a.pathname !== '/' && a.pathname !== '/index.html') {
         sessionStorage.setItem('triggerEntrance', '1');
       }
+    });
+  </script>
+
+  <!-- Page-load animation cleanup. `fill: both` keeps the rail-fly-in /
+       column-slide-up animations "filled" indefinitely once they finish —
+       and a filled CSS animation keeps reporting a resolved transform
+       (an identity matrix, not the literal `none`) even though the
+       keyframe says `transform: none`. That resolved-but-technically-non-
+       none value still makes .rail a containing block for its `.rail-nav`
+       (position: fixed on mobile), permanently breaking its viewport-fixed
+       positioning after load. Clearing the animation once it ends drops the
+       filled effect entirely, so transform genuinely computes to none. -->
+  <script>
+    ['.rail', '.content'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (!el) return;
+      el.addEventListener('animationend', function onDone() {
+        el.style.animation = 'none';
+      }, { once: true });
     });
   </script>
 
