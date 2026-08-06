@@ -70,6 +70,7 @@ Element:  <html data-theme="dark|light">
 | `--color-primary-muted` | `rgba(172, 160, 232, 0.12)` | Primary backgrounds, soft highlights |
 | `--color-accent` | `#8E7FD1` | Decorative highlights, emphasis |
 | `--color-accent-on-accent` | `#121212` | Text rendered on accent-colored backgrounds |
+| `--color-on-primary` | `#121212` | Foreground on primary-filled surfaces (e.g. `.btn` hover) |
 
 **Character:** Midnight near-black with warm ivory text. Soft lavender for interaction, a deeper lilac for decoration. The accent is a shade in the primary's own family — a quiet warm-cool sibling rather than a contrasting hue — which keeps the palette calm and unified.
 
@@ -90,6 +91,7 @@ Element:  <html data-theme="dark|light">
 | `--color-primary-muted` | `rgba(33, 71, 204, 0.11)` | Primary backgrounds, soft highlights |
 | `--color-accent` | `#5B6FD6` | Decorative highlights, emphasis |
 | `--color-accent-on-accent` | `#FFF3E8` | Text rendered on accent-colored backgrounds |
+| `--color-on-primary` | `#F8F6EE` | Foreground on primary-filled surfaces (e.g. `.btn` hover) — light because light mode's primary (cobalt) is dark, the opposite of dark mode |
 
 **Character:** Warm peach cream background with deep navy text. Cobalt blue for interaction, a lighter periwinkle for decoration. The accent is a tint in the primary's own family, not a contrasting hue — cool accents on the warm surface stay refined rather than loud.
 
@@ -124,7 +126,6 @@ These are intentional exceptions, not tokens. Do not generalise them.
 | `rgba(0,0,0,0.35)` | Image captions (light mode) | Overlaid on photos — must be literal black |
 | `#f4f4f6` | `.panel--decision` background | Deliberate light-gray deviation for that specific panel |
 | `rgba(255,255,255,0.4)` | Email button border in contact panel | Contact panel uses inverted `--color-primary` bg; literal white required |
-| `#121212` (`--color-on-primary-dark`) | Text-button hover foreground (`.btn:hover`) | Fixed dark text on the primary-fill hover state — one value in both themes rather than a per-theme swap |
 
 ---
 
@@ -390,7 +391,7 @@ The one text-button treatment used everywhere on the site: resume downloads, the
 |---|---|
 | Shape | Pill, `border-radius: 999px`, `1px solid --color-border` |
 | Rest | `background: --color-surface`, `color: --color-text` |
-| Hover | `background: --color-primary`, `border-color: --color-primary`, `color: --color-on-primary-dark` (fixed `#121212`, not theme-swapped) |
+| Hover | `background: --color-primary`, `border-color: --color-primary`, `color: --color-on-primary` (theme-swapped: `#121212` dark mode, `#F8F6EE` light mode — see [Color System](#2-color-system)) |
 | Font | `--font-mono`, weight 600, uppercase |
 | Icon size | 18px (`.btn .material-symbols-rounded`) |
 | Transition | `color`, `border-color`, `background` — 200ms ease |
@@ -401,7 +402,7 @@ The one text-button treatment used everywhere on the site: resume downloads, the
 | `.btn--sm` | `4px --sp-6` | `--text-sm` (14px) | Locked-page teaser chip's Unlock button |
 | `.btn--md` | `--sp-3 --sp-6` | `--text-sm` (14px) | Password-gate Unlock, resume downloads |
 
-The fill inverts on hover rather than the border/text turning `--color-primary` — the same solid `--color-primary` fill used everywhere else for interactive states, with a fixed dark foreground so the text never needs a separate per-theme white/dark swap.
+The fill inverts on hover rather than the border/text turning `--color-primary` — the same solid `--color-primary` fill used everywhere else for interactive states. The foreground (`--color-on-primary`) is theme-swapped, not fixed, because the two themes' primaries sit at opposite ends of the lightness scale: dark mode's lavender is light (needs dark text), light mode's cobalt is dark (needs light text) — using one fixed value would fail contrast in one theme or the other.
 
 #### Icon Buttons (`.theme-btn`)
 

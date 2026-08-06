@@ -23,10 +23,13 @@
   --color-accent:           #8E7FD1;
   --color-accent-on-accent: #121212;
 
-  /* Fixed, NOT theme-swapped — see .btn below. On hover .btn fills solid
-     --color-primary (theme-swapped); the foreground stays this one dark
-     value in both themes rather than swapping white/dark per theme. */
-  --color-on-primary-dark:  #121212;
+  /* Theme-swapped — see .btn below. On hover .btn fills solid
+     --color-primary; this is the foreground that sits on that fill.
+     Dark mode's primary (lavender) is light, so this is dark; light
+     mode overrides it below because its primary (cobalt) is dark and
+     needs a light foreground instead — plain dark text there fails
+     contrast (~2.5:1). */
+  --color-on-primary:       #121212;
 
   --highlight-ink:          172, 160, 232;  /* highlighter marker RGB (lilac) */
 
@@ -112,6 +115,11 @@
   --color-accent:           #5B6FD6;
   --color-accent-on-accent: #FFF3E8;
 
+  /* Cobalt primary is dark — needs a light foreground on hover fills,
+     the opposite of dark mode's lavender. Warm ivory, not pure white,
+     matching the "no pure black/white" principle. */
+  --color-on-primary:       #F8F6EE;
+
   --highlight-ink:          33, 71, 204;  /* highlighter marker RGB (cobalt) */
 }
 
@@ -120,8 +128,8 @@
    badges, form actions, resume downloads). Rest is a quiet outline —
    it doesn't compete with primary content. Hover fills solid
    --color-primary (swaps with theme: cobalt in light, lavender in
-   dark) with a fixed dark foreground (--color-on-primary-dark) —
-   one value in both themes rather than a per-theme white/dark swap.
+   dark) with --color-on-primary — also theme-swapped, so the fill
+   always gets a contrast-safe foreground instead of one fixed value.
    Sizes: --xs (pill badges, 11px) · --sm (compact, 14px) ·
    --md (standard form actions, 14px, more padding).
 ──────────────────────────────────────────────────────────── */
@@ -144,7 +152,7 @@
 .btn:hover {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  color: var(--color-on-primary-dark);
+  color: var(--color-on-primary);
 }
 .btn .material-symbols-rounded { font-size: 18px; }
 
