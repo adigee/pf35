@@ -12,13 +12,16 @@
 
 <style>
   /* ─────────────────────────────────────────
-     HOMEPAGE LOAD ANIMATION — 4-way comparison
-     Recreates the real rail / hero / portfolio-card markup and
-     tokens (mirrored from style.css + index.html) so the choreography
-     reads true. One adaptation for this sandbox only: the three
-     feature cards sit in a row instead of one-per-viewport-height,
-     so all three are visible at once and the stagger is easy to
-     compare without scrolling. Production still stacks them full-height.
+     HOMEPAGE LOAD ANIMATION — 3-beat sequence
+     Rail flies in from the left → the whole right-hand
+     column slides up from the bottom → the "why behind
+     the what" phrase highlight-sweeps in. Real rail/hero/
+     card markup + tokens (mirrored from style.css/index.html);
+     the highlight sweep reuses the actual production
+     components/text_highlight.js so it's pixel-identical.
+     One adaptation for this sandbox only: the three feature
+     cards sit in a row instead of one-per-viewport-height,
+     so the whole column fits in view without scrolling.
   ───────────────────────────────────────── */
 
   :root {
@@ -28,6 +31,8 @@
     --color-text:          #F8F6EE;
     --color-text-muted:    rgba(248, 246, 238, 0.60);
     --color-primary:       #ACA0E8;
+    --color-accent-on-accent: #121212;
+    --highlight-ink:       172, 160, 232;
     --font-display: 'Manrope', sans-serif;
     --font-body:    'Manrope', sans-serif;
 
@@ -51,8 +56,7 @@
     --page-max: 1320px;
     --media-h: 220px;
     --media-ar: 4 / 3;
-    --controls-h: 108px;
-    --dur: 1;   /* global speed multiplier, driven by the speed slider */
+    --controls-h: 132px;
   }
 
   * { box-sizing: border-box; }
@@ -63,6 +67,7 @@
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     padding-bottom: var(--controls-h);
+    overflow-x: hidden;   /* the rail flies in from fully off-canvas */
   }
   a { color: inherit; text-decoration: none; }
 
@@ -86,16 +91,17 @@
   }
   .rail-identity .name .role { color: var(--color-primary); }
 
-  .rail-context { flex: 1; margin-top: var(--sp-6); }
-  .rail-intro .tagline { font-size: var(--text-sm); line-height: var(--leading-body); max-width: 30ch; }
-  .rail-intro .tagline em { font-style: normal; color: var(--color-primary); }
-  .rail-intro .location { font-size: var(--text-sm); color: var(--color-text-muted); margin-top: var(--sp-4); }
+  /* Matches current production: the rail's middle (tagline/location) stays
+     blank until the visitor scrolls past the intro — see .rail-context in
+     index.html. Load-time choreography never shows it, so it's kept in its
+     resting hidden state here rather than reimplementing the scroll reveal. */
+  .rail-context { flex: 1; margin-top: var(--sp-6); opacity: 0; pointer-events: none; }
 
   .rail-nav { display: flex; flex-direction: column; gap: 3px; margin-top: var(--sp-6); }
   .rail-nav a { font-size: 17px; letter-spacing: var(--tracking-wide); display: inline-block; }
   .rail-nav a:hover { color: var(--color-primary); }
 
-  /* ── RIGHT COLUMN / HERO ── */
+  /* ── RIGHT COLUMN ── */
   .content { min-width: 0; }
   .overview { width: 100%; max-width: 62ch; }
   .overview-headline {
@@ -106,7 +112,7 @@
     font-family: var(--font-display); font-size: var(--text-base); font-weight: 600;
     line-height: var(--leading-body); margin: 0;
   }
-  .overview-subhead em { font-style: normal; color: var(--color-primary); }
+  .overview-subhead em { font-style: normal; }
 
   /* ── PORTFOLIO CARDS — row layout for this comparison sandbox ── */
   .portfolio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-6); margin-top: var(--sp-16); }
@@ -137,35 +143,26 @@
   /* ── CONTROLS ── */
   .controls {
     position: fixed; left: 0; right: 0; bottom: 0; height: var(--controls-h);
-    display: flex; align-items: center; justify-content: space-between; gap: 20px;
-    padding: 0 24px; background: var(--color-surface); border-top: 1px solid var(--color-border);
-    z-index: 50; flex-wrap: wrap;
+    display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+    padding: 14px 24px; background: var(--color-surface); border-top: 1px solid var(--color-border);
+    z-index: 50;
   }
-  .seg { display: inline-flex; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 10px; padding: 4px; gap: 2px; }
-  .seg button {
-    appearance: none; border: 0; cursor: pointer; background: transparent; color: var(--color-text-muted);
-    font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: 0.01em;
-    padding: 8px 14px; border-radius: 7px; transition: color 160ms var(--ease), background 160ms var(--ease);
-  }
-  .seg button:hover { color: var(--color-text); }
-  .seg button.on { background: var(--color-primary); color: #121212; }
+  .ctl-group { display: flex; flex-direction: column; gap: 6px; }
+  .ctl-group .lbl { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
+  .ctl-row { display: flex; align-items: center; gap: 8px; }
+  .ctl-row input[type="range"] { width: 110px; accent-color: var(--color-primary); }
+  .ctl-row .val { width: 46px; font-size: 12px; color: var(--color-text); font-variant-numeric: tabular-nums; }
 
-  .ctl-mid { display: flex; flex-direction: column; gap: 2px; max-width: 44ch; }
-  .hint { font-size: 12px; color: var(--color-text-muted); }
+  .hint { font-size: 12px; color: var(--color-text-muted); max-width: 30ch; line-height: 1.5; }
   .hint b { color: var(--color-text); font-weight: 600; }
 
-  .ctl-side { display: flex; align-items: center; gap: 16px; }
-  .speed-wrap { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--color-text-muted); }
-  .speed-wrap input[type="range"] { width: 90px; accent-color: var(--color-primary); }
-  .speed-wrap span { width: 34px; text-align: right; color: var(--color-text); font-variant-numeric: tabular-nums; }
-
+  .ctl-side { display: flex; align-items: center; gap: 12px; margin-left: auto; }
   .toggle {
     appearance: none; cursor: pointer; background: transparent; color: var(--color-text-muted);
     border: 1px solid var(--color-border); border-radius: 8px; font-family: var(--font-body);
     font-size: 12px; font-weight: 600; padding: 8px 12px; transition: border-color 160ms var(--ease), color 160ms var(--ease);
   }
   .toggle.on { border-color: var(--color-primary); color: var(--color-primary); }
-
   .replay {
     appearance: none; cursor: pointer; background: transparent; color: var(--color-text);
     border: 1px solid var(--color-border); border-radius: 8px; font-family: var(--font-body);
@@ -174,7 +171,7 @@
   .replay:hover { border-color: var(--color-primary); color: var(--color-primary); }
 
   @media (max-width: 900px) {
-    .controls { position: static; height: auto; padding: 16px; }
+    .controls { position: static; height: auto; }
     body { padding-bottom: 0; }
   }
 </style>
@@ -184,48 +181,48 @@
   <div class="home-shell">
    <div class="home-cols">
 
-    <!-- ── LEFT RAIL ── -->
+    <!-- ── LEFT RAIL — flies in as one unit ── -->
     <aside class="rail will" id="rail">
       <div class="rail-identity">
         <a class="rail-avatar-link" href="#" onclick="return false"><img class="rail-avatar" src="../project%20content/profile-photo.png" alt="Aditya Gujaran" /></a>
         <p class="name">Aditya Gujaran<br><span class="role">Product designer</span></p>
       </div>
-      <div class="rail-context will" id="railContext">
+      <div class="rail-context">
         <div class="rail-intro">
-          <p class="tagline">the <em>why behind the what</em><br>has never been more important</p>
+          <p class="tagline">the why behind the what<br>has never been more important</p>
           <p class="location">Based in Lisbon</p>
         </div>
       </div>
-      <nav class="rail-nav will" id="railNav" aria-label="Section navigation">
+      <nav class="rail-nav" aria-label="Section navigation">
         <a href="#" onclick="return false">WORK</a>
         <a href="#" onclick="return false">ABOUT</a>
         <a href="#" onclick="return false">RESUME</a>
       </nav>
     </aside>
 
-    <!-- ── RIGHT COLUMN ── -->
-    <main class="content">
+    <!-- ── RIGHT COLUMN — slides up as one unit; highlight sweeps in last ── -->
+    <main class="content will" id="content">
       <section class="overview">
-        <h1 class="overview-headline will" id="headline">Product builder with a design practice that anchors on continuous, rigorous, rapid UX research to enable high velocity product delivery.</h1>
-        <p class="overview-subhead will" id="subhead">the <em>why behind the what</em> has never been more important</p>
+        <h1 class="overview-headline">Product builder with a design practice that anchors on continuous, rigorous, rapid UX research to enable high velocity product delivery.</h1>
+        <p class="overview-subhead">the <em data-highlight data-highlight-auto="600000">why behind the what</em> has never been more important</p>
       </section>
 
       <section class="portfolio" id="portfolio">
-        <a class="feature-card will" data-card>
+        <a class="feature-card" data-card>
           <div class="fc-media">
             <img src="../project%20content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO.png" alt="Bounce — Lockers PUDO" />
             <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
           </div>
           <div class="fc-caption"><span class="fc-eyebrow">Bounce · Growth</span></div>
         </a>
-        <a class="feature-card will" data-card>
+        <a class="feature-card" data-card>
           <div class="fc-media">
             <img src="../project%20content/2%20Decision%20module%20for%20framer/Thumbnail%20-%20decision%20module.png" alt="Decision Module — Unbabel" />
             <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
           </div>
           <div class="fc-caption"><span class="fc-eyebrow">Unbabel · AI</span></div>
         </a>
-        <a class="feature-card will" data-card>
+        <a class="feature-card" data-card>
           <div class="fc-media">
             <img src="../project%20content/3%20DAD%20Images%20for%20framer/Thumbnail%20-%20TRQ%20DAD.png" alt="TRQ DAD — Cocoon" />
             <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
@@ -238,22 +235,36 @@
    </div>
   </div>
 
+  <!-- Real production highlight component — the sweep in Action 3 is
+       pixel-identical to the shipped one, not a re-implementation. -->
+  <script src="../components/text_highlight.js"></script>
+
   <!-- ── CONTROLS ── -->
   <div class="controls">
-    <div class="seg" id="seg">
-      <button data-v="assembly" class="on">1 · Assembly</button>
-      <button data-v="spotlight">2 · Spotlight</button>
-      <button data-v="wipe">3 · Precision wipe</button>
-      <button data-v="depth">4 · Depth stack</button>
+    <div class="ctl-group">
+      <span class="lbl">1 · Rail duration</span>
+      <div class="ctl-row"><input type="range" id="railDur" min="300" max="1000" step="20" value="600" /><span class="val" id="railDurVal">600ms</span></div>
     </div>
-    <div class="ctl-mid">
-      <span class="hint" id="hint">—</span>
+    <div class="ctl-group">
+      <span class="lbl">Gap → column</span>
+      <div class="ctl-row"><input type="range" id="gap1" min="-300" max="500" step="20" value="80" /><span class="val" id="gap1Val">80ms</span></div>
     </div>
+    <div class="ctl-group">
+      <span class="lbl">2 · Column duration</span>
+      <div class="ctl-row"><input type="range" id="colDur" min="300" max="1000" step="20" value="620" /><span class="val" id="colDurVal">620ms</span></div>
+    </div>
+    <div class="ctl-group">
+      <span class="lbl">Column distance</span>
+      <div class="ctl-row"><input type="range" id="colDist" min="30" max="220" step="10" value="110" /><span class="val" id="colDistVal">110px</span></div>
+    </div>
+    <div class="ctl-group">
+      <span class="lbl">Gap → highlight</span>
+      <div class="ctl-row"><input type="range" id="gap2" min="0" max="800" step="20" value="220" /><span class="val" id="gap2Val">220ms</span></div>
+    </div>
+
+    <p class="hint" id="hint">1. Rail flies in from the left · 2. Right column slides up from the bottom · 3. "why behind the what" highlight-sweeps in.</p>
+
     <div class="ctl-side">
-      <label class="speed-wrap">Speed
-        <input type="range" id="speed" min="0.25" max="2" step="0.25" value="1" />
-        <span id="speedVal">1×</span>
-      </label>
       <button class="toggle" id="reduceToggle">Reduced motion</button>
       <button class="replay" id="replay">↻ Replay</button>
     </div>
@@ -261,144 +272,137 @@
 
   <script>
   (function () {
-    var rail        = document.getElementById('rail');
-    var railContext = document.getElementById('railContext');
-    var railNav     = document.getElementById('railNav');
-    var headline    = document.getElementById('headline');
-    var subhead     = document.getElementById('subhead');
-    var cards       = [].slice.call(document.querySelectorAll('[data-card]'));
-    var seg         = document.getElementById('seg');
-    var hint        = document.getElementById('hint');
-    var replay      = document.getElementById('replay');
-    var speed       = document.getElementById('speed');
-    var speedVal    = document.getElementById('speedVal');
-    var reduceToggle= document.getElementById('reduceToggle');
+    var rail    = document.getElementById('rail');
+    var content = document.getElementById('content');
+    var emEl    = document.querySelector('.overview-subhead [data-highlight]');
+    var replay  = document.getElementById('replay');
+    var reduceToggle = document.getElementById('reduceToggle');
+
+    var railDur = document.getElementById('railDur');
+    var gap1    = document.getElementById('gap1');
+    var colDur  = document.getElementById('colDur');
+    var colDist = document.getElementById('colDist');
+    var gap2    = document.getElementById('gap2');
+    var vals = {
+      railDur: document.getElementById('railDurVal'),
+      gap1: document.getElementById('gap1Val'),
+      colDur: document.getElementById('colDurVal'),
+      colDist: document.getElementById('colDistVal'),
+      gap2: document.getElementById('gap2Val'),
+    };
+    [['railDur', railDur], ['gap1', gap1], ['colDur', colDur], ['colDist', colDist], ['gap2', gap2]].forEach(function (pair) {
+      var key = pair[0], input = pair[1];
+      input.addEventListener('input', function () {
+        vals[key].textContent = input.value + (key === 'colDist' ? 'px' : 'ms');
+      });
+    });
 
     var EASE_OUT = 'cubic-bezier(0.22, 1, 0.36, 1)';
-    var EASE_SHARP = 'cubic-bezier(0.65, 0, 0.35, 1)';
-    var EASE_SPRING = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
-
     var systemReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var forceReduce = false;
-    var mult = 1;
-    var selected = 'assembly';
-
-    var HINTS = {
-      assembly:  'Rail slides in first and establishes the frame; headline rises after; cards cascade in top-to-bottom, 90ms apart.',
-      spotlight: 'Page opens slightly blurred/desaturated. Headline racks into focus first, rail settles in behind it, cards resolve last with a scale-settle.',
-      wipe:      'Headline and rail nav reveal via a mechanical left-to-right clip-path wipe; card images reveal the same way, like a shutter lifting.',
-      depth:     'Everything starts offset in depth/scale and springs into place with a slight overshoot — rail, then hero, then cards land with a bounce.'
-    };
 
     var anims = [];
     function play(el, frames, opts) {
-      var o = Object.assign({ fill: 'forwards' }, opts);
-      o.duration = o.duration * mult;
-      if (o.delay) o.delay = o.delay * mult;
-      var a = el.animate(frames, o);
+      // fill:'both' — holds the FROM keyframe through any start `delay` (so a
+      // delayed element stays hidden/offset instead of showing its bare resting
+      // CSS until the effect kicks in), and holds the TO keyframe after finish.
+      var a = el.animate(frames, Object.assign({ fill: 'both' }, opts));
       anims.push(a);
+      // Swallow the AbortError a cancelled animation's `finished` rejects with —
+      // callers that chain off this (the highlight trigger) additionally guard
+      // with the run() token below, so a cancelled/superseded run can't fire it.
       return a.finished.catch(function () {});
     }
     function cancelAll() { anims.forEach(function (a) { try { a.cancel(); } catch (e) {} }); anims = []; }
 
+    function resetHighlight() {
+      if (!emEl) return;
+      emEl.classList.remove('redrawing');
+      emEl.classList.add('auto-sweep');   // hides the marker, plain text colour — the resting pre-sweep state
+    }
+
+    function sweepHighlight() {
+      if (!emEl) return;
+      var ink = emEl.querySelector('.highlight__ink');
+      emEl.classList.add('redrawing');
+      if (ink) {
+        ink.addEventListener('animationend', function onDone() {
+          emEl.classList.remove('redrawing');
+          emEl.classList.remove('auto-sweep');
+        }, { once: true });
+      }
+    }
+
     function rest() {
       cancelAll();
-      [rail, railContext, railNav, headline, subhead].concat(cards).forEach(function (el) {
-        el.style.cssText = '';
-      });
+      rail.style.cssText = '';
+      content.style.cssText = '';
+      resetHighlight();
     }
 
-    /* ── 1. Assembly / anchor-first ── */
-    function assembly() {
-      play(rail, [{ transform: 'translateX(-28px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 460, easing: EASE_OUT });
-      play(railNav, [{ transform: 'translateY(8px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 380, delay: 140, easing: EASE_OUT });
-      play(headline, [{ transform: 'translateY(16px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 520, delay: 160, easing: EASE_OUT });
-      play(subhead, [{ transform: 'translateY(12px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 460, delay: 260, easing: EASE_OUT });
-      cards.forEach(function (c, i) {
-        play(c, [{ transform: 'translateY(24px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 480, delay: 360 + i * 90, easing: EASE_OUT });
-      });
-    }
-
-    /* ── 2. Spotlight / focus-pull ── */
-    function spotlight() {
-      play(headline, [{ filter: 'blur(10px)', opacity: 0.3 }, { filter: 'blur(0px)', opacity: 1 }], { duration: 700, easing: EASE_OUT });
-      play(subhead, [{ filter: 'blur(8px)', opacity: 0.3 }, { filter: 'blur(0px)', opacity: 1 }], { duration: 600, delay: 120, easing: EASE_OUT });
-      play(rail, [{ filter: 'blur(6px)', opacity: 0 }, { filter: 'blur(0px)', opacity: 1 }], { duration: 600, delay: 260, easing: EASE_OUT });
-      cards.forEach(function (c, i) {
-        play(c, [{ transform: 'scale(1.05)', filter: 'blur(8px)', opacity: 0 }, { transform: 'scale(1)', filter: 'blur(0px)', opacity: 1 }], { duration: 520, delay: 500 + i * 100, easing: EASE_OUT });
-      });
-    }
-
-    /* ── 3. Precision wipe ── */
-    function wipe() {
-      play(rail, [{ clipPath: 'inset(0 0 100% 0)', opacity: 0 }, { clipPath: 'inset(0 0 0% 0)', opacity: 1 }], { duration: 420, easing: EASE_SHARP });
-      play(headline, [{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)' }], { duration: 560, delay: 80, easing: EASE_SHARP });
-      play(subhead, [{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)' }], { duration: 420, delay: 260, easing: EASE_SHARP });
-      cards.forEach(function (c, i) {
-        var media = c.querySelector('.fc-media');
-        var caption = c.querySelector('.fc-caption');
-        play(media, [{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)' }], { duration: 460, delay: 480 + i * 90, easing: EASE_SHARP });
-        play(caption, [{ opacity: 0 }, { opacity: 1 }], { duration: 260, delay: 480 + i * 90 + 380, easing: EASE_OUT });
-      });
-    }
-
-    /* ── 4. Depth stack / physical settle ── */
-    function depth() {
-      play(rail, [{ transform: 'translateX(-24px) scale(0.98)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 620, easing: EASE_SPRING });
-      play(headline, [{ transform: 'scale(1.04)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 560, delay: 120, easing: EASE_SPRING });
-      play(subhead, [{ transform: 'translateY(10px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 480, delay: 220, easing: EASE_OUT });
-      cards.forEach(function (c, i) {
-        play(c, [{ transform: 'translateY(-14px) scale(0.96)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 560, delay: 300 + i * 90, easing: EASE_SPRING });
-      });
-    }
-
-    var VARIANTS = { assembly: assembly, spotlight: spotlight, wipe: wipe, depth: depth };
-
-    function quickFade() {   // reduced-motion path — instant-ish, no motion/blur
-      [rail, headline, subhead].concat(cards).forEach(function (el, i) {
-        play(el, [{ opacity: 0 }, { opacity: 1 }], { duration: 180, delay: i * 20, easing: 'linear' });
-      });
-    }
+    var runToken = 0;   // bumped on every run(); guards stale async callbacks from a cancelled prior run
 
     function run() {
+      var myToken = ++runToken;
       rest();
+      var reduce = forceReduce || systemReduce;
+
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
-          if (forceReduce || systemReduce) quickFade();
-          else VARIANTS[selected]();
+          if (myToken !== runToken) return;   // superseded before the first frame even landed
+
+          if (reduce) {
+            play(rail, [{ opacity: 0 }, { opacity: 1 }], { duration: 160 });
+            play(content, [{ opacity: 0 }, { opacity: 1 }], { duration: 160, delay: 60 })
+              .then(function () { if (myToken === runToken) sweepHighlight(); });
+            return;
+          }
+
+          var rd  = parseInt(railDur.value, 10);
+          var g1  = parseInt(gap1.value, 10);
+          var cd  = parseInt(colDur.value, 10);
+          var cx  = parseInt(colDist.value, 10);
+          var g2  = parseInt(gap2.value, 10);
+
+          /* Action 1 — rail flies in from fully off-canvas left. */
+          var railStart = 0;
+          play(rail, [
+            { transform: 'translateX(-140%)', opacity: 0 },
+            { transform: 'translateX(0)', opacity: 1 }
+          ], { duration: rd, delay: railStart, easing: EASE_OUT });
+
+          /* Action 2 — the whole right column slides up from the bottom.
+             Starts `gap1` after the rail animation finishes (negative = overlap). */
+          var colStart = Math.max(0, railStart + rd + g1);
+          var colDone = play(content, [
+            { transform: 'translateY(' + cx + 'px)', opacity: 0 },
+            { transform: 'translateY(0)', opacity: 1 }
+          ], { duration: cd, delay: colStart, easing: EASE_OUT });
+
+          /* Action 3 — highlight sweep, `gap2` after the column settles.
+             Both awaits re-check the token so a replay mid-flight (which cancels
+             this run's animations, rejecting `colDone`) can't let this stale
+             chain fire the sweep late over top of the new run. */
+          colDone.then(function () {
+            if (myToken !== runToken) return;
+            setTimeout(function () {
+              if (myToken === runToken) sweepHighlight();
+            }, g2);
+          });
         });
       });
     }
 
-    seg.addEventListener('click', function (e) {
-      var btn = e.target.closest('button'); if (!btn) return;
-      selected = btn.getAttribute('data-v');
-      [].forEach.call(seg.children, function (b) { b.classList.toggle('on', b === btn); });
-      hint.innerHTML = HINTS[selected];
-      run();
-    });
-
     replay.addEventListener('click', run);
-
-    speed.addEventListener('input', function () {
-      mult = 1 / parseFloat(speed.value);
-      speedVal.textContent = speed.value + '×';
-    });
-
     reduceToggle.addEventListener('click', function () {
       forceReduce = !forceReduce;
       reduceToggle.classList.toggle('on', forceReduce);
       run();
     });
+    document.addEventListener('keydown', function (e) { if (e.key === 'r' || e.key === 'R') run(); });
 
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'r' || e.key === 'R') { run(); }
-      var idx = ['1', '2', '3', '4'].indexOf(e.key);
-      if (idx > -1) { seg.children[idx].click(); }
-    });
-
-    hint.innerHTML = HINTS[selected];
-    run();
+    // Wait for text_highlight.js to mount the marker before the first run.
+    requestAnimationFrame(function () { requestAnimationFrame(run); });
   })();
   </script>
 </body>

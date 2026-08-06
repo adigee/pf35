@@ -72,17 +72,18 @@
       <!-- Newest first -->
       <a class="card" href="homepage-load-animation.html">
         <div class="card-top">
-          <p class="card-title">Homepage load animation — 4-way choreography compare <span class="card-arrow">→</span></p>
+          <p class="card-title">Homepage load animation — rail / column / highlight sequence <span class="card-arrow">→</span></p>
           <span class="card-date">2026-08-06</span>
         </div>
         <p class="card-desc">
-          Real rail + hero + portfolio-card markup and tokens, with a segmented control switching
-          between four page-load choreographies: <b>Assembly</b> (rail anchors first, hero rises,
-          cards cascade), <b>Spotlight</b> (blur-to-focus rack, headline first), <b>Precision wipe</b>
-          (mechanical clip-path reveals on headline/nav/cards), and <b>Depth stack</b> (spring-eased
-          overshoot settle). Speed slider, reduced-motion preview toggle, replay, and 1–4/R keyboard
-          shortcuts. Cards sit in a row (vs. production's one-per-viewport stack) so all three are
-          visible at once for comparison.
+          Specced 3-beat load choreography: the rail flies in from fully off-canvas left, then the
+          whole right-hand column (hero + portfolio cards, as one unit) slides up from the bottom,
+          then the "why behind the what" phrase highlight-sweeps in — reusing the real
+          <b>components/text_highlight.js</b> so the sweep is pixel-identical to production. A small
+          tuner exposes duration + the two inter-action gaps as sliders, plus a reduced-motion
+          preview toggle and replay (also <b>R</b>). Replaced an earlier 4-way style comparison
+          (assembly/spotlight/wipe/depth-stack) that didn't land — this is the direction going
+          forward.
         </p>
       </a>
 
