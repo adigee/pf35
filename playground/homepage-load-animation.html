@@ -290,16 +290,45 @@
       colDist: document.getElementById('colDistVal'),
       gap2: document.getElementById('gap2Val'),
     };
-    [['railDur', railDur], ['gap1', gap1], ['colDur', colDur], ['colDist', colDist], ['gap2', gap2]].forEach(function (pair) {
-      var key = pair[0], input = pair[1];
-      input.addEventListener('input', function () {
-        vals[key].textContent = input.value + (key === 'colDist' ? 'px' : 'ms');
+    var inputs = { railDur: railDur, gap1: gap1, colDur: colDur, colDist: colDist, gap2: gap2 };
+
+    /* ── Persist dial values across a refresh ──
+       Sliders reset to their HTML defaults on every reload otherwise, which
+       throws away whatever the user just dialed in. Saved to localStorage on
+       every change and restored (inputs + labels) before the first run. */
+    var STORE_KEY = 'pf35-playground-homepage-load-animation';
+    function saveDials() {
+      var data = {};
+      Object.keys(inputs).forEach(function (key) { data[key] = inputs[key].value; });
+      data.reduce = forceReduce;
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch (e) {}
+    }
+    function loadDials() {
+      var data;
+      try { data = JSON.parse(localStorage.getItem(STORE_KEY)); } catch (e) {}
+      if (!data) return;
+      Object.keys(inputs).forEach(function (key) {
+        if (data[key] === undefined) return;
+        inputs[key].value = data[key];
+        vals[key].textContent = data[key] + (key === 'colDist' ? 'px' : 'ms');
+      });
+      if (data.reduce) {
+        forceReduce = true;
+        reduceToggle.classList.add('on');
+      }
+    }
+
+    Object.keys(inputs).forEach(function (key) {
+      inputs[key].addEventListener('input', function () {
+        vals[key].textContent = inputs[key].value + (key === 'colDist' ? 'px' : 'ms');
+        saveDials();
       });
     });
 
     var EASE_OUT = 'cubic-bezier(0.22, 1, 0.36, 1)';
     var systemReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var forceReduce = false;
+    loadDials();
 
     var anims = [];
     function play(el, frames, opts) {
@@ -397,6 +426,7 @@
     reduceToggle.addEventListener('click', function () {
       forceReduce = !forceReduce;
       reduceToggle.classList.toggle('on', forceReduce);
+      saveDials();
       run();
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'r' || e.key === 'R') run(); });
