@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playground — Homepage load animation</title>
+<meta name="robots" content="noindex">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,1,0&display=swap" rel="stylesheet" />
+
+<style>
+  /* ─────────────────────────────────────────
+     HOMEPAGE LOAD ANIMATION — 4-way comparison
+     Recreates the real rail / hero / portfolio-card markup and
+     tokens (mirrored from style.css + index.html) so the choreography
+     reads true. One adaptation for this sandbox only: the three
+     feature cards sit in a row instead of one-per-viewport-height,
+     so all three are visible at once and the stagger is easy to
+     compare without scrolling. Production still stacks them full-height.
+  ───────────────────────────────────────── */
+
+  :root {
+    --color-bg:            #121212;
+    --color-surface:       #1E1D1A;
+    --color-border:        rgba(248, 246, 238, 0.10);
+    --color-text:          #F8F6EE;
+    --color-text-muted:    rgba(248, 246, 238, 0.60);
+    --color-primary:       #ACA0E8;
+    --font-display: 'Manrope', sans-serif;
+    --font-body:    'Manrope', sans-serif;
+
+    --text-xs:   0.6875rem;
+    --text-sm:   0.875rem;
+    --text-base: 1rem;
+    --text-lg:   1.75rem;
+
+    --leading-normal: 1.4;
+    --leading-body:   1.6;
+    --tracking-snug:  -0.02em;
+    --tracking-wide:   0.04em;
+    --tracking-widest: 0.16em;
+
+    --sp-2: 0.5rem; --sp-3: 0.75rem; --sp-4: 1rem; --sp-5: 1.25rem;
+    --sp-6: 1.5rem; --sp-8: 2rem; --sp-10: 2.5rem; --sp-16: 4rem;
+
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --rail-w: 300px;
+    --page-pad: 40px;
+    --page-max: 1320px;
+    --media-h: 220px;
+    --media-ar: 4 / 3;
+    --controls-h: 108px;
+    --dur: 1;   /* global speed multiplier, driven by the speed slider */
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: var(--controls-h);
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .home-shell { max-width: var(--page-max); margin-inline: auto; padding: var(--page-pad); }
+  .home-cols { display: grid; gap: var(--sp-10); }
+  @media (min-width: 900px) {
+    .home-cols { grid-template-columns: var(--rail-w) minmax(0, 1fr); gap: var(--sp-16); align-items: start; }
+  }
+
+  /* ── LEFT RAIL ── */
+  .rail { display: flex; flex-direction: column; }
+
+  .rail-avatar-link { display: inline-block; line-height: 0; }
+  .rail-avatar {
+    display: block; width: 84px; height: 84px; border-radius: 50%;
+    object-fit: cover; border: 1px solid var(--color-border); background: var(--color-surface);
+  }
+  .rail-identity .name {
+    font-size: var(--text-base); line-height: var(--leading-normal); font-weight: 700;
+    letter-spacing: var(--tracking-snug); margin-top: var(--sp-6);
+  }
+  .rail-identity .name .role { color: var(--color-primary); }
+
+  .rail-context { flex: 1; margin-top: var(--sp-6); }
+  .rail-intro .tagline { font-size: var(--text-sm); line-height: var(--leading-body); max-width: 30ch; }
+  .rail-intro .tagline em { font-style: normal; color: var(--color-primary); }
+  .rail-intro .location { font-size: var(--text-sm); color: var(--color-text-muted); margin-top: var(--sp-4); }
+
+  .rail-nav { display: flex; flex-direction: column; gap: 3px; margin-top: var(--sp-6); }
+  .rail-nav a { font-size: 17px; letter-spacing: var(--tracking-wide); display: inline-block; }
+  .rail-nav a:hover { color: var(--color-primary); }
+
+  /* ── RIGHT COLUMN / HERO ── */
+  .content { min-width: 0; }
+  .overview { width: 100%; max-width: 62ch; }
+  .overview-headline {
+    font-family: var(--font-display); font-size: var(--text-lg); font-weight: 700;
+    line-height: var(--leading-normal); color: var(--color-text); margin: 0 0 var(--sp-5);
+  }
+  .overview-subhead {
+    font-family: var(--font-display); font-size: var(--text-base); font-weight: 600;
+    line-height: var(--leading-body); margin: 0;
+  }
+  .overview-subhead em { font-style: normal; color: var(--color-primary); }
+
+  /* ── PORTFOLIO CARDS — row layout for this comparison sandbox ── */
+  .portfolio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-6); margin-top: var(--sp-16); }
+  .feature-card { display: flex; flex-direction: column; }
+  .fc-media {
+    position: relative; aspect-ratio: var(--media-ar); border-radius: 10px; overflow: hidden;
+    background: var(--color-surface); border: 1px solid var(--color-border);
+  }
+  .fc-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .fc-scrim {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--color-primary) 50%, transparent);
+    opacity: 0; transition: opacity 280ms var(--ease);
+  }
+  .feature-card:hover .fc-scrim { opacity: 1; }
+  .fc-cta { display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-sm); font-weight: 600; color: #fff; letter-spacing: var(--tracking-wide); }
+  .fc-cta .material-symbols-rounded { font-size: 18px; }
+  .fc-caption { margin-top: var(--sp-3); }
+  .fc-eyebrow {
+    display: block; font-family: var(--font-display); font-size: var(--text-xs); font-weight: 500;
+    letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--color-text);
+  }
+
+  @media (max-width: 720px) {
+    .portfolio { grid-template-columns: 1fr; }
+  }
+
+  /* ── CONTROLS ── */
+  .controls {
+    position: fixed; left: 0; right: 0; bottom: 0; height: var(--controls-h);
+    display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    padding: 0 24px; background: var(--color-surface); border-top: 1px solid var(--color-border);
+    z-index: 50; flex-wrap: wrap;
+  }
+  .seg { display: inline-flex; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 10px; padding: 4px; gap: 2px; }
+  .seg button {
+    appearance: none; border: 0; cursor: pointer; background: transparent; color: var(--color-text-muted);
+    font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: 0.01em;
+    padding: 8px 14px; border-radius: 7px; transition: color 160ms var(--ease), background 160ms var(--ease);
+  }
+  .seg button:hover { color: var(--color-text); }
+  .seg button.on { background: var(--color-primary); color: #121212; }
+
+  .ctl-mid { display: flex; flex-direction: column; gap: 2px; max-width: 44ch; }
+  .hint { font-size: 12px; color: var(--color-text-muted); }
+  .hint b { color: var(--color-text); font-weight: 600; }
+
+  .ctl-side { display: flex; align-items: center; gap: 16px; }
+  .speed-wrap { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--color-text-muted); }
+  .speed-wrap input[type="range"] { width: 90px; accent-color: var(--color-primary); }
+  .speed-wrap span { width: 34px; text-align: right; color: var(--color-text); font-variant-numeric: tabular-nums; }
+
+  .toggle {
+    appearance: none; cursor: pointer; background: transparent; color: var(--color-text-muted);
+    border: 1px solid var(--color-border); border-radius: 8px; font-family: var(--font-body);
+    font-size: 12px; font-weight: 600; padding: 8px 12px; transition: border-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .toggle.on { border-color: var(--color-primary); color: var(--color-primary); }
+
+  .replay {
+    appearance: none; cursor: pointer; background: transparent; color: var(--color-text);
+    border: 1px solid var(--color-border); border-radius: 8px; font-family: var(--font-body);
+    font-size: 13px; font-weight: 600; padding: 9px 16px; transition: border-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .replay:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+  @media (max-width: 900px) {
+    .controls { position: static; height: auto; padding: 16px; }
+    body { padding-bottom: 0; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="home-shell">
+   <div class="home-cols">
+
+    <!-- ── LEFT RAIL ── -->
+    <aside class="rail will" id="rail">
+      <div class="rail-identity">
+        <a class="rail-avatar-link" href="#" onclick="return false"><img class="rail-avatar" src="../project%20content/profile-photo.png" alt="Aditya Gujaran" /></a>
+        <p class="name">Aditya Gujaran<br><span class="role">Product designer</span></p>
+      </div>
+      <div class="rail-context will" id="railContext">
+        <div class="rail-intro">
+          <p class="tagline">the <em>why behind the what</em><br>has never been more important</p>
+          <p class="location">Based in Lisbon</p>
+        </div>
+      </div>
+      <nav class="rail-nav will" id="railNav" aria-label="Section navigation">
+        <a href="#" onclick="return false">WORK</a>
+        <a href="#" onclick="return false">ABOUT</a>
+        <a href="#" onclick="return false">RESUME</a>
+      </nav>
+    </aside>
+
+    <!-- ── RIGHT COLUMN ── -->
+    <main class="content">
+      <section class="overview">
+        <h1 class="overview-headline will" id="headline">Product builder with a design practice that anchors on continuous, rigorous, rapid UX research to enable high velocity product delivery.</h1>
+        <p class="overview-subhead will" id="subhead">the <em>why behind the what</em> has never been more important</p>
+      </section>
+
+      <section class="portfolio" id="portfolio">
+        <a class="feature-card will" data-card>
+          <div class="fc-media">
+            <img src="../project%20content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO.png" alt="Bounce — Lockers PUDO" />
+            <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
+          </div>
+          <div class="fc-caption"><span class="fc-eyebrow">Bounce · Growth</span></div>
+        </a>
+        <a class="feature-card will" data-card>
+          <div class="fc-media">
+            <img src="../project%20content/2%20Decision%20module%20for%20framer/Thumbnail%20-%20decision%20module.png" alt="Decision Module — Unbabel" />
+            <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
+          </div>
+          <div class="fc-caption"><span class="fc-eyebrow">Unbabel · AI</span></div>
+        </a>
+        <a class="feature-card will" data-card>
+          <div class="fc-media">
+            <img src="../project%20content/3%20DAD%20Images%20for%20framer/Thumbnail%20-%20TRQ%20DAD.png" alt="TRQ DAD — Cocoon" />
+            <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
+          </div>
+          <div class="fc-caption"><span class="fc-eyebrow">Cocoon · Service</span></div>
+        </a>
+      </section>
+    </main>
+
+   </div>
+  </div>
+
+  <!-- ── CONTROLS ── -->
+  <div class="controls">
+    <div class="seg" id="seg">
+      <button data-v="assembly" class="on">1 · Assembly</button>
+      <button data-v="spotlight">2 · Spotlight</button>
+      <button data-v="wipe">3 · Precision wipe</button>
+      <button data-v="depth">4 · Depth stack</button>
+    </div>
+    <div class="ctl-mid">
+      <span class="hint" id="hint">—</span>
+    </div>
+    <div class="ctl-side">
+      <label class="speed-wrap">Speed
+        <input type="range" id="speed" min="0.25" max="2" step="0.25" value="1" />
+        <span id="speedVal">1×</span>
+      </label>
+      <button class="toggle" id="reduceToggle">Reduced motion</button>
+      <button class="replay" id="replay">↻ Replay</button>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var rail        = document.getElementById('rail');
+    var railContext = document.getElementById('railContext');
+    var railNav     = document.getElementById('railNav');
+    var headline    = document.getElementById('headline');
+    var subhead     = document.getElementById('subhead');
+    var cards       = [].slice.call(document.querySelectorAll('[data-card]'));
+    var seg         = document.getElementById('seg');
+    var hint        = document.getElementById('hint');
+    var replay      = document.getElementById('replay');
+    var speed       = document.getElementById('speed');
+    var speedVal    = document.getElementById('speedVal');
+    var reduceToggle= document.getElementById('reduceToggle');
+
+    var EASE_OUT = 'cubic-bezier(0.22, 1, 0.36, 1)';
+    var EASE_SHARP = 'cubic-bezier(0.65, 0, 0.35, 1)';
+    var EASE_SPRING = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
+
+    var systemReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var forceReduce = false;
+    var mult = 1;
+    var selected = 'assembly';
+
+    var HINTS = {
+      assembly:  'Rail slides in first and establishes the frame; headline rises after; cards cascade in top-to-bottom, 90ms apart.',
+      spotlight: 'Page opens slightly blurred/desaturated. Headline racks into focus first, rail settles in behind it, cards resolve last with a scale-settle.',
+      wipe:      'Headline and rail nav reveal via a mechanical left-to-right clip-path wipe; card images reveal the same way, like a shutter lifting.',
+      depth:     'Everything starts offset in depth/scale and springs into place with a slight overshoot — rail, then hero, then cards land with a bounce.'
+    };
+
+    var anims = [];
+    function play(el, frames, opts) {
+      var o = Object.assign({ fill: 'forwards' }, opts);
+      o.duration = o.duration * mult;
+      if (o.delay) o.delay = o.delay * mult;
+      var a = el.animate(frames, o);
+      anims.push(a);
+      return a.finished.catch(function () {});
+    }
+    function cancelAll() { anims.forEach(function (a) { try { a.cancel(); } catch (e) {} }); anims = []; }
+
+    function rest() {
+      cancelAll();
+      [rail, railContext, railNav, headline, subhead].concat(cards).forEach(function (el) {
+        el.style.cssText = '';
+      });
+    }
+
+    /* ── 1. Assembly / anchor-first ── */
+    function assembly() {
+      play(rail, [{ transform: 'translateX(-28px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 460, easing: EASE_OUT });
+      play(railNav, [{ transform: 'translateY(8px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 380, delay: 140, easing: EASE_OUT });
+      play(headline, [{ transform: 'translateY(16px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 520, delay: 160, easing: EASE_OUT });
+      play(subhead, [{ transform: 'translateY(12px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 460, delay: 260, easing: EASE_OUT });
+      cards.forEach(function (c, i) {
+        play(c, [{ transform: 'translateY(24px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 480, delay: 360 + i * 90, easing: EASE_OUT });
+      });
+    }
+
+    /* ── 2. Spotlight / focus-pull ── */
+    function spotlight() {
+      play(headline, [{ filter: 'blur(10px)', opacity: 0.3 }, { filter: 'blur(0px)', opacity: 1 }], { duration: 700, easing: EASE_OUT });
+      play(subhead, [{ filter: 'blur(8px)', opacity: 0.3 }, { filter: 'blur(0px)', opacity: 1 }], { duration: 600, delay: 120, easing: EASE_OUT });
+      play(rail, [{ filter: 'blur(6px)', opacity: 0 }, { filter: 'blur(0px)', opacity: 1 }], { duration: 600, delay: 260, easing: EASE_OUT });
+      cards.forEach(function (c, i) {
+        play(c, [{ transform: 'scale(1.05)', filter: 'blur(8px)', opacity: 0 }, { transform: 'scale(1)', filter: 'blur(0px)', opacity: 1 }], { duration: 520, delay: 500 + i * 100, easing: EASE_OUT });
+      });
+    }
+
+    /* ── 3. Precision wipe ── */
+    function wipe() {
+      play(rail, [{ clipPath: 'inset(0 0 100% 0)', opacity: 0 }, { clipPath: 'inset(0 0 0% 0)', opacity: 1 }], { duration: 420, easing: EASE_SHARP });
+      play(headline, [{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)' }], { duration: 560, delay: 80, easing: EASE_SHARP });
+      play(subhead, [{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)' }], { duration: 420, delay: 260, easing: EASE_SHARP });
+      cards.forEach(function (c, i) {
+        var media = c.querySelector('.fc-media');
+        var caption = c.querySelector('.fc-caption');
+        play(media, [{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)' }], { duration: 460, delay: 480 + i * 90, easing: EASE_SHARP });
+        play(caption, [{ opacity: 0 }, { opacity: 1 }], { duration: 260, delay: 480 + i * 90 + 380, easing: EASE_OUT });
+      });
+    }
+
+    /* ── 4. Depth stack / physical settle ── */
+    function depth() {
+      play(rail, [{ transform: 'translateX(-24px) scale(0.98)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 620, easing: EASE_SPRING });
+      play(headline, [{ transform: 'scale(1.04)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 560, delay: 120, easing: EASE_SPRING });
+      play(subhead, [{ transform: 'translateY(10px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 480, delay: 220, easing: EASE_OUT });
+      cards.forEach(function (c, i) {
+        play(c, [{ transform: 'translateY(-14px) scale(0.96)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 560, delay: 300 + i * 90, easing: EASE_SPRING });
+      });
+    }
+
+    var VARIANTS = { assembly: assembly, spotlight: spotlight, wipe: wipe, depth: depth };
+
+    function quickFade() {   // reduced-motion path — instant-ish, no motion/blur
+      [rail, headline, subhead].concat(cards).forEach(function (el, i) {
+        play(el, [{ opacity: 0 }, { opacity: 1 }], { duration: 180, delay: i * 20, easing: 'linear' });
+      });
+    }
+
+    function run() {
+      rest();
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          if (forceReduce || systemReduce) quickFade();
+          else VARIANTS[selected]();
+        });
+      });
+    }
+
+    seg.addEventListener('click', function (e) {
+      var btn = e.target.closest('button'); if (!btn) return;
+      selected = btn.getAttribute('data-v');
+      [].forEach.call(seg.children, function (b) { b.classList.toggle('on', b === btn); });
+      hint.innerHTML = HINTS[selected];
+      run();
+    });
+
+    replay.addEventListener('click', run);
+
+    speed.addEventListener('input', function () {
+      mult = 1 / parseFloat(speed.value);
+      speedVal.textContent = speed.value + '×';
+    });
+
+    reduceToggle.addEventListener('click', function () {
+      forceReduce = !forceReduce;
+      reduceToggle.classList.toggle('on', forceReduce);
+      run();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'r' || e.key === 'R') { run(); }
+      var idx = ['1', '2', '3', '4'].indexOf(e.key);
+      if (idx > -1) { seg.children[idx].click(); }
+    });
+
+    hint.innerHTML = HINTS[selected];
+    run();
+  })();
+  </script>
+</body>
+</html>
