@@ -484,40 +484,13 @@
     }
     .resume-bio + .resume-bio { margin-top: var(--sp-4); }
 
-    /* Download pills — secondary/ghost treatment.
-       Solid --color-primary is reserved for primary
-       CTAs; these are quieter so the work history
-       below remains the focus. */
+    /* Download pills — layout only. Visual treatment (fill, hover,
+       type) comes from the shared .btn .btn--md (style.css). */
     .resume-buttons {
       display: flex;
       flex-wrap: wrap;
       gap: var(--sp-3);
       margin: var(--sp-10) 0 var(--sp-12);
-    }
-    .resume-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--sp-2);
-      padding: 10px var(--sp-5);
-      border-radius: 999px;
-      background: var(--color-surface);
-      color: var(--color-text);
-      font-family: var(--font-mono);
-      font-size: var(--text-sm);
-      font-weight: 600;
-      letter-spacing: var(--tracking-wider);
-      text-transform: uppercase;
-      text-decoration: none;
-      border: 1px solid var(--color-border);
-      transition: color 200ms var(--ease), border-color 200ms var(--ease), background 200ms var(--ease);
-    }
-    .resume-btn:hover {
-      color: var(--color-primary);
-      border-color: var(--color-primary);
-      background: var(--color-primary-muted);
-    }
-    .resume-btn .material-symbols-rounded {
-      font-size: 18px;
     }
 
     /* Work history — 2-col grid: dates (narrow) + content (fluid).
@@ -675,11 +648,11 @@
       <p class="resume-bio">I have 10+ years of experience across B2B and B2C, in startups and consulting.</p>
 
       <div class="resume-buttons">
-        <a class="resume-btn" href="https://drive.google.com/file/d/1FJDZI8xlQgeWfl7zgbS3LjaTYYZJbWh3/view" target="_blank" rel="noopener">
+        <a class="btn btn--md" href="https://drive.google.com/file/d/1FJDZI8xlQgeWfl7zgbS3LjaTYYZJbWh3/view" target="_blank" rel="noopener">
           <span class="material-symbols-rounded">download</span>
           <span>RESUME.PDF</span>
         </a>
-        <a class="resume-btn" href="resume.md" target="_blank" rel="noopener">
+        <a class="btn btn--md" href="resume.md" target="_blank" rel="noopener">
           <span class="material-symbols-rounded">download</span>
           <span>RESUME.MD</span>
         </a>

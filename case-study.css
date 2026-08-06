@@ -301,8 +301,8 @@
 }
 
 /* The pill — sizing/color come from the shared .btn .btn--xs (style.css);
-   this just adds the hover lift on top of the shared opacity dim. */
-.cs-lock-badge { transition: opacity 120ms ease, transform 120ms ease; }
+   this just adds the hover lift on top. */
+.cs-lock-badge { transition: transform 120ms ease; }
 .cs-lock-badge:hover { transform: translateY(-1px); }
 .cs-lock-badge svg { width: 11px; height: 11px; display: block; }
 
