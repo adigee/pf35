@@ -1169,11 +1169,15 @@ a:hover {
 
   .page-right { display: none; }
 
-  /* Nav: hide links on small screens, keep name + section count */
+  /* Nav: hide links on small screens, keep name + section count.
+     On mobile the .site-nav bar picks up --color-surface so it reads
+     as a soft, distinct step above the darker --color-bg — matches
+     the .btn / .tile surface token, no new variable. */
   .nav-links { display: none; }
 
   .site-nav {
     padding: var(--sp-4) var(--sp-6);
+    background: var(--color-surface);
   }
 
   /* Reduce block vertical rhythm */
