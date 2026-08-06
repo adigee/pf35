@@ -87,11 +87,19 @@
        below — its delay is timed to land after the column settles).
        Ends each keyframe on `transform: none` rather than e.g.
        translateX(0): a non-none transform value makes an element a
-       containing block for `position: fixed` descendants, which would
-       otherwise hijack .rail-nav's fixed mobile top-bar positioning
-       (see the ≤1023px rail-nav rules below) even after settling.
-       Tuned + verified in playground/homepage-load-animation.html on
-       the `playground` branch. */
+       containing block for `position: fixed` descendants. On desktop
+       nothing fixed lives inside .rail, so animating .rail itself is
+       fine there — but on mobile .rail-nav becomes a fixed top bar (see
+       the ≤1023px rail-nav rules below), and it's a descendant of .rail.
+       Animating .rail on mobile would make the "fixed" nav track .rail's
+       transform for the whole 600ms instead of staying pinned to the
+       viewport — it'd slide in from off-canvas overlapping the avatar,
+       then visibly snap to its real position when the animation ends.
+       So mobile retargets the fly-in to .rail-identity (avatar + name
+       only, no fixed descendants) and leaves .rail itself untransformed;
+       see the ≤1023px override below. Tuned + verified in
+       playground/homepage-load-animation.html on the `playground`
+       branch. */
     @keyframes rail-fly-in {
       from { transform: translateX(-140%); opacity: 0; }
       to   { transform: none; opacity: 1; }
@@ -104,10 +112,6 @@
     /* Starts 680ms in (600ms rail + 80ms gap) so the column visibly follows
        the rail rather than racing it. */
     .content { animation: column-slide-up 620ms var(--ease) 680ms both; }
-    @media (prefers-reduced-motion: reduce) {
-      .rail, .content { animation: none; }
-    }
-
     /* ── LEFT RAIL ─────────────────────────── */
     .rail {
       display: flex;
@@ -453,7 +457,13 @@
          page scrolls, the feature cards (later in the DOM) paint over the
          "fixed" nav instead of under it. Giving .rail its own stacking
          context puts the whole rail — nav included — above .content. */
-      .rail { position: relative; z-index: 1; }
+      /* animation: none — load-animation retarget, see the PAGE LOAD
+         ANIMATION comment above. .rail-nav is fixed at this width, so
+         .rail must never transform (it'd hijack the nav's containing
+         block); the fly-in moves to .rail-identity instead, which has
+         no fixed descendants. */
+      .rail { position: relative; z-index: 1; animation: none; }
+      .rail-identity { animation: rail-fly-in 600ms var(--ease) both; }
       .rail-nav {
         position: fixed; left: 0; right: 0; top: 0; z-index: 25;
         flex-direction: row; justify-content: space-around; gap: 0; margin: 0;
@@ -463,6 +473,12 @@
       }
       .rail-nav a { font-size: var(--text-sm); letter-spacing: var(--tracking-wide); }
 
+    }
+
+    /* Keep after the ≤1023px block so reduced-motion wins over the
+       mobile .rail-identity animation by source order. */
+    @media (prefers-reduced-motion: reduce) {
+      .rail, .rail-identity, .content { animation: none; }
     }
 
     /* ─────────────────────────────────────────
@@ -756,13 +772,15 @@
        column-slide-up animations "filled" indefinitely once they finish —
        and a filled CSS animation keeps reporting a resolved transform
        (an identity matrix, not the literal `none`) even though the
-       keyframe says `transform: none`. That resolved-but-technically-non-
-       none value still makes .rail a containing block for its `.rail-nav`
-       (position: fixed on mobile), permanently breaking its viewport-fixed
-       positioning after load. Clearing the animation once it ends drops the
-       filled effect entirely, so transform genuinely computes to none. -->
+       keyframe says `transform: none`. On desktop that resolved-but-
+       technically-non-none value would make .rail a containing block for
+       any fixed-position descendant; mobile already avoids this by
+       animating .rail-identity instead of .rail (see the ≤1023px PAGE
+       LOAD ANIMATION override), but both elements still get cleared here
+       so their transform genuinely settles on `none` rather than a
+       lingering filled matrix. -->
   <script>
-    ['.rail', '.content'].forEach(function (sel) {
+    ['.rail', '.rail-identity', '.content'].forEach(function (sel) {
       var el = document.querySelector(sel);
       if (!el) return;
       el.addEventListener('animationend', function onDone() {
