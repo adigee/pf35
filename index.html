@@ -223,44 +223,17 @@
       max-width: 60ch;   /* readable measure when stacked (Julie uses 60ch);
                             tightened to 34ch in the desktop rail (see ≥1024px) */
     }
-    .rail-intro .tagline {
-      font-size: 14px;
-      font-weight: 400;
-      line-height: var(--leading-body);
-      margin-top: var(--sp-8);
-    }
-    .rail-intro .tagline em {
-      font-style: normal;
-      font-weight: 400;
-    }
-    /* The "why behind the what" highlighter marker is owned by
-       components/text_highlight.js (see the [data-highlight] em below). */
     .rail-intro .location {
       font-size: 14px;
       font-weight: 400;
       color: var(--color-text);
-      margin-top: var(--sp-8);
     }
 
     /* ── RAIL CONTEXT REVEAL ────────────────
-       At the top of the page the intro text lives in the right-column
-       overview and the rail shows only identity + nav (a blank middle).
-       Once the overview scrolls up past the reveal threshold (approaching
-       the first project) the same text pops into the rail, so it stays
-       reachable while the user is browsing the work. Driven by the
-       rail--context-visible class toggled in the scroll script below;
-       this CSS is the no-JS fallback (always visible). */
-    .rail-context {
-      transition: opacity 500ms var(--ease), transform 500ms var(--ease);
-    }
-    .rail:not(.rail--context-visible) .rail-context {
-      opacity: 0;
-      transform: translateY(18px);
-      pointer-events: none;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .rail-context { transition: none; }
-    }
+       Originally the rail-context (bio / tagline / location) faded in as
+       the user scrolled past the overview, so the rail showed only
+       identity + nav at the top of the page. That scroll-driven reveal
+       has been removed — the text is now always visible in the rail. */
 
     /* ── NAV (rail bottom) ─────────────────── */
     .rail-nav {
@@ -621,7 +594,6 @@
     <div class="rail-context">
       <div class="rail-intro">
         <!-- <p class="bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p> -->
-        <p class="tagline">the <em data-highlight>why behind the what</em><br>has never been more important</p>
         <p class="location"><span data-tooltip="PT national · open to relocation">Based in Lisbon</span></p>
       </div>
     </div>
@@ -852,36 +824,9 @@
     })();
   </script>
 
-  <!-- Rail intro-text reveal: while the overview (intro) section fills the
-       viewport the rail stays clean (photo, name, nav). Once the overview has
-       scrolled up past a threshold — on the way to the first project — the
-       same intro text pops into the rail and stays for the rest of the page.
-       Desktop-only: below 1024px the rail isn't sticky, so the text stays put. -->
-  <script>
-    (function () {
-      var mq = window.matchMedia('(min-width: 1024px)');
-      var rail = document.getElementById('rail');
-      var overview = document.getElementById('overview');
-      if (!mq || !rail || !overview) return;
-
-      var rafPending = false;
-      function update() {
-        rafPending = false;
-        var rect = overview.getBoundingClientRect();
-        // Reveal once ~40% of the intro section has scrolled past the top edge.
-        rail.classList.toggle('rail--context-visible', rect.top < -rect.height * 0.4);
-      }
-      function onScroll() {
-        if (!mq.matches) { rail.classList.remove('rail--context-visible'); return; }
-        if (rafPending) return;
-        rafPending = true;
-        requestAnimationFrame(update);
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll);
-      onScroll();
-    })();
-  </script>
+  <!-- Rail intro text is persistent (was: revealed on scroll past the overview).
+       The previous scroll-driven toggle has been removed so the rail-context
+       renders from first paint. -->
 
   <!-- Avatar spin: an excited 2.5-turn entrance onto the caricature, then a
        calm half-turn settle back to the photo. The asymmetric enter/leave
