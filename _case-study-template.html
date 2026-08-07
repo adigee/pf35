@@ -6,6 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PROJECT NAME — Aditya Gujaran</title>
   <meta name="description" content="One-line summary of this case study for search + link previews." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍊</text></svg>" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://adityagujaran.me/REPLACE_slug.html" />
+  <meta property="og:title" content="PROJECT NAME — Aditya Gujaran" />
+  <meta property="og:description" content="One-line summary of this case study for search + link previews." />
+  <meta property="og:image" content="https://adityagujaran.me/project-content/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PROJECT NAME — Aditya Gujaran" />
+  <meta name="twitter:description" content="One-line summary of this case study for search + link previews." />
+  <meta name="twitter:image" content="https://adityagujaran.me/project-content/og-image.png" />
 
   <!-- ── SHARED (leave as-is) ───────────────────────────── -->
   <link rel="stylesheet" href="style.css" />
@@ -37,11 +47,19 @@
         <h1 class="b-title--article">PROJECT NAME</h1>
 
         <div class="cs-hero-img-wrap">
-          <img
-            class="cs-hero-img"
-            src="project-content/REPLACE_hero.png"
-            alt="PROJECT NAME — short alt text"
-          />
+          <picture>
+            <source
+              type="image/webp"
+              srcset="project-content/REPLACE_dir/REPLACE_hero-800.webp 800w, project-content/REPLACE_dir/REPLACE_hero-1600.webp 1600w"
+              sizes="(max-width: 768px) 100vw, 1200px"
+            />
+            <img
+              class="cs-hero-img"
+              src="project-content/REPLACE_dir/REPLACE_hero.png"
+              alt="PROJECT NAME — short alt text"
+              onerror="this.closest('.cs-hero-img-wrap').classList.add('cs-hero-img-wrap--missing')"
+            />
+          </picture>
         </div>
 
         <!-- Optional three-column meta (Type / Highlights / Objective):
@@ -87,7 +105,9 @@
   3. Fill in the PER-PAGE <head> tags, the title/hero, and the sections.
      Each <section class="cs-section"> with a .b-section-header becomes a
      TOC entry automatically — no need to hand-write the rail or footer.
-  4. Drop images into  project content/  and update the src paths.
+  4. Drop images into  project-content/  and update the src paths.
+      Run `node tools/convert-images.mjs` from the repo root afterwards
+      to generate WebP variants and register the new target there.
   5. Add the project to the index.html grid so it shows on the homepage.
   (Everything under "SHARED" is centralised — don't edit it here.)
   ─────────────────────────────────────────────────────────

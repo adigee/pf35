@@ -54,8 +54,7 @@
   /* ── RAIL VIDEO OVERVIEW ──
      A single placeholder clip on every case study for now; the poster is the
      same face as the homepage avatar. Per-project clips can override this
-     later (e.g. window.Projects.video(slug)). Paths are URL-encoded because
-     "project content" contains a space. */
+     later (e.g. window.Projects.video(slug)). */
   var OVERVIEW_POSTER = 'project-content/profile-photo.png';
   var OVERVIEW_VIDEO  = 'project-content/Sydney%20Makes%20an%20Omelet.mp4';
   var RING_R = 56.75;   /* ring radius in the 116-unit viewBox (100px circle) */
