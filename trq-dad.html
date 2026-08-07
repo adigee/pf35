@@ -32,11 +32,18 @@
 
         <div class="cs-hero-img-wrap">
           <!-- img: 1 Hero.png -->
-          <img
-            class="cs-hero-img"
-            src="project-content/3%20DAD%20Images%20for%20framer/1%20Hero.png"
-            alt="TRQ DAD — Tranquilidade digital accident declaration app"
-          />
+          <picture>
+            <source
+              type="image/webp"
+              srcset="project-content/3%20DAD%20Images%20for%20framer/1%20Hero-800.webp 800w, project-content/3%20DAD%20Images%20for%20framer/1%20Hero-1600.webp 1600w"
+              sizes="(max-width: 768px) 100vw, 1200px"
+            />
+            <img
+              class="cs-hero-img"
+              src="project-content/3%20DAD%20Images%20for%20framer/1%20Hero.png"
+              alt="TRQ DAD — Tranquilidade digital accident declaration app"
+            />
+          </picture>
         </div>
 
         <!-- Project meta -->
