@@ -70,9 +70,9 @@
   var MID_D = 'M0,4 C10,2.2 20,3.8 28,2.6 C40,3.9 55,2.1 68,3.3 C80,2.5 92,3.7 101,3 ' +
               'L101,21.5 C88,23 75,21 63,22.8 C50,21.3 38,23.2 25,21.6 C15,22.7 6,21.2 0,22 Z';
   /* Left end — a blunt, slightly lopsided touchdown. */
-  var TAPER_L_D = 'M18,4 C10,3.2 3,4.6 1,9 C-0.4,13 0.6,17.2 4.2,20.4 C8,23.2 14,22.1 16,21.6 L18,4 Z';
+  var TAPER_L_D = 'M18,4 C10,3.2 3,4.6 1,9 C-0.4,13 0.6,17.2 4.2,20.4 C8,23.2 14,22.1 12.5,21.6 L18,4 Z';
   /* Right end — a softer, uneven lift-off. Deliberately not a mirror of the left. */
-  var TAPER_R_D = 'M0,3.7 C7,3 13,4.3 15.6,7.4 C18,10.2 17.6,15.4 15.2,18.6 C12.4,22.3 6,23 2,21.4 L0,3.7 Z';
+  var TAPER_R_D = 'M0,3.7 C7,3 13,4.3 15.6,7.4 C18,10.2 17.6,15.4 15.2,18.6 C12.4,22.3 6,23 5.5,21.4 L0,3.7 Z';
   var MARKER =
     '<span class="highlight__marker">' +
       '<svg class="highlight__ink" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 101 25">' +
