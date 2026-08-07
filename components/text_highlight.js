@@ -49,6 +49,12 @@
       '.highlight:hover .highlight__base{fill:color-mix(in srgb,rgb(var(--highlight-ink,172,160,232)) 90%,#000 10%);}' +
       '.highlight__text{position:relative;z-index:1;color:var(--color-accent-on-accent);' +
         'transition:color 0.25s cubic-bezier(0.65,0,0.35,1);}' +
+      /* The text colour is coupled to the marker's clip-path on every
+         remove/redraw: as the marker peels off, the text has to fade back
+         to the normal page colour at the same pace, otherwise for a frame
+         or two the text would render as --color-accent-on-accent against
+         the bare page background and effectively disappear. Don't
+         decouple these without re-checking that transition. */
       '.highlight.removing .highlight__marker{clip-path:inset(0 100% 0 0);transition:clip-path 0.25s cubic-bezier(0.65,0,0.35,1);}' +
       '.highlight.removing .highlight__text{color:var(--color-text);}' +
       '.highlight.redrawing .highlight__marker{animation:highlight-sweep 1.4s cubic-bezier(0.65,0,0.35,1) forwards;}' +
