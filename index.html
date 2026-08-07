@@ -489,6 +489,15 @@
     }
     .about-body + .about-body { margin-top: var(--sp-4); }
 
+    /* Contact buttons — layout only. Visual treatment (fill, hover,
+       type) comes from the shared .btn .btn--md (style.css). */
+    .about-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-3);
+      margin-top: var(--sp-10);
+    }
+
     /* ─────────────────────────────────────────
        RESUME SECTION
        Greeting + 2-paragraph intro + 2 download
@@ -557,6 +566,7 @@
     @media (max-width: 720px) {
       .about, .resume { padding: var(--sp-16) 0; }
       .about-heading { font-size: var(--text-lg); }
+      .about-actions { margin-top: var(--sp-8); }
       .resume-buttons { margin: var(--sp-8) 0 var(--sp-12); }
       .resume-list {
         grid-template-columns: 1fr;
