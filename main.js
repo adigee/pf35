@@ -245,10 +245,11 @@ function handlePanels() {
 document.addEventListener('click', function (e) {
   var pill = e.target.closest('[data-copy]');
   if (!pill) return;
+  var label = pill.querySelector('.btn-label') || pill;
   navigator.clipboard.writeText(pill.dataset.copy).then(function () {
-    var original = pill.textContent;
-    pill.textContent = 'Copied!';
-    setTimeout(function () { pill.textContent = original; }, 2000);
+    var original = label.textContent;
+    label.textContent = 'Copied!';
+    setTimeout(function () { label.textContent = original; }, 2000);
   });
 });
 
