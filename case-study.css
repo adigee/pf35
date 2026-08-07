@@ -897,3 +897,11 @@ html.cs-modal-open, html.cs-modal-open body { overflow: hidden; }
 .cs-section > .b-label     { margin-top: 24px; }
 .cs-section > .cs-list     { margin-top: 16px; }
 .cs-section > .cs-list + * { margin-top: var(--sp-6); }
+
+/* Graceful degradation if a hero image fails to load (see onerror on
+   .cs-hero-img in each case-study page). */
+.cs-hero-img-wrap--missing {
+  background: var(--color-surface);
+  min-height: 240px;
+}
+.cs-hero-img-wrap--missing .cs-hero-img { display: none; }
