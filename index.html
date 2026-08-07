@@ -717,6 +717,7 @@
       <h2 class="about-heading">I am here to design and define.</h2>
       <p class="about-body">I'm a deep generalist — someone who'd rather be genuinely useful across research, product design, and service design than be the single deepest specialist in one narrow lane. That's a deliberate trade-off: over a decade moving between 0→1 consumer products, B2B tooling, and AI/ML interfaces, and I think the range is the point, not a compromise.</p>
       <p class="about-body">For a year at Bounce, I was the entire design team — covering both the supply and demand sides of the product solo, which meant getting very fluent in arguing with myself in meetings. I'm looking for teams that want that same range: someone who can go from user research to shipped pixels without losing the thread in between.</p>
+      <p class="about-body">Looking for a role that breaks me out of the sr pd purgatory I find myself in. Seeking to immerse myself in a domain with real human impact, and a role that drives sustainable business growth.</p>
       <div class="about-actions">
         <button class="btn btn--md" type="button" data-copy="aditya.gujaran@gmail.com">
           <span class="material-symbols-rounded">content_copy</span>
@@ -861,17 +862,18 @@
       });
       if (!sections.length) return;
 
-      // A section is active once its top crosses the top edge of the
-      // viewport. The last (DOM order) section past the line wins, so
-      // scrolling into ABOUT hands the highlight over from WORK.
-      var LINE = 0;
+      // A section is active once its top crosses a line partway
+      // down the viewport so the highlight fires when the section
+      // enters the top quarter, not after you've already scrolled
+      // past it. The last (DOM order) section past the line wins.
       var rafPending = false;
 
       function update() {
         rafPending = false;
+        var LINE = window.innerHeight * 0.2;
         var activeId = null;
         sections.forEach(function (s) {
-          if (s.el.getBoundingClientRect().top < LINE) activeId = s.id;
+          if (s.el.getBoundingClientRect().top <= LINE) activeId = s.id;
         });
         navLinks.forEach(function (link) {
           link.classList.toggle('is-active', link.getAttribute('data-section-link') === activeId);
