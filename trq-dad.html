@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TRQ DAD — Aditya Gujaran</title>
   <meta name="description" content="Reimagining car-insurance claims for Tranquilidade as a chatbot that could infer 90% of accidents in two questions and near-fully automate the claim." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍊</text></svg>" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://adityagujaran.me/trq-dad.html" />
+  <meta property="og:title" content="TRQ DAD — Aditya Gujaran" />
+  <meta property="og:description" content="Reimagining car-insurance claims for Tranquilidade as a chatbot that could infer 90% of accidents in two questions and near-fully automate the claim." />
+  <meta property="og:image" content="https://adityagujaran.me/project-content/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="TRQ DAD — Aditya Gujaran" />
+  <meta name="twitter:description" content="Reimagining car-insurance claims for Tranquilidade as a chatbot that could infer 90% of accidents in two questions and near-fully automate the claim." />
+  <meta name="twitter:image" content="https://adityagujaran.me/project-content/og-image.png" />
 
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="case-study.css" />
@@ -32,11 +42,19 @@
 
         <div class="cs-hero-img-wrap">
           <!-- img: 1 Hero.png -->
-          <img
-            class="cs-hero-img"
-            src="project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png"
-            alt="TRQ DAD — Tranquilidade digital accident declaration app"
-          />
+          <picture>
+            <source
+              type="image/webp"
+              srcset="project-content/3%20DAD%20Images%20for%20framer/1%20Hero-800.webp 800w, project-content/3%20DAD%20Images%20for%20framer/1%20Hero-1600.webp 1600w"
+              sizes="(max-width: 768px) 100vw, 1200px"
+            />
+            <img
+              class="cs-hero-img"
+              src="project-content/3%20DAD%20Images%20for%20framer/1%20Hero.png"
+              alt="TRQ DAD — Tranquilidade digital accident declaration app"
+              onerror="this.closest('.cs-hero-img-wrap').classList.add('cs-hero-img-wrap--missing')"
+            />
+          </picture>
         </div>
 
         <!-- Project meta -->
@@ -107,7 +125,7 @@
             <!-- img: 2 Prob def.png -->
             <img
               class="cs-img"
-              src="project%20content/3%20DAD%20Images%20for%20framer/2%20Prob%20def.png"
+              src="project-content/3%20DAD%20Images%20for%20framer/2%20Prob%20def.png"
               alt="Problem definition for the claims experience"
               loading="lazy"
             />
@@ -133,7 +151,7 @@
             <!-- img: 3 journey map.png -->
             <img
               class="cs-img"
-              src="project%20content/3%20DAD%20Images%20for%20framer/3%20journey%20map.png"
+              src="project-content/3%20DAD%20Images%20for%20framer/3%20journey%20map.png"
               alt="Customer journey map of the whole experience of a car accident"
               loading="lazy"
             />
@@ -149,7 +167,7 @@
             <!-- img: 4 discovery.png -->
             <img
               class="cs-img"
-              src="project%20content/3%20DAD%20Images%20for%20framer/4%20discovery.png"
+              src="project-content/3%20DAD%20Images%20for%20framer/4%20discovery.png"
               alt="Patterns discovered in customer problems"
               loading="lazy"
             />
@@ -170,7 +188,7 @@
             <!-- img: 5 What is DAAA.png -->
             <img
               class="cs-img"
-              src="project%20content/3%20DAD%20Images%20for%20framer/5%20What%20is%20DAAA.png"
+              src="project-content/3%20DAD%20Images%20for%20framer/5%20What%20is%20DAAA.png"
               alt="The paper accident declaration (DAAA) that the digital experience set out to replace"
               loading="lazy"
             />
@@ -181,7 +199,7 @@
             <!-- img: 6 Lo fi POC.png -->
             <img
               class="cs-img"
-              src="project%20content/3%20DAD%20Images%20for%20framer/6%20Lo%20fi%20POC.png"
+              src="project-content/3%20DAD%20Images%20for%20framer/6%20Lo%20fi%20POC.png"
               alt="Low-fidelity proof of concept for the chatbot claims flow"
               loading="lazy"
             />
@@ -192,7 +210,7 @@
             <!-- img: 6.5 Lo-fi screens.png -->
             <img
               class="cs-img"
-              src="project%20content/3%20DAD%20Images%20for%20framer/6.5%20Lo-fi%20screens.png"
+              src="project-content/3%20DAD%20Images%20for%20framer/6.5%20Lo-fi%20screens.png"
               alt="Low-fidelity screens of the chatbot flow"
               loading="lazy"
             />
@@ -226,7 +244,7 @@
             <!-- img: 7 Hi-fidelity.png -->
             <img
               class="cs-img"
-              src="project%20content/3%20DAD%20Images%20for%20framer/7%20Hi-fidelity.png"
+              src="project-content/3%20DAD%20Images%20for%20framer/7%20Hi-fidelity.png"
               alt="High-fidelity chatbot claims experience"
               loading="lazy"
             />
@@ -237,7 +255,7 @@
             <!-- img: 7.1 Types of chat bubbles.png -->
             <img
               class="cs-img"
-              src="project%20content/3%20DAD%20Images%20for%20framer/7.1%20Types%20of%20chat%20bubbles.png"
+              src="project-content/3%20DAD%20Images%20for%20framer/7.1%20Types%20of%20chat%20bubbles.png"
               alt="The different types of chat bubbles in the conversation"
               loading="lazy"
             />
@@ -247,7 +265,7 @@
             <!-- img: 7.2 Accident details.png -->
             <img
               class="cs-img"
-              src="project%20content/3%20DAD%20Images%20for%20framer/7.2%20Accident%20details.png"
+              src="project-content/3%20DAD%20Images%20for%20framer/7.2%20Accident%20details.png"
               alt="Capturing accident details in the chatbot"
               loading="lazy"
             />
@@ -257,7 +275,7 @@
             <!-- img: 7.3 Automatic diagram.png -->
             <img
               class="cs-img"
-              src="project%20content/3%20DAD%20Images%20for%20framer/7.3%20Automatic%20diagram.png"
+              src="project-content/3%20DAD%20Images%20for%20framer/7.3%20Automatic%20diagram.png"
               alt="Automatically generated accident diagram"
               loading="lazy"
             />
@@ -273,7 +291,7 @@
             <!-- img: 7.4 Navigation drawer.png -->
             <img
               class="cs-img"
-              src="project%20content/3%20DAD%20Images%20for%20framer/7.4%20Navigation%20drawer.png"
+              src="project-content/3%20DAD%20Images%20for%20framer/7.4%20Navigation%20drawer.png"
               alt="Navigation drawer giving users a sense of progress across sections"
               loading="lazy"
             />
@@ -329,7 +347,7 @@
             <!-- img: 8 Fast lane 1.png -->
             <img
               class="cs-img"
-              src="project%20content/3%20DAD%20Images%20for%20framer/8%20Fast%20lane%201.png"
+              src="project-content/3%20DAD%20Images%20for%20framer/8%20Fast%20lane%201.png"
               alt="Fast-lane flow, part 1"
               loading="lazy"
             />
@@ -339,7 +357,7 @@
             <!-- img: 9 Fast lane 2.png -->
             <img
               class="cs-img"
-              src="project%20content/3%20DAD%20Images%20for%20framer/9%20Fast%20lane%202.png"
+              src="project-content/3%20DAD%20Images%20for%20framer/9%20Fast%20lane%202.png"
               alt="Fast-lane flow, part 2"
               loading="lazy"
             />
@@ -349,7 +367,7 @@
             <!-- img: 10 Reduction in questions Approach.png -->
             <img
               class="cs-img"
-              src="project%20content/3%20DAD%20Images%20for%20framer/10%20Reduction%20in%20questions%20Approach.png"
+              src="project-content/3%20DAD%20Images%20for%20framer/10%20Reduction%20in%20questions%20Approach.png"
               alt="The approach to reducing the question set using accident typology"
               loading="lazy"
             />
