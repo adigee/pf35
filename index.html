@@ -873,6 +873,7 @@
       document.addEventListener('click', function (e) {
         var pill = e.target.closest('[data-copy]');
         if (!pill) return;
+        if (pill.classList.contains('is-copied')) return;
         var label = pill.querySelector('.btn-label') || pill;
         var original = label.textContent;
         copyToClipboard(pill.dataset.copy).then(function () {
