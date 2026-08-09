@@ -778,14 +778,14 @@
       <p class="about-body">For a year at Bounce, I was the entire design team — covering both the supply and demand sides of the product solo, which meant getting very fluent in arguing with myself in meetings. I'm looking for teams that want that same range: someone who can go from user research to shipped pixels without losing the thread in between.</p>
       <p class="about-body">Looking for a role that breaks me out of the sr pd purgatory I find myself in. Seeking to immerse myself in a domain with real human impact, and a role that drives sustainable business growth.</p>
       <div class="about-actions">
-        <button class="btn btn--md" type="button" data-copy="aditya.gujaran@gmail.com">
-          <span class="material-symbols-rounded">content_copy</span>
-          <span class="btn-label">aditya.gujaran@gmail.com</span>
-        </button>
         <a class="btn btn--md" href="https://cal.com/adi-g/design-for-growth" target="_blank" rel="noopener">
           <span class="material-symbols-rounded">calendar_month</span>
           <span>BOOK A CALL</span>
         </a>
+        <button class="btn btn--md" type="button" data-copy="aditya.gujaran@gmail.com" data-tooltip="Click to copy">
+          <span class="material-symbols-rounded">content_copy</span>
+          <span class="btn-label">aditya.gu**** @gmail.com</span>
+        </button>
       </div>
     </section>
 
@@ -842,6 +842,53 @@
 
   <!-- Tooltip — lightweight, theme-adaptive tooltip primitive -->
   <script src="components/tooltip.js"></script>
+
+  <!-- Copy email to clipboard — [data-copy] buttons. Uses the Clipboard
+       API on secure contexts and falls back to a hidden textarea so it
+       works on plain http too. Always shows feedback. -->
+  <script>
+    (function () {
+      function copyToClipboard(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text);
+        }
+        return new Promise(function (resolve, reject) {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.top = '-9999px';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          ta.setSelectionRange(0, ta.value.length);
+          var ok = false;
+          try { ok = document.execCommand('copy'); }
+          catch (e) { ok = false; }
+          document.body.removeChild(ta);
+          ok ? resolve() : reject(new Error('copy failed'));
+        });
+      }
+
+      document.addEventListener('click', function (e) {
+        var pill = e.target.closest('[data-copy]');
+        if (!pill) return;
+        var label = pill.querySelector('.btn-label') || pill;
+        var original = label.textContent;
+        copyToClipboard(pill.dataset.copy).then(function () {
+          pill.classList.add('is-copied');
+          label.textContent = 'Copied!';
+        }).catch(function () {
+          label.textContent = 'Copy failed';
+        }).then(function () {
+          setTimeout(function () {
+            pill.classList.remove('is-copied');
+            label.textContent = original;
+          }, 2000);
+        });
+      });
+    })();
+  </script>
 
   <!-- Section scroll-spy — highlights the rail nav link whose section has
        scrolled up past the top edge of the viewport. A link only becomes

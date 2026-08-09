@@ -156,6 +156,25 @@
 }
 .btn .material-symbols-rounded { font-size: 18px; }
 
+/* Email copy tooltip — shown via components/tooltip.js, which adds
+   .b-tt-anchor (dotted underline + help cursor). A button shouldn't
+   read as a text link, so strip that affordance and keep pointer. */
+.btn[data-tooltip] { position: relative; }
+button[data-copy].b-tt-anchor {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+/* During the "Copied!" feedback the tooltip is redundant — hide the pill
+   (and its hover affordance) so it never re-opens while feedback shows. */
+.btn.is-copied .b-tt { display: none; }
+.btn.is-copied.b-tt-anchor,
+.btn.is-copied.b-tt-anchor:hover,
+.btn.is-copied.b-tt-anchor:focus-visible {
+  text-decoration-color: transparent;
+}
+
 .btn--xs {
   padding: 2px 10px;
   font-size: var(--text-xs);

@@ -57,7 +57,10 @@
     'border-radius:8px;border:1px solid rgba(248, 246, 238, 0.12);' +
     'background:#1E1D1A;' +
     'color:#F8F6EE;' +
-    'font-size:var(--text-xs, 12px);line-height:1.35;' +
+    'font-family:var(--font-body, sans-serif);' +
+    'font-size:var(--text-xs, 12px);font-weight:400;' +
+    'font-style:normal;text-transform:none;' +
+    'letter-spacing:normal;text-align:left;line-height:1.35;' +
     'box-shadow:0 8px 24px -6px rgba(0,0,0,0.35),' +
     '0 2px 6px -2px rgba(0,0,0,0.25);' +
     'opacity:0;filter:blur(3px);' +
