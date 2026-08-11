@@ -469,13 +469,10 @@
 
     /* ─────────────────────────────────────────
        RESUME SECTION
-       Eyebrow label + intro + two toggleable layouts:
-       · Timeline — the featured role (Bounce) expands into
-         a card with metrics + case-study link, the rest
-         collapse to dot + company + dates rows.
+       Eyebrow label + intro + asymmetric layout:
        · Asymmetric Split — every role is a full-width entry:
-         role/dates header + "what I did" / "what I learned"
-         columns, separated by hairlines.
+         role/dates header + "what I did" / "takeaways"
+         blocks + testimonials.
        Download pills close the section.
     ─────────────────────────────────────────── */
     .resume {
@@ -508,7 +505,6 @@
       color: var(--color-text);
       max-width: 60ch;
     }
-    .resume-bio + .resume-bio { margin-top: var(--sp-4); }
 
     /* Asymmetric Split — full-width entries, "did / learned" blocks */
     .resume-split {
@@ -627,7 +623,7 @@
 
     /* Download pills — layout only. Visual treatment (fill, hover,
        type) comes from the shared .btn .btn--md (style.css).
-       Sits right below the bio, above the layout toggle panels. */
+       Sits right below the bio. */
     .resume-buttons {
       display: flex;
       flex-wrap: wrap;
@@ -737,9 +733,9 @@
 
     <!-- ── RESUME ─────────────────────────────── -->
     <section class="resume" id="resume">
-      <h2 class="resume-label">Resume</h2>
-      <h3 class="resume-title">UX research, Product design, Service design</h3>
-      <p class="resume-bio">I am a business oriented product designer and digital storyteller. I have 10+ years of experience across B2B and B2C, in startups and consulting.</p>
+      <p class="resume-label">Resume</p>
+      <h2 class="resume-title">UX research, Product design, Service design</h2>
+      <p class="resume-bio">I am a business oriented product designer and digital storyteller — I have 10+ years of experience across B2B and B2C, in startups and consulting.</p>
 
       <div class="resume-buttons">
         <a class="btn btn--md" href="https://drive.google.com/file/d/1FJDZI8xlQgeWfl7zgbS3LjaTYYZJbWh3/view" target="_blank" rel="noopener">
@@ -761,7 +757,7 @@
           <div class="rs-split">
             <section class="rs-block">
               <h4 class="rs-label">What I did</h4>
-              <p class="rs-learn">Built the lockers product from 0 to 1. Reached 250K ARR.</p>
+              <p class="rs-learn">Built the lockers product from 0 to 1, reached 250K ARR.</p>
             </section>
             <section class="rs-block">
               <h4 class="rs-label">Takeaways</h4>
@@ -795,11 +791,11 @@
           <div class="rs-split">
             <section class="rs-block">
               <h4 class="rs-label">What I did</h4>
-              <p class="rs-learn">Built internal tooling for linguists. Shipped 5 products total.</p>
+              <p class="rs-learn">Built internal tooling for linguists, shipped 5 products total.</p>
             </section>
             <section class="rs-block">
               <h4 class="rs-label">Takeaways</h4>
-              <p class="rs-learn">Great intro to AI pre-ChatGPT. Showed me how going deep and mastering a business domain brings enormous advantages as a PD constantly connecting dots between business goals and customers.</p>
+              <p class="rs-learn">Great intro to AI pre-ChatGPT — showed me how going deep and mastering a business domain brings enormous advantages as a PD constantly connecting dots between business goals and customers.</p>
             </section>
             <section class="rs-block">
               <ul class="testimonial-grid">
@@ -829,11 +825,11 @@
           <div class="rs-split">
             <section class="rs-block">
               <h4 class="rs-label">What I did</h4>
-              <p class="rs-learn">Embedded in teams at Cocoon Experience and With Company for long-term projects in <a href="https://www.generalitranquilidade.pt/" target="_blank" rel="noopener">Insurance</a> (service design for claims process), <a href="https://josedemello.pt/en/subsidiaries/cuf/" target="_blank" rel="noopener">Healthcare</a> (service design for patient experience), and <a href="https://www.jeronimomartins.com/en/about-us/what-we-do/food-distribution/" target="_blank" rel="noopener">Retail</a> (UX design for loyalty and engagement). Worked on an <a href="https://cordis.europa.eu/project/id/770145" target="_blank" rel="noopener">EU project for urban mobility</a>.</p>
+              <p class="rs-learn">Embedded in teams at Cocoon Experience and With Company for long-term projects in <a href="https://www.generalitranquilidade.pt/" target="_blank" rel="noopener">Insurance</a> (service design for claims process), <a href="https://josedemello.pt/en/subsidiaries/cuf/" target="_blank" rel="noopener">Healthcare</a> (service design for patient experience), and <a href="https://www.jeronimomartins.com/en/about-us/what-we-do/food-distribution/" target="_blank" rel="noopener">Retail</a> (UX design for loyalty and engagement), also worked on an <a href="https://cordis.europa.eu/project/id/770145" target="_blank" rel="noopener">EU project for urban mobility</a>.</p>
             </section>
             <section class="rs-block">
               <h4 class="rs-label">Takeaways</h4>
-              <p class="rs-learn">Gained exposure to service design as a method for thinking through problems. Worked with lovely design generalist colleagues, learned how design is really a business method.</p>
+              <p class="rs-learn">Gained exposure to service design as a method for thinking through problems — worked with lovely design generalist colleagues, learned how design is really a business method.</p>
             </section>
             <section class="rs-block">
               <ul class="testimonial-grid">
@@ -863,7 +859,7 @@
           <div class="rs-split">
             <section class="rs-block">
               <h4 class="rs-label">What I did</h4>
-              <p class="rs-learn">First real job. Transitioned from UXR to IXD.</p>
+              <p class="rs-learn">First real job — transitioned from UXR to IXD.</p>
             </section>
             <section class="rs-block">
               <h4 class="rs-label">Takeaways</h4>
@@ -897,7 +893,7 @@
           <div class="rs-split">
             <section class="rs-block">
               <h4 class="rs-label">What I did</h4>
-              <p class="rs-learn">Conducted formative research. Ran usability testing sessions.</p>
+              <p class="rs-learn">Conducted formative research, ran usability testing sessions.</p>
             </section>
             <section class="rs-block">
               <h4 class="rs-label">Takeaways</h4>
