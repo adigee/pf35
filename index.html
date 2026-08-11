@@ -492,16 +492,6 @@
       margin-bottom: var(--sp-6);
     }
 
-    /* Layout toggle — small pill segmented control */
-    .resume-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--sp-4);
-      margin-bottom: var(--sp-6);
-    }
-    .resume-top .resume-label { margin-bottom: 0; }
-
     /* Section title — the disciplines this resume covers */
     .resume-title {
       font-size: var(--text-2xl);
@@ -511,33 +501,6 @@
       color: var(--color-text);
       margin: var(--sp-6) 0 var(--sp-4);
     }
-    .resume-variant {
-      display: inline-flex;
-      gap: 2px;
-      padding: 2px;
-      border: 1px solid var(--color-border);
-      border-radius: 999px;
-    }
-    .rv-btn {
-      border: none;
-      background: transparent;
-      color: var(--color-text-muted);
-      font-family: var(--font-mono);
-      font-size: var(--text-xs);
-      font-weight: 500;
-      letter-spacing: var(--tracking-wider);
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: color 160ms ease, background 160ms ease;
-    }
-    .rv-btn:hover { color: var(--color-text); }
-    .rv-btn.is-active {
-      background: var(--color-primary);
-      color: var(--color-on-primary);
-    }
-    .resume-panel[hidden] { display: none; }
 
     .resume-bio {
       font-size: var(--text-base);
@@ -546,164 +509,6 @@
       max-width: 60ch;
     }
     .resume-bio + .resume-bio { margin-top: var(--sp-4); }
-
-    /* Timeline — expanded featured role + collapsed history */
-    .resume-timeline {
-      list-style: none;
-      padding: 0;
-      margin: var(--sp-10) 0 0;
-    }
-    .resume-item {
-      padding: var(--sp-4) 0;
-      border-bottom: 1px solid var(--color-border);
-    }
-    .resume-item:last-child { border-bottom: none; }
-
-    .resume-item-head {
-      display: flex;
-      align-items: center;
-      gap: var(--sp-3);
-    }
-    .rt-headline {
-      display: flex;
-      align-items: center;
-      gap: var(--sp-2);
-    }
-    .rt-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      border: 1px solid var(--color-text-subtle);
-      background: transparent;
-      flex-shrink: 0;
-    }
-    .resume-item--open .rt-dot {
-      border-color: var(--color-primary);
-      background: var(--color-primary);
-    }
-    .rt-company {
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      color: var(--color-text);
-    }
-    .resume-item:not(.resume-item--open) .rt-company {
-      font-weight: 400;
-      color: var(--color-text-muted);
-    }
-    /* Company names as links — follow the global <a> treatment from
-       style.css: underline at rest with --color-border, tint primary on
-       hover, 120ms ease (design.md §2, §3). */
-    .rt-company a,
-    .rs-role a {
-      color: inherit;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      text-decoration-thickness: 1px;
-      text-decoration-color: var(--color-border);
-      transition: color 120ms ease, text-decoration-color 120ms ease;
-    }
-    .rt-company a:hover,
-    .rs-role a:hover {
-      color: var(--color-primary);
-      text-decoration-color: var(--color-primary);
-    }
-    .rt-note {
-      font-size: var(--text-sm);
-      line-height: var(--leading-body);
-      color: var(--color-text-muted);
-      margin-top: var(--sp-2);
-    }
-    .rt-note a {
-      color: var(--color-text-muted);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      text-decoration-color: var(--color-border);
-    }
-    .rt-note a:hover {
-      color: var(--color-primary);
-      text-decoration-color: var(--color-primary);
-    }
-    .rt-dates {
-      font-size: var(--text-xs);
-      letter-spacing: 0.08em;
-      color: var(--color-text-muted);
-    }
-    .resume-item:not(.resume-item--open) .rt-dates {
-      color: var(--color-text-subtle);
-    }
-
-    /* Expanded card — featured role's detail */
-    .rt-card {
-      margin-top: var(--sp-4);
-      padding: var(--sp-5);
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 10px;
-    }
-    .rt-role {
-      font-size: var(--text-xs);
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      color: var(--color-text-muted);
-      margin-bottom: var(--sp-3);
-    }
-    .rt-desc {
-      font-size: var(--text-sm);
-      line-height: var(--leading-body);
-      color: var(--color-text);
-      max-width: 52ch;
-    }
-    .rt-metrics {
-      list-style: none;
-      padding: 0;
-      margin: var(--sp-4) 0 0;
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--sp-2);
-    }
-    .rt-metric {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      padding: var(--sp-2) var(--sp-3);
-      background: var(--color-bg);
-      border: 1px solid var(--color-border);
-      border-radius: 6px;
-      min-width: 84px;
-    }
-    .rt-value {
-      font-size: var(--text-base);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      color: var(--color-primary);
-      white-space: nowrap;
-    }
-    .rt-kicker {
-      font-size: var(--text-2xs);
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      line-height: 1.1;
-      color: var(--color-text-muted);
-    }
-    .rt-link {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--sp-1);
-      margin-top: var(--sp-5);
-      font-size: var(--text-xs);
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      color: var(--color-primary);
-      text-decoration: none;
-    }
-    .rt-link:hover {
-      text-decoration: underline;
-      text-decoration-color: var(--color-primary);
-    }
-    .rt-arrow { font-weight: 600; }
 
     /* Asymmetric Split — full-width entries, "did / learned" blocks */
     .resume-split {
@@ -726,6 +531,21 @@
       font-size: var(--text-base);
       font-weight: 600;
       color: var(--color-text);
+    }
+    /* Company names as links — follow the global <a> treatment from
+       style.css: underline at rest with --color-border, tint primary on
+       hover, 120ms ease (design.md §2, §3). */
+    .rs-role a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 1px;
+      text-decoration-color: var(--color-border);
+      transition: color 120ms ease, text-decoration-color 120ms ease;
+    }
+    .rs-role a:hover {
+      color: var(--color-primary);
+      text-decoration-color: var(--color-primary);
     }
     .rs-dates {
       font-size: var(--text-sm);
@@ -761,7 +581,6 @@
 
     /* Testimonials — circular avatar + name + two sentences.
        Two-up on desktop, stacked on phones. */
-    .rt-testimonials { margin-top: var(--sp-5); }
     .testimonial-grid {
       list-style: none;
       padding: 0;
@@ -816,12 +635,11 @@
       margin: var(--sp-6) 0 0;
     }
 
-    /* Mobile — tighten spacing, keep the timeline as-is */
+    /* Mobile — tighten spacing */
     @media (max-width: 720px) {
       .about, .resume { padding: var(--sp-16) 0; }
       .about-heading { font-size: var(--text-lg); }
       .resume-buttons { margin: var(--sp-5) 0 0; }
-      .rt-card { padding: var(--sp-4); }
       .rs-head { flex-direction: column; align-items: flex-start; gap: var(--sp-1); }
     }
   </style>
@@ -919,13 +737,7 @@
 
     <!-- ── RESUME ─────────────────────────────── -->
     <section class="resume" id="resume">
-      <div class="resume-top">
-        <h2 class="resume-label">Resume</h2>
-        <div class="resume-variant" role="group" aria-label="Resume layout">
-          <button type="button" class="rv-btn is-active" data-variant="timeline">Timeline</button>
-          <button type="button" class="rv-btn" data-variant="split">Asymmetric</button>
-        </div>
-      </div>
+      <h2 class="resume-label">Resume</h2>
       <h3 class="resume-title">UX research, Product design, Service design</h3>
       <p class="resume-bio">I am a business oriented product designer and digital storyteller. I have 10+ years of experience across B2B and B2C, in startups and consulting.</p>
 
@@ -940,167 +752,6 @@
         </a>
       </div>
 
-      <div class="resume-panel" data-panel="timeline">
-      <ol class="resume-timeline">
-        <li class="resume-item resume-item--open">
-          <div class="resume-item-head">
-            <span class="rt-dot" aria-hidden="true"></span>
-            <span class="rt-headline">
-              <span class="rt-company"><a href="https://bounce.com/" target="_blank" rel="noopener">Bounce</a></span>
-              <span class="rt-dates">2024 – 2025</span>
-            </span>
-          </div>
-          <div class="rt-card">
-            <p class="rt-role">Senior Product Designer</p>
-            <p class="rt-desc">Built the end-to-end lockers product experience from 0→1. Reduced the cancellation rate from 65% to 12% — an 81.5% drop.</p>
-            <ul class="rt-metrics">
-              <li class="rt-metric">
-                <span class="rt-value">250K ARR</span>
-                <span class="rt-kicker">Revenue</span>
-              </li>
-              <li class="rt-metric">
-                <span class="rt-value">65%→12%</span>
-                <span class="rt-kicker">Cancel.</span>
-              </li>
-              <li class="rt-metric">
-                <span class="rt-value">81.5%</span>
-                <span class="rt-kicker">Reduction</span>
-              </li>
-            </ul>
-            <a class="rt-link" href="lockers-reducing-cancellation.html">View case study<span class="rt-arrow" aria-hidden="true">&nbsp;→</span></a>
-            <div class="rt-testimonials">
-              <ul class="testimonial-grid">
-                <li class="testimonial">
-                  <span class="testimonial-avatar" aria-hidden="true">SM</span>
-                  <div class="testimonial-body">
-                    <p class="testimonial-name">Sofia Martins · Product Manager</p>
-                    <p class="testimonial-quote">Aditya took the lockers product from a rough idea to a shipped experience our hosts actually rely on. He always tied the design back to a metric, so nothing on the roadmap was a guess.</p>
-                  </div>
-                </li>
-                <li class="testimonial">
-                  <span class="testimonial-avatar" aria-hidden="true">JD</span>
-                  <div class="testimonial-body">
-                    <p class="testimonial-name">Jonas Duarte · Engineering Lead</p>
-                    <p class="testimonial-quote">Working with him on the cancellation-rate problem was like getting a second product brain in the room. He could explain the research, the business case, and the UI in the same breath.</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </li>
-        <li class="resume-item">
-          <div class="resume-item-head">
-            <span class="rt-dot" aria-hidden="true"></span>
-            <span class="rt-headline">
-              <span class="rt-company"><a href="https://unbabel.com/" target="_blank" rel="noopener">Unbabel</a></span>
-              <span class="rt-dates">2020 – 2023</span>
-            </span>
-          </div>
-          <div class="rt-testimonials">
-            <ul class="testimonial-grid">
-              <li class="testimonial">
-                <span class="testimonial-avatar" aria-hidden="true">AL</span>
-                <div class="testimonial-body">
-                  <p class="testimonial-name">Ana Lopes · Director of Product</p>
-                  <p class="testimonial-quote">Aditya turned a tool nobody wanted to touch into something our linguists actually loved. He had a rare talent for translating a deep technical domain into plain interfaces.</p>
-                </div>
-              </li>
-              <li class="testimonial">
-                <span class="testimonial-avatar" aria-hidden="true">RM</span>
-                <div class="testimonial-body">
-                  <p class="testimonial-name">Ricardo Mendes · Head of Ops</p>
-                  <p class="testimonial-quote">He shipped five products in three years and every single one stuck. His research instinct meant we rarely had to redo a decision after it left his desk.</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </li>
-        <li class="resume-item">
-          <div class="resume-item-head">
-            <span class="rt-dot" aria-hidden="true"></span>
-            <span class="rt-headline">
-              <span class="rt-company">Freelance</span>
-              <span class="rt-dates">2016 – 2019</span>
-            </span>
-          </div>
-          <p class="rt-note">Embedded in teams at Cocoon Experience and With Company for long-term projects in <a href="https://www.generalitranquilidade.pt/" target="_blank" rel="noopener">Insurance</a> (service design for claims process), <a href="https://josedemello.pt/en/subsidiaries/cuf/" target="_blank" rel="noopener">Healthcare</a> (service design for patient experience), and <a href="https://www.jeronimomartins.com/en/about-us/what-we-do/food-distribution/" target="_blank" rel="noopener">Retail</a> (UX design for loyalty and engagement). Worked on an <a href="https://cordis.europa.eu/project/id/770145" target="_blank" rel="noopener">EU project for urban mobility</a>.</p>
-          <div class="rt-testimonials">
-            <ul class="testimonial-grid">
-              <li class="testimonial">
-                <span class="testimonial-avatar" aria-hidden="true">CG</span>
-                <div class="testimonial-body">
-                  <p class="testimonial-name">Catarina Gomes · Client Partner</p>
-                  <p class="testimonial-quote">Aditya ran a claims chatbot project that a client had tried to kill twice before. He brought the service design lens that finally got it approved and delivered.</p>
-                </div>
-              </li>
-              <li class="testimonial">
-                <span class="testimonial-avatar" aria-hidden="true">BP</span>
-                <div class="testimonial-body">
-                  <p class="testimonial-name">Bruno Pinto · Design Lead</p>
-                  <p class="testimonial-quote">He came in as a freelancer and left as a design partner people kept asking for. Generous, structured, and always thinking about the business behind the screens.</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </li>
-        <li class="resume-item">
-          <div class="resume-item-head">
-            <span class="rt-dot" aria-hidden="true"></span>
-            <span class="rt-headline">
-              <span class="rt-company"><a href="https://www.novabase.com/en/" target="_blank" rel="noopener">Novabase</a></span>
-              <span class="rt-dates">2013 – 2015</span>
-            </span>
-          </div>
-          <div class="rt-testimonials">
-            <ul class="testimonial-grid">
-              <li class="testimonial">
-                <span class="testimonial-avatar" aria-hidden="true">TM</span>
-                <div class="testimonial-body">
-                  <p class="testimonial-name">Tiago Marques · Principal Consultant</p>
-                  <p class="testimonial-quote">Aditya was the junior everyone fought to staff. He absorbed the fundamentals fast and still found time to teach the rest of us a thing or two about research.</p>
-                </div>
-              </li>
-              <li class="testimonial">
-                <span class="testimonial-avatar" aria-hidden="true">LS</span>
-                <div class="testimonial-body">
-                  <p class="testimonial-name">Laura Santos · UX Lead</p>
-                  <p class="testimonial-quote">I watched him shift from research to interaction design in a single project. Few people make that transition with so much ease and so little ego.</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </li>
-        <li class="resume-item">
-          <div class="resume-item-head">
-            <span class="rt-dot" aria-hidden="true"></span>
-            <span class="rt-headline">
-              <span class="rt-company"><a href="https://photos.google.com/" target="_blank" rel="noopener">Google</a></span>
-              <span class="rt-dates">Summer 2012</span>
-            </span>
-          </div>
-          <div class="rt-testimonials">
-            <ul class="testimonial-grid">
-              <li class="testimonial">
-                <span class="testimonial-avatar" aria-hidden="true">EW</span>
-                <div class="testimonial-body">
-                  <p class="testimonial-name">Ethan Walker · Researcher</p>
-                  <p class="testimonial-quote">In ten weeks Aditya ran a benchmark and a round of usability tests that most interns wouldn't have finished in a full term. He asked sharp questions from day one.</p>
-                </div>
-              </li>
-              <li class="testimonial">
-                <span class="testimonial-avatar" aria-hidden="true">KD</span>
-                <div class="testimonial-body">
-                  <p class="testimonial-name">Kim Davis · Product Manager</p>
-                  <p class="testimonial-quote">We kept his findings on the wall long after the summer ended. The team trusted his observations as much as any full-time researcher's.</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </li>
-      </ol>
-      </div><!-- /.resume-panel timeline -->
-
-      <div class="resume-panel" data-panel="split" hidden>
       <ol class="resume-split">
         <li class="rs-entry">
           <header class="rs-head">
@@ -1273,7 +924,6 @@
           </div>
         </li>
       </ol>
-      </div><!-- /.resume-panel split -->
     </section>
 
     <div class="tail"></div>
@@ -1308,29 +958,6 @@
 
   <!-- Tooltip — lightweight, theme-adaptive tooltip primitive -->
   <script src="components/tooltip.js"></script>
-
-  <!-- Resume layout toggle — swaps between the Timeline and Asymmetric
-       Split variants. Both stay in the DOM; only visibility flips. -->
-  <script>
-    (function () {
-      var group = document.querySelector('.resume-variant');
-      if (!group) return;
-      var btns = group.querySelectorAll('.rv-btn');
-      var panels = document.querySelectorAll('.resume-panel');
-
-      btns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var variant = btn.getAttribute('data-variant');
-          btns.forEach(function (b) {
-            b.classList.toggle('is-active', b === btn);
-          });
-          panels.forEach(function (p) {
-            p.hidden = p.getAttribute('data-panel') !== variant;
-          });
-        });
-      });
-    })();
-  </script>
 
   <!-- Section scroll-spy — highlights the rail nav link whose section has
        scrolled up past the top edge of the viewport. A link only becomes
