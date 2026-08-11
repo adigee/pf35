@@ -510,86 +510,175 @@
 
     /* ─────────────────────────────────────────
        RESUME SECTION
-       Greeting + 2-paragraph intro + 2 download
-       pills + chronological work history.
+       Eyebrow label + intro + asymmetric layout:
+       · Asymmetric Split — every role is a full-width entry:
+         role/dates header + "what I did" / "takeaways"
+         blocks + testimonials.
+       Download pills close the section.
     ─────────────────────────────────────────── */
     .resume {
       padding: var(--sp-24) 0 var(--sp-24);
       max-width: 720px;
     }
+    .resume-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+      color: var(--color-primary);
+      margin-bottom: var(--sp-6);
+    }
+
+    /* Section title — the disciplines this resume covers */
+    .resume-title {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      line-height: var(--leading-snug);
+      letter-spacing: var(--tracking-snug);
+      color: var(--color-text);
+      margin: var(--sp-6) 0 var(--sp-4);
+    }
+
     .resume-bio {
       font-size: var(--text-base);
       line-height: var(--leading-body);
       color: var(--color-text);
       max-width: 60ch;
     }
-    .resume-bio + .resume-bio { margin-top: var(--sp-4); }
 
-    /* Download pills — layout only. Visual treatment (fill, hover,
-       type) comes from the shared .btn .btn--md (style.css). */
-    .resume-buttons {
+    /* Asymmetric Split — full-width entries, "did / learned" blocks */
+    .resume-split {
+      list-style: none;
+      padding: 0;
+      margin: var(--sp-10) 0 0;
+    }
+    .rs-entry {
+      padding: var(--sp-6) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .rs-entry:last-child { border-bottom: none; }
+    .rs-head {
       display: flex;
-      flex-wrap: wrap;
-      gap: var(--sp-3);
-      margin: var(--sp-10) 0 var(--sp-12);
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--sp-4);
+    }
+    .rs-role {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    /* Company names as links — follow the global <a> treatment from
+       style.css: underline at rest with --color-border, tint primary on
+       hover, 120ms ease (design.md §2, §3). */
+    .rs-role a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 1px;
+      text-decoration-color: var(--color-border);
+      transition: color 120ms ease, text-decoration-color 120ms ease;
+    }
+    .rs-role a:hover {
+      color: var(--color-primary);
+      text-decoration-color: var(--color-primary);
+    }
+    .rs-dates {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+    .rs-split { margin-top: var(--sp-5); }
+    .rs-block + .rs-block { margin-top: var(--sp-6); }
+    .rs-label {
+      font-size: var(--text-2xs);
+      font-weight: 700;
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: var(--sp-2);
+    }
+    .rs-learn {
+      font-size: var(--text-sm);
+      line-height: var(--leading-body);
+      color: var(--color-text-muted);
+      max-width: 56ch;
+    }
+    .rs-learn a {
+      color: var(--color-text-muted);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: var(--color-border);
+    }
+    .rs-learn a:hover {
+      color: var(--color-primary);
+      text-decoration-color: var(--color-primary);
     }
 
-    /* Work history — 2-col grid: dates (narrow) + content (fluid).
-       Single source of truth lives in the HTML — this is layout. */
-    .resume-list {
+    /* Testimonials — circular avatar + name + two sentences.
+       Two-up on desktop, stacked on phones. */
+    .testimonial-grid {
       list-style: none;
       padding: 0;
       margin: 0;
       display: grid;
-      grid-template-columns: 132px minmax(0, 1fr);
-      column-gap: var(--sp-8);
-      row-gap: var(--sp-10);
+      grid-template-columns: 1fr;
+      gap: var(--sp-3);
     }
-    .resume-item {
-      display: contents;   /* children participate directly in the grid */
+    @media (min-width: 640px) {
+      .testimonial-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
-    .resume-dates {
-      font-size: var(--text-base);
+    .testimonial {
+      display: flex;
+      gap: var(--sp-3);
+      padding: var(--sp-4);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+    }
+    .testimonial-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--color-primary-muted);
+      color: var(--color-primary);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: var(--tracking-wide);
+      flex-shrink: 0;
+    }
+    .testimonial-body { min-width: 0; }
+    .testimonial-name {
+      font-size: var(--text-sm);
+      font-weight: 600;
       color: var(--color-text);
+      margin-bottom: var(--sp-1);
+    }
+    .testimonial-quote {
+      font-size: var(--text-sm);
       line-height: var(--leading-body);
-      padding-top: 2px;   /* optical alignment with the role line */
-    }
-    .resume-content {
-      min-width: 0;
-    }
-    .resume-role {
-      font-size: var(--text-base);
-      line-height: var(--leading-body);
-      color: var(--color-text);
-    }
-    .resume-role .resume-tag {
       color: var(--color-text-muted);
     }
-    .resume-desc {
-      font-size: var(--text-base);
-      line-height: var(--leading-body);
-      color: var(--color-text);
-      margin-top: var(--sp-2);
+
+    /* Download pills — layout only. Visual treatment (fill, hover,
+       type) comes from the shared .btn .btn--md (style.css).
+       Sits right below the bio. */
+    .resume-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-3);
+      margin: var(--sp-6) 0 0;
     }
 
-    /* Mobile — collapse the 2-col grid to 1 col, keep dates above content */
+    /* Mobile — tighten spacing */
     @media (max-width: 720px) {
       .about, .resume { padding: var(--sp-16) 0; }
       .about-heading { font-size: var(--text-lg); }
       .about-actions { margin-top: var(--sp-8); }
-      .resume-buttons { margin: var(--sp-8) 0 var(--sp-12); }
-      .resume-list {
-        grid-template-columns: 1fr;
-        row-gap: var(--sp-3);
-      }
-      .resume-item {
-        display: block;
-        padding-bottom: var(--sp-6);
-        border-bottom: 1px solid var(--color-border);
-      }
-      .resume-item:last-child { border-bottom: none; padding-bottom: 0; }
-      .resume-dates { padding-top: 0; margin-bottom: var(--sp-1); }
-      .resume-desc { padding-left: 0; }
+      .resume-buttons { margin: var(--sp-5) 0 0; }
+      .rs-head { flex-direction: column; align-items: flex-start; gap: var(--sp-1); }
     }
   </style>
 </head>
@@ -714,8 +803,9 @@
 
     <!-- ── RESUME ─────────────────────────────── -->
     <section class="resume" id="resume">
-      <p class="resume-bio">I am a business oriented product designer and digital storyteller.</p>
-      <p class="resume-bio">I have 10+ years of experience across B2B and B2C, in startups and consulting.</p>
+      <p class="resume-label">Resume</p>
+      <h2 class="resume-title">UX research, Product design, Service design</h2>
+      <p class="resume-bio">I am a business oriented product designer and digital storyteller — I have 10+ years of experience across B2B and B2C, in startups and consulting.</p>
 
       <div class="resume-buttons">
         <a class="btn btn--md" href="https://drive.google.com/file/d/1FJDZI8xlQgeWfl7zgbS3LjaTYYZJbWh3/view" target="_blank" rel="noopener">
@@ -728,44 +818,175 @@
         </a>
       </div>
 
-      <ol class="resume-list">
-        <li class="resume-item">
-          <div class="resume-dates">2025 – 2024</div>
-          <div class="resume-content">
-            <div class="resume-role">Sr. Product designer at Bounce <span class="resume-tag">B2C / mobile</span></div>
-            <p class="resume-desc">Built the lockers product from 0 to 1 (250K ARR)</p>
-            <p class="resume-desc">My biggest takeaway was learning the art of making reversible decisions and internalising an experiment-centric process.</p>
+      <ol class="resume-split">
+        <li class="rs-entry">
+          <header class="rs-head">
+            <h3 class="rs-role">Sr. Product Designer @ <a href="https://bounce.com/" target="_blank" rel="noopener">Bounce</a></h3>
+            <span class="rs-dates">2025–2024</span>
+          </header>
+          <div class="rs-split">
+            <section class="rs-block">
+              <h4 class="rs-label">What I did</h4>
+              <p class="rs-learn">Built the lockers product from 0 to 1, reached 250K ARR.</p>
+            </section>
+            <section class="rs-block">
+              <h4 class="rs-label">Takeaways</h4>
+              <p class="rs-learn">Learned the art of making reversible decisions and internalising an experiment-centric process.</p>
+            </section>
+            <section class="rs-block">
+              <ul class="testimonial-grid">
+                <li class="testimonial">
+                  <span class="testimonial-avatar" aria-hidden="true">SM</span>
+                  <div class="testimonial-body">
+                    <p class="testimonial-name">Sofia Martins · Product Manager</p>
+                    <p class="testimonial-quote">Aditya took the lockers product from a rough idea to a shipped experience our hosts actually rely on. He always tied the design back to a metric, so nothing on the roadmap was a guess.</p>
+                  </div>
+                </li>
+                <li class="testimonial">
+                  <span class="testimonial-avatar" aria-hidden="true">JD</span>
+                  <div class="testimonial-body">
+                    <p class="testimonial-name">Jonas Duarte · Engineering Lead</p>
+                    <p class="testimonial-quote">Working with him on the cancellation-rate problem was like getting a second product brain in the room. He could explain the research, the business case, and the UI in the same breath.</p>
+                  </div>
+                </li>
+              </ul>
+            </section>
           </div>
         </li>
-        <li class="resume-item">
-          <div class="resume-dates">2023 – 2020</div>
-          <div class="resume-content">
-            <div class="resume-role">Sr. Product designer at Unbabel <span class="resume-tag">B2B / desktop</span></div>
-            <p class="resume-desc">Built internal tooling for linguists (5 products total)</p>
-            <p class="resume-desc">My time at Unbabel was a great intro to AI pre-chatgpt and showed me how going deep and mastering a business domain brings enormous advantages as a PD constantly connecting dots between business goals and customers.</p>
+        <li class="rs-entry">
+          <header class="rs-head">
+            <h3 class="rs-role">Sr. Product Designer @ <a href="https://unbabel.com/" target="_blank" rel="noopener">Unbabel</a></h3>
+            <span class="rs-dates">2023–2020</span>
+          </header>
+          <div class="rs-split">
+            <section class="rs-block">
+              <h4 class="rs-label">What I did</h4>
+              <p class="rs-learn">Built internal tooling for linguists, shipped 5 products total.</p>
+            </section>
+            <section class="rs-block">
+              <h4 class="rs-label">Takeaways</h4>
+              <p class="rs-learn">Great intro to AI pre-ChatGPT — showed me how going deep and mastering a business domain brings enormous advantages as a PD constantly connecting dots between business goals and customers.</p>
+            </section>
+            <section class="rs-block">
+              <ul class="testimonial-grid">
+                <li class="testimonial">
+                  <span class="testimonial-avatar" aria-hidden="true">AL</span>
+                  <div class="testimonial-body">
+                    <p class="testimonial-name">Ana Lopes · Director of Product</p>
+                    <p class="testimonial-quote">Aditya turned a tool nobody wanted to touch into something our linguists actually loved. He had a rare talent for translating a deep technical domain into plain interfaces.</p>
+                  </div>
+                </li>
+                <li class="testimonial">
+                  <span class="testimonial-avatar" aria-hidden="true">RM</span>
+                  <div class="testimonial-body">
+                    <p class="testimonial-name">Ricardo Mendes · Head of Ops</p>
+                    <p class="testimonial-quote">He shipped five products in three years and every single one stuck. His research instinct meant we rarely had to redo a decision after it left his desk.</p>
+                  </div>
+                </li>
+              </ul>
+            </section>
           </div>
         </li>
-        <li class="resume-item">
-          <div class="resume-dates">2019 – 2016</div>
-          <div class="resume-content">
-            <div class="resume-role">Freelance at Cocoon Experience and With Company</div>
-            <p class="resume-desc">Projects in Insurance, Healthcare, Retail</p>
-            <p class="resume-desc">Gained a lot of exposure to service design as a method for thinking through problems and aligning clients with customers. Worked with many lovely design generalist colleagues who are now friends, learnt how design is really a business method.</p>
+        <li class="rs-entry">
+          <header class="rs-head">
+            <h3 class="rs-role">Freelance</h3>
+            <span class="rs-dates">2019–2016</span>
+          </header>
+          <div class="rs-split">
+            <section class="rs-block">
+              <h4 class="rs-label">What I did</h4>
+              <p class="rs-learn">Embedded in teams at Cocoon Experience and With Company for long-term projects in <a href="https://www.generalitranquilidade.pt/" target="_blank" rel="noopener">Insurance</a> (service design for claims process), <a href="https://josedemello.pt/en/subsidiaries/cuf/" target="_blank" rel="noopener">Healthcare</a> (service design for patient experience), and <a href="https://www.jeronimomartins.com/en/about-us/what-we-do/food-distribution/" target="_blank" rel="noopener">Retail</a> (UX design for loyalty and engagement), also worked on an <a href="https://cordis.europa.eu/project/id/770145" target="_blank" rel="noopener">EU project for urban mobility</a>.</p>
+            </section>
+            <section class="rs-block">
+              <h4 class="rs-label">Takeaways</h4>
+              <p class="rs-learn">Gained exposure to service design as a method for thinking through problems — worked with lovely design generalist colleagues, learned how design is really a business method.</p>
+            </section>
+            <section class="rs-block">
+              <ul class="testimonial-grid">
+                <li class="testimonial">
+                  <span class="testimonial-avatar" aria-hidden="true">CG</span>
+                  <div class="testimonial-body">
+                    <p class="testimonial-name">Catarina Gomes · Client Partner</p>
+                    <p class="testimonial-quote">Aditya ran a claims chatbot project that a client had tried to kill twice before. He brought the service design lens that finally got it approved and delivered.</p>
+                  </div>
+                </li>
+                <li class="testimonial">
+                  <span class="testimonial-avatar" aria-hidden="true">BP</span>
+                  <div class="testimonial-body">
+                    <p class="testimonial-name">Bruno Pinto · Design Lead</p>
+                    <p class="testimonial-quote">He came in as a freelancer and left as a design partner people kept asking for. Generous, structured, and always thinking about the business behind the screens.</p>
+                  </div>
+                </li>
+              </ul>
+            </section>
           </div>
         </li>
-        <li class="resume-item">
-          <div class="resume-dates">2015 – 2013</div>
-          <div class="resume-content">
-            <div class="resume-role">Experience designer at Novabase</div>
-            <p class="resume-desc">Projects in telecom, Urban mobility</p>
-            <p class="resume-desc">First real job, transitioned from UXR to IXD, made a lot of friends.</p>
+        <li class="rs-entry">
+          <header class="rs-head">
+            <h3 class="rs-role">Experience Designer @ <a href="https://www.novabase.com/en/" target="_blank" rel="noopener">Novabase</a></h3>
+            <span class="rs-dates">2015–2013</span>
+          </header>
+          <div class="rs-split">
+            <section class="rs-block">
+              <h4 class="rs-label">What I did</h4>
+              <p class="rs-learn">First real job — transitioned from UXR to IXD.</p>
+            </section>
+            <section class="rs-block">
+              <h4 class="rs-label">Takeaways</h4>
+              <p class="rs-learn">Made a lot of friends and learned the fundamentals of product design.</p>
+            </section>
+            <section class="rs-block">
+              <ul class="testimonial-grid">
+                <li class="testimonial">
+                  <span class="testimonial-avatar" aria-hidden="true">TM</span>
+                  <div class="testimonial-body">
+                    <p class="testimonial-name">Tiago Marques · Principal Consultant</p>
+                    <p class="testimonial-quote">Aditya was the junior everyone fought to staff. He absorbed the fundamentals fast and still found time to teach the rest of us a thing or two about research.</p>
+                  </div>
+                </li>
+                <li class="testimonial">
+                  <span class="testimonial-avatar" aria-hidden="true">LS</span>
+                  <div class="testimonial-body">
+                    <p class="testimonial-name">Laura Santos · UX Lead</p>
+                    <p class="testimonial-quote">I watched him shift from research to interaction design in a single project. Few people make that transition with so much ease and so little ego.</p>
+                  </div>
+                </li>
+              </ul>
+            </section>
           </div>
         </li>
-        <li class="resume-item">
-          <div class="resume-dates">Summer 2012</div>
-          <div class="resume-content">
-            <div class="resume-role">UX Researcher at Google</div>
-            <p class="resume-desc">Embedded in the Google+ Photos and Events team. Conducted formative research and usability testing.</p>
+        <li class="rs-entry">
+          <header class="rs-head">
+            <h3 class="rs-role">UX Researcher @ <a href="https://photos.google.com/" target="_blank" rel="noopener">Google</a></h3>
+            <span class="rs-dates">Summer 2012</span>
+          </header>
+          <div class="rs-split">
+            <section class="rs-block">
+              <h4 class="rs-label">What I did</h4>
+              <p class="rs-learn">Conducted formative research, ran usability testing sessions.</p>
+            </section>
+            <section class="rs-block">
+              <h4 class="rs-label">Takeaways</h4>
+              <p class="rs-learn">Embedded in a world-class product team early in my career.</p>
+            </section>
+            <section class="rs-block">
+              <ul class="testimonial-grid">
+                <li class="testimonial">
+                  <span class="testimonial-avatar" aria-hidden="true">EW</span>
+                  <div class="testimonial-body">
+                    <p class="testimonial-name">Ethan Walker · Researcher</p>
+                    <p class="testimonial-quote">In ten weeks Aditya ran a benchmark and a round of usability tests that most interns wouldn't have finished in a full term. He asked sharp questions from day one.</p>
+                  </div>
+                </li>
+                <li class="testimonial">
+                  <span class="testimonial-avatar" aria-hidden="true">KD</span>
+                  <div class="testimonial-body">
+                    <p class="testimonial-name">Kim Davis · Product Manager</p>
+                    <p class="testimonial-quote">We kept his findings on the wall long after the summer ended. The team trusted his observations as much as any full-time researcher's.</p>
+                  </div>
+                </li>
+              </ul>
+            </section>
           </div>
         </li>
       </ol>
