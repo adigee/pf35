@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aditya Gujaran — Designer</title>
   <meta name="description" content="Aditya Gujaran — product designer in Lisbon. Selected work in UX research, interaction design, and 0→1 product." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍊</text></svg>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://adityagujaran.me/" />
+  <meta property="og:title" content="Aditya Gujaran — Designer" />
+  <meta property="og:description" content="Aditya Gujaran — product designer in Lisbon. Selected work in UX research, interaction design, and 0→1 product." />
+  <meta property="og:image" content="https://adityagujaran.me/project-content/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Aditya Gujaran — Designer" />
+  <meta name="twitter:description" content="Aditya Gujaran — product designer in Lisbon. Selected work in UX research, interaction design, and 0→1 product." />
+  <meta name="twitter:image" content="https://adityagujaran.me/project-content/og-image.png" />
 
   <link rel="stylesheet" href="style.css" />
   <!-- Shared fonts + analytics (Umami, Vercel) + llms discovery link.
@@ -46,6 +56,10 @@
       color: var(--color-text);
       font-family: var(--font-body);
       -webkit-font-smoothing: antialiased;
+      /* The rail's load-in animation (below) translates fully off-canvas to
+         the left; without this a transformed-but-still-laid-out element can
+         push a horizontal scrollbar onto the page for the ~600ms it runs. */
+      overflow-x: hidden;
     }
 
     a { color: inherit; text-decoration: none; }
@@ -75,6 +89,39 @@
       }
     }
 
+    /* ── PAGE LOAD ANIMATION ───────────────────
+       Three-beat entrance: the rail flies in from fully off-canvas left,
+       then the whole right column (hero + portfolio cards, as one unit)
+       slides up from the bottom, then the "why behind the what" phrase
+       highlight-sweeps in (see data-highlight-auto on .overview-subhead
+       below — its delay is timed to land after the column settles).
+       Ends each keyframe on `transform: none` rather than e.g.
+       translateX(0): a non-none transform value makes an element a
+       containing block for `position: fixed` descendants. On desktop
+       nothing fixed lives inside .rail, so animating .rail itself is
+       fine there — but on mobile .rail-nav becomes a fixed top bar (see
+       the ≤1023px rail-nav rules below), and it's a descendant of .rail.
+       Animating .rail on mobile would make the "fixed" nav track .rail's
+       transform for the whole 600ms instead of staying pinned to the
+       viewport — it'd slide in from off-canvas overlapping the avatar,
+       then visibly snap to its real position when the animation ends.
+       So mobile retargets the fly-in to .rail-identity (avatar + name
+       only, no fixed descendants) and leaves .rail itself untransformed;
+       see the ≤1023px override below. Tuned + verified in
+       playground/homepage-load-animation.html on the `playground`
+       branch. */
+    @keyframes rail-fly-in {
+      from { transform: translateX(-140%); opacity: 0; }
+      to   { transform: none; opacity: 1; }
+    }
+    @keyframes column-slide-up {
+      from { transform: translateY(110px); opacity: 0; }
+      to   { transform: none; opacity: 1; }
+    }
+    .rail { animation: rail-fly-in 600ms var(--ease) both; }
+    /* Starts 680ms in (600ms rail + 80ms gap) so the column visibly follows
+       the rail rather than racing it. */
+    .content { animation: column-slide-up 620ms var(--ease) 680ms both; }
     /* ── LEFT RAIL ─────────────────────────── */
     .rail {
       display: flex;
@@ -186,44 +233,17 @@
       max-width: 60ch;   /* readable measure when stacked (Julie uses 60ch);
                             tightened to 34ch in the desktop rail (see ≥1024px) */
     }
-    .rail-intro .tagline {
-      font-size: 14px;
-      font-weight: 400;
-      line-height: var(--leading-body);
-      margin-top: var(--sp-8);
-    }
-    .rail-intro .tagline em {
-      font-style: normal;
-      font-weight: 400;
-    }
-    /* The "why behind the what" highlighter marker is owned by
-       components/text_highlight.js (see the [data-highlight] em below). */
     .rail-intro .location {
       font-size: 14px;
       font-weight: 400;
       color: var(--color-text);
-      margin-top: var(--sp-8);
     }
 
     /* ── RAIL CONTEXT REVEAL ────────────────
-       At the top of the page the intro text lives in the right-column
-       overview and the rail shows only identity + nav (a blank middle).
-       Once the overview scrolls up past the reveal threshold (approaching
-       the first project) the same text pops into the rail, so it stays
-       reachable while the user is browsing the work. Driven by the
-       rail--context-visible class toggled in the scroll script below;
-       this CSS is the no-JS fallback (always visible). */
-    .rail-context {
-      transition: opacity 500ms var(--ease), transform 500ms var(--ease);
-    }
-    .rail:not(.rail--context-visible) .rail-context {
-      opacity: 0;
-      transform: translateY(18px);
-      pointer-events: none;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .rail-context { transition: none; }
-    }
+       Originally the rail-context (bio / tagline / location) faded in as
+       the user scrolled past the overview, so the rail showed only
+       identity + nav at the top of the page. That scroll-driven reveal
+       has been removed — the text is now always visible in the rail. */
 
     /* ── NAV (rail bottom) ─────────────────── */
     .rail-nav {
@@ -354,7 +374,7 @@
     .fc-scrim {
       position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
-      background: color-mix(in srgb, var(--color-primary) 50%, transparent);
+      background: color-mix(in srgb, var(--color-primary) 85%, transparent);
       opacity: 0;
       transition: opacity 320ms var(--ease);
     }
@@ -420,16 +440,28 @@
          page scrolls, the feature cards (later in the DOM) paint over the
          "fixed" nav instead of under it. Giving .rail its own stacking
          context puts the whole rail — nav included — above .content. */
-      .rail { position: relative; z-index: 1; }
+      /* animation: none — load-animation retarget, see the PAGE LOAD
+         ANIMATION comment above. .rail-nav is fixed at this width, so
+         .rail must never transform (it'd hijack the nav's containing
+         block); the fly-in moves to .rail-identity instead, which has
+         no fixed descendants. */
+      .rail { position: relative; z-index: 1; animation: none; }
+      .rail-identity { animation: rail-fly-in 600ms var(--ease) both; }
       .rail-nav {
         position: fixed; left: 0; right: 0; top: 0; z-index: 25;
         flex-direction: row; justify-content: space-around; gap: 0; margin: 0;
         padding: calc(var(--sp-3) + env(safe-area-inset-top, 0px)) var(--sp-4) var(--sp-3);
-        background: var(--color-bg);
+        background: var(--color-surface);
         border-bottom: 1px solid var(--color-border);
       }
       .rail-nav a { font-size: var(--text-sm); letter-spacing: var(--tracking-wide); }
 
+    }
+
+    /* Keep after the ≤1023px block so reduced-motion wins over the
+       mobile .rail-identity animation by source order. */
+    @media (prefers-reduced-motion: reduce) {
+      .rail, .rail-identity, .content { animation: none; }
     }
 
     /* ─────────────────────────────────────────
@@ -445,7 +477,7 @@
 
     /* ─────────────────────────────────────────
        ABOUT SECTION
-       Sits between WORK and RESUME.
+       Last section, after RESUME.
     ─────────────────────────────────────────── */
     .about {
       padding: var(--sp-24) 0 var(--sp-16);
@@ -466,6 +498,15 @@
       max-width: 56ch;
     }
     .about-body + .about-body { margin-top: var(--sp-4); }
+
+    /* Contact buttons — layout only. Visual treatment (fill, hover,
+       type) comes from the shared .btn .btn--md (style.css). */
+    .about-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-3);
+      margin-top: var(--sp-10);
+    }
 
     /* ─────────────────────────────────────────
        RESUME SECTION
@@ -635,6 +676,7 @@
     @media (max-width: 720px) {
       .about, .resume { padding: var(--sp-16) 0; }
       .about-heading { font-size: var(--text-lg); }
+      .about-actions { margin-top: var(--sp-8); }
       .resume-buttons { margin: var(--sp-5) 0 0; }
       .rs-head { flex-direction: column; align-items: flex-start; gap: var(--sp-1); }
     }
@@ -651,8 +693,8 @@
     <div class="rail-identity">
       <a class="rail-avatar-link" href="#top" aria-label="Back to top">
         <span class="rail-avatar">
-          <img class="rail-avatar-face rail-avatar-face--photo" src="project%20content/profile-photo.png" alt="Aditya Gujaran" />
-          <img class="rail-avatar-face rail-avatar-face--art" src="project%20content/profile-caricature.png" alt="" aria-hidden="true" />
+          <img class="rail-avatar-face rail-avatar-face--photo" src="project-content/profile-photo.png" alt="Aditya Gujaran" />
+          <img class="rail-avatar-face rail-avatar-face--art" src="project-content/profile-caricature.png" alt="" aria-hidden="true" />
         </span>
       </a>
       <p class="name">Aditya Gujaran<br><span class="role">Product designer</span></p>
@@ -661,15 +703,14 @@
     <div class="rail-context">
       <div class="rail-intro">
         <!-- <p class="bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p> -->
-        <p class="tagline">the <em data-highlight>why behind the what</em><br>has never been more important</p>
         <p class="location"><span data-tooltip="PT national · open to relocation">Based in Lisbon</span></p>
       </div>
     </div>
 
     <nav class="rail-nav" aria-label="Section navigation">
       <a href="#portfolio" data-section-link="portfolio">WORK</a>
-      <a href="#about"    data-section-link="about">ABOUT</a>
       <a href="#resume"   data-section-link="resume">RESUME</a>
+      <a href="#about"    data-section-link="about">ABOUT</a>
     </nav>
   </aside>
 
@@ -678,10 +719,13 @@
 
     <!-- Intro — design-system hero (design.md §3): .b-section-header
          headline → .b-section-subheader subheadline. The subhead's phrase
-         is highlit and auto-sweeps in 1000ms after the page shows. -->
+         is highlit and auto-sweeps in — beat 3 of the page load animation.
+         1520ms = 600 (rail fly-in) + 80 (gap) + 620 (column slide-up) + 220
+         (gap), timed to land after the column settles; see the PAGE LOAD
+         ANIMATION rules above. -->
     <section class="overview" id="overview">
       <h1 class="b-section-header overview-headline">Product builder with a design practice that anchors on continuous, rigorous, rapid UX research to enable high velocity product delivery.</h1>
-      <p class="b-section-subheader overview-subhead">the <em data-highlight data-highlight-auto="1000">why behind the what</em><br>has never been more important</p>
+      <p class="b-section-subheader overview-subhead">the <em data-highlight data-highlight-auto="1520">why behind the what</em><br>has never been more important</p>
     </section>
 
     <!-- Feature sequence — the portfolio. Its top edge is the WORK nav's
@@ -690,7 +734,18 @@
     <section class="feature">
       <a class="feature-card" href="lockers-reducing-cancellation.html">
         <div class="fc-media">
-          <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO.png" alt="Bounce — Lockers PUDO" />
+          <picture>
+            <source
+              type="image/webp"
+              srcset="project-content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO-480.webp 480w, project-content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO-960.webp 960w"
+              sizes="(max-width: 600px) 90vw, 480px"
+            />
+            <img
+              src="project-content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO.png"
+              alt="Bounce — Lockers PUDO"
+              loading="lazy"
+            />
+          </picture>
           <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
         </div>
         <div class="fc-caption">
@@ -702,7 +757,18 @@
     <section class="feature">
       <a class="feature-card" href="decision-module.html">
         <div class="fc-media">
-          <img src="project%20content/2%20Decision%20module%20for%20framer/Thumbnail%20-%20decision%20module.png" alt="Decision Module — Unbabel" />
+          <picture>
+            <source
+              type="image/webp"
+              srcset="project-content/2%20Decision%20module%20for%20framer/Thumbnail%20-%20decision%20module-480.webp 480w, project-content/2%20Decision%20module%20for%20framer/Thumbnail%20-%20decision%20module-960.webp 960w"
+              sizes="(max-width: 600px) 90vw, 480px"
+            />
+            <img
+              src="project-content/2%20Decision%20module%20for%20framer/Thumbnail%20-%20decision%20module.png"
+              alt="Decision Module — Unbabel"
+              loading="lazy"
+            />
+          </picture>
           <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
         </div>
         <div class="fc-caption">
@@ -714,7 +780,18 @@
     <section class="feature">
       <a class="feature-card" href="trq-dad.html">
         <div class="fc-media">
-          <img src="project%20content/3%20DAD%20Images%20for%20framer/Thumbnail%20-%20TRQ%20DAD.png" alt="TRQ DAD — Cocoon" />
+          <picture>
+            <source
+              type="image/webp"
+              srcset="project-content/3%20DAD%20Images%20for%20framer/Thumbnail%20-%20TRQ%20DAD-480.webp 480w, project-content/3%20DAD%20Images%20for%20framer/Thumbnail%20-%20TRQ%20DAD-960.webp 960w"
+              sizes="(max-width: 600px) 90vw, 480px"
+            />
+            <img
+              src="project-content/3%20DAD%20Images%20for%20framer/Thumbnail%20-%20TRQ%20DAD.png"
+              alt="TRQ DAD — Cocoon"
+              loading="lazy"
+            />
+          </picture>
           <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
         </div>
         <div class="fc-caption">
@@ -723,13 +800,6 @@
       </a>
     </section>
     </section><!-- /.portfolio -->
-
-    <!-- ── ABOUT ──────────────────────────────── -->
-    <section class="about" id="about">
-      <h2 class="about-heading">I am here to design and define.</h2>
-      <p class="about-body">I work at the overlap of product strategy, user research, interaction design, and visual craft — with a particular fondness for the 0→1 problem, the moment before the product exists.</p>
-      <p class="about-body">I believe good design is argued for, not just executed. The best outcomes come from designers who can speak business and researchers who can speak design.</p>
-    </section>
 
     <!-- ── RESUME ─────────────────────────────── -->
     <section class="resume" id="resume">
@@ -922,6 +992,24 @@
       </ol>
     </section>
 
+    <!-- ── ABOUT ──────────────────────────────── -->
+    <section class="about" id="about">
+      <h2 class="about-heading">I am here to design and define.</h2>
+      <p class="about-body">I'm a deep generalist — someone who'd rather be genuinely useful across research, product design, and service design than be the single deepest specialist in one narrow lane. That's a deliberate trade-off: over a decade moving between 0→1 consumer products, B2B tooling, and AI/ML interfaces, and I think the range is the point, not a compromise.</p>
+      <p class="about-body">For a year at Bounce, I was the entire design team — covering both the supply and demand sides of the product solo, which meant getting very fluent in arguing with myself in meetings. I'm looking for teams that want that same range: someone who can go from user research to shipped pixels without losing the thread in between.</p>
+      <p class="about-body">Looking for a role that breaks me out of the sr pd purgatory I find myself in. Seeking to immerse myself in a domain with real human impact, and a role that drives sustainable business growth.</p>
+      <div class="about-actions">
+        <a class="btn btn--md" href="https://cal.com/adi-g/design-for-growth" target="_blank" rel="noopener">
+          <span class="material-symbols-rounded">calendar_month</span>
+          <span>BOOK A CALL</span>
+        </a>
+        <button class="btn btn--md" type="button" data-copy="aditya.gujaran@gmail.com" data-tooltip="Click to copy">
+          <span class="material-symbols-rounded">content_copy</span>
+          <span class="btn-label">aditya.gu**** @gmail.com</span>
+        </button>
+      </div>
+    </section>
+
     <div class="tail"></div>
   </main>
 
@@ -941,6 +1029,27 @@
     });
   </script>
 
+  <!-- Page-load animation cleanup. `fill: both` keeps the rail-fly-in /
+       column-slide-up animations "filled" indefinitely once they finish —
+       and a filled CSS animation keeps reporting a resolved transform
+       (an identity matrix, not the literal `none`) even though the
+       keyframe says `transform: none`. On desktop that resolved-but-
+       technically-non-none value would make .rail a containing block for
+       any fixed-position descendant; mobile already avoids this by
+       animating .rail-identity instead of .rail (see the ≤1023px PAGE
+       LOAD ANIMATION override), but both elements still get cleared here
+       so their transform genuinely settles on `none` rather than a
+       lingering filled matrix. -->
+  <script>
+    ['.rail', '.rail-identity', '.content'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (!el) return;
+      el.addEventListener('animationend', function onDone() {
+        el.style.animation = 'none';
+      }, { once: true });
+    });
+  </script>
+
   <!-- Project registry — fills the feature-card eyebrows above so they
        stay in sync with the case-study headers (single source of truth). -->
   <script src="components/projects.js"></script>
@@ -954,6 +1063,54 @@
 
   <!-- Tooltip — lightweight, theme-adaptive tooltip primitive -->
   <script src="components/tooltip.js"></script>
+
+  <!-- Copy email to clipboard — [data-copy] buttons. Uses the Clipboard
+       API on secure contexts and falls back to a hidden textarea so it
+       works on plain http too. Always shows feedback. -->
+  <script>
+    (function () {
+      function copyToClipboard(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text);
+        }
+        return new Promise(function (resolve, reject) {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.top = '-9999px';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          ta.setSelectionRange(0, ta.value.length);
+          var ok = false;
+          try { ok = document.execCommand('copy'); }
+          catch (e) { ok = false; }
+          document.body.removeChild(ta);
+          ok ? resolve() : reject(new Error('copy failed'));
+        });
+      }
+
+      document.addEventListener('click', function (e) {
+        var pill = e.target.closest('[data-copy]');
+        if (!pill) return;
+        if (pill.classList.contains('is-copied')) return;
+        var label = pill.querySelector('.btn-label') || pill;
+        var original = label.textContent;
+        copyToClipboard(pill.dataset.copy).then(function () {
+          pill.classList.add('is-copied');
+          label.textContent = 'Copied!';
+        }).catch(function () {
+          label.textContent = 'Copy failed';
+        }).then(function () {
+          setTimeout(function () {
+            pill.classList.remove('is-copied');
+            label.textContent = original;
+          }, 2000);
+        });
+      });
+    })();
+  </script>
 
   <!-- Section scroll-spy — highlights the rail nav link whose section has
        scrolled up past the top edge of the viewport. A link only becomes
@@ -974,17 +1131,18 @@
       });
       if (!sections.length) return;
 
-      // A section is active once its top crosses the top edge of the
-      // viewport. The last (DOM order) section past the line wins, so
-      // scrolling into ABOUT hands the highlight over from WORK.
-      var LINE = 0;
+      // A section is active once its top crosses a line partway
+      // down the viewport so the highlight fires when the section
+      // enters the top fifth, not after you've already scrolled
+      // past it. The last (DOM order) section past the line wins.
       var rafPending = false;
 
       function update() {
         rafPending = false;
+        var LINE = window.innerHeight * 0.2;
         var activeId = null;
         sections.forEach(function (s) {
-          if (s.el.getBoundingClientRect().top < LINE) activeId = s.id;
+          if (s.el.getBoundingClientRect().top <= LINE) activeId = s.id;
         });
         navLinks.forEach(function (link) {
           link.classList.toggle('is-active', link.getAttribute('data-section-link') === activeId);
@@ -1004,36 +1162,9 @@
     })();
   </script>
 
-  <!-- Rail intro-text reveal: while the overview (intro) section fills the
-       viewport the rail stays clean (photo, name, nav). Once the overview has
-       scrolled up past a threshold — on the way to the first project — the
-       same intro text pops into the rail and stays for the rest of the page.
-       Desktop-only: below 1024px the rail isn't sticky, so the text stays put. -->
-  <script>
-    (function () {
-      var mq = window.matchMedia('(min-width: 1024px)');
-      var rail = document.getElementById('rail');
-      var overview = document.getElementById('overview');
-      if (!mq || !rail || !overview) return;
-
-      var rafPending = false;
-      function update() {
-        rafPending = false;
-        var rect = overview.getBoundingClientRect();
-        // Reveal once ~40% of the intro section has scrolled past the top edge.
-        rail.classList.toggle('rail--context-visible', rect.top < -rect.height * 0.4);
-      }
-      function onScroll() {
-        if (!mq.matches) { rail.classList.remove('rail--context-visible'); return; }
-        if (rafPending) return;
-        rafPending = true;
-        requestAnimationFrame(update);
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll);
-      onScroll();
-    })();
-  </script>
+  <!-- Rail intro text is persistent (was: revealed on scroll past the overview).
+       The previous scroll-driven toggle has been removed so the rail-context
+       renders from first paint. -->
 
   <!-- Avatar spin: an excited 2.5-turn entrance onto the caricature, then a
        calm half-turn settle back to the photo. The asymmetric enter/leave

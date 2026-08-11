@@ -156,6 +156,25 @@
 }
 .btn .material-symbols-rounded { font-size: 18px; }
 
+/* Email copy tooltip — shown via components/tooltip.js, which adds
+   .b-tt-anchor (dotted underline + help cursor). A button shouldn't
+   read as a text link, so strip that affordance and keep pointer. */
+.btn[data-tooltip] { position: relative; }
+button[data-copy].b-tt-anchor {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+/* During the "Copied!" feedback the tooltip is redundant — hide the pill
+   (and its hover affordance) so it never re-opens while feedback shows. */
+.btn.is-copied .b-tt { display: none; }
+.btn.is-copied.b-tt-anchor,
+.btn.is-copied.b-tt-anchor:hover,
+.btn.is-copied.b-tt-anchor:focus-visible {
+  text-decoration-color: transparent;
+}
+
 .btn--xs {
   padding: 2px 10px;
   font-size: var(--text-xs);
@@ -1169,11 +1188,15 @@ a:hover {
 
   .page-right { display: none; }
 
-  /* Nav: hide links on small screens, keep name + section count */
+  /* Nav: hide links on small screens, keep name + section count.
+     On mobile the .site-nav bar picks up --color-surface so it reads
+     as a soft, distinct step above the darker --color-bg — matches
+     the .btn / .tile surface token, no new variable. */
   .nav-links { display: none; }
 
   .site-nav {
     padding: var(--sp-4) var(--sp-6);
+    background: var(--color-surface);
   }
 
   /* Reduce block vertical rhythm */

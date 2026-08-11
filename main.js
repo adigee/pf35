@@ -1,3 +1,8 @@
+/* Must match `@media (max-width: 768px)` in style.css — native CSS media
+   queries can't read a JS constant, so this value is duplicated by hand.
+   If you change one, change both. */
+var MOBILE_BREAKPOINT = 768;
+
 /* ─────────────────────────────────────────
    CONTENT DATA
    Single source of truth for timeline and skills.
@@ -151,7 +156,7 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 function handlePanels() {
-  if (window.innerWidth <= 768) return;
+  if (window.innerWidth <= MOBILE_BREAKPOINT) return;
 
   /* Read all rects in one pass before touching the DOM */
   const rects = blocks.map(b => b.getBoundingClientRect());
@@ -245,10 +250,11 @@ function handlePanels() {
 document.addEventListener('click', function (e) {
   var pill = e.target.closest('[data-copy]');
   if (!pill) return;
+  var label = pill.querySelector('.btn-label') || pill;
   navigator.clipboard.writeText(pill.dataset.copy).then(function () {
-    var original = pill.textContent;
-    pill.textContent = 'Copied!';
-    setTimeout(function () { pill.textContent = original; }, 2000);
+    var original = label.textContent;
+    label.textContent = 'Copied!';
+    setTimeout(function () { label.textContent = original; }, 2000);
   });
 });
 

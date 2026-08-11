@@ -1,16 +1,16 @@
 # Aditya Gujaran — Senior Product Designer
 
-[adityagujaran.me](https://adityagujaran.me) | hello@adityagujaran.me | Lisbon, Portugal (GMT+1) | [LinkedIn](https://linkedin.com/in/agujaran/)
+[adityagujaran.me](https://adityagujaran.me) | aditya.gujaran@gmail.com | Lisbon, Portugal (GMT+1) | [LinkedIn](https://linkedin.com/in/agujaran/)
 
 ---
 
 ## Summary
 
-Versatile product designer with a practice grounded in rigorous UX research to enable high-velocity product delivery. 8+ years of experience across B2B SaaS, AI/ML tooling, consumer mobile, and insurance products. 
+Versatile product designer with a practice grounded in rigorous UX research to enable high-velocity product delivery. 10+ years of experience across B2B SaaS, AI/ML tooling, consumer mobile, and insurance products. 
 
 Works at the overlap of product strategy, user research, interaction design, and visual craft. 
 
-Particular focus on 0→1 problem-solving. Available for freelance / full-time collaborations.
+Particular focus on 0→1 problem-solving. Available right now & open to relocation.
 
 ---
 
