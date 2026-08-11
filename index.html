@@ -590,19 +590,22 @@
       font-weight: 400;
       color: var(--color-text-muted);
     }
-    /* Company names as links — inherit the row's colour, tint on hover */
+    /* Company names as links — follow the global <a> treatment from
+       style.css: underline at rest with --color-border, tint primary on
+       hover, 120ms ease (design.md §2, §3). */
     .rt-company a,
     .rs-role a {
       color: inherit;
-      text-decoration: none;
-      transition: color 160ms ease;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 1px;
+      text-decoration-color: var(--color-border);
+      transition: color 120ms ease, text-decoration-color 120ms ease;
     }
     .rt-company a:hover,
     .rs-role a:hover {
       color: var(--color-primary);
-      text-decoration: underline;
       text-decoration-color: var(--color-primary);
-      text-underline-offset: 3px;
     }
     .rt-note {
       font-size: var(--text-sm);
