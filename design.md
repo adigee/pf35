@@ -475,6 +475,26 @@ Within `.cs-section`, the fallback is `margin-top: 16px` (`.cs-section > * + *`)
 
 ---
 
+### Homepage — Section Rhythm
+
+The homepage's three scroll sections (Work → Resume → About) use a deliberate two-tier macro rhythm: thumbnails group tightly within Work, and section breaks open up clearly between Work / Resume / About.
+
+| Transition | Token | Value | Role |
+|---|---|---|---|
+| thumbnail → thumbnail | `--sp-8` | 32px | projects group together (32px trailing + 32px leading = 64px) |
+| eyebrow → heading/thumbnail | `--sp-6` | 24px | the section eyebrow introduces its content (owned by `.section-eyebrow` / `.resume-label`) |
+| heading → body | `--sp-6` | 24px | the section heading introduces its prose |
+| paragraph → paragraph | `--sp-4` | 16px | continuation of prose |
+| section → section | `--sp-24` | 96px | a new section begins (`--sp-24` padding on `.resume` / `.about`) |
+
+Work's thumbnails sit on a tight `--sp-8` (32px) padding so the projects read as one group; `.resume` and `.about` carry `--sp-24` (96px) so each section break is a clear, breathable stop. On desktop each `.feature` is also `min-height: 100vh` + centered, which adds viewport-driven slack above/below each thumbnail on top of the 32px padding.
+
+The trailing gap below every eyebrow is a single `--sp-6` owned by the shared `.section-eyebrow` / `.resume-label` rule — headings no longer carry their own top margin, and the heading's `margin-bottom` is `--sp-6` to match the eyebrow gap (a clean equal rhythm: eyebrow → heading → body at 24px each).
+
+Mobile (`≤720px`) keeps sections at `--sp-16` (64px) and Work thumbnails at `--sp-12` top / `--sp-6` bottom (48px/24px) — smaller frames need a proportionally tighter rhythm.
+
+---
+
 ## 8. Responsive Behavior
 
 | Breakpoint | Width | Key changes |

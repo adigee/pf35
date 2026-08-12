@@ -338,14 +338,13 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: var(--sp-16) 0;
+      padding: var(--sp-8) 0;
     }
-    /* The portfolio eyebrow leads the first feature. --sp-6 below it matches
-       the Resume (.resume-label) and About eyebrow gap to their headings;
-       left-aligned like those eyebrows, not centered with the card. */
+    /* The portfolio eyebrow leads the first feature; left-aligned like the
+       Resume/About eyebrows (not centered with the card). Its trailing gap
+       to the thumbnail comes from .section-eyebrow below. */
     .feature > .section-eyebrow {
       align-self: flex-start;
-      margin-bottom: var(--sp-6);
     }
     /* Centered column: proportional thumbnail on top, caption centered below. */
     .feature-card {
@@ -412,7 +411,9 @@
     }
     .feature-card:hover .fc-eyebrow { color: var(--color-primary); }
 
-    /* Closing spacer so the last project can center */
+    /* Bottom spacer so the About section can scroll up past the scroll-spy
+       line (its top crosses the 20% threshold) and the page ends with a
+       little breathing room instead of a hard stop. */
     .tail { height: 30vh; }
 
     /* ── THEME TOGGLE (fixed, bottom-right) ── */
@@ -438,7 +439,7 @@
          .overview-subhead, so just take it out of flow here. */
       .rail-context { display: none; }
 
-      .feature { display: block; min-height: 0; padding: var(--sp-12) 0 0; }
+      .feature { display: block; min-height: 0; padding: var(--sp-12) 0 var(--sp-6); }
       .fc-media { height: auto; width: 100%; aspect-ratio: 4 / 3; }   /* phones: size by width again */
       /* No hover on touch — keep the scrim from covering the still */
       .feature-card:hover .fc-scrim { opacity: 0; }
@@ -492,7 +493,7 @@
        Last section, after RESUME.
     ─────────────────────────────────────────── */
     .about {
-      padding: var(--sp-24) 0 var(--sp-16);
+      padding: var(--sp-24) 0;
       max-width: 640px;
     }
     .about-heading {
@@ -529,7 +530,7 @@
        Download pills close the section.
     ─────────────────────────────────────────── */
     .resume {
-      padding: var(--sp-24) 0 var(--sp-24);
+      padding: var(--sp-24) 0;
       max-width: 720px;
     }
     /* Section eyebrow — shared label above Work/Resume/About headings.
@@ -552,7 +553,7 @@
       line-height: var(--leading-snug);
       letter-spacing: var(--tracking-snug);
       color: var(--color-text);
-      margin: var(--sp-6) 0 var(--sp-4);
+      margin: 0 0 var(--sp-6);
     }
 
     .resume-bio {
@@ -687,7 +688,8 @@
       margin: var(--sp-6) 0 0;
     }
 
-    /* Mobile — tighten spacing */
+    /* Mobile — tighten spacing: sections use --sp-16 (64px); Work thumbnails
+       keep their --sp-12/--sp-6 padding from the ≤1023px block. */
     @media (max-width: 720px) {
       .about, .resume { padding: var(--sp-16) 0; }
       .about-heading { font-size: var(--text-lg); }
