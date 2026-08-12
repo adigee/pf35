@@ -301,8 +301,8 @@
 }
 
 /* The pill — sizing/color come from the shared .btn .btn--xs (style.css);
-   this just adds the hover lift on top of the shared opacity dim. */
-.cs-lock-badge { transition: opacity 120ms ease, transform 120ms ease; }
+   this just adds the hover lift on top. */
+.cs-lock-badge { transition: transform 120ms ease; }
 .cs-lock-badge:hover { transform: translateY(-1px); }
 .cs-lock-badge svg { width: 11px; height: 11px; display: block; }
 
@@ -897,3 +897,11 @@ html.cs-modal-open, html.cs-modal-open body { overflow: hidden; }
 .cs-section > .b-label     { margin-top: 24px; }
 .cs-section > .cs-list     { margin-top: 16px; }
 .cs-section > .cs-list + * { margin-top: var(--sp-6); }
+
+/* Graceful degradation if a hero image fails to load (see onerror on
+   .cs-hero-img in each case-study page). */
+.cs-hero-img-wrap--missing {
+  background: var(--color-surface);
+  min-height: 240px;
+}
+.cs-hero-img-wrap--missing .cs-hero-img { display: none; }

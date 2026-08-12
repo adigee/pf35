@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing a UI to operate an AI Model — Aditya Gujaran</title>
   <meta name="description" content="Putting Unbabel's AI quality-estimation model in the hands of the ops team — making the model's reasoning legible without making it overwhelming." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍊</text></svg>" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://adityagujaran.me/decision-module.html" />
+  <meta property="og:title" content="Designing a UI to operate an AI Model — Aditya Gujaran" />
+  <meta property="og:description" content="Putting Unbabel's AI quality-estimation model in the hands of the ops team — making the model's reasoning legible without making it overwhelming." />
+  <meta property="og:image" content="https://adityagujaran.me/project-content/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Designing a UI to operate an AI Model — Aditya Gujaran" />
+  <meta name="twitter:description" content="Putting Unbabel's AI quality-estimation model in the hands of the ops team — making the model's reasoning legible without making it overwhelming." />
+  <meta name="twitter:image" content="https://adityagujaran.me/project-content/og-image.png" />
 
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="case-study.css" />
@@ -31,11 +41,19 @@
         <h1 class="b-title--article">Designing a UI to operate an AI Model</h1>
 
         <div class="cs-hero-img-wrap">
-          <img
-            class="cs-hero-img"
-            src="project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png"
-            alt="The Decision Module — final UI in the Unbabel pipeline editor"
-          />
+          <picture>
+            <source
+              type="image/webp"
+              srcset="project-content/2%20Decision%20module%20for%20framer/1%20Hero-800.webp 800w, project-content/2%20Decision%20module%20for%20framer/1%20Hero-1600.webp 1600w"
+              sizes="(max-width: 768px) 100vw, 1200px"
+            />
+            <img
+              class="cs-hero-img"
+              src="project-content/2%20Decision%20module%20for%20framer/1%20Hero.png"
+              alt="The Decision Module — final UI in the Unbabel pipeline editor"
+              onerror="this.closest('.cs-hero-img-wrap').classList.add('cs-hero-img-wrap--missing')"
+            />
+          </picture>
         </div>
 
         <!-- Project meta -->
@@ -70,7 +88,7 @@
           <figure class="cs-figure">
             <img
               class="cs-img"
-              src="project%20content/2%20Decision%20module%20for%20framer/2%20Unbabel%20pipeline.png"
+              src="project-content/2%20Decision%20module%20for%20framer/2%20Unbabel%20pipeline.png"
               alt="The Unbabel translation pipeline: Order → Machine Translation → Quality Estimation → Human Post Edition → Finished Order"
               loading="lazy"
             />
@@ -109,7 +127,7 @@
           <figure class="cs-figure">
             <img
               class="cs-img cs-img--dark"
-              src="project%20content/2%20Decision%20module%20for%20framer/3%20Prob%20def.png"
+              src="project-content/2%20Decision%20module%20for%20framer/3%20Prob%20def.png"
               alt="Problem definition: enable ops team to use QE as a lever to customise translation pipelines"
               loading="lazy"
             />
@@ -136,7 +154,7 @@
           <figure class="cs-figure">
             <img
               class="cs-img cs-img--dark"
-              src="project%20content/2%20Decision%20module%20for%20framer/4%20How%20QE%20works.png"
+              src="project-content/2%20Decision%20module%20for%20framer/4%20How%20QE%20works.png"
               alt="QE decision making: segment-level score → document-level score → decision to skip based on threshold"
               loading="lazy"
             />
@@ -164,7 +182,7 @@
           <figure class="cs-figure">
             <img
               class="cs-img cs-img--dark"
-              src="project%20content/2%20Decision%20module%20for%20framer/5%20Original%20UI.png"
+              src="project-content/2%20Decision%20module%20for%20framer/5%20Original%20UI.png"
               alt="Original Decision Module UI: WHEN / IS / THEN conditional form with raw numeric threshold inputs"
               loading="lazy"
             />
@@ -195,7 +213,7 @@
           <figure class="cs-figure">
             <img
               class="cs-img cs-img--dark"
-              src="project%20content/2%20Decision%20module%20for%20framer/6%20QE%20profiles.png"
+              src="project-content/2%20Decision%20module%20for%20framer/6%20QE%20profiles.png"
               alt="QE Profiles spectrum: Very conservative to Very aggressive, with increasing skip volume"
               loading="lazy"
             />
@@ -219,7 +237,7 @@
           <figure class="cs-figure">
             <img
               class="cs-img cs-img--dark"
-              src="project%20content/2%20Decision%20module%20for%20framer/7%20Divergent%20designs.png"
+              src="project-content/2%20Decision%20module%20for%20framer/7%20Divergent%20designs.png"
               alt="Divergent designs"
               loading="lazy"
             />
@@ -236,7 +254,7 @@
           <figure class="cs-figure">
             <img
               class="cs-img cs-img--dark"
-              src="project%20content/2%20Decision%20module%20for%20framer/8%20Decision%20module%20v1.png"
+              src="project-content/2%20Decision%20module%20for%20framer/8%20Decision%20module%20v1.png"
               alt="Decision module v1"
               loading="lazy"
             />
@@ -262,7 +280,7 @@
           <figure class="cs-figure">
             <img
               class="cs-img cs-img--dark"
-              src="project%20content/2%20Decision%20module%20for%20framer/9%20Test%20findings%201.png"
+              src="project-content/2%20Decision%20module%20for%20framer/9%20Test%20findings%201.png"
               alt="Test findings 1"
               loading="lazy"
             />
@@ -270,7 +288,7 @@
           <figure class="cs-figure">
             <img
               class="cs-img cs-img--dark"
-              src="project%20content/2%20Decision%20module%20for%20framer/10%20Test%20findings%202.png"
+              src="project-content/2%20Decision%20module%20for%20framer/10%20Test%20findings%202.png"
               alt="Test findings 2"
               loading="lazy"
             />
@@ -299,7 +317,7 @@
           <figure class="cs-figure">
             <img
               class="cs-img cs-img--dark"
-              src="project%20content/2%20Decision%20module%20for%20framer/11%20Final%20designs.png"
+              src="project-content/2%20Decision%20module%20for%20framer/11%20Final%20designs.png"
               alt="Final designs"
               loading="lazy"
             />
@@ -307,7 +325,7 @@
           <figure class="cs-figure">
             <img
               class="cs-img cs-img--dark"
-              src="project%20content/2%20Decision%20module%20for%20framer/12%20Final%20designs.png"
+              src="project-content/2%20Decision%20module%20for%20framer/12%20Final%20designs.png"
               alt="Final designs"
               loading="lazy"
             />
@@ -334,7 +352,7 @@
           <figure class="cs-figure">
             <img
               class="cs-img cs-img--dark"
-              src="project%20content/2%20Decision%20module%20for%20framer/13%20Outcomes.png"
+              src="project-content/2%20Decision%20module%20for%20framer/13%20Outcomes.png"
               alt="Outcomes"
               loading="lazy"
             />

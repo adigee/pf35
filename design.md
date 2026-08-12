@@ -70,6 +70,7 @@ Element:  <html data-theme="dark|light">
 | `--color-primary-muted` | `rgba(172, 160, 232, 0.12)` | Primary backgrounds, soft highlights |
 | `--color-accent` | `#8E7FD1` | Decorative highlights, emphasis |
 | `--color-accent-on-accent` | `#121212` | Text rendered on accent-colored backgrounds |
+| `--color-on-primary` | `#121212` | Foreground on primary-filled surfaces (e.g. `.btn` hover) |
 
 **Character:** Midnight near-black with warm ivory text. Soft lavender for interaction, a deeper lilac for decoration. The accent is a shade in the primary's own family — a quiet warm-cool sibling rather than a contrasting hue — which keeps the palette calm and unified.
 
@@ -90,6 +91,7 @@ Element:  <html data-theme="dark|light">
 | `--color-primary-muted` | `rgba(33, 71, 204, 0.11)` | Primary backgrounds, soft highlights |
 | `--color-accent` | `#5B6FD6` | Decorative highlights, emphasis |
 | `--color-accent-on-accent` | `#FFF3E8` | Text rendered on accent-colored backgrounds |
+| `--color-on-primary` | `#F8F6EE` | Foreground on primary-filled surfaces (e.g. `.btn` hover) — light because light mode's primary (cobalt) is dark, the opposite of dark mode |
 
 **Character:** Warm peach cream background with deep navy text. Cobalt blue for interaction, a lighter periwinkle for decoration. The accent is a tint in the primary's own family, not a contrasting hue — cool accents on the warm surface stay refined rather than loud.
 
@@ -369,9 +371,50 @@ Nav links are hidden on mobile (`≤768px`).
 
 Live clock display with a tooltip on hover. Tooltip uses `--color-surface-2` background with `--color-border` border. Appears at `translateY(0)` from `translateY(4px)` with 150ms ease.
 
-### Theme Toggle
+### Buttons
 
-Located in the footer. Pill toggle (`border-radius: 9999px`) with a sliding knob. Dark mode: knob at `translateX(16px)`. Light mode: knob at `translateX(0)`. Label text fades between "Dark" and "Light" using `opacity` transition.
+Two button families cover every clickable control that isn't a text link (the [Panel CTA](#panel-cta-link-1) and the text-style link classes have their own treatments, not `.btn`).
+
+#### Text Buttons (`.btn`)
+
+The one text-button treatment used everywhere on the site: resume downloads, the case-study Unlock CTA (password-gate modal), the locked-page teaser chip, and the eyebrow lock badge.
+
+**Structure:**
+```html
+<a href="…" class="btn btn--md">
+  <span class="material-symbols-rounded">download</span>
+  RESUME.PDF
+</a>
+```
+
+| Property | Value |
+|---|---|
+| Shape | Pill, `border-radius: 999px`, `1px solid --color-border` |
+| Rest | `background: --color-surface`, `color: --color-text` |
+| Hover | `background: --color-primary`, `border-color: --color-primary`, `color: --color-on-primary` (theme-swapped: `#121212` dark mode, `#F8F6EE` light mode — see [Color System](#2-color-system)) |
+| Font | `--font-mono`, weight 600, uppercase |
+| Icon size | 18px (`.btn .material-symbols-rounded`) |
+| Transition | `color`, `border-color`, `background` — 200ms ease |
+
+| Size modifier | Padding | Font size | Used for |
+|---|---|---|---|
+| `.btn--xs` | `2px 10px` | `--text-xs` (11px) | Eyebrow lock badge |
+| `.btn--sm` | `4px --sp-6` | `--text-sm` (14px) | Locked-page teaser chip's Unlock button |
+| `.btn--md` | `--sp-3 --sp-6` | `--text-sm` (14px) | Password-gate Unlock, resume downloads |
+
+The fill inverts on hover rather than the border/text turning `--color-primary` — the same solid `--color-primary` fill used everywhere else for interactive states. The foreground (`--color-on-primary`) is theme-swapped, not fixed, because the two themes' primaries sit at opposite ends of the lightness scale: dark mode's lavender is light (needs dark text), light mode's cobalt is dark (needs light text) — using one fixed value would fail contrast in one theme or the other.
+
+#### Icon Buttons (`.theme-btn`)
+
+A circular, icon-only control — currently only the floating light/dark toggle (fixed, bottom-right, on every page). Markup and styles are both injected by `components/theme.js`, not defined in `style.css`.
+
+| Property | Value |
+|---|---|
+| Shape | `44×44px` circle |
+| Rest | `background: --color-surface`, `1px solid --color-border`, `color: --color-text` |
+| Hover | `transform: scale(1.08)` — no color change |
+| Icon | Material Symbols Rounded, 22px, swaps `dark_mode` / `light_mode` |
+| Transition | `transform` 240ms `cubic-bezier(0.22,1,0.36,1)` |
 
 ### Panel CTA (Link 1)
 
@@ -505,4 +548,4 @@ These rules are strict. They exist because this is a small, deliberate codebase 
 
 ---
 
-*Last updated: 2026-08-04*
+*Last updated: 2026-08-06*
