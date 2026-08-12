@@ -328,12 +328,24 @@
       object-fit: cover;
     }
 
-    /* Feature sequence — live-media card + caption below */
+    /* Feature sequence — live-media card + caption below. The first feature
+       leads with the section eyebrow (Work); content stacks in a column and
+       centers as a group so the eyebrow sits a consistent --sp-6 above the
+       thumbnail — same eyebrow→content rhythm as Resume and About. */
     .feature {
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       padding: var(--sp-16) 0;
+    }
+    /* The portfolio eyebrow leads the first feature. --sp-6 below it matches
+       the Resume (.resume-label) and About eyebrow gap to their headings;
+       left-aligned like those eyebrows, not centered with the card. */
+    .feature > .section-eyebrow {
+      align-self: flex-start;
+      margin-bottom: var(--sp-6);
     }
     /* Centered column: proportional thumbnail on top, caption centered below. */
     .feature-card {
@@ -520,6 +532,9 @@
       padding: var(--sp-24) 0 var(--sp-24);
       max-width: 720px;
     }
+    /* Section eyebrow — shared label above Work/Resume/About headings.
+       Matches the mono, uppercase, primary-tinted treatment of resume-label. */
+    .section-eyebrow,
     .resume-label {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
@@ -732,6 +747,7 @@
          anchor: WORK only becomes selected once you've scrolled past here. -->
     <section class="portfolio" id="portfolio">
     <section class="feature">
+      <p class="section-eyebrow">Selected projects</p>
       <a class="feature-card" href="lockers-reducing-cancellation.html">
         <div class="fc-media">
           <picture>
@@ -994,6 +1010,7 @@
 
     <!-- ── ABOUT ──────────────────────────────── -->
     <section class="about" id="about">
+      <p class="section-eyebrow">About me</p>
       <h2 class="about-heading">I am here to design and define.</h2>
       <p class="about-body">I'm a deep generalist — someone who'd rather be genuinely useful across research, product design, and service design than be the single deepest specialist in one narrow lane. That's a deliberate trade-off: over a decade moving between 0→1 consumer products, B2B tooling, and AI/ML interfaces, and I think the range is the point, not a compromise.</p>
       <p class="about-body">For a year at Bounce, I was the entire design team — covering both the supply and demand sides of the product solo, which meant getting very fluent in arguing with myself in meetings. I'm looking for teams that want that same range: someone who can go from user research to shipped pixels without losing the thread in between.</p>
