@@ -510,10 +510,18 @@
 
     /* ─────────────────────────────────────────
        RESUME SECTION
-       Eyebrow label + intro + asymmetric layout:
-       · Asymmetric Split — every role is a full-width entry:
-         role/dates header + "what I did" / "takeaways"
-         blocks + testimonials.
+       Eyebrow label + intro + one entry per role:
+       role/dates header, then two equal-width
+       "What I did" / "Takeaways" text columns
+       (~1.5 sentences each, no card chrome), then
+       a row of small initial-avatar buttons — one
+       per testimonial. Testimonials are collapsed
+       by default; clicking an avatar reveals that
+       person's quote in place (independent toggle,
+       more than one can be open at once).
+       Converged from playground explorations
+       2026-08-13 (two-track layout, then paired
+       boxes + avatar reveal — chosen).
        Download pills close the section.
     ─────────────────────────────────────────── */
     .resume {
@@ -589,9 +597,15 @@
       color: var(--color-text-muted);
       white-space: nowrap;
     }
-    .rs-split { margin-top: var(--sp-5); }
-    .rs-block + .rs-block { margin-top: var(--sp-6); }
-    .rs-label {
+    /* Paired boxes — "What I did" / "Takeaways", equal width,
+       no card chrome (plain text columns). */
+    .rs-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-4);
+      margin-top: var(--sp-5);
+    }
+    .rs-box-label {
       font-size: var(--text-2xs);
       font-weight: 700;
       letter-spacing: var(--tracking-widest);
@@ -599,67 +613,83 @@
       color: var(--color-text-muted);
       margin-bottom: var(--sp-2);
     }
-    .rs-learn {
+    .rs-box-text {
       font-size: var(--text-sm);
       line-height: var(--leading-body);
-      color: var(--color-text-muted);
-      max-width: 56ch;
+      color: var(--color-text);
     }
-    .rs-learn a {
-      color: var(--color-text-muted);
+    .rs-box-text a {
+      color: inherit;
       text-decoration: underline;
       text-underline-offset: 3px;
       text-decoration-color: var(--color-border);
+      transition: color 120ms ease, text-decoration-color 120ms ease;
     }
-    .rs-learn a:hover {
+    .rs-box-text a:hover {
       color: var(--color-primary);
       text-decoration-color: var(--color-primary);
     }
 
-    /* Testimonials — circular avatar + name + two sentences.
-       Two-up on desktop, stacked on phones. */
-    .testimonial-grid {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: var(--sp-3);
-    }
-    @media (min-width: 640px) {
-      .testimonial-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    .testimonial {
+    /* Avatar row — one small initial button per testimonial.
+       Click reveals that person's quote in place; independent
+       toggles, more than one can be open at once. */
+    .rs-avatars {
       display: flex;
-      gap: var(--sp-3);
-      padding: var(--sp-4);
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 10px;
+      gap: var(--sp-2);
+      margin-top: var(--sp-5);
     }
-    .testimonial-avatar {
-      width: 40px; height: 40px;
+    .rs-avatar {
+      width: 32px; height: 32px;
       border-radius: 50%;
       display: grid;
       place-items: center;
-      background: var(--color-primary-muted);
-      color: var(--color-primary);
-      font-size: var(--text-xs);
+      font-family: var(--font-mono);
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: var(--tracking-wide);
-      flex-shrink: 0;
+      background: var(--color-primary-muted);
+      color: var(--color-primary);
+      border: 0;
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease, transform 150ms ease;
     }
-    .testimonial-body { min-width: 0; }
-    .testimonial-name {
-      font-size: var(--text-sm);
-      font-weight: 600;
-      color: var(--color-text);
-      margin-bottom: var(--sp-1);
+    .rs-avatar:hover { transform: translateY(-1px); }
+    .rs-avatar[aria-expanded="true"] {
+      background: var(--color-primary);
+      color: var(--color-on-primary);
     }
-    .testimonial-quote {
+
+    /* Quote reveal — collapsed by default (grid-rows 0fr trick avoids a
+       hardcoded max-height). A toggle, not a structural panel, so it
+       stays under the 200ms interactive-feedback ceiling (design.md §6). */
+    .rs-quote {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition: grid-template-rows 180ms ease, opacity 150ms ease, margin-top 180ms ease;
+    }
+    .rs-quote.is-open {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      margin-top: var(--sp-3);
+    }
+    .rs-quote-inner { overflow: hidden; min-height: 0; }
+    .rs-quote-text {
       font-size: var(--text-sm);
       line-height: var(--leading-body);
       color: var(--color-text-muted);
+      max-width: 56ch;
+      padding-left: var(--sp-4);
+      border-left: 2px solid var(--color-border);
+    }
+    .rs-quote-attr {
+      font-size: var(--text-xs);
+      color: var(--color-text-subtle);
+      margin-top: var(--sp-1);
+      padding-left: var(--sp-4);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rs-quote { transition: opacity 150ms ease; }
     }
 
     /* Download pills — layout only. Visual treatment (fill, hover,
@@ -679,6 +709,9 @@
       .about-actions { margin-top: var(--sp-8); }
       .resume-buttons { margin: var(--sp-5) 0 0; }
       .rs-head { flex-direction: column; align-items: flex-start; gap: var(--sp-1); }
+    }
+    @media (max-width: 560px) {
+      .rs-pair { grid-template-columns: 1fr; gap: var(--sp-3); }
     }
   </style>
 </head>
@@ -824,33 +857,31 @@
             <h3 class="rs-role">Sr. Product Designer @ <a href="https://bounce.com/" target="_blank" rel="noopener">Bounce</a></h3>
             <span class="rs-dates">2025–2024</span>
           </header>
-          <div class="rs-split">
-            <section class="rs-block">
-              <h4 class="rs-label">What I did</h4>
-              <p class="rs-learn">Built the lockers product from 0 to 1, reached 250K ARR.</p>
-            </section>
-            <section class="rs-block">
-              <h4 class="rs-label">Takeaways</h4>
-              <p class="rs-learn">Learned the art of making reversible decisions and internalising an experiment-centric process.</p>
-            </section>
-            <section class="rs-block">
-              <ul class="testimonial-grid">
-                <li class="testimonial">
-                  <span class="testimonial-avatar" aria-hidden="true">SM</span>
-                  <div class="testimonial-body">
-                    <p class="testimonial-name">Sofia Martins · Product Manager</p>
-                    <p class="testimonial-quote">Aditya took the lockers product from a rough idea to a shipped experience our hosts actually rely on. He always tied the design back to a metric, so nothing on the roadmap was a guess.</p>
-                  </div>
-                </li>
-                <li class="testimonial">
-                  <span class="testimonial-avatar" aria-hidden="true">JD</span>
-                  <div class="testimonial-body">
-                    <p class="testimonial-name">Jonas Duarte · Engineering Lead</p>
-                    <p class="testimonial-quote">Working with him on the cancellation-rate problem was like getting a second product brain in the room. He could explain the research, the business case, and the UI in the same breath.</p>
-                  </div>
-                </li>
-              </ul>
-            </section>
+          <div class="rs-pair">
+            <div class="rs-box">
+              <p class="rs-box-label">What I did</p>
+              <p class="rs-box-text">Built the lockers product from 0 to 1, reached 250K ARR.</p>
+            </div>
+            <div class="rs-box">
+              <p class="rs-box-label">Takeaways</p>
+              <p class="rs-box-text">Learned the art of making reversible decisions and internalising an experiment-centric process.</p>
+            </div>
+          </div>
+          <div class="rs-avatars" role="group" aria-label="Testimonials — Bounce">
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-bounce-0">SM</button>
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-bounce-1">JD</button>
+          </div>
+          <div class="rs-quote" id="q-bounce-0">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"Aditya took the lockers product from a rough idea to a shipped experience our hosts actually rely on. He always tied the design back to a metric, so nothing on the roadmap was a guess."</p>
+              <p class="rs-quote-attr">Sofia Martins · Product Manager</p>
+            </div>
+          </div>
+          <div class="rs-quote" id="q-bounce-1">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"Working with him on the cancellation-rate problem was like getting a second product brain in the room. He could explain the research, the business case, and the UI in the same breath."</p>
+              <p class="rs-quote-attr">Jonas Duarte · Engineering Lead</p>
+            </div>
           </div>
         </li>
         <li class="rs-entry">
@@ -858,33 +889,31 @@
             <h3 class="rs-role">Sr. Product Designer @ <a href="https://unbabel.com/" target="_blank" rel="noopener">Unbabel</a></h3>
             <span class="rs-dates">2023–2020</span>
           </header>
-          <div class="rs-split">
-            <section class="rs-block">
-              <h4 class="rs-label">What I did</h4>
-              <p class="rs-learn">Built internal tooling for linguists, shipped 5 products total.</p>
-            </section>
-            <section class="rs-block">
-              <h4 class="rs-label">Takeaways</h4>
-              <p class="rs-learn">Great intro to AI pre-ChatGPT — showed me how going deep and mastering a business domain brings enormous advantages as a PD constantly connecting dots between business goals and customers.</p>
-            </section>
-            <section class="rs-block">
-              <ul class="testimonial-grid">
-                <li class="testimonial">
-                  <span class="testimonial-avatar" aria-hidden="true">AL</span>
-                  <div class="testimonial-body">
-                    <p class="testimonial-name">Ana Lopes · Director of Product</p>
-                    <p class="testimonial-quote">Aditya turned a tool nobody wanted to touch into something our linguists actually loved. He had a rare talent for translating a deep technical domain into plain interfaces.</p>
-                  </div>
-                </li>
-                <li class="testimonial">
-                  <span class="testimonial-avatar" aria-hidden="true">RM</span>
-                  <div class="testimonial-body">
-                    <p class="testimonial-name">Ricardo Mendes · Head of Ops</p>
-                    <p class="testimonial-quote">He shipped five products in three years and every single one stuck. His research instinct meant we rarely had to redo a decision after it left his desk.</p>
-                  </div>
-                </li>
-              </ul>
-            </section>
+          <div class="rs-pair">
+            <div class="rs-box">
+              <p class="rs-box-label">What I did</p>
+              <p class="rs-box-text">Built internal tooling for linguists, shipped 5 products total.</p>
+            </div>
+            <div class="rs-box">
+              <p class="rs-box-label">Takeaways</p>
+              <p class="rs-box-text">Great intro to AI pre-ChatGPT — mastering a business domain brings enormous advantages when connecting business goals to customers.</p>
+            </div>
+          </div>
+          <div class="rs-avatars" role="group" aria-label="Testimonials — Unbabel">
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-unbabel-0">AL</button>
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-unbabel-1">RM</button>
+          </div>
+          <div class="rs-quote" id="q-unbabel-0">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"Aditya turned a tool nobody wanted to touch into something our linguists actually loved. He had a rare talent for translating a deep technical domain into plain interfaces."</p>
+              <p class="rs-quote-attr">Ana Lopes · Director of Product</p>
+            </div>
+          </div>
+          <div class="rs-quote" id="q-unbabel-1">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"He shipped five products in three years and every single one stuck. His research instinct meant we rarely had to redo a decision after it left his desk."</p>
+              <p class="rs-quote-attr">Ricardo Mendes · Head of Ops</p>
+            </div>
           </div>
         </li>
         <li class="rs-entry">
@@ -892,33 +921,31 @@
             <h3 class="rs-role">Freelance</h3>
             <span class="rs-dates">2019–2016</span>
           </header>
-          <div class="rs-split">
-            <section class="rs-block">
-              <h4 class="rs-label">What I did</h4>
-              <p class="rs-learn">Embedded in teams at Cocoon Experience and With Company for long-term projects in <a href="https://www.generalitranquilidade.pt/" target="_blank" rel="noopener">Insurance</a> (service design for claims process), <a href="https://josedemello.pt/en/subsidiaries/cuf/" target="_blank" rel="noopener">Healthcare</a> (service design for patient experience), and <a href="https://www.jeronimomartins.com/en/about-us/what-we-do/food-distribution/" target="_blank" rel="noopener">Retail</a> (UX design for loyalty and engagement), also worked on an <a href="https://cordis.europa.eu/project/id/770145" target="_blank" rel="noopener">EU project for urban mobility</a>.</p>
-            </section>
-            <section class="rs-block">
-              <h4 class="rs-label">Takeaways</h4>
-              <p class="rs-learn">Gained exposure to service design as a method for thinking through problems — worked with lovely design generalist colleagues, learned how design is really a business method.</p>
-            </section>
-            <section class="rs-block">
-              <ul class="testimonial-grid">
-                <li class="testimonial">
-                  <span class="testimonial-avatar" aria-hidden="true">CG</span>
-                  <div class="testimonial-body">
-                    <p class="testimonial-name">Catarina Gomes · Client Partner</p>
-                    <p class="testimonial-quote">Aditya ran a claims chatbot project that a client had tried to kill twice before. He brought the service design lens that finally got it approved and delivered.</p>
-                  </div>
-                </li>
-                <li class="testimonial">
-                  <span class="testimonial-avatar" aria-hidden="true">BP</span>
-                  <div class="testimonial-body">
-                    <p class="testimonial-name">Bruno Pinto · Design Lead</p>
-                    <p class="testimonial-quote">He came in as a freelancer and left as a design partner people kept asking for. Generous, structured, and always thinking about the business behind the screens.</p>
-                  </div>
-                </li>
-              </ul>
-            </section>
+          <div class="rs-pair">
+            <div class="rs-box">
+              <p class="rs-box-label">What I did</p>
+              <p class="rs-box-text">Embedded at Cocoon Experience and With Company — service design across insurance, healthcare, and retail, plus an EU mobility project.</p>
+            </div>
+            <div class="rs-box">
+              <p class="rs-box-label">Takeaways</p>
+              <p class="rs-box-text">Learned service design as a way of thinking through problems — and that design is really a business method.</p>
+            </div>
+          </div>
+          <div class="rs-avatars" role="group" aria-label="Testimonials — Freelance">
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-freelance-0">CG</button>
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-freelance-1">BP</button>
+          </div>
+          <div class="rs-quote" id="q-freelance-0">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"Aditya ran a claims chatbot project that a client had tried to kill twice before. He brought the service design lens that finally got it approved and delivered."</p>
+              <p class="rs-quote-attr">Catarina Gomes · Client Partner</p>
+            </div>
+          </div>
+          <div class="rs-quote" id="q-freelance-1">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"He came in as a freelancer and left as a design partner people kept asking for. Generous, structured, and always thinking about the business behind the screens."</p>
+              <p class="rs-quote-attr">Bruno Pinto · Design Lead</p>
+            </div>
           </div>
         </li>
         <li class="rs-entry">
@@ -926,33 +953,31 @@
             <h3 class="rs-role">Experience Designer @ <a href="https://www.novabase.com/en/" target="_blank" rel="noopener">Novabase</a></h3>
             <span class="rs-dates">2015–2013</span>
           </header>
-          <div class="rs-split">
-            <section class="rs-block">
-              <h4 class="rs-label">What I did</h4>
-              <p class="rs-learn">First real job — transitioned from UXR to IXD.</p>
-            </section>
-            <section class="rs-block">
-              <h4 class="rs-label">Takeaways</h4>
-              <p class="rs-learn">Made a lot of friends and learned the fundamentals of product design.</p>
-            </section>
-            <section class="rs-block">
-              <ul class="testimonial-grid">
-                <li class="testimonial">
-                  <span class="testimonial-avatar" aria-hidden="true">TM</span>
-                  <div class="testimonial-body">
-                    <p class="testimonial-name">Tiago Marques · Principal Consultant</p>
-                    <p class="testimonial-quote">Aditya was the junior everyone fought to staff. He absorbed the fundamentals fast and still found time to teach the rest of us a thing or two about research.</p>
-                  </div>
-                </li>
-                <li class="testimonial">
-                  <span class="testimonial-avatar" aria-hidden="true">LS</span>
-                  <div class="testimonial-body">
-                    <p class="testimonial-name">Laura Santos · UX Lead</p>
-                    <p class="testimonial-quote">I watched him shift from research to interaction design in a single project. Few people make that transition with so much ease and so little ego.</p>
-                  </div>
-                </li>
-              </ul>
-            </section>
+          <div class="rs-pair">
+            <div class="rs-box">
+              <p class="rs-box-label">What I did</p>
+              <p class="rs-box-text">First real job — transitioned from UXR to IXD.</p>
+            </div>
+            <div class="rs-box">
+              <p class="rs-box-label">Takeaways</p>
+              <p class="rs-box-text">Made a lot of friends and learned the fundamentals of product design.</p>
+            </div>
+          </div>
+          <div class="rs-avatars" role="group" aria-label="Testimonials — Novabase">
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-novabase-0">TM</button>
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-novabase-1">LS</button>
+          </div>
+          <div class="rs-quote" id="q-novabase-0">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"Aditya was the junior everyone fought to staff. He absorbed the fundamentals fast and still found time to teach the rest of us a thing or two about research."</p>
+              <p class="rs-quote-attr">Tiago Marques · Principal Consultant</p>
+            </div>
+          </div>
+          <div class="rs-quote" id="q-novabase-1">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"I watched him shift from research to interaction design in a single project. Few people make that transition with so much ease and so little ego."</p>
+              <p class="rs-quote-attr">Laura Santos · UX Lead</p>
+            </div>
           </div>
         </li>
         <li class="rs-entry">
@@ -960,33 +985,31 @@
             <h3 class="rs-role">UX Researcher @ <a href="https://photos.google.com/" target="_blank" rel="noopener">Google</a></h3>
             <span class="rs-dates">Summer 2012</span>
           </header>
-          <div class="rs-split">
-            <section class="rs-block">
-              <h4 class="rs-label">What I did</h4>
-              <p class="rs-learn">Conducted formative research, ran usability testing sessions.</p>
-            </section>
-            <section class="rs-block">
-              <h4 class="rs-label">Takeaways</h4>
-              <p class="rs-learn">Embedded in a world-class product team early in my career.</p>
-            </section>
-            <section class="rs-block">
-              <ul class="testimonial-grid">
-                <li class="testimonial">
-                  <span class="testimonial-avatar" aria-hidden="true">EW</span>
-                  <div class="testimonial-body">
-                    <p class="testimonial-name">Ethan Walker · Researcher</p>
-                    <p class="testimonial-quote">In ten weeks Aditya ran a benchmark and a round of usability tests that most interns wouldn't have finished in a full term. He asked sharp questions from day one.</p>
-                  </div>
-                </li>
-                <li class="testimonial">
-                  <span class="testimonial-avatar" aria-hidden="true">KD</span>
-                  <div class="testimonial-body">
-                    <p class="testimonial-name">Kim Davis · Product Manager</p>
-                    <p class="testimonial-quote">We kept his findings on the wall long after the summer ended. The team trusted his observations as much as any full-time researcher's.</p>
-                  </div>
-                </li>
-              </ul>
-            </section>
+          <div class="rs-pair">
+            <div class="rs-box">
+              <p class="rs-box-label">What I did</p>
+              <p class="rs-box-text">Conducted formative research and ran usability testing sessions.</p>
+            </div>
+            <div class="rs-box">
+              <p class="rs-box-label">Takeaways</p>
+              <p class="rs-box-text">Embedded in a world-class product team early in my career.</p>
+            </div>
+          </div>
+          <div class="rs-avatars" role="group" aria-label="Testimonials — Google">
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-google-0">EW</button>
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-google-1">KD</button>
+          </div>
+          <div class="rs-quote" id="q-google-0">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"In ten weeks Aditya ran a benchmark and a round of usability tests that most interns wouldn't have finished in a full term. He asked sharp questions from day one."</p>
+              <p class="rs-quote-attr">Ethan Walker · Researcher</p>
+            </div>
+          </div>
+          <div class="rs-quote" id="q-google-1">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"We kept his findings on the wall long after the summer ended. The team trusted his observations as much as any full-time researcher's."</p>
+              <p class="rs-quote-attr">Kim Davis · Product Manager</p>
+            </div>
           </div>
         </li>
       </ol>
@@ -1026,6 +1049,20 @@
       if (a && a.hostname === location.hostname && a.pathname !== '/' && a.pathname !== '/index.html') {
         sessionStorage.setItem('triggerEntrance', '1');
       }
+    });
+  </script>
+
+  <!-- Resume testimonials — avatar click reveals that person's quote
+       in place (.rs-quote). Independent per avatar; more than one can
+       be open at once. -->
+  <script>
+    document.querySelectorAll('.rs-avatar').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var panel = document.getElementById(btn.getAttribute('aria-controls'));
+        if (!panel) return;
+        var open = panel.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', String(open));
+      });
     });
   </script>
 
