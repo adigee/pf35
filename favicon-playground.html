@@ -3,15 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Favicon playground — sunglasses mark</title>
+<title>Favicon playground — reuse, don't invent</title>
 <!-- Set by JS on load; click any variant card to swap this tab's icon. -->
 <link id="favicon" rel="icon" href="" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
-  /* Playground chrome uses the site's light palette; the marks under
-     test carry both palettes and flip via the theme-sync toggle. */
   :root {
     --pg-bg: #FFF3E8;
     --pg-surface: #FFFFFF;
@@ -30,13 +28,12 @@
   }
   main { max-width: 980px; margin: 0 auto; }
   h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
-  .lede { color: var(--pg-muted); font-size: 15px; margin-top: 8px; max-width: 60ch; line-height: 1.55; }
+  .lede { color: var(--pg-muted); font-size: 15px; margin-top: 8px; max-width: 62ch; line-height: 1.55; }
   section { margin-top: 56px; }
   h2 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--pg-muted); margin-bottom: 6px; }
   .section-note { font-size: 14px; color: var(--pg-muted); line-height: 1.55; max-width: 64ch; margin-bottom: 20px; }
   .section-note code { font-size: 12.5px; background: rgba(26,42,94,.07); padding: 1px 5px; border-radius: 5px; }
 
-  /* ── Theme-sync toggle ─────────────────────────── */
   .sync-bar {
     display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
     background: var(--pg-surface); border: 1px solid var(--pg-border);
@@ -51,7 +48,6 @@
   }
   .seg button[aria-pressed="true"] { background: #fff; color: var(--pg-text); box-shadow: 0 1px 4px rgba(26,42,94,.18); }
 
-  /* ── Fake tab bars ─────────────────────────────── */
   .strips { display: grid; gap: 18px; }
   .strip-wrap { border-radius: 12px; overflow: hidden; border: 1px solid var(--pg-border); }
   .strip-caption { font-size: 11.5px; font-weight: 700; color: var(--pg-muted); padding: 8px 12px; background: var(--pg-surface); border-bottom: 1px solid var(--pg-border); }
@@ -74,7 +70,6 @@
   .strip.dark  .tt { color: #E8EAED; }
   .tab.baseline .tt { font-style: italic; opacity: .75; }
 
-  /* ── Variant dial kit ──────────────────────────── */
   .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
   .card {
     background: var(--pg-surface); border: 2px solid var(--pg-border); border-radius: 16px;
@@ -93,10 +88,7 @@
   .size-cell svg { display: block; }
   .apple-mock { width: 56px; height: 56px; border-radius: 13px; overflow: hidden; display: grid; place-items: center; box-shadow: inset 0 0 0 1px rgba(26,42,94,.08); }
   .apple-mock svg { width: 56px; height: 56px; display: block; }
-  .apple-mock.ios-bg { background: #fff; }
-  .apple-mock.ios-bg svg { width: 40px; height: 40px; }
 
-  /* ── OG card mocks ─────────────────────────────── */
   .og-grid { display: grid; gap: 24px; }
   .og-label { font-size: 12px; font-weight: 800; color: var(--pg-muted); margin-bottom: 8px; }
   .og-card { width: 600px; height: 315px; max-width: 100%; border-radius: 6px; box-shadow: 0 8px 30px rgba(26,42,94,.18); overflow: hidden; }
@@ -120,11 +112,12 @@
 </head>
 <body>
 <main>
-  <h1>Favicon playground — the sunglasses mark</h1>
+  <h1>Favicon playground — round two: reuse, don't invent</h1>
   <p class="lede">
-    The round yellow glasses from your caricature, reduced to a two-circle mark.
-    Click a variant to set it as <strong>this tab's live favicon</strong> — the real test is up there in your tab bar, not down here.
-    Flip the theme toggle to preview the theme-sync behavior (this is what <code>theme.js</code> would trigger on the real site).
+    Round one shelved both ideas: the sunglasses mark borrowed a stranger's cliché, and the AG monogram
+    invented a shape nothing else on the site uses. This round only tests things that already have equity
+    in the interface — the highlighter component, the theme tokens, the type system. Click a card to set
+    it as <strong>this tab's live favicon</strong>.
   </p>
 
   <div class="sync-bar">
@@ -138,7 +131,7 @@
 
   <section>
     <h2>1 · The tab-bar test</h2>
-    <p class="section-note">Every variant at true 16×16, next to your current 🍊 (baseline, first tab). Scan the row the way you would a messy browser: which one do you find again?</p>
+    <p class="section-note">Every variant at true 16×16, next to your current 🍊 (baseline, first tab).</p>
     <div class="strips">
       <div class="strip-wrap">
         <div class="strip-caption">Chrome — light tab bar</div>
@@ -153,15 +146,14 @@
 
   <section>
     <h2>2 · The variants</h2>
-    <p class="section-note">Click a card to make it this tab's favicon. The 16px cell is the honest one; the rest show how it grows. "Apple" simulates the 180×180 home-screen tile (iOS rounds the corners; no-chip variants ship on an opaque tile there).</p>
+    <p class="section-note">The 16px cell is the honest one; the rest show how it grows. "Apple" simulates the 180×180 home-screen tile.</p>
     <div class="cards" id="cards"></div>
   </section>
 
   <section>
     <h2>3 · Same mark on the OG card</h2>
     <p class="section-note">
-      Answer to "would the favicon also be used for the OG": the <strong>mark</strong>, yes — the <strong>file</strong>, no. OG needs a 1200×630 raster card (PNG, ≤300KB for WhatsApp); the favicon's exact geometry anchors it so tab, share card and avatar tell one story.
-      Two directions below, shown at 50% scale, following the theme toggle. Type is Manrope 800 — name ≥90px at full size so it survives Slack/Discord's ~400px render.
+      Two directions below, shown at 50% scale, following the theme toggle.
     </p>
     <div class="og-grid">
       <div>
@@ -187,72 +179,77 @@
   </section>
 
   <footer>
-    <strong>Files so far:</strong> <code>dev/favicon/icon-light.svg</code>, <code>icon-dark.svg</code>, <code>icon-golden-light.svg</code>, <code>icon-golden-dark.svg</code>.<br />
-    <strong>Shipping shape (when you pick one):</strong> <code>icon.svg</code> + <code>favicon.ico</code> (32px fallback for older Safari + Google) + <code>apple-touch-icon.png</code> (180×180, opaque), with <code>theme.js</code> swapping the <code>&lt;link rel="icon"&gt;</code> href on toggle. OG card gets hand-exported once at 1200×630 and gains <code>og:site_name</code>, <code>og:image:alt</code> and <code>theme-color</code> in the head.
+    <strong>Where these come from:</strong> the highlighter mark's path data is copied straight out of <code>components/text_highlight.js</code> (MID_D / TAPER_L_D / TAPER_R_D); all three variants' colors come from the real <code>--color-bg</code> / <code>--color-primary</code> / <code>--highlight-ink</code> tokens in <code>style.css</code>, not new values.<br />
+    <strong>Shipping shape (when you pick one):</strong> <code>icon.svg</code> + <code>favicon.ico</code> (32px fallback) + <code>apple-touch-icon.png</code> (180×180, opaque), with <code>theme.js</code> swapping the <code>&lt;link rel="icon"&gt;</code> href on toggle. The Manrope-text variant needs its glyph outlined to a path before export — inline <code>&lt;text&gt;</code> won't render without the web font loading.
   </footer>
 </main>
 
 <script>
-/* ── Mark geometry (viewBox 100) ────────────────────
-   Two lens rings + arched bridge. No temple arms: at 16px
-   they're noise. Chip = squircle tile so the icon carries
-   its own background onto any tab bar. */
+/* ── Mark geometry (viewBox 100) ──────────────────── */
 const PALETTES = {
-  light: { chip: '#FFF3E8', chipBorder: null, primary: '#2147CC', gold: '#DB8A06', ring: '#F0B429', lens: '#2B3442' },
-  dark:  { chip: '#121212', chipBorder: 'rgba(172,160,232,0.22)', primary: '#ACA0E8', gold: '#F0B429', ring: '#F5BE45', lens: '#3D4656' },
+  light: { chip: '#FFF3E8', chipBorder: null, primary: '#2147CC' },
+  dark:  { chip: '#121212', chipBorder: 'rgba(172,160,232,0.22)', primary: '#ACA0E8' },
 };
 
 const EMOJI_CURRENT = "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍊</text></svg>";
-
-function glasses(color, { lensFill = null, solid = false } = {}) {
-  if (solid) {
-    return `<circle cx="25" cy="52" r="19" fill="${color}"/>`
-         + `<circle cx="75" cy="52" r="19" fill="${color}"/>`
-         + `<path d="M41 47 Q50 37 59 47" fill="none" stroke="${color}" stroke-width="10" stroke-linecap="round"/>`;
-  }
-  const fill = lensFill ? ` fill="${lensFill}"` : ' fill="none"';
-  return `<circle cx="25" cy="52" r="16"${fill} stroke="${color}" stroke-width="9"/>`
-       + `<circle cx="75" cy="52" r="16"${fill} stroke="${color}" stroke-width="9"/>`
-       + `<path d="M41 47 Q50 37 59 47" fill="none" stroke="${color}" stroke-width="9" stroke-linecap="round"/>`;
-}
 
 function chipRect(p) {
   const stroke = p.chipBorder ? ` stroke="${p.chipBorder}" stroke-width="2"` : '';
   return `<rect x="2" y="2" width="96" height="96" rx="27" fill="${p.chip}"${stroke}/>`;
 }
 
+/* Path data copied verbatim from components/text_highlight.js */
+const MID_D = 'M0,4 C10,2.2 20,3.8 28,2.6 C40,3.9 55,2.1 68,3.3 C80,2.5 92,3.7 101,3 L101,21.5 C88,23 75,21 63,22.8 C50,21.3 38,23.2 25,21.6 C15,22.7 6,21.2 0,22 Z';
+const TAPER_L_D = 'M18,4 C10,3.2 3,4.6 1,9 C-0.4,13 0.6,17.2 4.2,20.4 C8,23.2 14,22.1 12.5,21.6 L18,4 Z';
+const TAPER_R_D = 'M0,3.7 C7,3 13,4.3 15.6,7.4 C18,10.2 17.6,15.4 15.2,18.6 C12.4,22.3 6,23 5.5,21.4 L0,3.7 Z';
+
+let uidCounter = 0;
+
+function highlighterMark(color) {
+  const s = 0.8317, tx = 8, ty = 39.6;
+  return `<g transform="translate(${tx},${ty}) scale(${s})">`
+       + `<path d="${MID_D}" fill="${color}"/>`
+       + `<path d="${TAPER_L_D}" fill="${color}"/>`
+       + `<path transform="translate(83,0)" d="${TAPER_R_D}" fill="${color}"/>`
+       + `</g>`;
+}
+
+function paletteChip(p) {
+  const id = 'pclip' + (uidCounter++);
+  return `<defs><clipPath id="${id}"><rect x="2" y="2" width="96" height="96" rx="27"/></clipPath></defs>`
+       + `<polygon points="2,2 98,2 98,98" fill="${p.primary}" clip-path="url(#${id})"/>`;
+}
+
+function initialMark(color) {
+  return `<text x="50" y="66" text-anchor="middle" font-family="Manrope, sans-serif" font-weight="800" font-size="66" fill="${color}">A</text>`;
+}
+
 const VARIANTS = [
-  { id: 'primary', name: 'Primary',    desc: 'Mode color on mode chip — cobalt on peach, lavender on midnight. The true system native: it IS the site palette.' },
-  { id: 'golden',  name: 'Golden',     desc: 'Caricature yellow on the chip. Warmest and closest to the illustration; the hue nobody else in the tab bar has.' },
-  { id: 'true',    name: 'True to illustration', desc: 'Gold rings + dark lenses, no chip. The most literal read of the caricature — the lenses go translucent-dark.', noChip: true },
-  { id: 'solid',   name: 'Solid dots', desc: 'Filled lenses. The boldest blob at 16px, and reads as eyes — arguably the cutest option.', noChip: true },
-  { id: 'tilt',    name: 'Tilted',     desc: 'Primary with a 14° lean. A little mischief; check whether it still reads at 16 or just looks slipped.' },
+  { id: 'highlighter', name: 'Highlighter mark', desc: 'The real highlighter-swipe shape, colored with the actual --highlight-ink token per theme. Reuses a component that already has equity on the site.' },
+  { id: 'palette',     name: 'Palette chip',      desc: 'No invented shape — just the site\'s own bg/primary tokens split on a diagonal. The most restrained option: the favicon just is the theme.' },
+  { id: 'initial',     name: 'Manrope "A"',       desc: 'A single initial in the site\'s actual Manrope 800. Typographic, reuses the type system. Two letters fused into a blob at 16px in testing, so this is one.' },
 ];
 
 function buildSVG(variantId, theme) {
   const p = PALETTES[theme];
   switch (variantId) {
-    case 'primary': return svg(chipRect(p) + glasses(p.primary));
-    case 'golden':  return svg(chipRect(p) + glasses(p.gold));
-    case 'true':    return svg(glasses(p.ring, { lensFill: p.lens }));
-    case 'solid':   return svg(glasses(p.primary, { solid: true }));
-    case 'tilt':    return svg(chipRect(p) + `<g transform="rotate(-14 50 50)">${glasses(p.primary)}</g>`);
+    case 'highlighter': return svg(chipRect(p) + highlighterMark(p.primary));
+    case 'palette':      return svg(chipRect(p) + paletteChip(p));
+    case 'initial':      return svg(chipRect(p) + initialMark(p.primary));
   }
 }
 function svg(inner) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${inner}</svg>`;
 }
 
-/* ── State ────────────────────────────────────────── */
 let theme = 'light';
-let selected = 'primary';
+let selected = 'highlighter';
 
 const faviconLink = document.getElementById('favicon');
 function setLiveFavicon() {
   faviconLink.href = 'data:image/svg+xml;utf8,' + encodeURIComponent(buildSVG(selected, theme));
 }
 
-/* ── Tab strips ───────────────────────────────────── */
 function renderStrips() {
   for (const mode of ['light', 'dark']) {
     const strip = document.getElementById('strip-' + mode);
@@ -264,7 +261,6 @@ function renderStrips() {
   }
 }
 
-/* ── Variant cards ────────────────────────────────── */
 function renderCards() {
   const wrap = document.getElementById('cards');
   wrap.innerHTML = '';
@@ -275,26 +271,22 @@ function renderCards() {
     const sizes = [16, 24, 32, 48].map(s =>
       `<span class="size-cell"><span style="width:${s}px;height:${s}px;display:block">${buildSVG(v.id, theme)}</span><span class="lbl">${s}</span></span>`
     ).join('');
-    const apple = v.noChip
-      ? `<span class="size-cell"><span class="apple-mock ios-bg">${buildSVG(v.id, theme)}</span><span class="lbl">Apple 180</span></span>`
-      : `<span class="size-cell"><span class="apple-mock">${buildSVG(v.id, theme)}</span><span class="lbl">Apple 180</span></span>`;
+    const apple = `<span class="size-cell"><span class="apple-mock">${buildSVG(v.id, theme)}</span><span class="lbl">Apple 180</span></span>`;
     card.innerHTML = `<h3>${v.name}<span class="live">● live in tab</span></h3><p>${v.desc}</p><div class="sizes">${sizes}${apple}</div>`;
     card.addEventListener('click', () => { selected = v.id; setLiveFavicon(); renderCards(); });
     wrap.appendChild(card);
   }
 }
 
-/* ── OG mocks (glasses only, no chip — the card bg is the chip) ── */
 function renderOG() {
   const p = PALETTES[theme];
-  const mark = svg(glasses(p.gold)); // golden anchor; swaps to whichever variant wins
+  const mark = svg(highlighterMark(p.primary));
   document.querySelector('#og-a .og-mark').innerHTML = mark;
   document.querySelector('#og-b .og-mark').innerHTML = mark;
   document.getElementById('og-a').className = 'og-card og-a ' + theme;
   document.getElementById('og-b').className = 'og-card og-b ' + theme;
 }
 
-/* ── Theme toggle ─────────────────────────────────── */
 function setTheme(t) {
   theme = t;
   document.getElementById('btn-light').setAttribute('aria-pressed', String(t === 'light'));
