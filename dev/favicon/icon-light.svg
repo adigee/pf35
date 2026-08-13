@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Light mode: peach chip, cobalt glasses (site light palette) -->
+  <rect x="2" y="2" width="96" height="96" rx="27" fill="#FFF3E8"/>
+  <circle cx="25" cy="52" r="16" fill="none" stroke="#2147CC" stroke-width="9"/>
+  <circle cx="75" cy="52" r="16" fill="none" stroke="#2147CC" stroke-width="9"/>
+  <path d="M41 47 Q50 37 59 47" fill="none" stroke="#2147CC" stroke-width="9" stroke-linecap="round"/>
+</svg>

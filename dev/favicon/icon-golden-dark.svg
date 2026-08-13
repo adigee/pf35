@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Dark mode, golden variant: bright caricature gold on midnight -->
+  <rect x="2" y="2" width="96" height="96" rx="27" fill="#121212" stroke="rgba(240,180,41,0.25)" stroke-width="2"/>
+  <circle cx="25" cy="52" r="16" fill="none" stroke="#F0B429" stroke-width="9"/>
+  <circle cx="75" cy="52" r="16" fill="none" stroke="#F0B429" stroke-width="9"/>
+  <path d="M41 47 Q50 37 59 47" fill="none" stroke="#F0B429" stroke-width="9" stroke-linecap="round"/>
+</svg>
