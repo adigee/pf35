@@ -22,10 +22,12 @@
        header + two short boxes + a couple of dots is
        visible at first glance.
        Real production content, tightened to ~1.5
-       sentences per box. Dial kit covers the two
-       remaining style questions: whether the boxes
-       are bordered cards or plain text columns, and
-       the avatar's resting colour.
+       sentences per box. Box style and avatar colour
+       are now locked in (plain text columns, tinted
+       fill) — dial kit covers the remaining open
+       question: type treatment for the Takeaways text,
+       to give that column a bit more visual interest
+       than "What I did" without touching the label.
     ───────────────────────────────────────── */
 
     body {
@@ -128,17 +130,6 @@
       gap: var(--sp-4);
       margin-top: var(--sp-5);
     }
-    .pb-box {
-      padding: var(--sp-4);
-      border-radius: 10px;
-    }
-    body[data-pb-box="bordered"] .pb-box {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-    }
-    body:not([data-pb-box="bordered"]) .pb-box {
-      padding: 0;
-    }
     .pb-box-label {
       font-family: var(--font-mono);
       font-size: var(--text-2xs);
@@ -152,6 +143,15 @@
       font-size: var(--text-sm);
       line-height: var(--leading-body);
       color: var(--color-text);
+    }
+
+    /* Takeaways type treatment — label stays untouched; only the body
+       text varies. "Default" matches What I did exactly. */
+    body[data-pb-takeaway="italic"] .pb-box--takeaway .pb-box-text {
+      font-style: italic;
+    }
+    body[data-pb-takeaway="accent"] .pb-box--takeaway .pb-box-text {
+      color: var(--color-accent);
     }
 
     /* ── AVATAR ROW ──────────────────────────── */
@@ -174,11 +174,6 @@
       border: 1px solid transparent;
       cursor: pointer;
       transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
-    }
-    body[data-pb-avatar="outline"] .pb-avatar {
-      background: transparent;
-      border-color: var(--color-border);
-      color: var(--color-text-muted);
     }
     .pb-avatar:hover { transform: translateY(-1px); }
     .pb-avatar[aria-expanded="true"] {
@@ -284,6 +279,12 @@
       color: #121212;
       font-weight: 600;
     }
+    #pb-dial .dial-note {
+      font-size: 10.5px;
+      line-height: 1.5;
+      color: rgba(248, 246, 238, 0.4);
+      margin: 8px 0 0;
+    }
     #pb-dial .dial-reset {
       display: block;
       margin-top: 14px;
@@ -299,23 +300,19 @@
     }
   </style>
 </head>
-<body data-pb-box="bordered">
+<body>
 
   <!-- ── PLAYGROUND DIAL KIT ─────────────────── -->
   <div id="pb-dial">
-    <p class="dial-label">Paired-box dial kit</p>
+    <p class="dial-label">Takeaways type dial kit</p>
 
-    <p class="dial-group-label">Box style</p>
-    <div class="dial-seg" role="group" aria-label="Box style" data-group="box">
-      <button type="button" data-value="bordered" aria-pressed="true">Bordered card</button>
-      <button type="button" data-value="plain">Plain text column</button>
+    <p class="dial-group-label">Takeaways text style</p>
+    <div class="dial-seg" role="group" aria-label="Takeaways text style" data-group="takeaway">
+      <button type="button" data-value="" aria-pressed="true">Default (matches What I did)</button>
+      <button type="button" data-value="italic">Italic</button>
+      <button type="button" data-value="accent">Accent colour</button>
     </div>
-
-    <p class="dial-group-label">Avatar resting style</p>
-    <div class="dial-seg" role="group" aria-label="Avatar resting style" data-group="avatar">
-      <button type="button" data-value="" aria-pressed="true">Tinted fill</button>
-      <button type="button" data-value="outline">Outline</button>
-    </div>
+    <p class="dial-note">Label stays as-is either way — only the sentence changes.</p>
 
     <span class="dial-reset" id="dial-reset">Reset to defaults</span>
   </div>
@@ -349,7 +346,7 @@
             <p class="pb-box-label">What I did</p>
             <p class="pb-box-text">Built the lockers product from 0 to 1, reached 250K ARR.</p>
           </div>
-          <div class="pb-box">
+          <div class="pb-box pb-box--takeaway">
             <p class="pb-box-label">Takeaways</p>
             <p class="pb-box-text">Learned the art of making reversible decisions and internalising an experiment-centric process.</p>
           </div>
@@ -382,7 +379,7 @@
             <p class="pb-box-label">What I did</p>
             <p class="pb-box-text">Built internal tooling for linguists, shipped 5 products total.</p>
           </div>
-          <div class="pb-box">
+          <div class="pb-box pb-box--takeaway">
             <p class="pb-box-label">Takeaways</p>
             <p class="pb-box-text">Great intro to AI pre-ChatGPT — mastering a business domain brings enormous advantages when connecting business goals to customers.</p>
           </div>
@@ -415,7 +412,7 @@
             <p class="pb-box-label">What I did</p>
             <p class="pb-box-text">Embedded at Cocoon Experience and With Company — service design across insurance, healthcare, and retail, plus an EU mobility project.</p>
           </div>
-          <div class="pb-box">
+          <div class="pb-box pb-box--takeaway">
             <p class="pb-box-label">Takeaways</p>
             <p class="pb-box-text">Learned service design as a way of thinking through problems — and that design is really a business method.</p>
           </div>
@@ -448,7 +445,7 @@
             <p class="pb-box-label">What I did</p>
             <p class="pb-box-text">First real job — transitioned from UXR to IXD.</p>
           </div>
-          <div class="pb-box">
+          <div class="pb-box pb-box--takeaway">
             <p class="pb-box-label">Takeaways</p>
             <p class="pb-box-text">Made a lot of friends and learned the fundamentals of product design.</p>
           </div>
@@ -481,7 +478,7 @@
             <p class="pb-box-label">What I did</p>
             <p class="pb-box-text">Conducted formative research and ran usability testing sessions.</p>
           </div>
-          <div class="pb-box">
+          <div class="pb-box pb-box--takeaway">
             <p class="pb-box-label">Takeaways</p>
             <p class="pb-box-text">Embedded in a world-class product team early in my career.</p>
           </div>
@@ -523,7 +520,7 @@
       // Dial kit
       var dial = document.getElementById('pb-dial');
       if (!dial) return;
-      var GROUP_ATTR = { box: 'pbBox', avatar: 'pbAvatar' };
+      var GROUP_ATTR = { takeaway: 'pbTakeaway' };
       dial.querySelectorAll('.dial-seg[data-group]').forEach(function (seg) {
         var group = seg.getAttribute('data-group');
         var attr = GROUP_ATTR[group];
@@ -543,12 +540,10 @@
       });
 
       document.getElementById('dial-reset').addEventListener('click', function () {
-        document.body.dataset.pbBox = 'bordered';
-        delete document.body.dataset.pbAvatar;
-        dial.querySelector('[data-group="box"] [data-value="bordered"]').setAttribute('aria-pressed', 'true');
-        dial.querySelector('[data-group="box"] [data-value="plain"]').setAttribute('aria-pressed', 'false');
-        dial.querySelector('[data-group="avatar"] [data-value=""]').setAttribute('aria-pressed', 'true');
-        dial.querySelector('[data-group="avatar"] [data-value="outline"]').setAttribute('aria-pressed', 'false');
+        delete document.body.dataset.pbTakeaway;
+        dial.querySelectorAll('[data-group="takeaway"] button').forEach(function (b) {
+          b.setAttribute('aria-pressed', String(b.getAttribute('data-value') === ''));
+        });
         document.querySelectorAll('.pb-quote.is-open').forEach(function (p) { p.classList.remove('is-open'); });
         document.querySelectorAll('.pb-avatar[aria-expanded="true"]').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); });
       });
