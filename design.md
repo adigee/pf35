@@ -334,6 +334,8 @@ Panels fade in/out via `opacity` only (`transition: opacity var(--panel-transiti
 | Contact email btn | `background` | 200ms | ease | `.p-email` hover |
 | Contact links | `color` | 150ms | ease | `.p-contact-links a` hover |
 | Reading marker | `opacity` | 300ms | ease | Appears/disappears |
+| Testimonial quote reveal | `grid-template-rows`, `opacity` | 180ms | ease | `.rs-quote` — avatar click toggle, resume section |
+| Testimonial avatar hover | `background`, `color`, `transform` | 150ms | ease | `.rs-avatar` |
 
 ### Rules
 
@@ -366,6 +368,16 @@ Nav links are hidden on mobile (`≤768px`).
 ### Tags
 
 `.b-tag` — 9px, uppercase, `--tracking-wide`, muted color, `1px solid --color-border` border, no fill. Tags signal taxonomy, not interactivity.
+
+### Resume Entry — Paired Boxes + Testimonial Reveal
+
+Each `.rs-entry` in the homepage Resume section (`index.html`) is: a header (role/company + dates, unchanged from the original asymmetric-split design), then two equal-width plain-text columns (`.rs-pair` → `.rs-box` × 2, no card chrome — no background or border), then a row of small testimonial avatars.
+
+- **Paired boxes**: `.rs-pair` is a two-column grid (`1fr 1fr`), stacking to one column at `≤560px`. Each `.rs-box` is just a `.rs-box-label` (muted, `--text-2xs`, uppercase, `--tracking-widest` — same treatment as other section labels) followed by one `.rs-box-text` sentence (`--text-sm`, full `--color-text`, not muted — deliberately readable at full weight since there's no card background to lift it off the page). Content is kept to ~1.5 sentences per box so the two columns read as visually equidistant.
+- **Avatars**: `.rs-avatar` — 32px circle, `--font-mono` initials, `--color-primary-muted` background / `--color-primary` text at rest, inverts to solid `--color-primary` fill (`--color-on-primary` text) when its quote is open (`aria-expanded="true"`) — the same fill-invert language as `.btn` hover.
+- **Testimonial reveal**: quotes (`.rs-quote`) are collapsed by default and expand via a `grid-template-rows: 0fr → 1fr` + `opacity` transition (180ms, under the interactive-feedback ceiling — this is a toggle, not a structural panel). Each avatar toggles independently; more than one quote can be open at once. No card background on the quote either — just a `--color-border` left rail, matching the boxes' plain-text treatment.
+
+Converged from three playground explorations (2026-08-13): an initial asymmetric-split-with-testimonial-cards design shipped in PR #149 read as too dense once takeaways were added; a two-track "Career list + Reflections column" layout was tried and also judged too dense; this paired-boxes-plus-click-to-reveal-avatars design was the one that landed — the resting state is just a header, two short sentences, and a couple of dots.
 
 ### Timezone Pill
 
@@ -568,4 +580,4 @@ These rules are strict. They exist because this is a small, deliberate codebase 
 
 ---
 
-*Last updated: 2026-08-06*
+*Last updated: 2026-08-13*
