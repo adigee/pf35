@@ -115,9 +115,10 @@
   <h1>Favicon playground — round two: reuse, don't invent</h1>
   <p class="lede">
     Round one shelved both ideas: the sunglasses mark borrowed a stranger's cliché, and the AG monogram
-    invented a shape nothing else on the site uses. This round only tests things that already have equity
-    in the interface — the highlighter component, the theme tokens, the type system. Click a card to set
-    it as <strong>this tab's live favicon</strong>.
+    invented a shape nothing else on the site uses. This round mostly tests things that already have equity
+    in the interface — the highlighter component, the theme tokens, the type system — plus one deliberate
+    exception (<strong>Triangle punch</strong>, pulled from the logo explorations) kept in for comparison even
+    though it breaks the reuse-only rule. Click a card to set it as <strong>this tab's live favicon</strong>.
   </p>
 
   <div class="sync-bar">
@@ -224,10 +225,17 @@ function initialMark(color) {
   return `<text x="50" y="66" text-anchor="middle" font-family="Manrope, sans-serif" font-weight="800" font-size="66" fill="${color}">A</text>`;
 }
 
+/* Proportions matched to the Frame 7 logo-exploration screenshot:
+   apex (50,18), base (12,92)/(88,92), circle centered (50,65) r15. */
+function trianglePunch(color) {
+  return `<path fill-rule="evenodd" d="M50,18 L88,92 L12,92 Z M50,65 A15,15 0 1,1 49.99,65 Z" fill="${color}"/>`;
+}
+
 const VARIANTS = [
   { id: 'highlighter', name: 'Highlighter mark', desc: 'The real highlighter-swipe shape, colored with the actual --highlight-ink token per theme. Reuses a component that already has equity on the site.' },
   { id: 'palette',     name: 'Palette chip',      desc: 'No invented shape — just the site\'s own bg/primary tokens split on a diagonal. The most restrained option: the favicon just is the theme.' },
   { id: 'initial',     name: 'Manrope "A"',       desc: 'A single initial in the site\'s actual Manrope 800. Typographic, reuses the type system. Two letters fused into a blob at 16px in testing, so this is one.' },
+  { id: 'punch',       name: 'Triangle punch',    desc: 'Pulled from the logo explorations, not the interface — breaks the reuse-only rule the other three follow. Kept in anyway: strongest 16px silhouette of the four, reads as a mark rather than a letter.' },
 ];
 
 function buildSVG(variantId, theme) {
@@ -236,6 +244,7 @@ function buildSVG(variantId, theme) {
     case 'highlighter': return svg(chipRect(p) + highlighterMark(p.primary));
     case 'palette':      return svg(chipRect(p) + paletteChip(p));
     case 'initial':      return svg(chipRect(p) + initialMark(p.primary));
+    case 'punch':        return svg(chipRect(p) + trianglePunch(p.primary));
   }
 }
 function svg(inner) {
