@@ -331,13 +331,13 @@
     /* Feature sequence — live-media card + caption below. The first feature
        leads with the section eyebrow (Work); content stacks in a column and
        centers as a group so the eyebrow sits a consistent --sp-6 above the
-       thumbnail — same eyebrow→content rhythm as Resume and About. */
+       thumbnail — same eyebrow→content rhythm as Resume and About.
+       No min-height here on purpose — sizing by content + --sp-8 padding is
+       what makes consecutive thumbnails actually group tightly. */
     .feature {
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       padding: var(--sp-8) 0;
     }
     /* The portfolio eyebrow leads the first feature; left-aligned like the
