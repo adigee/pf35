@@ -91,7 +91,7 @@
 
     /* ── PAGE LOAD ANIMATION ───────────────────
        Three-beat entrance: the rail flies in from fully off-canvas left,
-       then the whole right column (hero + portfolio cards, as one unit)
+       then the whole right column (hero + work-project cards, as one unit)
        slides up from the bottom, then the "why behind the what" phrase
        highlight-sweeps in (see data-highlight-auto on .overview-subhead
        below — its delay is timed to land after the column settles).
@@ -269,7 +269,7 @@
     }
 
     /* Overview grid — flows from the top, like Julie's */
-    .overview { width: 100%; }
+    .overview-hero { width: 100%; }
     /* ── INTRO hero ───────────────────────────
        Built from the design-system text classes (design.md §3):
        .b-section-header headline → .b-section-subheader subheadline.
@@ -291,7 +291,7 @@
        location) — rather than a pixel guess, so it stays correct if the
        avatar size ever changes. */
     @media (min-width: 1024px) {
-      .overview { padding-top: calc(var(--rail-avatar-size) + var(--sp-8)); }
+      .overview-hero { padding-top: calc(var(--rail-avatar-size) + var(--sp-8)); }
     }
     /* Explicit responsive columns + minmax(0,1fr).
        The minmax(0,…) is the classic trick: it lets tracks
@@ -340,7 +340,14 @@
       align-items: center;
       padding: var(--sp-8) 0;
     }
-    /* The portfolio eyebrow leads the first feature; left-aligned like the
+    /* Container padding — same --sp-24 (96px) top/bottom as .resume and
+       .about, so all three sections share one rhythm. The .feature cards
+       inside keep their own --sp-8 padding for tight thumbnail-to-thumbnail
+       grouping, so the visible gap before the first / after the last card
+       is 96+32=128px — same pattern as the 96+96 gap between Resume and
+       About. */
+    .work-projects { padding: var(--sp-24) 0; }
+    /* The work-projects eyebrow leads the first feature; left-aligned like the
        Resume/About eyebrows (not centered with the card). Its trailing gap
        to the thumbnail comes from .section-eyebrow below. */
     .feature > .section-eyebrow {
@@ -542,7 +549,7 @@
       max-width: 720px;
     }
     /* Section eyebrow — shared label above Work/Resume/About headings.
-       Matches the mono, uppercase, primary-tinted treatment of resume-label. */
+       Matches the mono, uppercase, muted-gray treatment of resume-label. */
     .section-eyebrow,
     .resume-label {
       font-family: var(--font-mono);
@@ -550,7 +557,7 @@
       font-weight: 500;
       letter-spacing: var(--tracking-widest);
       text-transform: uppercase;
-      color: var(--color-primary);
+      color: var(--color-text-muted);
       margin-bottom: var(--sp-6);
     }
 
@@ -719,9 +726,9 @@
     }
 
     /* Mobile — tighten spacing: sections use --sp-16 (64px); Work thumbnails
-       keep their --sp-12/--sp-6 padding from the ≤1023px block. */
+       keep their own --sp-12/--sp-6 padding from the ≤1023px block. */
     @media (max-width: 720px) {
-      .about, .resume { padding: var(--sp-16) 0; }
+      .about, .resume, .work-projects { padding: var(--sp-16) 0; }
       .about-heading { font-size: var(--text-lg); }
       .about-actions { margin-top: var(--sp-8); }
       .resume-buttons { margin: var(--sp-5) 0 0; }
@@ -758,7 +765,7 @@
     </div>
 
     <nav class="rail-nav" aria-label="Section navigation">
-      <a href="#portfolio" data-section-link="portfolio">WORK</a>
+      <a href="#work-projects" data-section-link="work-projects">WORK</a>
       <a href="#resume"   data-section-link="resume">RESUME</a>
       <a href="#about"    data-section-link="about">ABOUT</a>
     </nav>
@@ -773,14 +780,15 @@
          1520ms = 600 (rail fly-in) + 80 (gap) + 620 (column slide-up) + 220
          (gap), timed to land after the column settles; see the PAGE LOAD
          ANIMATION rules above. -->
-    <section class="overview" id="overview">
+    <section class="overview-hero" id="overview-hero">
       <h1 class="b-section-header overview-headline">Product builder with a design practice that anchors on continuous, rigorous, rapid UX research to enable high velocity product delivery.</h1>
       <p class="b-section-subheader overview-subhead">the <em data-highlight data-highlight-auto="1520">why behind the what</em><br>has never been more important</p>
     </section>
 
-    <!-- Feature sequence — the portfolio. Its top edge is the WORK nav's
-         anchor: WORK only becomes selected once you've scrolled past here. -->
-    <section class="portfolio" id="portfolio">
+    <!-- Feature sequence — the work-projects container. Its top edge is the
+         WORK nav's anchor: WORK only becomes selected once you've scrolled
+         past here. -->
+    <section class="work-projects" id="work-projects">
     <section class="feature">
       <p class="section-eyebrow">Selected projects</p>
       <a class="feature-card" href="lockers-reducing-cancellation.html">
@@ -850,7 +858,7 @@
         </div>
       </a>
     </section>
-    </section><!-- /.portfolio -->
+    </section><!-- /.work-projects -->
 
     <!-- ── RESUME ─────────────────────────────── -->
     <section class="resume" id="resume">
@@ -1171,8 +1179,8 @@
   <!-- Section scroll-spy — highlights the rail nav link whose section has
        scrolled up past the top edge of the viewport. A link only becomes
        active once you've actually scrolled into its section, so nothing is
-       selected at the top of the page: WORK stays quiet until the portfolio
-       has scrolled past the threshold (the moment its top hits the viewport
+       selected at the top of the page: WORK stays quiet until the work-projects
+       section has scrolled past the threshold (the moment its top hits the viewport
        top — the same spot clicking WORK jumps to). -->
   <script>
     (function () {
