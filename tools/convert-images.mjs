@@ -6,12 +6,13 @@ const targets = [
   { src: 'project-content/2 Decision module for framer/1 Hero.png', widths: [800, 1600] },
   { src: 'project-content/3 DAD Images for framer/1 Hero.png', widths: [800, 1600] },
   // Homepage thumbnails — small card images. The card's rendered width is
-  // height-driven (65vh * aspect ratio, see .fc-media in index.html), so it
-  // can run well past 960px on tall/external monitors — 1440w covers that
-  // at 2x pixel density too.
-  { src: 'project-content/4 Lockers PUDO for framer/Thumbnail - lockers PUDO.png', widths: [480, 960, 1440] },
-  { src: 'project-content/2 Decision module for framer/Thumbnail - decision module.png', widths: [480, 960, 1440] },
-  { src: 'project-content/3 DAD Images for framer/Thumbnail - TRQ DAD.png', widths: [480, 960, 1440] },
+  // height-driven (65vh * aspect ratio, see .fc-media in index.html), so on
+  // tall/external monitors it can exceed 960px. 1920w covers 4K/Retina
+  // displays (~1872px needed) and 2520w matches the source resolution so the
+  // thumbnail is never upscaled (covers 2x up to a ~1440px-tall viewport).
+  { src: 'project-content/4 Lockers PUDO for framer/Thumbnail - lockers PUDO.png', widths: [480, 960, 1440, 1920, 2520] },
+  { src: 'project-content/2 Decision module for framer/Thumbnail - decision module.png', widths: [480, 960, 1440, 1920, 2520] },
+  { src: 'project-content/3 DAD Images for framer/Thumbnail - TRQ DAD.png', widths: [480, 960, 1440, 1920, 2520] },
 ];
 
 for (const { src, widths } of targets) {
