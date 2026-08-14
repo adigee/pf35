@@ -81,7 +81,7 @@
             translations at scale and speed (&lt; 20 mins).
           </p>
           <p class="b-body">
-            The QE model sits between the Machine translation (MT) and Human post edition steps.
+            The QE model sits between the Machine translation (MT) and Human Post-Edition steps.
             It measures the quality of the MT translation and decides if the translation needs
             to be further edited/improved by a human translator.
           </p>
@@ -89,7 +89,7 @@
             <img
               class="cs-img"
               src="project-content/2%20Decision%20module%20for%20framer/2%20Unbabel%20pipeline.png"
-              alt="The Unbabel translation pipeline: Order → Machine Translation → Quality Estimation → Human Post Edition → Finished Order"
+              alt="The Unbabel translation pipeline: Order → Machine Translation → Quality Estimation → Human Post-Edition → Finished Order"
               loading="lazy"
             />
             <figcaption class="cs-figcaption">The Unbabel pipeline — QE sits at the decision point between machine and human</figcaption>
@@ -103,7 +103,7 @@
             My team was responsible for building the canvas experience and the modules in it
             while the AI team built a service wrapping QE configurations for us to consume.
             I collaborated with 2 product managers on this project, one on my team and one on
-            the AI team to ensure that interface aligned with user needs and with the underlying API.
+            the AI team to ensure that the interface aligned with user needs and with the underlying API.
           </p>
 
           <div class="cs-callout">
@@ -112,7 +112,7 @@
 
           <p class="b-body">
             Designing a module for the workflow canvas brought with it a set of specific constraints.
-            I worked through them with the front end dev on my team and aligning with the designer
+            I worked through them with the front-end dev on my team and aligned with the designer
             on the adjacent team who was working on other modules.
           </p>
         </section>
@@ -143,13 +143,13 @@
             estimate score (QE score).
           </p>
           <p class="b-body">
-            Aggregating the segment scores into a document level score allowed the model
+            Aggregating the segment scores into a document-level score allowed the model
             to have an understanding of the overall quality of the translated text.
           </p>
           <p class="b-body">
-            Then, by evaluating the document level score against a threshold enabled the
-            QE model to decide if the translation needed human edition or if it was good
-            enough to skip human edition.
+            Evaluating the document-level score against a threshold then enabled the
+            QE model to decide if the translation needed Human Post-Edition or if it was good
+            enough to skip Human Post-Edition.
           </p>
           <figure class="cs-figure">
             <img
@@ -167,15 +167,15 @@
             context of the entire pipeline.
           </p>
           <p class="b-body">
-            The QE model actually does two things - scores the translation and decides
-            if the translation should skip human post edition (based on that score). Since
+            The QE model actually does two things — scores the translation and decides
+            if the translation should skip Human Post-Edition (based on that score). Since
             we were only enabling configurations on the skipping behaviour, I proposed that
             <em data-highlight>we visually separate QE into two modules</em>, giving rise to a brand new module that
             we named as the decision module.
           </p>
           <p class="b-body">
             The decision module would allow the ops team to configure only the skipping
-            behaviour and contain all the skipping related logic and tradeoffs. This directed
+            behaviour and contain all the skipping-related logic and tradeoffs. This directed
             the ops team to focus on the only thing they could control and simplified operating QE
             through a single mental model — its skipping behaviour.
           </p>
@@ -191,7 +191,7 @@
 
         <!-- ── INVERTING THE PARADIGM ── -->
         <section class="cs-section">
-          <p class="b-section-header">Inverting the paradigm - "QE profiles"</p>
+          <p class="b-section-header">Inverting the paradigm — "QE profiles"</p>
           <p class="b-body">
             Surfacing QE in the decision module resonated well but interacting with QE scores
             and threshold decimals was not intuitive at all. The primary challenge with numeric
@@ -202,12 +202,12 @@
             translation would skip instead of looking at the score itself.
           </p>
           <p class="b-body">
-            This essentially inverted the paradigm and enabled us to interact with QE models
-            based on <em data-highlight>the outcome of their skipping behaviour.</em>
+            This essentially inverted the paradigm and enabled us to interact with the QE model
+            based on <em data-highlight>the outcome of its skipping behaviour.</em>
           </p>
           <p class="b-body">
-            Five QE profiles were developed by the AI team based on the skipping behaviour -
-            Very conservative, Conservative, Balanced, Aggressive, Very aggressive. As the name
+            Five QE profiles were developed by the AI team based on the skipping behaviour —
+            Very Conservative, Conservative, Balanced, Aggressive, Very Aggressive. As the name
             suggests, more aggressive profiles would skip more translations.
           </p>
           <figure class="cs-figure">
@@ -225,14 +225,14 @@
         <section class="cs-section">
           <p class="b-section-header">Design iteration 1</p>
           <p class="b-body">
-            QE profiles was a breakthrough in how we talked about QE internally and externally.
+            QE profiles were a breakthrough in how we talked about QE internally and externally.
             To rework the decision module with QE profiles instead of QE scores, I realised
             I would need to start afresh.
           </p>
           <p class="b-body">
-            Brainstorming with the AI engineers led me to my first breakthrough - to use the
+            Brainstorming with the AI engineers led me to my first breakthrough — to use the
             historical performance of the model. When the ops team would request them to intervene,
-            their process involved looking the quality of jobs skipped by the model in the past.
+            their process involved looking at the quality of jobs skipped by the model in the past.
           </p>
           <figure class="cs-figure">
             <img
@@ -293,7 +293,7 @@
               loading="lazy"
             />
           </figure>
-          <h3 class="b-section-subheader">UXR Findings</h3>
+          <h3 class="b-section-subheader"><span data-tooltip="User research">UXR</span> findings</h3>
           <p class="b-body">
             The results of the test were very positive with most participants keen to apply
             QE profiles to the customers they managed. Most importantly, it enabled me to build a mental model of
@@ -338,7 +338,7 @@
 
           <p class="b-body">
             After wrapping up the designs, I handed over an instrumentation plan to the
-            front end dev as my final contribution on this project.
+            front-end dev as my final contribution on this project.
           </p>
           <p class="b-body">
             Feedback was positive on the 2nd iteration and after deploy, there was
