@@ -85,11 +85,101 @@
       margin-left: var(--sp-2);
     }
 
+    /* ── INLINE BODY REDLINES — two ways to show the rewrite without
+       breaking the sentence, switchable live below ── */
+
+    /* Variant: TOOLTIP — the struck phrase stays plain inline; the rewrite
+       floats in a small card near it, opened on click/tap. Identical on
+       mobile and desktop. */
+    .dp-strike[data-rewrite] { cursor: pointer; }
+    .dp-tip {
+      position: fixed;
+      z-index: 60;
+      max-width: 280px;
+      padding: var(--sp-3) var(--sp-4);
+      border-radius: 10px;
+      border: 1px solid rgba(248, 246, 238, 0.12);
+      background: #1E1D1A;
+      color: #F8F6EE;
+      font-style: italic;
+      font-size: var(--text-sm);
+      line-height: 1.5;
+      box-shadow: 0 16px 40px -10px rgba(0,0,0,0.5), 0 3px 10px -3px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(-4px) scale(0.96);
+      transform-origin: top left;
+      transition: opacity 160ms ease, transform 200ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .dp-tip.is-open { opacity: 1; transform: translateY(0) scale(1); }
+
+    /* Variant: MARGIN NOTE — a quiet block sitting after the whole
+       paragraph (never mid-sentence). On viewports wide enough to have
+       real space beside the 1160px shell, it promotes to a true
+       right-margin note, connected to the paragraph's own line. */
+    .cs-shell { position: relative; }
+    .dp-margin {
+      display: block;
+      margin-top: var(--sp-3);
+      padding-left: var(--sp-4);
+      border-left: 2px solid var(--color-primary);
+      font-style: italic;
+      color: var(--color-primary);
+      font-size: var(--text-sm);
+      line-height: 1.5;
+      max-width: 52ch;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 200ms ease, transform 240ms cubic-bezier(0.34,1.45,0.64,1);
+    }
+    .dp-margin.is-in { opacity: 1; transform: translateY(0); }
+
+    @media (min-width: 1680px) {
+      .variant-margin .dp-margin {
+        position: absolute;
+        left: calc(100% + var(--sp-8));
+        width: 240px;
+        margin-top: 0;
+      }
+    }
+
+    /* ── Prototype-only control: switch which treatment is live ── */
+    .dp-variant-switch {
+      position: fixed;
+      bottom: var(--sp-6);
+      left: var(--sp-6);
+      z-index: 100;
+      display: inline-flex;
+      gap: 2px;
+      padding: 3px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+    }
+    .dp-variant-switch button {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-wide);
+      text-transform: uppercase;
+      padding: var(--sp-2) var(--sp-3);
+      border: none;
+      border-radius: 6px;
+      background: none;
+      color: var(--color-text-muted);
+      cursor: pointer;
+    }
+    .dp-variant-switch button.is-active {
+      background: var(--color-primary-muted);
+      color: var(--color-primary);
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .dp-strike::after { transition: opacity 120ms ease; transform: none; opacity: 0; }
       .dp-strike.is-struck::after { transform: none; opacity: 1; }
       .dp-note { transition: opacity 120ms ease; transform: none; }
       .dp-note.is-in { transform: none; }
+      .dp-tip { transition: opacity 120ms ease; transform: none; }
+      .dp-margin { transition: opacity 120ms ease; transform: none; }
+      .dp-margin.is-in { transform: none; }
     }
 
     .proto-note {
@@ -486,8 +576,14 @@
 
   <div class="proto-note">
     <strong>Direction B — the real redlines</strong><br/>
-    Click “✦ Add drama” in the rail. One TOC entry gets relabeled, and three phrases in the
-    real copy get struck through and rewritten as you scroll to them.
+    Click “✦ Add drama” in the rail. The TOC entry relabels immediately; the three body
+    phrases strike through and rewrite as you scroll to them. Switch treatments bottom-left —
+    the strike is the same either way, only where the rewrite lands changes.
+  </div>
+
+  <div class="dp-variant-switch" id="dp-variant-switch">
+    <button type="button" data-variant="margin">Margin note</button>
+    <button type="button" data-variant="tooltip">Tooltip</button>
   </div>
 
   <script src="../components/projects.js"></script>
@@ -495,9 +591,11 @@
 
   <script>
     (function () {
-      /* The four redlines, worded to match. TOC gets its own short rewrite;
-         inline ones strike a specific phrase inside a specific paragraph
-         (marked with data-dp) and leave the rest of the sentence intact. */
+      /* The four redlines, worded to match. TOC gets its own short rewrite
+         (unchanged treatment — a note under the struck link, that one read
+         fine). The three inline ones strike a phrase inside a specific
+         paragraph (marked with data-dp) and never touch the rest of the
+         sentence; where the REWRITE appears is what's switchable below. */
       var TOC_REWRITE = { href: '#design-iteration-3', note: 'the real breakthrough' };
       var INLINE = [
         { key: 'intro-experience', phrase: 'the customer experience of submitting a claim',
@@ -508,6 +606,7 @@
           note: 'a real disagreement about what “good” looks like' }
       ];
 
+      var shell = document.querySelector('.cs-shell');
       var rail = document.querySelector('.cs-rail');
 
       /* case-study.js hardcodes the video-avatar paths relative to a
@@ -528,10 +627,13 @@
       rail.appendChild(toggle);
       var toggleLabel = toggle.querySelector('.dm-toggle-label');
 
+      var variant = null; /* 'margin' | 'tooltip' — set below via setVariant() */
       var dramaOn = false;
-      var vandalised = []; /* {parent, strike, note, original} */
+      var vandalised = []; /* {parent, strike, original, note?, marginNote?} */
       var io = null;
+      var openTip = null;
 
+      /* ── TOC entry: unchanged whole-element strike + note-below-link ── */
       function vandaliseWhole(el, noteText) {
         var original = el.textContent;
         var strike = document.createElement('span');
@@ -546,35 +648,91 @@
         return { parent: el, strike: strike, note: note, original: original };
       }
 
-      function vandaliseInline(el, phrase, noteText) {
+      /* ── Inline body phrase: strike stays inline; the rewrite lives
+         OUTSIDE the paragraph's text flow entirely, in either a tooltip
+         or a margin note — never inserted mid-sentence. ── */
+      function vandaliseInline(p, phrase, noteText) {
         /* Source HTML wraps these paragraphs across lines, so raw textContent
            can contain a newline where the phrase expects a single space —
            normalize first (harmless: browsers already collapse this
            whitespace visually). */
-        var text = el.textContent.replace(/\s+/g, ' ').trim();
+        var text = p.textContent.replace(/\s+/g, ' ').trim();
         var idx = text.indexOf(phrase);
         if (idx === -1) return null;
         var before = text.slice(0, idx);
         var after = text.slice(idx + phrase.length);
         var original = text;
-        el.textContent = '';
-        if (before) el.appendChild(document.createTextNode(before));
+        p.textContent = '';
+        if (before) p.appendChild(document.createTextNode(before));
         var strike = document.createElement('span');
         strike.className = 'dp-strike';
         strike.textContent = phrase;
-        el.appendChild(strike);
-        var note = document.createElement('span');
-        note.className = 'dp-note';
-        note.textContent = ' → ' + noteText;
-        el.appendChild(note);
-        if (after) el.appendChild(document.createTextNode(after));
-        return { parent: el, strike: strike, note: note, original: original };
+        strike.dataset.rewrite = noteText;
+        p.appendChild(strike);
+        if (after) p.appendChild(document.createTextNode(after));
+        return { parent: p, strike: strike, original: original, noteText: noteText };
       }
+
+      /* ── Tooltip variant: floating card near the clicked strike ── */
+      function openTipAt(rect, text) {
+        closeTip(true);
+        var tip = document.createElement('div');
+        tip.className = 'dp-tip';
+        tip.textContent = '→ ' + text;
+        document.body.appendChild(tip);
+        var x = Math.min(Math.max(12, rect.left - 12), window.innerWidth - 292);
+        var y = rect.bottom + 10;
+        if (y + 100 > window.innerHeight) y = Math.max(12, rect.top - 10 - 100);
+        tip.style.left = x + 'px';
+        tip.style.top = y + 'px';
+        requestAnimationFrame(function () { tip.classList.add('is-open'); });
+        openTip = tip;
+      }
+      function closeTip(immediate) {
+        if (!openTip) return;
+        var tip = openTip;
+        openTip = null;
+        if (immediate) { tip.remove(); return; }
+        tip.classList.remove('is-open');
+        setTimeout(function () { tip.remove(); }, 180);
+      }
+      document.addEventListener('click', function (e) {
+        if (e.target.closest && e.target.closest('.dp-tip')) return;
+        closeTip();
+      });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeTip(); });
+      window.addEventListener('scroll', function () { closeTip(); }, { passive: true });
+
+      /* ── Margin note variant: a block sibling right after the paragraph.
+         On narrow/mobile it just sits there in flow; a wide-viewport media
+         query (see CSS) promotes it to the right margin, and this computes
+         its vertical alignment against the paragraph it belongs to. ── */
+      function addMarginNote(entry) {
+        var note = document.createElement('div');
+        note.className = 'dp-margin';
+        note.textContent = '→ ' + entry.noteText;
+        entry.parent.parentNode.insertBefore(note, entry.parent.nextSibling);
+        entry.marginNote = note;
+        positionMarginNote(entry);
+      }
+      function positionMarginNote(entry) {
+        if (!entry.marginNote || !shell) return;
+        var shellRect = shell.getBoundingClientRect();
+        var pRect = entry.parent.getBoundingClientRect();
+        entry.marginNote.style.top = (pRect.top - shellRect.top) + 'px';
+      }
+      function repositionAllMarginNotes() {
+        vandalised.forEach(function (v) { if (v.marginNote) positionMarginNote(v); });
+      }
+      window.addEventListener('resize', repositionAllMarginNotes);
 
       function reveal(entry, delay) {
         setTimeout(function () {
           entry.strike.classList.add('is-struck');
-          setTimeout(function () { entry.note.classList.add('is-in'); }, 170);
+          setTimeout(function () {
+            if (entry.note) entry.note.classList.add('is-in');
+            if (entry.marginNote) entry.marginNote.classList.add('is-in');
+          }, 170);
         }, delay || 0);
       }
 
@@ -592,6 +750,14 @@
           var v = vandaliseInline(el, cfg.phrase, cfg.note);
           if (!v) return;
           v.strike.dataset.armed = '1';
+          if (variant === 'tooltip') {
+            v.strike.addEventListener('click', function (e) {
+              e.stopPropagation();
+              openTipAt(v.strike.getBoundingClientRect(), v.noteText);
+            });
+          } else {
+            addMarginNote(v);
+          }
           vandalised.push(v);
         });
 
@@ -610,19 +776,25 @@
         } else {
           vandalised.forEach(function (v) {
             v.strike.classList.add('is-struck');
-            v.note.classList.add('is-in');
+            if (v.note) v.note.classList.add('is-in');
+            if (v.marginNote) v.marginNote.classList.add('is-in');
           });
         }
       }
 
       function forgive() {
         if (io) { io.disconnect(); io = null; }
+        closeTip(true);
         vandalised.forEach(function (v) {
           v.strike.classList.remove('is-struck');
-          v.note.classList.remove('is-in');
+          if (v.note) v.note.classList.remove('is-in');
+          if (v.marginNote) v.marginNote.classList.remove('is-in');
         });
         setTimeout(function () {
-          vandalised.forEach(function (v) { v.parent.textContent = v.original; });
+          vandalised.forEach(function (v) {
+            v.parent.textContent = v.original;
+            if (v.marginNote) v.marginNote.remove();
+          });
           vandalised = [];
         }, 320);
       }
@@ -634,6 +806,25 @@
         document.body.classList.toggle('drama-on', dramaOn);
         if (dramaOn) attack(); else forgive();
       });
+
+      var switchEl = document.getElementById('dp-variant-switch');
+      function setVariant(next) {
+        if (next === variant) return;
+        variant = next;
+        document.body.classList.toggle('variant-margin', variant === 'margin');
+        [].slice.call(switchEl.querySelectorAll('button')).forEach(function (b) {
+          b.classList.toggle('is-active', b.dataset.variant === variant);
+        });
+        if (dramaOn) {
+          forgive();
+          setTimeout(attack, 340);
+        }
+      }
+      switchEl.addEventListener('click', function (e) {
+        var btn = e.target.closest('button');
+        if (btn) setVariant(btn.dataset.variant);
+      });
+      setVariant('margin');
     })();
   </script>
 
