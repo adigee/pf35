@@ -54,7 +54,7 @@
     .csv .csv-btn { transition: transform 420ms cubic-bezier(0.34, 1.45, 0.64, 1); }
     .drama-on .csv .csv-btn { transform: rotate(-7deg); }
 
-    .dp-strike { position: relative; white-space: nowrap; cursor: pointer; }
+    .dp-strike { position: relative; white-space: nowrap; }
     .dp-strike::after {
       content: "";
       position: absolute;
@@ -86,34 +86,47 @@
     }
     .dp-note.is-in { opacity: 1; transform: translateY(0) rotate(-1.5deg) scale(1); }
 
-    /* Tooltip for inline body redlines — floats near the tapped/clicked
-       phrase, the sentence around it never moves. */
-    .dp-tip {
-      position: fixed;
-      z-index: 60;
-      max-width: 280px;
-      padding: var(--sp-3) var(--sp-4);
-      border-radius: 10px;
-      border: 1px solid rgba(248, 246, 238, 0.12);
-      background: #1E1D1A;
-      color: #F8F6EE;
+    /* Scribbled annotation for inline body redlines — always appears as the
+       reader scrolls to it (no click needed), living OUTSIDE the sentence's
+       text flow so the paragraph itself never breaks. It sits as a quiet
+       block right under the paragraph by default (true on mobile too);
+       on viewports wide enough to have real space beside the 1160px shell,
+       it promotes into the right margin, vertically pinned to the exact
+       line of the struck phrase it annotates. */
+    .cs-shell { position: relative; }
+    .dp-margin {
+      display: block;
+      margin-top: var(--sp-2);
+      padding-left: var(--sp-4);
+      border-left: 2px solid var(--color-primary);
       font-style: italic;
+      color: var(--color-primary);
       font-size: var(--text-sm);
       line-height: 1.5;
-      box-shadow: 0 16px 40px -10px rgba(0,0,0,0.5), 0 3px 10px -3px rgba(0,0,0,0.3);
+      max-width: 52ch;
       opacity: 0;
-      transform: translateY(-4px) scale(0.96);
-      transform-origin: top left;
-      transition: opacity 160ms ease, transform 200ms cubic-bezier(0.16,1,0.3,1);
+      transform: translateY(-4px) rotate(-1deg);
+      transform-origin: left center;
+      transition: opacity 200ms ease, transform 240ms cubic-bezier(0.34,1.45,0.64,1);
     }
-    .dp-tip.is-open { opacity: 1; transform: translateY(0) scale(1); }
+    .dp-margin.is-in { opacity: 1; transform: translateY(0) rotate(-1deg); }
+
+    @media (min-width: 1680px) {
+      .dp-margin {
+        position: absolute;
+        left: calc(100% + var(--sp-8));
+        width: 220px;
+        margin-top: 0;
+      }
+    }
 
     @media (prefers-reduced-motion: reduce) {
       .dp-strike::after { transition: opacity 120ms ease; transform: none; opacity: 0; }
       .dp-strike.is-struck::after { transform: none; opacity: 1; }
       .dp-note { transition: opacity 120ms ease; transform: none; }
       .dp-note.is-in { transform: none; }
-      .dp-tip { transition: opacity 120ms ease; transform: none; }
+      .dp-margin { transition: opacity 120ms ease; transform: none; }
+      .dp-margin.is-in { transform: none; }
     }
   </style>
 </head>
@@ -522,11 +535,15 @@
 
   <script>
     (function () {
-      /* "Add drama" — off by default. The TOC entry for Design iteration 3
-         relabels to its honest headline; three phrases in the body copy
-         strike through and reveal their rewrite in a tooltip on tap/click,
-         so the sentence around them never breaks. Every rewrite stays
-         scoped to a decision or process beat, never to a person. */
+      /* "Add backstory" — off by default. The TOC entry for Design
+         iteration 3 relabels to its honest headline; three phrases in the
+         body copy strike through and reveal a scribbled-in rewrite as the
+         reader scrolls to them — no click needed. The rewrite never enters
+         the sentence itself: it's a block right under the paragraph by
+         default (true on mobile too), promoted into the right margin,
+         pinned to the struck phrase's own line, when the viewport has real
+         space beside the shell. Every rewrite stays scoped to a decision
+         or process beat, never to a person. */
       var TOC_REWRITE = { href: '#design-iteration-3', note: 'the real breakthrough' };
       var INLINE = [
         { key: 'intro-experience', phrase: 'the customer experience of submitting a claim',
@@ -537,6 +554,8 @@
           note: 'a real disagreement about what “good” looks like' }
       ];
 
+      var shell = document.querySelector('.cs-shell');
+      var content = document.querySelector('.cs-content');
       var rail = document.querySelector('.cs-rail');
       if (!rail) return;
 
@@ -550,9 +569,9 @@
       var toggleLabel = toggle.querySelector('.dm-toggle-label');
 
       var dramaOn = false;
-      var vandalised = []; /* {parent, strike, original, note?, noteText?} */
+      var vandalised = []; /* {parent, strike, original, note?, noteText?, marginNote?} */
       var io = null;
-      var openTip = null;
+      var ro = null;
 
       /* ── TOC entry: whole-element strike, note scrawled under the link ── */
       function vandaliseWhole(el, noteText) {
@@ -569,8 +588,8 @@
         return { parent: el, strike: strike, note: note, original: original };
       }
 
-      /* ── Inline body phrase: strike stays inline; the rewrite lives in a
-         tooltip, never inserted mid-sentence. ── */
+      /* ── Inline body phrase: strike stays inline; the rewrite lives
+         outside the paragraph's text flow entirely (see addMarginNote). ── */
       function vandaliseInline(p, phrase, noteText) {
         /* Source HTML wraps these paragraphs across lines, so raw textContent
            can contain a newline where the phrase expects a single space —
@@ -592,41 +611,38 @@
         return { parent: p, strike: strike, original: original, noteText: noteText };
       }
 
-      function openTipAt(rect, text) {
-        closeTip(true);
-        var tip = document.createElement('div');
-        tip.className = 'dp-tip';
-        tip.textContent = '→ ' + text;
-        document.body.appendChild(tip);
-        var x = Math.min(Math.max(12, rect.left - 12), window.innerWidth - 292);
-        var y = rect.bottom + 10;
-        if (y + 100 > window.innerHeight) y = Math.max(12, rect.top - 10 - 100);
-        tip.style.left = x + 'px';
-        tip.style.top = y + 'px';
-        requestAnimationFrame(function () { tip.classList.add('is-open'); });
-        openTip = tip;
+      /* ── Scribbled annotation: a block sibling right after the
+         paragraph. On narrow/mobile it just sits there in flow; the wide
+         media query (see CSS) promotes it into the margin, and this pins
+         its vertical position to the struck phrase's own line — recomputed
+         continuously via ResizeObserver so it stays correct as
+         lazy-loaded images below shift the layout. ── */
+      function addMarginNote(entry) {
+        var note = document.createElement('div');
+        note.className = 'dp-margin';
+        note.textContent = '→ ' + entry.noteText;
+        entry.parent.parentNode.insertBefore(note, entry.parent.nextSibling);
+        entry.marginNote = note;
+        positionMarginNote(entry);
       }
-      function closeTip(immediate) {
-        if (!openTip) return;
-        var tip = openTip;
-        openTip = null;
-        if (immediate) { tip.remove(); return; }
-        tip.classList.remove('is-open');
-        setTimeout(function () { tip.remove(); }, 180);
+      function positionMarginNote(entry) {
+        if (!entry.marginNote || !shell) return;
+        var shellRect = shell.getBoundingClientRect();
+        var strikeRect = entry.strike.getBoundingClientRect();
+        entry.marginNote.style.top = (strikeRect.top - shellRect.top) + 'px';
       }
-      document.addEventListener('click', function (e) {
-        if (e.target.closest && e.target.closest('.dp-tip')) return;
-        closeTip();
-      });
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeTip(); });
-      window.addEventListener('scroll', function () { closeTip(); }, { passive: true });
+      function repositionAllMarginNotes() {
+        vandalised.forEach(function (v) { if (v.marginNote) positionMarginNote(v); });
+      }
+      window.addEventListener('resize', repositionAllMarginNotes);
 
       function reveal(entry, delay) {
         setTimeout(function () {
           entry.strike.classList.add('is-struck');
-          if (entry.note) {
-            setTimeout(function () { entry.note.classList.add('is-in'); }, 170);
-          }
+          setTimeout(function () {
+            if (entry.note) entry.note.classList.add('is-in');
+            if (entry.marginNote) entry.marginNote.classList.add('is-in');
+          }, 170);
         }, delay || 0);
       }
 
@@ -644,10 +660,7 @@
           var v = vandaliseInline(el, cfg.phrase, cfg.note);
           if (!v) return;
           v.strike.dataset.armed = '1';
-          v.strike.addEventListener('click', function (e) {
-            e.stopPropagation();
-            openTipAt(v.strike.getBoundingClientRect(), v.noteText);
-          });
+          addMarginNote(v);
           vandalised.push(v);
         });
 
@@ -667,19 +680,29 @@
           vandalised.forEach(function (v) {
             v.strike.classList.add('is-struck');
             if (v.note) v.note.classList.add('is-in');
+            if (v.marginNote) v.marginNote.classList.add('is-in');
           });
+        }
+
+        if ('ResizeObserver' in window && content) {
+          ro = new ResizeObserver(function () { repositionAllMarginNotes(); });
+          ro.observe(content);
         }
       }
 
       function forgive() {
         if (io) { io.disconnect(); io = null; }
-        closeTip(true);
+        if (ro) { ro.disconnect(); ro = null; }
         vandalised.forEach(function (v) {
           v.strike.classList.remove('is-struck');
           if (v.note) v.note.classList.remove('is-in');
+          if (v.marginNote) v.marginNote.classList.remove('is-in');
         });
         setTimeout(function () {
-          vandalised.forEach(function (v) { v.parent.textContent = v.original; });
+          vandalised.forEach(function (v) {
+            v.parent.textContent = v.original;
+            if (v.marginNote) v.marginNote.remove();
+          });
           vandalised = [];
         }, 320);
       }
