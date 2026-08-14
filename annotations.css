@@ -25,6 +25,8 @@
    doesn't.
 ───────────────────────────────────────── */
 
+.ann-note { display: none; }
+
 @media (min-width: 901px) {
   .cs-content .b-body {
     position: relative;
@@ -54,6 +56,7 @@
 
   /* Note — pops in beside the phrase, in the reserved gutter */
   .ann-note {
+    display: block;
     position: absolute;
     right: -180px;
     width: 150px;

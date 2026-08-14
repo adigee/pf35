@@ -166,7 +166,7 @@
        beat strikes + annotates both — the TOC link and the header —
        rather than being written twice. */
     function strikeAndAnnotate(el, note) {
-      if (!el || el.querySelector('.cs-toc-note')) return;
+      if (!el) return;
       if (!el.querySelector('.ann')) {
         var strike = document.createElement('span');
         strike.className = 'ann';
@@ -174,7 +174,18 @@
         el.textContent = '';
         el.appendChild(strike);
       }
-      var crumb = document.createElement('span');
+      var crumb = el.querySelector('.cs-toc-note');
+      if (crumb) {
+        /* Reader toggled off then back on before the pending removal
+           (unmountCrumbs) fired — cancel it and keep this crumb. */
+        if (crumb.dataset.removeTimer) {
+          clearTimeout(Number(crumb.dataset.removeTimer));
+          delete crumb.dataset.removeTimer;
+        }
+        crumb.classList.add('is-in');
+        return;
+      }
+      crumb = document.createElement('span');
       crumb.className = 'cs-toc-note';
       crumb.textContent = note;
       el.appendChild(crumb);
@@ -193,7 +204,8 @@
     function unmountCrumbs() {
       [].slice.call(document.querySelectorAll('.cs-toc-note')).forEach(function (crumb) {
         crumb.classList.remove('is-in');
-        setTimeout(function () { crumb.remove(); }, 320);
+        var timer = setTimeout(function () { crumb.remove(); }, 320);
+        crumb.dataset.removeTimer = String(timer);
       });
     }
 
