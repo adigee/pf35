@@ -20,6 +20,102 @@
   <link rel="stylesheet" href="case-study.css" />
   <script src="components/head.js"></script>
   <script src="components/theme.js"></script>
+
+  <style>
+    /* ── "Add drama" — an honest-redline toggle, specific to this case
+       study. One TOC entry relabels; three phrases in the body strike
+       through and reveal a rewrite in a tap/click tooltip so the sentence
+       itself never breaks. Scoped to trq-dad only. */
+    .dm-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      margin-top: var(--sp-8);
+      padding: var(--sp-2) var(--sp-3);
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+    .dm-toggle:hover { color: var(--color-text); border-color: var(--color-text-muted); }
+    .dm-toggle[aria-pressed="true"] {
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+      background: var(--color-primary-muted);
+    }
+    .dm-toggle .dm-glyph { font-size: 11px; line-height: 1; }
+
+    .csv .csv-btn { transition: transform 420ms cubic-bezier(0.34, 1.45, 0.64, 1); }
+    .drama-on .csv .csv-btn { transform: rotate(-7deg); }
+
+    .dp-strike { position: relative; white-space: nowrap; cursor: pointer; }
+    .dp-strike::after {
+      content: "";
+      position: absolute;
+      left: -2px;
+      right: -2px;
+      top: 52%;
+      height: 2px;
+      background: var(--color-primary);
+      border-radius: 1px;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 260ms cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .dp-strike.is-struck::after { transform: scaleX(1); }
+
+    /* Note under the struck TOC link */
+    .dp-note {
+      display: block;
+      font-style: italic;
+      color: var(--color-primary);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-wide);
+      margin-top: 2px;
+      margin-left: var(--sp-2);
+      opacity: 0;
+      transform: translateY(3px) rotate(-1.5deg) scale(0.9);
+      transform-origin: left center;
+      transition: opacity 200ms ease, transform 300ms cubic-bezier(0.34, 1.45, 0.64, 1);
+    }
+    .dp-note.is-in { opacity: 1; transform: translateY(0) rotate(-1.5deg) scale(1); }
+
+    /* Tooltip for inline body redlines — floats near the tapped/clicked
+       phrase, the sentence around it never moves. */
+    .dp-tip {
+      position: fixed;
+      z-index: 60;
+      max-width: 280px;
+      padding: var(--sp-3) var(--sp-4);
+      border-radius: 10px;
+      border: 1px solid rgba(248, 246, 238, 0.12);
+      background: #1E1D1A;
+      color: #F8F6EE;
+      font-style: italic;
+      font-size: var(--text-sm);
+      line-height: 1.5;
+      box-shadow: 0 16px 40px -10px rgba(0,0,0,0.5), 0 3px 10px -3px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(-4px) scale(0.96);
+      transform-origin: top left;
+      transition: opacity 160ms ease, transform 200ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .dp-tip.is-open { opacity: 1; transform: translateY(0) scale(1); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dp-strike::after { transition: opacity 120ms ease; transform: none; opacity: 0; }
+      .dp-strike.is-struck::after { transform: none; opacity: 1; }
+      .dp-note { transition: opacity 120ms ease; transform: none; }
+      .dp-note.is-in { transform: none; }
+      .dp-tip { transition: opacity 120ms ease; transform: none; }
+    }
+  </style>
 </head>
 
 <body class="cs-page" data-project="trq-dad">
@@ -80,7 +176,7 @@
             Insurance providers are aware that the two primary moments when a customer
             evaluates them are when they purchase the insurance and when they submit a claim.
           </p>
-          <p class="b-body">
+          <p class="b-body" data-dp="intro-experience">
             Tranquilidade is an old-school insurance company in Portugal and was our client
             for this project. Our stakeholders in Tranquilidade were keen to improve the
             customer experience of submitting a claim, and they wanted to do it through a
@@ -234,7 +330,7 @@
             that the flow was quite long and that they got a bit lost. With close to 50
             questions, it was a long conversation that lasted between 20 and 30 minutes.
           </p>
-          <p class="b-body">
+          <p class="b-body" data-dp="di2-advantage">
             Collaborating with the business analyst, we discovered that there were many
             questions that we could combine or reduce, since we had the advantage of
             conditional logic in our flow — something a paper form could not emulate.
@@ -306,7 +402,7 @@
             Testing the above iteration led to completion in less than 15 minutes. Development
             kicked off with the reduced question set.
           </p>
-          <p class="b-body">
+          <p class="b-body" data-dp="di3-tension">
             However, due to a healthy tension between the business analyst and me on the
             approach, we returned to the data to identify whether there were any other
             optimisations we could introduce to further reduce the question set.
@@ -423,6 +519,181 @@
 
   <script src="components/projects.js"></script>
   <script src="components/case-study.js"></script>
+
+  <script>
+    (function () {
+      /* "Add drama" — off by default. The TOC entry for Design iteration 3
+         relabels to its honest headline; three phrases in the body copy
+         strike through and reveal their rewrite in a tooltip on tap/click,
+         so the sentence around them never breaks. Every rewrite stays
+         scoped to a decision or process beat, never to a person. */
+      var TOC_REWRITE = { href: '#design-iteration-3', note: 'the real breakthrough' };
+      var INLINE = [
+        { key: 'intro-experience', phrase: 'the customer experience of submitting a claim',
+          note: 'it was actually a lot more open-ended in the beginning' },
+        { key: 'di2-advantage', phrase: 'we had the advantage of',
+          note: 'this actually saved the product experience' },
+        { key: 'di3-tension', phrase: 'healthy tension',
+          note: 'a real disagreement about what “good” looks like' }
+      ];
+
+      var rail = document.querySelector('.cs-rail');
+      if (!rail) return;
+
+      var toggle = document.createElement('button');
+      toggle.className = 'dm-toggle';
+      toggle.id = 'dm-toggle';
+      toggle.type = 'button';
+      toggle.setAttribute('aria-pressed', 'false');
+      toggle.innerHTML = '<span class="dm-glyph" aria-hidden="true">✦</span><span class="dm-toggle-label">Add drama</span>';
+      rail.appendChild(toggle);
+      var toggleLabel = toggle.querySelector('.dm-toggle-label');
+
+      var dramaOn = false;
+      var vandalised = []; /* {parent, strike, original, note?, noteText?} */
+      var io = null;
+      var openTip = null;
+
+      /* ── TOC entry: whole-element strike, note scrawled under the link ── */
+      function vandaliseWhole(el, noteText) {
+        var original = el.textContent;
+        var strike = document.createElement('span');
+        strike.className = 'dp-strike';
+        strike.textContent = original;
+        el.textContent = '';
+        el.appendChild(strike);
+        var note = document.createElement('span');
+        note.className = 'dp-note';
+        note.textContent = '→ ' + noteText;
+        el.appendChild(note);
+        return { parent: el, strike: strike, note: note, original: original };
+      }
+
+      /* ── Inline body phrase: strike stays inline; the rewrite lives in a
+         tooltip, never inserted mid-sentence. ── */
+      function vandaliseInline(p, phrase, noteText) {
+        /* Source HTML wraps these paragraphs across lines, so raw textContent
+           can contain a newline where the phrase expects a single space —
+           normalize first (harmless: browsers already collapse this
+           whitespace visually). */
+        var text = p.textContent.replace(/\s+/g, ' ').trim();
+        var idx = text.indexOf(phrase);
+        if (idx === -1) return null;
+        var before = text.slice(0, idx);
+        var after = text.slice(idx + phrase.length);
+        var original = text;
+        p.textContent = '';
+        if (before) p.appendChild(document.createTextNode(before));
+        var strike = document.createElement('span');
+        strike.className = 'dp-strike';
+        strike.textContent = phrase;
+        p.appendChild(strike);
+        if (after) p.appendChild(document.createTextNode(after));
+        return { parent: p, strike: strike, original: original, noteText: noteText };
+      }
+
+      function openTipAt(rect, text) {
+        closeTip(true);
+        var tip = document.createElement('div');
+        tip.className = 'dp-tip';
+        tip.textContent = '→ ' + text;
+        document.body.appendChild(tip);
+        var x = Math.min(Math.max(12, rect.left - 12), window.innerWidth - 292);
+        var y = rect.bottom + 10;
+        if (y + 100 > window.innerHeight) y = Math.max(12, rect.top - 10 - 100);
+        tip.style.left = x + 'px';
+        tip.style.top = y + 'px';
+        requestAnimationFrame(function () { tip.classList.add('is-open'); });
+        openTip = tip;
+      }
+      function closeTip(immediate) {
+        if (!openTip) return;
+        var tip = openTip;
+        openTip = null;
+        if (immediate) { tip.remove(); return; }
+        tip.classList.remove('is-open');
+        setTimeout(function () { tip.remove(); }, 180);
+      }
+      document.addEventListener('click', function (e) {
+        if (e.target.closest && e.target.closest('.dp-tip')) return;
+        closeTip();
+      });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeTip(); });
+      window.addEventListener('scroll', function () { closeTip(); }, { passive: true });
+
+      function reveal(entry, delay) {
+        setTimeout(function () {
+          entry.strike.classList.add('is-struck');
+          if (entry.note) {
+            setTimeout(function () { entry.note.classList.add('is-in'); }, 170);
+          }
+        }, delay || 0);
+      }
+
+      function attack() {
+        var tocLink = document.querySelector('.cs-toc-link[href="' + TOC_REWRITE.href + '"]');
+        if (tocLink) {
+          var t = vandaliseWhole(tocLink, TOC_REWRITE.note);
+          vandalised.push(t);
+          reveal(t, 150);
+        }
+
+        INLINE.forEach(function (cfg) {
+          var el = document.querySelector('[data-dp="' + cfg.key + '"]');
+          if (!el) return;
+          var v = vandaliseInline(el, cfg.phrase, cfg.note);
+          if (!v) return;
+          v.strike.dataset.armed = '1';
+          v.strike.addEventListener('click', function (e) {
+            e.stopPropagation();
+            openTipAt(v.strike.getBoundingClientRect(), v.noteText);
+          });
+          vandalised.push(v);
+        });
+
+        if ('IntersectionObserver' in window) {
+          io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              io.unobserve(entry.target);
+              var match = vandalised.filter(function (v) { return v.strike === entry.target; })[0];
+              if (match) reveal(match, 200);
+            });
+          }, { rootMargin: '0px 0px -18% 0px' });
+          vandalised.forEach(function (v) {
+            if (v.strike.dataset.armed) io.observe(v.strike);
+          });
+        } else {
+          vandalised.forEach(function (v) {
+            v.strike.classList.add('is-struck');
+            if (v.note) v.note.classList.add('is-in');
+          });
+        }
+      }
+
+      function forgive() {
+        if (io) { io.disconnect(); io = null; }
+        closeTip(true);
+        vandalised.forEach(function (v) {
+          v.strike.classList.remove('is-struck');
+          if (v.note) v.note.classList.remove('is-in');
+        });
+        setTimeout(function () {
+          vandalised.forEach(function (v) { v.parent.textContent = v.original; });
+          vandalised = [];
+        }, 320);
+      }
+
+      toggle.addEventListener('click', function () {
+        dramaOn = !dramaOn;
+        toggle.setAttribute('aria-pressed', dramaOn ? 'true' : 'false');
+        toggleLabel.textContent = dramaOn ? 'Remove drama' : 'Add drama';
+        document.body.classList.toggle('drama-on', dramaOn);
+        if (dramaOn) attack(); else forgive();
+      });
+    })();
+  </script>
+
   <script src="components/image-modal.js"></script>
   <script src="main.js" defer></script>
 
