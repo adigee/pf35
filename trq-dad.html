@@ -545,7 +545,7 @@
       toggle.id = 'dm-toggle';
       toggle.type = 'button';
       toggle.setAttribute('aria-pressed', 'false');
-      toggle.innerHTML = '<span class="dm-glyph" aria-hidden="true">✦</span><span class="dm-toggle-label">Add drama</span>';
+      toggle.innerHTML = '<span class="dm-glyph" aria-hidden="true">✦</span><span class="dm-toggle-label">Add backstory</span>';
       rail.appendChild(toggle);
       var toggleLabel = toggle.querySelector('.dm-toggle-label');
 
@@ -687,7 +687,7 @@
       toggle.addEventListener('click', function () {
         dramaOn = !dramaOn;
         toggle.setAttribute('aria-pressed', dramaOn ? 'true' : 'false');
-        toggleLabel.textContent = dramaOn ? 'Remove drama' : 'Add drama';
+        toggleLabel.textContent = dramaOn ? 'Remove backstory' : 'Add backstory';
         document.body.classList.toggle('drama-on', dramaOn);
         if (dramaOn) attack(); else forgive();
       });
