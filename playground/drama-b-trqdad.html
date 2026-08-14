@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prototype — Drama B redlines on TRQ DAD</title>
+
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../case-study.css" />
+  <script src="../components/head.js"></script>
+  <script src="../components/theme.js"></script>
+
+  <style>
+    /* ── PROTOTYPE: Add Drama — Direction B "The red pen", applied for real ──
+       Four specific redlines, chosen and worded by hand rather than invented
+       wholesale: one TOC-entry rewrite (Design iteration 3 → "the real
+       breakthrough") and three inline phrase-level strikes inside the actual
+       body copy. Toggling "Add drama" draws each strike in turn — the TOC
+       one immediately, the inline ones as the reader scrolls to them.
+    */
+
+    .dm-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      margin-top: var(--sp-8);
+      padding: var(--sp-2) var(--sp-3);
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+    .dm-toggle:hover { color: var(--color-text); border-color: var(--color-text-muted); }
+    .dm-toggle[aria-pressed="true"] {
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+      background: var(--color-primary-muted);
+    }
+    .dm-toggle .dm-glyph { font-size: 11px; line-height: 1; }
+
+    .csv .csv-btn { transition: transform 420ms cubic-bezier(0.34, 1.45, 0.64, 1); }
+    .drama-on .csv .csv-btn { transform: rotate(-7deg); }
+
+    /* ── Strike wrapper — the line that draws itself ── */
+    .dp-strike { position: relative; white-space: nowrap; }
+    .dp-strike::after {
+      content: "";
+      position: absolute;
+      left: -2px;
+      right: -2px;
+      top: 52%;
+      height: 2px;
+      background: var(--color-primary);
+      border-radius: 1px;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 260ms cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .dp-strike.is-struck::after { transform: scaleX(1); }
+
+    /* ── The rewrite note — the honest version, scrawled in ── */
+    .dp-note {
+      display: inline-block;
+      font-style: italic;
+      color: var(--color-primary);
+      opacity: 0;
+      transform: translateY(3px) rotate(-1.5deg) scale(0.9);
+      transform-origin: left center;
+      transition: opacity 200ms ease, transform 300ms cubic-bezier(0.34, 1.45, 0.64, 1);
+    }
+    .dp-note.is-in { opacity: 1; transform: translateY(0) rotate(-1.5deg) scale(1); }
+
+    /* Note under the struck TOC link */
+    .cs-toc .dp-note {
+      display: block;
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-wide);
+      margin-top: 2px;
+      margin-left: var(--sp-2);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dp-strike::after { transition: opacity 120ms ease; transform: none; opacity: 0; }
+      .dp-strike.is-struck::after { transform: none; opacity: 1; }
+      .dp-note { transition: opacity 120ms ease; transform: none; }
+      .dp-note.is-in { transform: none; }
+    }
+
+    .proto-note {
+      position: fixed;
+      bottom: var(--sp-6);
+      right: var(--sp-6);
+      padding: var(--sp-3) var(--sp-4);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-wide);
+      color: var(--color-text-muted);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      z-index: 100;
+      max-width: 320px;
+      line-height: 1.4;
+    }
+    .proto-note strong { color: var(--color-primary); font-weight: 600; }
+  </style>
+</head>
+
+<body class="cs-page" data-project="trq-dad">
+
+  <div class="cs-progress" id="cs-progress" aria-hidden="true"></div>
+
+  <main class="cs-main" id="cs-main">
+    <div class="cs-shell">
+
+      <!-- Left rail (back link + TOC + video avatar) is injected by
+           components/case-study.js, same as the live page. The "Add drama"
+           toggle is appended into it by the script at the bottom. -->
+
+      <div class="cs-content">
+
+        <p class="b-label" data-cs-eyebrow></p>
+        <h1 class="b-title--article">How we created a friendly chatbot to submit a car insurance claim</h1>
+
+        <div class="cs-hero-img-wrap">
+          <picture>
+            <source
+              type="image/webp"
+              srcset="../project-content/3%20DAD%20Images%20for%20framer/1%20Hero-800.webp 800w, ../project-content/3%20DAD%20Images%20for%20framer/1%20Hero-1600.webp 1600w"
+              sizes="(max-width: 768px) 100vw, 1200px"
+            />
+            <img
+              class="cs-hero-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/1%20Hero.png"
+              alt="TRQ DAD — Tranquilidade digital accident declaration app"
+              onerror="this.closest('.cs-hero-img-wrap').classList.add('cs-hero-img-wrap--missing')"
+            />
+          </picture>
+        </div>
+
+        <dl class="cs-meta">
+          <div>
+            <dt>Type</dt>
+            <dd>Build new product</dd>
+          </div>
+          <div>
+            <dt>Highlights</dt>
+            <dd>Digitize a paper process</dd>
+          </div>
+          <div>
+            <dt>Objective</dt>
+            <dd>Reduce ops cost per claim</dd>
+          </div>
+        </dl>
+
+        <section class="cs-section">
+          <p class="b-section-header">Introduction</p>
+          <p class="b-body">
+            Insurance providers are aware that the two primary moments when a customer
+            evaluates them are when they purchase the insurance and when they submit a claim.
+          </p>
+          <p class="b-body" data-dp="intro-experience">
+            Tranquilidade is an old-school insurance company in Portugal and was our client
+            for this project. Our stakeholders in Tranquilidade were keen to improve the
+            customer experience of submitting a claim, and they wanted to do it through a
+            mobile app (i.e. digitally) to potentially reduce the operational costs involved.
+          </p>
+        </section>
+
+        <section class="cs-section">
+          <p class="b-section-header">My role</p>
+          <p class="b-body">
+            I was embedded in a team of three from Cocoon on this digital transformation
+            project. My role was to conceptualise and design the resulting mobile experience.
+            I collaborated with the project lead, who was a service design expert, and a
+            business analyst who helped with analysis of the problem space.
+          </p>
+          <p class="b-body">
+            I was involved with onsite UX research, led the design of the solution, and
+            moderated usability testing sessions.
+          </p>
+        </section>
+
+        <section class="cs-section">
+          <p class="b-section-header">Our objective</p>
+          <p class="b-body">
+            Going through a car accident is an emotionally stressful event with significant
+            life and financial impact. To help customers through this trying time, we wanted
+            to dramatically simplify the process to submit a claim to their insurance provider.
+          </p>
+
+          <div class="cs-callout">
+            <p class="b-body-small-impact">Expectation that the insurance provider ‘has got my back’</p>
+          </div>
+
+          <p class="b-body">
+            By digitally transforming the claims process end to end, we expected to reduce the
+            time taken to process the claim and provide feedback to the customer on its progress.
+          </p>
+
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/2%20Prob%20def.png"
+              alt="Problem definition for the claims experience"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">Defining the problem</figcaption>
+          </figure>
+        </section>
+
+        <section class="cs-section">
+          <p class="b-section-header">Mapping the problem space</p>
+          <p class="b-body">
+            Field research and competitor analysis helped us visualize the whole experience
+            of a car accident from the perspective of the customer.
+          </p>
+
+          <p class="b-label b-label-strong">Field research</p>
+          <ul class="cs-list">
+            <li>4 insurance agents</li>
+            <li>4 customers with recent car accidents</li>
+          </ul>
+
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/3%20journey%20map.png"
+              alt="Customer journey map of the whole experience of a car accident"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">Journey-mapping the whole experience of a car accident</figcaption>
+          </figure>
+
+          <p class="b-body">
+            We also discovered patterns in customer problems that led us to identify which
+            areas of the process we should focus on.
+          </p>
+
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/4%20discovery.png"
+              alt="Patterns discovered in customer problems"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">Patterns discovered in customer problems</figcaption>
+          </figure>
+        </section>
+
+        <section class="cs-section">
+          <p class="b-section-header">Design iteration 1</p>
+          <p class="b-body">
+            With the objective to guide the customer through the process to file a claim, we
+            settled on a chatbot form factor pretty early in the exploration. By deconstructing
+            the form, we identified which aspects of the form could be automated.
+          </p>
+
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/5%20What%20is%20DAAA.png"
+              alt="The paper accident declaration (DAAA) that the digital experience set out to replace"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">The paper accident declaration we set out to replace</figcaption>
+          </figure>
+
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/6%20Lo%20fi%20POC.png"
+              alt="Low-fidelity proof of concept for the chatbot claims flow"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">Low-fidelity proof of concept</figcaption>
+          </figure>
+
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/6.5%20Lo-fi%20screens.png"
+              alt="Low-fidelity screens of the chatbot flow"
+              loading="lazy"
+            />
+          </figure>
+        </section>
+
+        <section class="cs-section">
+          <p class="b-section-header">Design iteration 2</p>
+          <p class="b-body">
+            On testing the above prototypes using think-alouds with 4 participants, we were
+            able to validate the core hypothesis and collect feedback on the overall flow.
+          </p>
+
+          <div class="cs-callout">
+            <p class="b-body-small-impact">“It’s kinda long”</p>
+          </div>
+
+          <p class="b-body">
+            While the participants found the experience better than a form, they mentioned
+            that the flow was quite long and that they got a bit lost. With close to 50
+            questions, it was a long conversation that lasted between 20 and 30 minutes.
+          </p>
+          <p class="b-body" data-dp="di2-advantage">
+            Collaborating with the business analyst, we discovered that there were many
+            questions that we could combine or reduce, since we had the advantage of
+            conditional logic in our flow — something a paper form could not emulate.
+          </p>
+
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/7%20Hi-fidelity.png"
+              alt="High-fidelity chatbot claims experience"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">The high-fidelity claims experience</figcaption>
+          </figure>
+
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/7.1%20Types%20of%20chat%20bubbles.png"
+              alt="The different types of chat bubbles in the conversation"
+              loading="lazy"
+            />
+          </figure>
+
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/7.2%20Accident%20details.png"
+              alt="Capturing accident details in the chatbot"
+              loading="lazy"
+            />
+          </figure>
+
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/7.3%20Automatic%20diagram.png"
+              alt="Automatically generated accident diagram"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">An accident diagram generated automatically from the answers</figcaption>
+          </figure>
+
+          <p class="b-body">
+            I added a navigation drawer for users to have a sense of progress and to
+            facilitate moving between sections, instead of only scrolling.
+          </p>
+
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/7.4%20Navigation%20drawer.png"
+              alt="Navigation drawer giving users a sense of progress across sections"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">A navigation drawer for a sense of progress</figcaption>
+          </figure>
+        </section>
+
+        <section class="cs-section">
+          <p class="b-section-header">Design iteration 3</p>
+          <p class="b-body">
+            Testing the above iteration led to completion in less than 15 minutes. Development
+            kicked off with the reduced question set.
+          </p>
+          <p class="b-body" data-dp="di3-tension">
+            However, due to a healthy tension between the business analyst and me on the
+            approach, we returned to the data to identify whether there were any other
+            optimisations we could introduce to further reduce the question set.
+          </p>
+          <p class="b-body">
+            This insistence on iterative improvement led us to a game-changing discovery. A
+            staggering 27% of all accident claims in the previous year belonged to a single
+            typology of accident. Cumulatively, 57% of all accident claims in the previous
+            year belonged to just four accident types.
+          </p>
+          <p class="b-body">
+            This made sense. Most accidents are simple fender benders or a case of road
+            priority not being respected.
+          </p>
+
+          <div class="cs-outcomes">
+            <div>
+              <p class="cs-stat-num">27%</p>
+              <p class="cs-stat-desc b-body-caption">of claims were a single accident typology</p>
+            </div>
+            <div>
+              <p class="cs-stat-num">57%</p>
+              <p class="cs-stat-desc b-body-caption">came from just four accident types</p>
+            </div>
+            <div>
+              <p class="cs-stat-num">90%+</p>
+              <p class="cs-stat-desc b-body-caption">inferred with up to two questions</p>
+            </div>
+          </div>
+
+          <p class="b-body">
+            Using a similar approach, we found more patterns in the data when we grouped by
+            accident typology. We then sorted these groups by frequency of occurrence to
+            arrive at three distinct ‘fast-lanes’.
+          </p>
+
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/8%20Fast%20lane%201.png"
+              alt="Fast-lane flow, part 1"
+              loading="lazy"
+            />
+          </figure>
+
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/9%20Fast%20lane%202.png"
+              alt="Fast-lane flow, part 2"
+              loading="lazy"
+            />
+          </figure>
+
+          <figure class="cs-figure">
+            <img
+              class="cs-img"
+              src="../project-content/3%20DAD%20Images%20for%20framer/10%20Reduction%20in%20questions%20Approach.png"
+              alt="The approach to reducing the question set using accident typology"
+              loading="lazy"
+            />
+            <figcaption class="cs-figcaption">Reducing the question set by grouping on accident typology</figcaption>
+          </figure>
+
+          <div class="cs-callout">
+            <p class="b-body-small-impact">Over 90% of accidents were inferred with up to two questions!</p>
+          </div>
+
+          <p class="b-body">
+            By inferring the accident typology based on how the vehicles had impacted each
+            other, and then following up with a single question, we were able to detect over
+            90% of the accident types — allowing us to skip over all the remaining questions.
+          </p>
+          <p class="b-body">
+            By reframing the chatbot conversation to be based on the accident typology,
+            connecting it to the claims process was immensely simplified. Every accident
+            typology has a direct, predefined correlation to driver responsibility — in other
+            words, ‘whose fault it was’.
+          </p>
+          <p class="b-body">
+            By connecting this to the accident responsibility framework (a shared legal
+            agreement between all insurance providers), our chatbot could essentially determine
+            what happened and who ‘caused the accident’. This practically automated the entire
+            claims process for our client, Tranquilidade!
+          </p>
+        </section>
+
+        <section class="cs-section">
+          <p class="b-section-header">Reflections</p>
+          <p class="b-body">
+            Designing the DAD for Tranquilidade was a milestone project in my career, with
+            insightful lessons for my design practice. The months of research allowed us to
+            understand the whole problem space deeply, and workshops with the customer journey
+            maps enabled us to build consensus with our stakeholders. Towards the end, we all
+            truly felt like we had co-created this solution!
+          </p>
+          <p class="b-body">
+            The other main takeaway for me was how we used data to inform our design decisions.
+            Today this is trivial, but back in 2018 this project gave me a glimpse of how
+            studying and interpreting data can truly supercharge a design process 🤓.
+          </p>
+        </section>
+
+        <div data-component="cs-footer"></div>
+
+      </div>
+    </div>
+  </main>
+
+  <div class="proto-note">
+    <strong>Direction B — the real redlines</strong><br/>
+    Click “✦ Add drama” in the rail. One TOC entry gets relabeled, and three phrases in the
+    real copy get struck through and rewritten as you scroll to them.
+  </div>
+
+  <script src="../components/projects.js"></script>
+  <script src="../components/case-study.js"></script>
+
+  <script>
+    (function () {
+      /* The four redlines, worded to match. TOC gets its own short rewrite;
+         inline ones strike a specific phrase inside a specific paragraph
+         (marked with data-dp) and leave the rest of the sentence intact. */
+      var TOC_REWRITE = { href: '#design-iteration-3', note: 'the real breakthrough' };
+      var INLINE = [
+        { key: 'intro-experience', phrase: 'the customer experience of submitting a claim',
+          note: 'it was actually a lot more open-ended in the beginning' },
+        { key: 'di2-advantage', phrase: 'we had the advantage of',
+          note: 'this actually saved the product experience' },
+        { key: 'di3-tension', phrase: 'healthy tension',
+          note: 'a real disagreement about what “good” looks like' }
+      ];
+
+      var rail = document.querySelector('.cs-rail');
+
+      /* case-study.js hardcodes the video-avatar paths relative to a
+         root-level page; this prototype lives one level down in
+         playground/, so re-point them. */
+      var csvVideo = rail.querySelector('.csv-video');
+      if (csvVideo) {
+        csvVideo.setAttribute('poster', '../' + csvVideo.getAttribute('poster'));
+        csvVideo.setAttribute('src', '../' + csvVideo.getAttribute('src'));
+      }
+
+      var toggle = document.createElement('button');
+      toggle.className = 'dm-toggle';
+      toggle.id = 'dm-toggle';
+      toggle.type = 'button';
+      toggle.setAttribute('aria-pressed', 'false');
+      toggle.innerHTML = '<span class="dm-glyph" aria-hidden="true">✦</span><span class="dm-toggle-label">Add drama</span>';
+      rail.appendChild(toggle);
+      var toggleLabel = toggle.querySelector('.dm-toggle-label');
+
+      var dramaOn = false;
+      var vandalised = []; /* {parent, strike, note, original} */
+      var io = null;
+
+      function vandaliseWhole(el, noteText) {
+        var original = el.textContent;
+        var strike = document.createElement('span');
+        strike.className = 'dp-strike';
+        strike.textContent = original;
+        el.textContent = '';
+        el.appendChild(strike);
+        var note = document.createElement('span');
+        note.className = 'dp-note';
+        note.textContent = '→ ' + noteText;
+        el.appendChild(note);
+        return { parent: el, strike: strike, note: note, original: original };
+      }
+
+      function vandaliseInline(el, phrase, noteText) {
+        /* Source HTML wraps these paragraphs across lines, so raw textContent
+           can contain a newline where the phrase expects a single space —
+           normalize first (harmless: browsers already collapse this
+           whitespace visually). */
+        var text = el.textContent.replace(/\s+/g, ' ').trim();
+        var idx = text.indexOf(phrase);
+        if (idx === -1) return null;
+        var before = text.slice(0, idx);
+        var after = text.slice(idx + phrase.length);
+        var original = text;
+        el.textContent = '';
+        if (before) el.appendChild(document.createTextNode(before));
+        var strike = document.createElement('span');
+        strike.className = 'dp-strike';
+        strike.textContent = phrase;
+        el.appendChild(strike);
+        var note = document.createElement('span');
+        note.className = 'dp-note';
+        note.textContent = ' → ' + noteText;
+        el.appendChild(note);
+        if (after) el.appendChild(document.createTextNode(after));
+        return { parent: el, strike: strike, note: note, original: original };
+      }
+
+      function reveal(entry, delay) {
+        setTimeout(function () {
+          entry.strike.classList.add('is-struck');
+          setTimeout(function () { entry.note.classList.add('is-in'); }, 170);
+        }, delay || 0);
+      }
+
+      function attack() {
+        var tocLink = document.querySelector('.cs-toc-link[href="' + TOC_REWRITE.href + '"]');
+        if (tocLink) {
+          var t = vandaliseWhole(tocLink, TOC_REWRITE.note);
+          vandalised.push(t);
+          reveal(t, 150);
+        }
+
+        INLINE.forEach(function (cfg) {
+          var el = document.querySelector('[data-dp="' + cfg.key + '"]');
+          if (!el) return;
+          var v = vandaliseInline(el, cfg.phrase, cfg.note);
+          if (!v) return;
+          v.strike.dataset.armed = '1';
+          vandalised.push(v);
+        });
+
+        if ('IntersectionObserver' in window) {
+          io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              io.unobserve(entry.target);
+              var match = vandalised.filter(function (v) { return v.strike === entry.target; })[0];
+              if (match) reveal(match, 200);
+            });
+          }, { rootMargin: '0px 0px -18% 0px' });
+          vandalised.forEach(function (v) {
+            if (v.strike.dataset.armed) io.observe(v.strike);
+          });
+        } else {
+          vandalised.forEach(function (v) {
+            v.strike.classList.add('is-struck');
+            v.note.classList.add('is-in');
+          });
+        }
+      }
+
+      function forgive() {
+        if (io) { io.disconnect(); io = null; }
+        vandalised.forEach(function (v) {
+          v.strike.classList.remove('is-struck');
+          v.note.classList.remove('is-in');
+        });
+        setTimeout(function () {
+          vandalised.forEach(function (v) { v.parent.textContent = v.original; });
+          vandalised = [];
+        }, 320);
+      }
+
+      toggle.addEventListener('click', function () {
+        dramaOn = !dramaOn;
+        toggle.setAttribute('aria-pressed', dramaOn ? 'true' : 'false');
+        toggleLabel.textContent = dramaOn ? 'Remove drama' : 'Add drama';
+        document.body.classList.toggle('drama-on', dramaOn);
+        if (dramaOn) attack(); else forgive();
+      });
+    })();
+  </script>
+
+  <script src="../components/image-modal.js"></script>
+  <script src="../main.js" defer></script>
+
+</body>
+</html>
