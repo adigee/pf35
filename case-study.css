@@ -128,7 +128,6 @@
   margin-top: var(--sp-10);
   border-radius: 8px;
   overflow: hidden;
-  background: #f4f4f6;
   --_breakout: max(0px, calc((70vw - (720px - 4rem)) / 2));
   margin-left: calc(-1 * var(--_breakout));
   margin-right: calc(-1 * var(--_breakout));
