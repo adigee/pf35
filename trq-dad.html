@@ -18,6 +18,10 @@
 
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="case-study.css" />
+  <link rel="stylesheet" href="annotations.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet" />
   <script src="components/head.js"></script>
   <script src="components/theme.js"></script>
 </head>
@@ -83,7 +87,7 @@
           <p class="b-body">
             Tranquilidade is an old-school insurance company in Portugal and was our client
             for this project. Our stakeholders in Tranquilidade were keen to improve the
-            customer experience of submitting a claim, and they wanted to do it through a
+            customer <span class="ann">experience of submitting a claim</span><span class="ann-note">It was actually a lot more open ended in the beginning</span>, and they wanted to do it through a
             mobile app (i.e. digitally) to potentially reduce the operational costs involved.
           </p>
         </section>
@@ -236,7 +240,7 @@
           </p>
           <p class="b-body">
             Collaborating with the business analyst, we discovered that there were many
-            questions that we could combine or reduce, since we had the advantage of
+            questions that we could combine or reduce, since we <span class="ann">had the advantage of</span><span class="ann-note">This actually saved the product experience</span>
             conditional logic in our flow — something a paper form could not emulate.
           </p>
 
@@ -300,14 +304,14 @@
         </section>
 
         <!-- ── DESIGN ITERATION 3 ── -->
-        <section class="cs-section">
+        <section class="cs-section" data-rail-note="The real breakthrough">
           <p class="b-section-header">Design iteration 3</p>
           <p class="b-body">
             Testing the above iteration led to completion in less than 15 minutes. Development
             kicked off with the reduced question set.
           </p>
           <p class="b-body">
-            However, due to a healthy tension between the business analyst and me on the
+            However, due to a <span class="ann">healthy tension</span><span class="ann-note">A real disagreement on what good looks like</span> between the business analyst and me on the
             approach, we returned to the data to identify whether there were any other
             optimisations we could introduce to further reduce the question set.
           </p>

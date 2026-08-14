@@ -336,6 +336,9 @@ Panels fade in/out via `opacity` only (`transition: opacity var(--panel-transiti
 | Reading marker | `opacity` | 300ms | ease | Appears/disappears |
 | Testimonial quote reveal | `grid-template-rows`, `opacity` | 180ms | ease | `.rs-quote` — avatar click toggle, resume section |
 | Testimonial avatar hover | `background`, `color`, `transform` | 150ms | ease | `.rs-avatar` |
+| Backstory toggle hover/press | `color`, `border-color`, `background` | 160ms | ease | `.cs-backstory-toggle` |
+| Annotation strike draw | `transform` (`scaleX` 0→1) | 260ms | `cubic-bezier(0.65,0,0.35,1)` | `.ann::after` — reduced-motion falls back to an opacity fade |
+| Annotation note / rail breadcrumb reveal | `opacity`, `transform` (pop-in) | 200–300ms | `cubic-bezier(0.34,1.45,0.64,1)` (spring) | `.ann-note`, `.cs-toc-note` |
 
 ### Rules
 
@@ -428,6 +431,29 @@ A circular, icon-only control — currently only the floating light/dark toggle 
 | Icon | Material Symbols Rounded, 22px, swaps `dark_mode` / `light_mode` |
 | Transition | `transform` 240ms `cubic-bezier(0.22,1,0.36,1)` |
 
+#### Icon Toggle Chip (`.cs-backstory-toggle`)
+
+A small, playful toggle for a single low-emphasis aside control — currently only the case-study rail's "Add Backstory" button. Distinct from `.btn`: rectangular (not pill), quieter at rest, and carries an on/off state via `aria-pressed` rather than being a one-shot action.
+
+**Structure:**
+```html
+<button type="button" class="cs-backstory-toggle" aria-pressed="false">
+  <span class="cs-backstory-glyph" aria-hidden="true">✦</span>
+  <span class="cs-backstory-label">Add Backstory</span>
+</button>
+```
+
+| Property | Value |
+|---|---|
+| Shape | `border-radius: 6px`, `1px solid --color-border` |
+| Rest | `background: none`, `color: --color-text-muted` |
+| Hover | `color: --color-text`, `border-color: --color-text-muted` |
+| Pressed (`aria-pressed="true"`) | `color: --color-primary`, `border-color: --color-primary`, `background: --color-primary-muted` |
+| Font | `--font-mono`, `--text-2xs` (9px), uppercase, `--tracking-wider` |
+| Transition | `color`, `border-color`, `background` — 160ms ease |
+
+Use this chip family (not `.btn`) for small toggleable asides that shouldn't compete with primary content — it reads as a quiet control, not a call to action.
+
 ### Panel CTA (Link 1)
 
 `.panel-cta` — used in right-column fixed panels, below the project hero image.
@@ -486,6 +512,20 @@ Within `.cs-section`, the fallback is `margin-top: 16px` (`.cs-section > * + *`)
 **List (`cs-list`):** bullet lists are inline content, not structural blocks. They use `padding-left: var(--sp-6)` (24px) for the indent. The 24px trailing margin aligns with the list's own indent token and sits one tier above the paragraph rhythm, one tier below the section break.
 
 ---
+
+### Case Study Annotations ("Backstory")
+
+Shared, page-agnostic system (`annotations.css`) for marginalia on any case study — the honest aside behind a phrase in the body copy. Markup: `<span class="ann">phrase</span><span class="ann-note">the note</span>` immediately adjacent in a `.b-body` paragraph. No JS positions the note — it uses the CSS default static position for an absolutely-positioned inline box, which places it beside the phrase automatically.
+
+Everything is gated by `data-backstory="on|off"` on `<html>`, set by the rail's `.cs-backstory-toggle` ([Icon Toggle Chip](#icon-toggle-chip-cs-backstory-toggle)) via `components/case-study.js`. Off by default — nothing is struck or visible until the reader opts in.
+
+- **Strike** (`.ann::after`): draws itself left-to-right (`scaleX(0)→scaleX(1)`) in `--color-primary` when backstory is on.
+- **Note** (`.ann-note`): sits in a reserved 180px right gutter on `.b-body`, pops in with a spring easing, `--color-primary` text.
+- **Rail annotation** (`data-rail-note="…"` on a `section.cs-section`): its own, independent annotation — not derived from that section's `.ann-note`, so the same beat is never written twice. A rail item's label is duplicated as its section's body header, so mounting strikes + writes the note under **both**: the TOC link (`.cs-toc-note` stacked underneath) and the header (`.cs-toc-note` inline right after it, smaller, `.b-section-header .cs-toc-note`). Mounted (not just revealed) when backstory turns on, and unmounted (after its fade-out) when it turns off — so nothing reserves empty space while off. A section may carry a body annotation, a rail annotation, both, or neither.
+
+Desktop only, `≥901px` — intentionally matches the rail's own fold-away breakpoint (`.cs-rail`/`.cs-toc` collapse at `≤900px`), since the toggle that controls all of this lives in the rail.
+
+Deliberately hand-written rather than importing a third-party annotation library (e.g. neat-annotations) — that library anchors notes to the phrase's own inline position (causes text overlap depending on line-wrap), has no versioned release to pin a CDN import against, and ships variants (8-directional arrows, color-cycle animation) this site never uses. Owning ~30 lines of CSS here is both smaller and more robust than depending on it.
 
 ### Homepage — Section Rhythm
 

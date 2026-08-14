@@ -581,6 +581,35 @@ html.cs-modal-open, html.cs-modal-open body { overflow: hidden; }
 }
 .cs-toc-link.is-active { color: var(--color-text); }
 
+/* ── BACKSTORY TOGGLE — reveals annotations.css's .ann/.ann-note
+   strike + note, plus the .cs-toc-note rail breadcrumb. A quieter,
+   more playful chip than .btn — this is a low-emphasis aside
+   control, not a primary CTA. */
+.cs-backstory-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-6);
+  padding: var(--sp-2) var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+.cs-backstory-toggle:hover { color: var(--color-text); border-color: var(--color-text-muted); }
+.cs-backstory-toggle[aria-pressed="true"] {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: var(--color-primary-muted);
+}
+.cs-backstory-glyph { font-size: 11px; line-height: 1; }
+
 /* TOC index stagger — after a home→case-study view transition the
    individual index items pop in one-by-one ("papapapapa"). Applied by
    case-study.js via .from-transition on <body>. */
@@ -781,6 +810,7 @@ html.cs-modal-open, html.cs-modal-open body { overflow: hidden; }
   }
   .cs-rail-back { margin-bottom: var(--sp-6); }
   .cs-toc { display: none; }   /* TOC folds away on small screens */
+  .cs-backstory-toggle { display: none; }   /* rail is gone, so is the toggle for it */
   /* Avatar sticks to the top on mobile so the reader's face stays
      visible while they scroll through the case study. */
   .csv {
