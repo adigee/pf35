@@ -1,0 +1,121 @@
+/* ─────────────────────────────────────────
+   ANNOTATIONS — shared "backstory" system for case-study
+   pages. Wrap an annotated phrase as `<span class="ann">…</span>`
+   immediately followed by `<span class="ann-note">…</span>`
+   holding the note text. No JS positioning — the note's static
+   position (the CSS default for an absolutely positioned inline
+   box with no `top` set) places it beside the phrase automatically.
+
+   Rail breadcrumbs (`.cs-toc-note`) are a separate, independent
+   annotation — not derived from `.ann-note` — authored via
+   `data-rail-note="…"` on a `section.cs-section`. A section can
+   have a body annotation, a rail annotation, both, or neither;
+   the same beat is never written twice.
+
+   Everything here is driven by `data-backstory="on|off"` on
+   <html>, set by the "Add Backstory" toggle in the rail
+   (components/case-study.js, `.cs-backstory-toggle`). Off by
+   default — the strike draws itself on, the note pops in beside
+   it, and any `[data-rail-note]` section's breadcrumb (injected
+   by the same toggle) pops in under its matching TOC entry.
+
+   Desktop only, ≥901px — matches the rail's own fold-away
+   breakpoint (case-study.css `max-width: 900px`), since the
+   toggle lives in the rail and shouldn't exist where the rail
+   doesn't.
+───────────────────────────────────────── */
+
+@media (min-width: 901px) {
+  .cs-content .b-body {
+    position: relative;
+    margin-right: 180px;
+  }
+
+  /* Strike — drawn on left-to-right, like a pen crossing it out */
+  .ann {
+    position: relative;
+    display: inline-block;
+  }
+  .ann::after {
+    content: "";
+    position: absolute;
+    left: -0.15em;
+    right: -0.15em;
+    top: 50%;
+    height: 0.18em;
+    background: var(--color-primary);
+    border-radius: 999px;
+    opacity: 0.85;
+    transform: scaleX(0) translateY(-50%);
+    transform-origin: left center;
+    transition: transform 260ms cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  html[data-backstory="on"] .ann::after { transform: scaleX(1) translateY(-50%); }
+
+  /* Note — pops in beside the phrase, in the reserved gutter */
+  .ann-note {
+    position: absolute;
+    right: -180px;
+    width: 150px;
+    font-family: 'Permanent Marker', 'Comic Sans MS', cursive;
+    font-size: 0.78rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--color-primary);
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(3px) rotate(-1.5deg) scale(0.92);
+    transform-origin: left center;
+    transition: opacity 200ms ease, transform 300ms cubic-bezier(0.34, 1.45, 0.64, 1);
+  }
+  html[data-backstory="on"] .ann-note {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) rotate(-1.5deg) scale(1);
+  }
+
+  /* Rail annotation — a rail item's label is duplicated as its
+     section's body header, so mounting strikes + notes both: the
+     TOC link and the header (components/case-study.js). Mounted/
+     unmounted by the toggle (not just hidden) so it never reserves
+     empty space while off. */
+  .cs-toc-note {
+    font-family: 'Permanent Marker', 'Comic Sans MS', cursive;
+    font-size: 0.65rem;
+    line-height: 1.5;
+    color: var(--color-primary);
+    text-transform: none;
+    letter-spacing: normal;
+    opacity: 0;
+    transform: translateY(3px) rotate(-1deg) scale(0.92);
+    transform-origin: left center;
+    transition: opacity 200ms ease, transform 300ms cubic-bezier(0.34, 1.45, 0.64, 1);
+  }
+  .cs-toc-note.is-in {
+    opacity: 1;
+    transform: translateY(0) rotate(-1deg) scale(1);
+  }
+
+  /* TOC placement — stacked under the link */
+  .cs-toc-link .cs-toc-note {
+    display: block;
+    margin-top: 2px;
+    margin-left: var(--sp-1);
+  }
+
+  /* Header placement — inline, scrawled right after the title */
+  .b-section-header .cs-toc-note {
+    display: inline-block;
+    margin-left: var(--sp-3);
+    font-size: 0.7em;
+    vertical-align: baseline;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ann::after { transition: opacity 120ms ease; transform: translateY(-50%); opacity: 0; }
+  html[data-backstory="on"] .ann::after { opacity: 0.85; }
+  .ann-note, .cs-toc-note { transition: opacity 120ms ease; transform: none; }
+  html[data-backstory="on"] .ann-note { transform: none; }
+}

@@ -118,6 +118,7 @@
       if (!section.id) section.id = slugify(label);
       return '<a class="cs-toc-link b-label-link" href="#' + section.id + '">' + label + '</a>';
     }).join('');
+    var hasAnnotations = !!content.querySelector('.ann') || !!content.querySelector('[data-rail-note]');
 
     var rail = document.createElement('aside');
     rail.className = 'cs-rail';
@@ -126,11 +127,84 @@
         ARROW_LEFT + 'Back to home' +
       '</a>' +
       videoAvatarHtml() +
-      '<nav class="cs-toc" aria-label="Contents">' + tocLinks + '</nav>';
+      '<nav class="cs-toc" aria-label="Contents">' + tocLinks + '</nav>' +
+      (hasAnnotations ? backstoryToggleHtml() : '');
     shell.insertBefore(rail, content);
 
     wireVideoAvatar(rail);
     initTocSpy();
+    if (hasAnnotations) wireBackstoryToggle(rail, content);
+  }
+
+  /* ── BACKSTORY TOGGLE: drives annotations.css's .ann/.ann-note
+     (strike + margin note) via `data-backstory` on <html>, and
+     mounts/unmounts a `.cs-toc-note` breadcrumb under a section's
+     TOC entry for every `section.cs-section[data-rail-note]`.
+     Rail notes are their own, independent annotation — not derived
+     from the body's `.ann-note`, so the same beat never has to be
+     written twice. Only rendered when the page actually has `.ann`
+     phrases or `[data-rail-note]` sections, and only visible where
+     the rail itself is (annotations.css uses the same ≥901px
+     breakpoint). */
+  function backstoryToggleHtml() {
+    return '' +
+      '<button type="button" class="cs-backstory-toggle" aria-pressed="false">' +
+        '<span class="cs-backstory-glyph" aria-hidden="true">✦</span>' +
+        '<span class="cs-backstory-label">Add Backstory</span>' +
+      '</button>';
+  }
+
+  function wireBackstoryToggle(rail, content) {
+    var btn = rail.querySelector('.cs-backstory-toggle');
+    var labelEl = btn && btn.querySelector('.cs-backstory-label');
+    if (!btn) return;
+    var sections = [].slice.call(content.querySelectorAll('section.cs-section'));
+
+    /* Strikes `el`'s own text (wrapping it in .ann, same as body
+       annotations) and appends the note right after it. A rail item's
+       label is duplicated as its section's body header, so the same
+       beat strikes + annotates both — the TOC link and the header —
+       rather than being written twice. */
+    function strikeAndAnnotate(el, note) {
+      if (!el || el.querySelector('.cs-toc-note')) return;
+      if (!el.querySelector('.ann')) {
+        var strike = document.createElement('span');
+        strike.className = 'ann';
+        strike.textContent = el.textContent;
+        el.textContent = '';
+        el.appendChild(strike);
+      }
+      var crumb = document.createElement('span');
+      crumb.className = 'cs-toc-note';
+      crumb.textContent = note;
+      el.appendChild(crumb);
+      requestAnimationFrame(function () { crumb.classList.add('is-in'); });
+    }
+
+    function mountCrumbs() {
+      sections.forEach(function (section) {
+        var note = section.getAttribute('data-rail-note');
+        if (!note) return;
+        var link = section.id && rail.querySelector('.cs-toc-link[href="#' + section.id + '"]');
+        strikeAndAnnotate(link, note);
+        strikeAndAnnotate(section.querySelector('.b-section-header'), note);
+      });
+    }
+    function unmountCrumbs() {
+      [].slice.call(document.querySelectorAll('.cs-toc-note')).forEach(function (crumb) {
+        crumb.classList.remove('is-in');
+        setTimeout(function () { crumb.remove(); }, 320);
+      });
+    }
+
+    btn.addEventListener('click', function () {
+      var isOn = document.documentElement.dataset.backstory === 'on';
+      var next = isOn ? 'off' : 'on';
+      document.documentElement.dataset.backstory = next;
+      btn.setAttribute('aria-pressed', String(next === 'on'));
+      if (labelEl) labelEl.textContent = next === 'on' ? 'Remove Backstory' : 'Add Backstory';
+      if (next === 'on') mountCrumbs(); else unmountCrumbs();
+    });
   }
 
   /* ── RAIL VIDEO AVATAR: markup + playback ──
