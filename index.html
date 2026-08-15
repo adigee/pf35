@@ -529,10 +529,10 @@
          blocks + testimonials.
        Download pills close the section.
     ─────────────────────────────────────────── */
-    .resume {
-      padding: var(--sp-24) 0;
-      max-width: 720px;
-    }
+     .resume {
+       padding: clamp(5rem, 10vw, 9rem) 0;
+       max-width: none;
+     }
     /* Section eyebrow — shared label above Work/Resume/About headings.
        Matches the mono, uppercase, primary-tinted treatment of resume-label. */
     .section-eyebrow,
@@ -547,44 +547,64 @@
     }
 
     /* Section title — the disciplines this resume covers */
-    .resume-title {
-      font-size: var(--text-2xl);
-      font-weight: 700;
-      line-height: var(--leading-snug);
-      letter-spacing: var(--tracking-snug);
-      color: var(--color-text);
-      margin: 0 0 var(--sp-6);
-    }
+     .resume-title {
+       font-size: clamp(2rem, 3.5vw, 3.25rem);
+       font-weight: 700;
+       line-height: 1.04;
+       letter-spacing: -0.045em;
+       color: var(--color-text);
+       margin: 0;
+     }
 
-    .resume-bio {
-      font-size: var(--text-base);
-      line-height: var(--leading-body);
-      color: var(--color-text);
-      max-width: 60ch;
-    }
+     .resume-bio {
+       font-size: clamp(1rem, 1.4vw, 1.25rem);
+       line-height: var(--leading-body);
+       color: var(--color-text);
+       max-width: 48ch;
+     }
+
+     /* Reference-inspired editorial header: a quiet label/title column
+        beside the supporting copy and download actions. */
+     .resume > .resume-variant,
+     .resume > .resume-label,
+     .resume > .resume-title {
+       width: 32%;
+       padding-right: var(--sp-8);
+     }
+     .resume > .resume-bio,
+     .resume > .resume-buttons,
+     .resume > .resume-split,
+     .resume > .resume-list {
+       margin-left: 34%;
+       width: 66%;
+     }
+     .resume > .resume-variant { margin-bottom: var(--sp-4); }
+     .resume > .resume-label { margin-bottom: var(--sp-4); }
+     .resume > .resume-title { margin-bottom: var(--sp-10); }
 
     /* Asymmetric Split — full-width entries, "did / learned" blocks */
-    .resume-split {
-      list-style: none;
-      padding: 0;
-      margin: var(--sp-10) 0 0;
-    }
-    .rs-entry {
-      padding: var(--sp-6) 0;
-      border-bottom: 1px solid var(--color-border);
-    }
+     .resume-split {
+       list-style: none;
+       padding: 0;
+       margin: clamp(4rem, 8vw, 7rem) 0 0;
+     }
+     .rs-entry {
+       display: grid;
+       grid-template-columns: minmax(10rem, 0.78fr) minmax(0, 1.55fr);
+       column-gap: clamp(1.5rem, 5vw, 5rem);
+       padding: var(--sp-6) 0 var(--sp-8);
+       border-bottom: 1px solid var(--color-border);
+     }
     .rs-entry:last-child { border-bottom: none; }
-    .rs-head {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: var(--sp-4);
-    }
-    .rs-role {
-      font-size: var(--text-base);
-      font-weight: 600;
-      color: var(--color-text);
-    }
+     .rs-head {
+       display: block;
+     }
+     .rs-role {
+       font-size: var(--text-sm);
+       font-weight: 500;
+       line-height: 1.45;
+       color: var(--color-text);
+     }
     /* Company names as links — follow the global <a> treatment from
        style.css: underline at rest with --color-border, tint primary on
        hover, 120ms ease (design.md §2, §3). */
@@ -600,27 +620,31 @@
       color: var(--color-primary);
       text-decoration-color: var(--color-primary);
     }
-    .rs-dates {
-      font-size: var(--text-sm);
-      color: var(--color-text-muted);
-      white-space: nowrap;
-    }
-    .rs-split { margin-top: var(--sp-5); }
-    .rs-block + .rs-block { margin-top: var(--sp-6); }
-    .rs-label {
-      font-size: var(--text-2xs);
-      font-weight: 700;
-      letter-spacing: var(--tracking-widest);
-      text-transform: uppercase;
-      color: var(--color-text-muted);
-      margin-bottom: var(--sp-2);
-    }
-    .rs-learn {
-      font-size: var(--text-sm);
-      line-height: var(--leading-body);
-      color: var(--color-text-muted);
-      max-width: 56ch;
-    }
+     .rs-dates {
+       display: block;
+       margin-top: var(--sp-2);
+       font-size: var(--text-xs);
+       letter-spacing: var(--tracking-wide);
+       color: var(--color-text-muted);
+       white-space: normal;
+     }
+     .rs-split { margin-top: 0; }
+     .rs-block + .rs-block { margin-top: var(--sp-5); }
+     .rs-label {
+       display: inline;
+       font-size: inherit;
+       font-weight: 500;
+       color: var(--color-text);
+       margin: 0;
+     }
+     .rs-label::after { content: ' — '; color: var(--color-text-muted); }
+     .rs-learn {
+       display: inline;
+       font-size: clamp(1rem, 1.35vw, 1.2rem);
+       line-height: var(--leading-body);
+       color: var(--color-text);
+       max-width: 60ch;
+     }
     .rs-learn a {
       color: var(--color-text-muted);
       text-decoration: underline;
@@ -634,46 +658,38 @@
 
     /* Testimonials — circular avatar + name + two sentences.
        Two-up on desktop, stacked on phones. */
-    .testimonial-grid {
+     .testimonial-grid {
       list-style: none;
       padding: 0;
       margin: 0;
       display: grid;
-      grid-template-columns: 1fr;
-      gap: var(--sp-3);
-    }
-    @media (min-width: 640px) {
-      .testimonial-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    .testimonial {
-      display: flex;
-      gap: var(--sp-3);
-      padding: var(--sp-4);
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 10px;
-    }
-    .testimonial-avatar {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: var(--color-primary-muted);
-      color: var(--color-primary);
-      font-size: var(--text-xs);
-      font-weight: 700;
-      letter-spacing: var(--tracking-wide);
-      flex-shrink: 0;
+       grid-template-columns: 1fr;
+       gap: 0;
+     }
+     @media (min-width: 640px) {
+       /* The resume's detail column is intentionally narrow; keep quotes
+          readable instead of squeezing two testimonial cards side by side. */
+       .testimonial-grid { grid-template-columns: 1fr; }
+     }
+     .testimonial {
+       display: flex;
+       gap: var(--sp-3);
+       padding: var(--sp-4) 0 0;
+       border-top: 1px solid var(--color-border);
+     }
+     .testimonial-avatar {
+       display: none;
     }
     .testimonial-body { min-width: 0; }
-    .testimonial-name {
-      font-size: var(--text-sm);
-      font-weight: 600;
-      color: var(--color-text);
+     .testimonial-name {
+       font-size: var(--text-xs);
+       letter-spacing: var(--tracking-wide);
+       font-weight: 600;
+       color: var(--color-text-muted);
       margin-bottom: var(--sp-1);
     }
-    .testimonial-quote {
-      font-size: var(--text-sm);
+     .testimonial-quote {
+       font-size: var(--text-sm);
       line-height: var(--leading-body);
       color: var(--color-text-muted);
     }
@@ -681,21 +697,189 @@
     /* Download pills — layout only. Visual treatment (fill, hover,
        type) comes from the shared .btn .btn--md (style.css).
        Sits right below the bio. */
-    .resume-buttons {
+     .resume-buttons {
       display: flex;
       flex-wrap: wrap;
       gap: var(--sp-3);
-      margin: var(--sp-6) 0 0;
+       margin: var(--sp-6) 0 0;
     }
 
     /* Mobile — tighten spacing: sections use --sp-16 (64px); Work thumbnails
        keep their --sp-12/--sp-6 padding from the ≤1023px block. */
-    @media (max-width: 720px) {
-      .about, .resume { padding: var(--sp-16) 0; }
+     @media (max-width: 720px) {
+       .about, .resume { padding: var(--sp-16) 0; }
       .about-heading { font-size: var(--text-lg); }
       .about-actions { margin-top: var(--sp-8); }
       .resume-buttons { margin: var(--sp-5) 0 0; }
-      .rs-head { flex-direction: column; align-items: flex-start; gap: var(--sp-1); }
+       .resume > .resume-label,
+       .resume > .resume-title,
+       .resume > .resume-bio,
+       .resume > .resume-buttons,
+       .resume > .resume-split {
+         width: 100%;
+         margin-left: 0;
+       }
+       .resume > .resume-title { margin-bottom: var(--sp-6); }
+       .resume > .resume-split { margin-top: var(--sp-12); }
+       .rs-entry {
+         display: block;
+         padding: var(--sp-5) 0 var(--sp-6);
+       }
+        .rs-head { margin-bottom: var(--sp-4); }
+        .rs-split { margin-top: 0; }
+      }
+
+    /* ─────────────────────────────────────────
+       RESUME — LCA-STYLE VARIANT ("list")
+       In-context dial-kit exploration of a flat
+       list layout (left: bold serif section heading;
+       right: items separated by hairlines; some items
+       are inline sub-headings). Default = hidden.
+       Toggled via [data-variant="list"] on .resume.
+    ─────────────────────────────────────────── */
+    .resume-list { display: none; }
+
+    /* When the variant is on, swap: hide the editorial
+       split + intro bits, show the list, and let the
+       list span the full section width so its headings
+       align with the eyebrow/title's left edge. */
+    .resume[data-variant="list"] > .resume-split { display: none; }
+    .resume[data-variant="list"] > .resume-list {
+      display: block;
+      margin-left: 0;
+      width: 100%;
+    }
+    /* In list mode the eyebrow + section title are
+       redundant with the .rl-heading; hide the title. */
+    .resume[data-variant="list"] > .resume-title { display: none; }
+
+    .rl-group {
+      display: grid;
+      grid-template-columns: 32% 1fr;
+      column-gap: var(--sp-8);
+      padding: var(--sp-6) 0;
+    }
+    .rl-group + .rl-group { border-top: 1px solid var(--color-border); }
+
+    /* Bold serif section heading — mirrors the LCA
+       job listing (left column). Falls back to a
+       system serif if the Google font hasn't loaded
+       yet (it's lazy-loaded on first variant switch). */
+    .rl-heading {
+      font-family: 'DM Serif Display', 'Times New Roman', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+      margin: 0;
+      padding-right: var(--sp-6);
+    }
+
+    .rl-items { min-width: 0; }
+
+    /* Each item owns a hairline above it — that's the
+       separator. Sub-headings have NO hairline above so
+       they read as a continuation of the item above. */
+    .rl-item,
+    .rl-subhead {
+      padding: var(--sp-4) 0;
+      font-size: clamp(0.95rem, 1.15vw, 1.0625rem);
+      line-height: 1.5;
+      color: var(--color-text);
+    }
+    .rl-item { border-top: 1px solid var(--color-border); }
+    .rl-subhead {
+      border-top: none;
+      padding-bottom: 0;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    /* Item immediately following a sub-head: no hairline,
+       tighter top — it visually belongs to the sub-head. */
+    .rl-subhead + .rl-item {
+      border-top: none;
+      padding-top: var(--sp-1);
+    }
+    /* The very first item in a group is also the section's
+       top edge — it keeps its hairline so the group has a
+       clear start (mirrors LCA's "rule above first item"). */
+
+    .rl-item .rl-meta {
+      display: block;
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-wide);
+      color: var(--color-text-muted);
+      margin-top: var(--sp-2);
+    }
+    .rl-item .rl-quote {
+      font-style: italic;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+    .rl-item .rl-name {
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    /* In the variant, hide the bio + buttons (the
+       LCA reference also lives entirely on the list). */
+    .resume[data-variant="list"] > .resume-bio,
+    .resume[data-variant="list"] > .resume-buttons { display: none; }
+
+    /* The variant pill — sits beside the section eyebrow.
+       Small, mono-cased, matches the design language. */
+    .resume-variant {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      margin-bottom: var(--sp-6);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    .resume-variant__label {
+      color: var(--color-primary);
+    }
+    .resume-variant__group {
+      display: inline-flex;
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .resume-variant__btn {
+      appearance: none;
+      background: transparent;
+      border: 0;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font: inherit;
+      letter-spacing: inherit;
+      text-transform: inherit;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: color 120ms ease, background 120ms ease;
+    }
+    .resume-variant__btn:hover { color: var(--color-text); }
+    .resume-variant__btn.is-active {
+      background: var(--color-primary-muted);
+      color: var(--color-primary);
+    }
+    .resume-variant__btn:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 720px) {
+      .rl-group {
+        grid-template-columns: 1fr;
+        column-gap: 0;
+        padding: var(--sp-5) 0;
+      }
+      .rl-heading { padding-right: 0; margin-bottom: var(--sp-3); }
     }
   </style>
 </head>
@@ -820,8 +1004,14 @@
     </section><!-- /.portfolio -->
 
     <!-- ── RESUME ─────────────────────────────── -->
-    <section class="resume" id="resume">
-      <p class="resume-label">Resume</p>
+    <section class="resume" id="resume" data-variant="editorial">
+      <div class="resume-variant" role="group" aria-label="Resume layout">
+        <span class="resume-variant__label">Resume</span>
+        <span class="resume-variant__group">
+          <button type="button" class="resume-variant__btn is-active" data-set-variant="editorial">Editorial</button>
+          <button type="button" class="resume-variant__btn" data-set-variant="list">List</button>
+        </span>
+      </div>
       <h2 class="resume-title">UX research, Product design, Service design</h2>
       <p class="resume-bio">I am a business oriented product designer and digital storyteller — I have 10+ years of experience across B2B and B2C, in startups and consulting.</p>
 
@@ -1008,6 +1198,59 @@
           </div>
         </li>
       </ol>
+
+      <!-- ── RESUME — LIST VARIANT ───────────────
+           LCA-inspired layout: bold serif section
+           headings in the left column, flat list
+           of items in the right column separated by
+           hairlines. Same content as the editorial
+           view, just rearranged.
+      ──────────────────────────────────────────── -->
+      <div class="resume-list" aria-hidden="true">
+
+        <section class="rl-group">
+          <h3 class="rl-heading">What I've done</h3>
+          <div class="rl-items">
+
+            <div class="rl-subhead">0&rarr;1 product building</div>
+            <div class="rl-item">Built the lockers product from 0 to 1 at Bounce, reaching 250K ARR.<span class="rl-meta">Sr. Product Designer &middot; Bounce &middot; 2024&ndash;2025</span></div>
+            <div class="rl-item">Reduced the cancellation rate from 65% to 12% (down 81.5%) by reworking the booking flow.<span class="rl-meta">Sr. Product Designer &middot; Bounce &middot; 2024&ndash;2025</span></div>
+            <div class="rl-item">Created holistic customer journey maps for locker pick-up/drop-off customers across 12 markets.<span class="rl-meta">Sr. Product Designer &middot; Bounce &middot; 2024&ndash;2025</span></div>
+
+            <div class="rl-subhead">AI / ML interfaces</div>
+            <div class="rl-item">Built internal tooling for linguists, shipped 5 products total.<span class="rl-meta">Sr. Product Designer &middot; Unbabel &middot; 2020&ndash;2023</span></div>
+            <div class="rl-item">Crafted the interface to interact with Unbabel's award-winning quality estimation AI.<span class="rl-meta">Sr. Product Designer &middot; Unbabel &middot; 2020&ndash;2023</span></div>
+            <div class="rl-item">Made Unbabel's AI quality-estimation model operable by ops linguists without specialist engineers.<span class="rl-meta">Sr. Product Designer &middot; Unbabel &middot; 2020&ndash;2023</span></div>
+
+            <div class="rl-subhead">Service design</div>
+            <div class="rl-item">Reimagined the tedious EU car accident claim form as a friendly chatbot for insurance clients.<span class="rl-meta">Product &amp; Service Designer &middot; Freelance (Cocoon Experience) &middot; 2016&ndash;2019</span></div>
+            <div class="rl-item">Led the concept and UX of Woorti, a public transport app for the EU Motiv project &mdash; gamifying sustainable travel for researchers.<span class="rl-meta">Product &amp; Service Designer &middot; Freelance (With Company) &middot; 2016&ndash;2019</span></div>
+
+            <div class="rl-subhead">Earlier work</div>
+            <div class="rl-item">Led the concept and UX design of Oneride, an urban mobility app.<span class="rl-meta">Experience Design Consultant &middot; Novabase &middot; 2013&ndash;2015</span></div>
+            <div class="rl-item">Led the concept and UX design of Wizzio, a tablet banking app.<span class="rl-meta">Experience Design Consultant &middot; Novabase &middot; 2013&ndash;2015</span></div>
+            <div class="rl-item">Conducted a benchmarking study for Google+ Photos and periodic usability testing of early Google+ Events prototypes.<span class="rl-meta">UX Research Intern &middot; Google &middot; Summer 2012</span></div>
+
+          </div>
+        </section>
+
+        <section class="rl-group">
+          <h3 class="rl-heading">What people say</h3>
+          <div class="rl-items">
+            <div class="rl-item"><span class="rl-name">Sofia Martins</span> &middot; Product Manager, Bounce<span class="rl-meta">Aditya took the lockers product from a rough idea to a shipped experience our hosts actually rely on. He always tied the design back to a metric, so nothing on the roadmap was a guess.</span></div>
+            <div class="rl-item"><span class="rl-name">Jonas Duarte</span> &middot; Engineering Lead, Bounce<span class="rl-meta">Working with him on the cancellation-rate problem was like getting a second product brain in the room. He could explain the research, the business case, and the UI in the same breath.</span></div>
+            <div class="rl-item"><span class="rl-name">Ana Lopes</span> &middot; Director of Product, Unbabel<span class="rl-meta">Aditya turned a tool nobody wanted to touch into something our linguists actually loved. He had a rare talent for translating a deep technical domain into plain interfaces.</span></div>
+            <div class="rl-item"><span class="rl-name">Ricardo Mendes</span> &middot; Head of Ops, Unbabel<span class="rl-meta">He shipped five products in three years and every single one stuck. His research instinct meant we rarely had to redo a decision after it left his desk.</span></div>
+            <div class="rl-item"><span class="rl-name">Catarina Gomes</span> &middot; Client Partner, Cocoon Experience<span class="rl-meta">Aditya ran a claims chatbot project that a client had tried to kill twice before. He brought the service design lens that finally got it approved and delivered.</span></div>
+            <div class="rl-item"><span class="rl-name">Bruno Pinto</span> &middot; Design Lead, With Company<span class="rl-meta">He came in as a freelancer and left as a design partner people kept asking for. Generous, structured, and always thinking about the business behind the screens.</span></div>
+            <div class="rl-item"><span class="rl-name">Tiago Marques</span> &middot; Principal Consultant, Novabase<span class="rl-meta">Aditya was the junior everyone fought to staff. He absorbed the fundamentals fast and still found time to teach the rest of us a thing or two about research.</span></div>
+            <div class="rl-item"><span class="rl-name">Laura Santos</span> &middot; UX Lead, Novabase<span class="rl-meta">I watched him shift from research to interaction design in a single project. Few people make that transition with so much ease and so little ego.</span></div>
+            <div class="rl-item"><span class="rl-name">Ethan Walker</span> &middot; Researcher, Google<span class="rl-meta">In ten weeks Aditya ran a benchmark and a round of usability tests that most interns wouldn't have finished in a full term. He asked sharp questions from day one.</span></div>
+            <div class="rl-item"><span class="rl-name">Kim Davis</span> &middot; Product Manager, Google<span class="rl-meta">We kept his findings on the wall long after the summer ended. The team trusted his observations as much as any full-time researcher's.</span></div>
+          </div>
+        </section>
+
+      </div>
     </section>
 
     <!-- ── ABOUT ──────────────────────────────── -->
@@ -1190,6 +1433,62 @@
        timing can't be done with :hover alone — once the entrance lands we
        normalise the rotation to -180deg (visually identical) so leaving is a
        single half-turn instead of unwinding all 2.5 turns. -->
+  <!-- Resume layout variant — Editorial ↔ List.
+       In-context dial kit: the section stays in place, only
+       its presentation toggles. Persists the choice across
+       reloads via localStorage so the variant survives a refresh. -->
+  <script>
+    (function () {
+      var resume = document.getElementById('resume');
+      if (!resume) return;
+      var buttons = resume.querySelectorAll('[data-set-variant]');
+      if (!buttons.length) return;
+      var KEY = 'resume-variant';
+
+      function apply(name) {
+        resume.setAttribute('data-variant', name);
+        for (var i = 0; i < buttons.length; i++) {
+          var b = buttons[i];
+          var on = b.getAttribute('data-set-variant') === name;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        }
+        // Lazy-load the serif only when the list variant is on,
+        // so editorial-only visitors don't pay for it.
+        if (name === 'list') ensureSerif();
+      }
+
+      function ensureSerif() {
+        if (document.querySelector('link[data-resume-serif]')) return;
+        var l = document.createElement('link');
+        l.setAttribute('rel', 'stylesheet');
+        l.setAttribute('data-resume-serif', '');
+        l.href = 'https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap';
+        document.head.appendChild(l);
+      }
+
+      // Restore previous choice (default: editorial).
+      // ?variant=list in the URL overrides the stored pick — handy for sharing.
+      var saved = null;
+      try { saved = localStorage.getItem(KEY); } catch (e) {}
+      var urlVariant = null;
+      try {
+        var p = new URLSearchParams(window.location.search).get('variant');
+        if (p === 'list' || p === 'editorial') urlVariant = p;
+      } catch (e) {}
+      var initial = urlVariant || (saved === 'list' ? 'list' : 'editorial');
+      apply(initial);
+
+      for (var j = 0; j < buttons.length; j++) {
+        buttons[j].addEventListener('click', function (e) {
+          var name = e.currentTarget.getAttribute('data-set-variant');
+          apply(name);
+          try { localStorage.setItem(KEY, name); } catch (err) {}
+        });
+      }
+    })();
+  </script>
+
   <script>
     (function () {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
