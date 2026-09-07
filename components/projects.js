@@ -31,12 +31,6 @@
       eyebrow: ['Bounce', 'B2C', 'Locker PUDO', 'Prove PMF'],
     },
     {
-      slug: 'on-demand',
-      href: 'on-demand.html',
-      name: 'On-demand',
-      eyebrow: ['Unbabel', 'B2B', 'On-demand', 'Acquire new revenue'],
-    },
-    {
       slug: 'decision-module',
       href: 'decision-module.html',
       name: 'The Decision Module',
@@ -44,10 +38,9 @@
     },
     {
       slug: 'trq-dad',
-      href: 'https://adityagujaran.me/projects/trq-dad/',
+      href: 'trq-dad.html',
       name: 'TRQ DAD',
       eyebrow: ['Freelance', 'B2B', 'TRQ DAD', 'Increase ops efficiency'],
-      external: true,
     },
   ];
 
@@ -69,8 +62,15 @@
     return PROJECTS[(p.index + 1) % PROJECTS.length];
   }
 
+  /* The previous project in the sequence, wrapping around. */
+  function prev(slug) {
+    var p = get(slug);
+    if (!p) return null;
+    return PROJECTS[(p.index - 1 + PROJECTS.length) % PROJECTS.length];
+  }
+
   window.PROJECTS = PROJECTS;
-  window.Projects = { get: get, eyebrow: eyebrow, next: next, SEP: SEP };
+  window.Projects = { get: get, eyebrow: eyebrow, next: next, prev: prev, SEP: SEP };
 
   /* Fill any element tagged with data-eyebrow-for="<slug>" from the
      registry. Used by the homepage feature cards so their eyebrows

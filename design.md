@@ -64,12 +64,13 @@ Element:  <html data-theme="dark|light">
 | `--color-surface-2` | `#1A1916` | Secondary surface (elevated elements, tooltips) |
 | `--color-border` | `rgba(248, 246, 238, 0.08)` | Borders, dividers |
 | `--color-text` | `#F8F6EE` | Primary text |
-| `--color-text-muted` | `rgba(248, 246, 238, 0.45)` | Secondary text, labels, metadata |
+| `--color-text-muted` | `rgba(248, 246, 238, 0.60)` | Secondary text, labels, metadata |
 | `--color-text-subtle` | `rgba(248, 246, 238, 0.20)` | Tertiary text, placeholders, disabled |
 | `--color-primary` | `#ACA0E8` | Interactive: links, CTAs, active states |
 | `--color-primary-muted` | `rgba(172, 160, 232, 0.12)` | Primary backgrounds, soft highlights |
 | `--color-accent` | `#8E7FD1` | Decorative highlights, emphasis |
 | `--color-accent-on-accent` | `#121212` | Text rendered on accent-colored backgrounds |
+| `--color-on-primary` | `#121212` | Foreground on primary-filled surfaces (e.g. `.btn` hover) |
 
 **Character:** Midnight near-black with warm ivory text. Soft lavender for interaction, a deeper lilac for decoration. The accent is a shade in the primary's own family — a quiet warm-cool sibling rather than a contrasting hue — which keeps the palette calm and unified.
 
@@ -84,12 +85,13 @@ Element:  <html data-theme="dark|light">
 | `--color-surface-2` | `#FFD0A8` | Secondary surface |
 | `--color-border` | `rgba(26, 42, 94, 0.10)` | Borders, dividers |
 | `--color-text` | `#1A2A5E` | Primary text |
-| `--color-text-muted` | `rgba(26, 42, 94, 0.48)` | Secondary text, labels, metadata |
+| `--color-text-muted` | `rgba(26, 42, 94, 0.68)` | Secondary text, labels, metadata |
 | `--color-text-subtle` | `rgba(26, 42, 94, 0.20)` | Tertiary text, placeholders, disabled |
 | `--color-primary` | `#2147CC` | Interactive: links, CTAs, active states |
 | `--color-primary-muted` | `rgba(33, 71, 204, 0.11)` | Primary backgrounds, soft highlights |
 | `--color-accent` | `#5B6FD6` | Decorative highlights, emphasis |
 | `--color-accent-on-accent` | `#FFF3E8` | Text rendered on accent-colored backgrounds |
+| `--color-on-primary` | `#F8F6EE` | Foreground on primary-filled surfaces (e.g. `.btn` hover) — light because light mode's primary (cobalt) is dark, the opposite of dark mode |
 
 **Character:** Warm peach cream background with deep navy text. Cobalt blue for interaction, a lighter periwinkle for decoration. The accent is a tint in the primary's own family, not a contrasting hue — cool accents on the warm surface stay refined rather than loud.
 
@@ -196,8 +198,8 @@ The scale is deliberately non-linear. The gap between `--text-base` and `--text-
 
 | Weight | Used for |
 |---|---|
-| 300 | Body text default, light emphasis |
-| 400 | Standard body, timeline roles, skill names |
+| 300 | Large decorative text only (e.g., relation arrows) — never body or small text |
+| 400 | Body text default, timeline roles, skill names |
 | 500 | Body captions, image descriptions |
 | 600 | Nav name, bold accents within body |
 | 700 | All headings, display text, strong emphasis |
@@ -221,31 +223,29 @@ The type scale adjusts at four breakpoints. Only heading tokens are overridden; 
 
 These classes encapsulate the full typographic treatment. Use these — do not reconstruct equivalent styles inline.
 
-| Class | Size | Weight | Leading | Tracking | Transform | Notes |
-|---|---|---|---|---|---|---|
-| `.b-label` | `--text-xs` | 500 | — | `--tracking-widest` | uppercase | Muted. Eyebrow / kicker above titles |
-| `.b-title` | `--text-2xl` | 700 | `--leading-snug` | `--tracking-snug` | — | Panel / large headings |
-| `.b-title--xl` | `--text-4xl` | 700 | `--leading-tight` | `--tracking-tight` | — | Hero title; case-study title (single-column) |
-| `.b-title--article` | `clamp(2.25→3.25rem)` | 700 | `--leading-tight` | `--tracking-snug` | — | Case-study hero title (two-column, responsive) |
-| `.b-section-header` | `--text-lg` | 700 | `--leading-normal` | — | — | Long-form section heading |
-| `.b-section-subheader` | `--text-base` | 600 | `--leading-body` | — | — | Sub-heading within a section |
-| `.b-company` | `--text-sm` | 400 | — | — | — | Muted color, company context |
-| `.b-body` | `--text-base` | 300 | `--leading-body` | — | — | Max-width 340px |
-| `.b-body-bold` | `--text-base` | 600 | `--leading-loose` | — | — | Emphasis within body |
-| `.b-body-caption` | `--text-sm` | 500 | `--leading-normal` | — | — | Captions |
-| `.b-body-small` | `--text-sm` | 300 | `--leading-medium` | — | — | Secondary content |
-| `.b-body-small-impact` | `--text-sm` | 700 | `--leading-medium` | — | — | Small but prominent |
-| `.b-link` | `--text-xs` | 400 | — | `--tracking-wide` | uppercase | Primary color |
-| `.b-label-link` | `--text-xs` | 500 | — | `--tracking-wider` | uppercase | Muted color → primary on hover. Quiet navigational/utility links |
-| `.b-tag` | `--text-2xs` | 400 | — | `--tracking-wide` | uppercase | Muted, bordered |
-| `.b-aside` | `--text-sm` | 400 | — | — | — | Italic, muted |
+| Class | Size | Weight | Leading | Tracking | Transform | Notes | Where used |
+|---|---|---|---|---|---|---|---|
+| `.b-label` | `--text-xs` | 500 | — | `--tracking-widest` | uppercase | Muted. Eyebrow / kicker above titles | Case-study hero eyebrow, all case studies (shared via `components/case-study.js`); homepage project-card eyebrows in `index.html` (as `.b-label.b-label-strong`) |
+| `.b-title` | `--text-2xl` | 700 | `--leading-snug` | `--tracking-snug` | — | Panel / large headings | H2 mid-page section titles in `decision-module.html` only |
+| `.b-title--xl` | `--text-4xl` | 700 | `--leading-tight` | `--tracking-tight` | — | Hero title; case-study title (single-column) | Defined in `style.css`, not currently used on any page |
+| `.b-title--article` | `clamp(2.25→3.25rem)` | 700 | `--leading-tight` | `--tracking-snug` | — | Case-study hero title (two-column, responsive) | Case-study hero H1, all case studies (`trq-dad.html`, `lockers-reducing-cancellation.html`, `decision-module.html`) and the shared template |
+| `.b-section-header` | `--text-lg` | 700 | `--leading-normal` | — | — | Long-form section heading | Case-study section headings, all case studies; also the case-study lock/gate modal title (`components/case-study.js`); homepage intro headline in `index.html` |
+| `.b-section-subheader` | `--text-base` | 600 | `--leading-body` | — | — | Sub-heading within a section | Homepage intro subheadline in `index.html`; section sub-headings in `decision-module.html` (as `<h3>`) |
+| `.b-body` | `--text-base` | 400 | `--leading-body` | — | — | Max-width 62ch | Case-study body paragraphs, all case studies |
+| `.b-body-bold` | `--text-base` | 600 | `--leading-loose` | — | — | Emphasis within body | Defined in `style.css`, not currently used on any page |
+| `.b-body-caption` | `--text-sm` | 500 | `--leading-normal` | — | — | Captions | Stat-block descriptions (`.cs-stat-desc`) in `trq-dad.html` and `decision-module.html` |
+| `.b-body-small` | `--text-sm` | 400 | `--leading-medium` | — | — | Secondary content | Defined in `style.css`, not currently used on any page |
+| `.b-body-small-impact` | `--text-sm` | 700 | `--leading-medium` | — | — | Small but prominent | Pull-quote / callout paragraphs in `trq-dad.html` and `decision-module.html` |
+| `.b-link` | `--text-xs` | 400 | — | `--tracking-wide` | uppercase | Primary color | Defined in `style.css`, not currently used on any page |
+| `.b-label-link` | `--text-xs` | 500 | — | `--tracking-wider` | uppercase | Muted color → primary on hover. Quiet navigational/utility links | Case-study rail "Back to work" link and table-of-contents links, all case studies (`components/case-study.js`) |
+| `.b-tag` | `--text-2xs` | 400 | — | `--tracking-wide` | uppercase | Muted, bordered | Hero tag chips in `decision-module.html` only |
 
 **Choosing a link style — two distinct roles:**
 
 - **`.b-link`** — an *inline call-to-action* link. Coloured (`--color-primary`) so it stands out within body copy. Use for "View project", external references, and other links meant to draw the eye.
 - **`.b-label-link`** — a *quiet navigational/utility* link. Reads as a label, not prose: uppercase, letter-spaced, muted, and only brightens to primary on hover. Use for back links, tables of contents, in-page nav, and any secondary wayfinding.
 
-**Rule:** All case-study wayfinding links — the rail "Back to work" link (`.cs-rail-back`) and every table-of-contents link (`.cs-toc-link`) — must carry `.b-label-link`. These links must **not** be styled in body type (`--text-sm`, weight 300); doing so makes them read as content rather than navigation and gives them too much visual weight. Component rules (`.cs-rail-back`, `.cs-toc-link`) carry layout only (flex, gaps, spacing, active state); all type comes from `.b-label-link`. The footer "All work" link is the exception — it is the [Panel CTA](#panel-cta-link-1) component, a deliberate prominent CTA, not a label link.
+**Rule:** All case-study wayfinding links — the rail "Back to work" link (`.cs-rail-back`) and every table-of-contents link (`.cs-toc-link`) — must carry `.b-label-link`. These links must **not** be styled in body type (`--text-sm`, weight 400); doing so makes them read as content rather than navigation and gives them too much visual weight. Component rules (`.cs-rail-back`, `.cs-toc-link`) carry layout only (flex, gaps, spacing, active state); all type comes from `.b-label-link`. The footer "All work" link is the exception — it is the [Panel CTA](#panel-cta-link-1) component, a deliberate prominent CTA, not a label link.
 
 ---
 
@@ -334,6 +334,11 @@ Panels fade in/out via `opacity` only (`transition: opacity var(--panel-transiti
 | Contact email btn | `background` | 200ms | ease | `.p-email` hover |
 | Contact links | `color` | 150ms | ease | `.p-contact-links a` hover |
 | Reading marker | `opacity` | 300ms | ease | Appears/disappears |
+| Testimonial quote reveal | `grid-template-rows`, `opacity` | 180ms | ease | `.rs-quote` — avatar click toggle, resume section |
+| Testimonial avatar hover | `background`, `color`, `transform` | 150ms | ease | `.rs-avatar` |
+| Backstory toggle hover/press | `color`, `border-color`, `background` | 160ms | ease | `.cs-backstory-toggle` |
+| Annotation strike draw | `transform` (`scaleX` 0→1) | 260ms | `cubic-bezier(0.65,0,0.35,1)` | `.ann::after` — reduced-motion falls back to an opacity fade |
+| Annotation note / rail breadcrumb reveal | `opacity`, `transform` (pop-in) | 200–300ms | `cubic-bezier(0.34,1.45,0.64,1)` (spring) | `.ann-note`, `.cs-toc-note` |
 
 ### Rules
 
@@ -367,13 +372,87 @@ Nav links are hidden on mobile (`≤768px`).
 
 `.b-tag` — 9px, uppercase, `--tracking-wide`, muted color, `1px solid --color-border` border, no fill. Tags signal taxonomy, not interactivity.
 
+### Resume Entry — Paired Boxes + Testimonial Reveal
+
+Each `.rs-entry` in the homepage Resume section (`index.html`) is: a header (role/company + dates, unchanged from the original asymmetric-split design), then two equal-width plain-text columns (`.rs-pair` → `.rs-box` × 2, no card chrome — no background or border), then a row of small testimonial avatars.
+
+- **Paired boxes**: `.rs-pair` is a two-column grid (`1fr 1fr`), stacking to one column at `≤560px`. Each `.rs-box` is just a `.rs-box-label` (muted, `--text-2xs`, uppercase, `--tracking-widest` — same treatment as other section labels) followed by one `.rs-box-text` sentence (`--text-sm`, full `--color-text`, not muted — deliberately readable at full weight since there's no card background to lift it off the page). Content is kept to ~1.5 sentences per box so the two columns read as visually equidistant.
+- **Avatars**: `.rs-avatar` — 32px circle, `--font-mono` initials, `--color-primary-muted` background / `--color-primary` text at rest, inverts to solid `--color-primary` fill (`--color-on-primary` text) when its quote is open (`aria-expanded="true"`) — the same fill-invert language as `.btn` hover.
+- **Testimonial reveal**: quotes (`.rs-quote`) are collapsed by default and expand via a `grid-template-rows: 0fr → 1fr` + `opacity` transition (180ms, under the interactive-feedback ceiling — this is a toggle, not a structural panel). Each avatar toggles independently; more than one quote can be open at once. No card background on the quote either — just a `--color-border` left rail, matching the boxes' plain-text treatment.
+
+Converged from three playground explorations (2026-08-13): an initial asymmetric-split-with-testimonial-cards design shipped in PR #149 read as too dense once takeaways were added; a two-track "Career list + Reflections column" layout was tried and also judged too dense; this paired-boxes-plus-click-to-reveal-avatars design was the one that landed — the resting state is just a header, two short sentences, and a couple of dots.
+
 ### Timezone Pill
 
 Live clock display with a tooltip on hover. Tooltip uses `--color-surface-2` background with `--color-border` border. Appears at `translateY(0)` from `translateY(4px)` with 150ms ease.
 
-### Theme Toggle
+### Buttons
 
-Located in the footer. Pill toggle (`border-radius: 9999px`) with a sliding knob. Dark mode: knob at `translateX(16px)`. Light mode: knob at `translateX(0)`. Label text fades between "Dark" and "Light" using `opacity` transition.
+Two button families cover every clickable control that isn't a text link (the [Panel CTA](#panel-cta-link-1) and the text-style link classes have their own treatments, not `.btn`).
+
+#### Text Buttons (`.btn`)
+
+The one text-button treatment used everywhere on the site: resume downloads, the case-study Unlock CTA (password-gate modal), the locked-page teaser chip, and the eyebrow lock badge.
+
+**Structure:**
+```html
+<a href="…" class="btn btn--md">
+  <span class="material-symbols-rounded">download</span>
+  RESUME.PDF
+</a>
+```
+
+| Property | Value |
+|---|---|
+| Shape | Pill, `border-radius: 999px`, `1px solid --color-border` |
+| Rest | `background: --color-surface`, `color: --color-text` |
+| Hover | `background: --color-primary`, `border-color: --color-primary`, `color: --color-on-primary` (theme-swapped: `#121212` dark mode, `#F8F6EE` light mode — see [Color System](#2-color-system)) |
+| Font | `--font-mono`, weight 600, uppercase |
+| Icon size | 18px (`.btn .material-symbols-rounded`) |
+| Transition | `color`, `border-color`, `background` — 200ms ease |
+
+| Size modifier | Padding | Font size | Used for |
+|---|---|---|---|
+| `.btn--xs` | `2px 10px` | `--text-xs` (11px) | Eyebrow lock badge |
+| `.btn--sm` | `4px --sp-6` | `--text-sm` (14px) | Locked-page teaser chip's Unlock button |
+| `.btn--md` | `--sp-3 --sp-6` | `--text-sm` (14px) | Password-gate Unlock, resume downloads |
+
+The fill inverts on hover rather than the border/text turning `--color-primary` — the same solid `--color-primary` fill used everywhere else for interactive states. The foreground (`--color-on-primary`) is theme-swapped, not fixed, because the two themes' primaries sit at opposite ends of the lightness scale: dark mode's lavender is light (needs dark text), light mode's cobalt is dark (needs light text) — using one fixed value would fail contrast in one theme or the other.
+
+#### Icon Buttons (`.theme-btn`)
+
+A circular, icon-only control — currently only the floating light/dark toggle (fixed, bottom-right, on every page). Markup and styles are both injected by `components/theme.js`, not defined in `style.css`.
+
+| Property | Value |
+|---|---|
+| Shape | `44×44px` circle |
+| Rest | `background: --color-surface`, `1px solid --color-border`, `color: --color-text` |
+| Hover | `transform: scale(1.08)` — no color change |
+| Icon | Material Symbols Rounded, 22px, swaps `dark_mode` / `light_mode` |
+| Transition | `transform` 240ms `cubic-bezier(0.22,1,0.36,1)` |
+
+#### Icon Toggle Chip (`.cs-backstory-toggle`)
+
+A small, playful toggle for a single low-emphasis aside control — currently only the case-study rail's "Add Backstory" button. Distinct from `.btn`: rectangular (not pill), quieter at rest, and carries an on/off state via `aria-pressed` rather than being a one-shot action.
+
+**Structure:**
+```html
+<button type="button" class="cs-backstory-toggle" aria-pressed="false">
+  <span class="cs-backstory-glyph" aria-hidden="true">✦</span>
+  <span class="cs-backstory-label">Add Backstory</span>
+</button>
+```
+
+| Property | Value |
+|---|---|
+| Shape | `border-radius: 6px`, `1px solid --color-border` |
+| Rest | `background: none`, `color: --color-text-muted` |
+| Hover | `color: --color-text`, `border-color: --color-text-muted` |
+| Pressed (`aria-pressed="true"`) | `color: --color-primary`, `border-color: --color-primary`, `background: --color-primary-muted` |
+| Font | `--font-mono`, `--text-2xs` (9px), uppercase, `--tracking-wider` |
+| Transition | `color`, `border-color`, `background` — 160ms ease |
+
+Use this chip family (not `.btn`) for small toggleable asides that shouldn't compete with primary content — it reads as a quiet control, not a call to action.
 
 ### Panel CTA (Link 1)
 
@@ -382,7 +461,7 @@ Located in the footer. Pill toggle (`border-radius: 9999px`) with a sliding knob
 **Structure:** `inline-flex` row — label text on the left, filled circle with SVG arrow on the right.
 
 ```html
-<a href="…" class="panel-cta [cs-link]">
+<a href="…" class="panel-cta">
   View project
   <span class="panel-cta-circle" aria-hidden="true">
     <svg viewBox="0 0 16 16">
@@ -405,7 +484,7 @@ Located in the footer. Pill toggle (`border-radius: 9999px`) with a sliding knob
 | Hover — text | Shifts to `--color-primary` (150ms ease) |
 | Top spacing | `margin-top: --sp-10` |
 
-**Variant:** Add class `cs-link` for internal page links — JS intercepts the click and plays the left-column exit transition before navigating. Omit `cs-link` for external links (use `target="_blank" rel="noopener"`).
+For external links, add `target="_blank" rel="noopener"`.
 
 ---
 
@@ -417,6 +496,54 @@ When panels are hidden on mobile (`≤768px`), `.mobile-visual` cards replace th
 - `.mobile-visual--soft` — `--color-primary-muted` background
 - `.mobile-visual--plain` — default background
 - `.mobile-visual--img` — image container with shadow
+
+### Case Studies — Reading Rhythm
+
+Case-study content uses a three-tier vertical rhythm inside `.cs-section`. The spacing matches the semantic weight of each transition, not a single uniform gap.
+
+| Transition | Token | Value | Role |
+|---|---|---|---|
+| paragraph → paragraph | `--sp-4` | 16px | continuation of prose |
+| list → next element | `--sp-6` | 24px | end of a related group |
+| section break (figure / callout / outcomes → next) | `--sp-16` | 64px | new section |
+
+Within `.cs-section`, the fallback is `margin-top: 16px` (`.cs-section > * + *`); the table above shows the overrides layered on top.
+
+**List (`cs-list`):** bullet lists are inline content, not structural blocks. They use `padding-left: var(--sp-6)` (24px) for the indent. The 24px trailing margin aligns with the list's own indent token and sits one tier above the paragraph rhythm, one tier below the section break.
+
+---
+
+### Case Study Annotations ("Backstory")
+
+Shared, page-agnostic system (`annotations.css`) for marginalia on any case study — the honest aside behind a phrase in the body copy. Markup: `<span class="ann">phrase</span><span class="ann-note">the note</span>` immediately adjacent in a `.b-body` paragraph. No JS positions the note — it uses the CSS default static position for an absolutely-positioned inline box, which places it beside the phrase automatically.
+
+Everything is gated by `data-backstory="on|off"` on `<html>`, set by the rail's `.cs-backstory-toggle` ([Icon Toggle Chip](#icon-toggle-chip-cs-backstory-toggle)) via `components/case-study.js`. Off by default — nothing is struck or visible until the reader opts in.
+
+- **Strike** (`.ann::after`): draws itself left-to-right (`scaleX(0)→scaleX(1)`) in `--color-primary` when backstory is on.
+- **Note** (`.ann-note`): sits in a reserved 180px right gutter on `.b-body`, pops in with a spring easing, `--color-primary` text.
+- **Rail annotation** (`data-rail-note="…"` on a `section.cs-section`): its own, independent annotation — not derived from that section's `.ann-note`, so the same beat is never written twice. A rail item's label is duplicated as its section's body header, so mounting strikes + writes the note under **both**: the TOC link (`.cs-toc-note` stacked underneath) and the header (`.cs-toc-note` inline right after it, smaller, `.b-section-header .cs-toc-note`). Mounted (not just revealed) when backstory turns on, and unmounted (after its fade-out) when it turns off — so nothing reserves empty space while off. A section may carry a body annotation, a rail annotation, both, or neither.
+
+Desktop only, `≥901px` — intentionally matches the rail's own fold-away breakpoint (`.cs-rail`/`.cs-toc` collapse at `≤900px`), since the toggle that controls all of this lives in the rail.
+
+Deliberately hand-written rather than importing a third-party annotation library (e.g. neat-annotations) — that library anchors notes to the phrase's own inline position (causes text overlap depending on line-wrap), has no versioned release to pin a CDN import against, and ships variants (8-directional arrows, color-cycle animation) this site never uses. Owning ~30 lines of CSS here is both smaller and more robust than depending on it.
+
+### Homepage — Section Rhythm
+
+The homepage's three scroll sections (Work → Resume → About) use a deliberate two-tier macro rhythm: thumbnails group tightly within Work, and section breaks open up clearly between Work / Resume / About.
+
+| Transition | Token | Value | Role |
+|---|---|---|---|
+| thumbnail → thumbnail | `--sp-8` | 32px | projects group together (32px trailing + 32px leading = 64px) |
+| eyebrow → heading/thumbnail | `--sp-6` | 24px | the section eyebrow introduces its content (owned by `.section-eyebrow` / `.resume-label`) |
+| heading → body | `--sp-6` | 24px | the section heading introduces its prose |
+| paragraph → paragraph | `--sp-4` | 16px | continuation of prose |
+| section → section | `--sp-24` | 96px | a new section begins (`--sp-24` padding on `.resume` / `.about`) |
+
+Work's thumbnails sit on a tight `--sp-8` (32px) padding so the projects read as one group; `.resume` and `.about` carry `--sp-24` (96px) so each section break is a clear, breathable stop. On desktop each `.feature` is also `min-height: 100vh` + centered, which adds viewport-driven slack above/below each thumbnail on top of the 32px padding.
+
+The trailing gap below every eyebrow is a single `--sp-6` owned by the shared `.section-eyebrow` / `.resume-label` rule — headings no longer carry their own top margin, and the heading's `margin-bottom` is `--sp-6` to match the eyebrow gap (a clean equal rhythm: eyebrow → heading → body at 24px each).
+
+Mobile (`≤720px`) keeps sections at `--sp-16` (64px) and Work thumbnails at `--sp-12` top / `--sp-6` bottom (48px/24px) — smaller frames need a proportionally tighter rhythm.
 
 ---
 
@@ -454,9 +581,11 @@ This project targets **WCAG 2.1 AA**.
 ### Known Checks
 
 - `--color-text` (`#F8F6EE`) on `--color-bg` (`#121212`) — high contrast, passes AAA
-- `--color-primary` (`#ACA0E8`) on `--color-bg` (`#121212`) — verify interactive text contrast ≥4.5:1
-- `--color-text-muted` (45% ivory on `#121212`) — decorative/secondary; must still pass 3:1 where conveying information
+- `--color-primary` (`#ACA0E8`) on `--color-bg` (`#121212`) — 8.0:1, passes AA for normal text
+- `--color-text-muted` dark (60% ivory) — 6.7:1 on `--color-bg`, 6.4:1 on `--color-surface` (`#1E1D1A`), 6.1:1 on `--color-surface-2` (`#26241F`) — passes AA for normal text on all dark surfaces
+- `--color-text-muted` light (68% navy) — 4.8:1 on `--color-bg`, 4.6:1 on `--color-surface`, 4.3:1 on `--color-surface-2` — passes AA for normal text on bg/surface; marginally below 4.5:1 only on surface-2 (passes AA-large and 3:1 UI)
 - Light mode: `--color-text` (`#1A2A5E`) on `--color-bg` (`#FFF3E8`) — passes
+- Raised 2026-07: muted was 45%/48% opacity (4.3:1 dark, 2.8:1 light on bg — light failed even the 3:1 floor for informational text)
 
 ### Rules
 
@@ -491,4 +620,4 @@ These rules are strict. They exist because this is a small, deliberate codebase 
 
 ---
 
-*Last updated: 2026-07-15*
+*Last updated: 2026-08-13*

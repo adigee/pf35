@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aditya Gujaran — Designer</title>
   <meta name="description" content="Aditya Gujaran — product designer in Lisbon. Selected work in UX research, interaction design, and 0→1 product." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍊</text></svg>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://adityagujaran.me/" />
+  <meta property="og:title" content="Aditya Gujaran — Designer" />
+  <meta property="og:description" content="Aditya Gujaran — product designer in Lisbon. Selected work in UX research, interaction design, and 0→1 product." />
+  <meta property="og:image" content="https://adityagujaran.me/project-content/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Aditya Gujaran — Designer" />
+  <meta name="twitter:description" content="Aditya Gujaran — product designer in Lisbon. Selected work in UX research, interaction design, and 0→1 product." />
+  <meta name="twitter:image" content="https://adityagujaran.me/project-content/og-image.png" />
 
   <link rel="stylesheet" href="style.css" />
   <!-- Shared fonts + analytics (Umami, Vercel) + llms discovery link.
@@ -23,14 +33,22 @@
        Reuses tokens from style.css only.
     ───────────────────────────────────────── */
 
+    /* Smooth anchor-jump for the rail nav. Respects
+       reduced-motion (a hard jump is the right call there). */
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+
     :root {
       --rail-w: 354px;
+      --rail-avatar-size: 100px;
       --page-pad: 40px;
       --page-max: 1440px;   /* whole layout (rail + grid) centers within this */
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
       --feature-media-h: 65vh;        /* thumbnail height (% of viewport) */
-      --feature-media-ar: 544 / 320;  /* thumbnail frame: width / height */
-      --feature-align: center;        /* feature card alignment */
+      --feature-media-ar: 4 / 3;  /* thumbnail frame: width / height */
+      --feature-align: flex-start;        /* feature card alignment */
     }
 
     body {
@@ -38,6 +56,10 @@
       color: var(--color-text);
       font-family: var(--font-body);
       -webkit-font-smoothing: antialiased;
+      /* The rail's load-in animation (below) translates fully off-canvas to
+         the left; without this a transformed-but-still-laid-out element can
+         push a horizontal scrollbar onto the page for the ~600ms it runs. */
+      overflow-x: hidden;
     }
 
     a { color: inherit; text-decoration: none; }
@@ -67,6 +89,39 @@
       }
     }
 
+    /* ── PAGE LOAD ANIMATION ───────────────────
+       Three-beat entrance: the rail flies in from fully off-canvas left,
+       then the whole right column (hero + work-project cards, as one unit)
+       slides up from the bottom, then the "why behind the what" phrase
+       highlight-sweeps in (see data-highlight-auto on .overview-subhead
+       below — its delay is timed to land after the column settles).
+       Ends each keyframe on `transform: none` rather than e.g.
+       translateX(0): a non-none transform value makes an element a
+       containing block for `position: fixed` descendants. On desktop
+       nothing fixed lives inside .rail, so animating .rail itself is
+       fine there — but on mobile .rail-nav becomes a fixed top bar (see
+       the ≤1023px rail-nav rules below), and it's a descendant of .rail.
+       Animating .rail on mobile would make the "fixed" nav track .rail's
+       transform for the whole 600ms instead of staying pinned to the
+       viewport — it'd slide in from off-canvas overlapping the avatar,
+       then visibly snap to its real position when the animation ends.
+       So mobile retargets the fly-in to .rail-identity (avatar + name
+       only, no fixed descendants) and leaves .rail itself untransformed;
+       see the ≤1023px override below. Tuned + verified in
+       playground/homepage-load-animation.html on the `playground`
+       branch. */
+    @keyframes rail-fly-in {
+      from { transform: translateX(-140%); opacity: 0; }
+      to   { transform: none; opacity: 1; }
+    }
+    @keyframes column-slide-up {
+      from { transform: translateY(110px); opacity: 0; }
+      to   { transform: none; opacity: 1; }
+    }
+    .rail { animation: rail-fly-in 600ms var(--ease) both; }
+    /* Starts 680ms in (600ms rail + 80ms gap) so the column visibly follows
+       the rail rather than racing it. */
+    .content { animation: column-slide-up 620ms var(--ease) 680ms both; }
     /* ── LEFT RAIL ─────────────────────────── */
     .rail {
       display: flex;
@@ -84,13 +139,78 @@
       .rail-intro .bio { max-width: 34ch; }   /* readable measure in the narrow rail */
     }
 
+
     /* Persistent identity block — avatar + name */
-    .rail-identity { flex-shrink: 0; }
+    .rail-identity {
+      flex-shrink: 0;
+      /* #top (the avatar's "back to top" target) sits var(--page-pad) into
+         the document via .home-shell's own padding. Without this, the
+         browser's native anchor-scroll brings #top flush with the viewport
+         top — scrolling var(--page-pad) further than a fresh page load
+         would. .rail is sticky so it visually absorbs that extra scroll and
+         looks unchanged, but .content isn't sticky and shifts up underneath
+         it, breaking the name/headline alignment. This tells the anchor
+         scroll to stop var(--page-pad) short, landing back at the same
+         scrollY: 0 resting state as a fresh load. */
+      scroll-margin-top: var(--page-pad);
+    }
+    .rail-avatar-link {
+      display: inline-block;
+      line-height: 0;
+      border-radius: 50%;
+      perspective: 750px;   /* depth for the 3D spin */
+    }
+    /* Spinning top: a two-faced disc. Which face rests up depends on theme —
+       dark rests on the photo (spins to the caricature), light rests on the
+       caricature (spins to the photo). Entering spins it 2.5 turns and lands
+       on the far face; leaving is a quick half-turn settle back. The
+       asymmetric enter/leave timing is driven by the inline avatar-spin
+       script — this CSS is the no-JS fallback. */
     .rail-avatar {
-      width: 100px; height: 100px;
+      position: relative;
+      display: block;
+      width: var(--rail-avatar-size); height: var(--rail-avatar-size);
+      transform-style: preserve-3d;
+      transform: rotateY(0deg);
+      transition: transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .rail-avatar-face {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
       border-radius: 50%;
       object-fit: cover;
-      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      backface-visibility: hidden;
+    }
+    /* Dark (default): photo up front, caricature on the back. */
+    .rail-avatar-face--art { transform: rotateY(180deg); }
+    /* Light: caricature up front, photo on the back. */
+    [data-theme="light"] .rail-avatar-face--art  { transform: rotateY(0deg); }
+    [data-theme="light"] .rail-avatar-face--photo { transform: rotateY(180deg); }
+    .rail-avatar-link:hover .rail-avatar { transform: rotateY(-900deg); }
+    /* Motion-sensitive visitors get a plain crossfade, no spin. Flatten both
+       faces and drive visibility by opacity per theme, mirroring the resting
+       face of the spin: dark rests on the photo (reveals the caricature),
+       light rests on the caricature (reveals the photo). */
+    @media (prefers-reduced-motion: reduce) {
+      .rail-avatar { transition: none; }
+      .rail-avatar-link:hover .rail-avatar { transform: none; }
+      .rail-avatar-face {
+        backface-visibility: visible;
+        transition: opacity 240ms var(--ease);
+      }
+      /* Flatten both faces — the [data-theme] selector matches the per-theme
+         rotateY rules' specificity and wins by source order, so neither face
+         stays flipped (which would render the headshot mirrored). */
+      [data-theme] .rail-avatar-face { transform: none; }
+      /* Dark: photo at rest, caricature on hover. */
+      .rail-avatar-face--art { opacity: 0; }
+      .rail-avatar-link:hover .rail-avatar-face--art { opacity: 1; }
+      /* Light: caricature at rest, photo on hover (art stacks above photo,
+         so its opacity is what gates which one shows). */
+      [data-theme="light"] .rail-avatar-face--art { opacity: 1; }
+      [data-theme="light"] .rail-avatar-link:hover .rail-avatar-face--art { opacity: 0; }
     }
     .rail-identity .name {
       font-size: 16px;
@@ -113,23 +233,17 @@
       max-width: 60ch;   /* readable measure when stacked (Julie uses 60ch);
                             tightened to 34ch in the desktop rail (see ≥1024px) */
     }
-    .rail-intro .tagline {
-      font-size: 14px;
-      font-weight: 400;
-      line-height: var(--leading-body);
-      margin-top: var(--sp-8);
-    }
-    .rail-intro .tagline em {
-      color: var(--color-primary);
-      font-style: normal;
-      font-weight: 400;
-    }
     .rail-intro .location {
       font-size: 14px;
       font-weight: 400;
       color: var(--color-text);
-      margin-top: var(--sp-8);
     }
+
+    /* ── RAIL CONTEXT REVEAL ────────────────
+       Originally the rail-context (bio / tagline / location) faded in as
+       the user scrolled past the overview, so the rail showed only
+       identity + nav at the top of the page. That scroll-driven reveal
+       has been removed — the text is now always visible in the rail. */
 
     /* ── NAV (rail bottom) ─────────────────── */
     .rail-nav {
@@ -148,62 +262,6 @@
       transition: color 240ms var(--ease);
     }
     .rail-nav a:hover { color: var(--color-primary); }
-
-    /* Resume — reads as a third nav item; PDF/MD fly out on hover */
-    .rail-resume {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      width: fit-content;
-      margin-top: 2px;   /* same rhythm as the WORK/ABOUT list above */
-      flex-shrink: 0;
-    }
-    .rail-resume .rr-label {
-      font-size: 18px;
-      letter-spacing: var(--tracking-wide);
-      text-transform: uppercase;
-      color: var(--color-text);
-      cursor: default;
-      transition: color 240ms var(--ease);
-    }
-    .rail-resume:hover .rr-label { color: var(--color-primary); }
-
-    /* Fly-out — absolute so it reserves no space until revealed.
-       Sits flush against the label's right edge (padding, not margin,
-       makes the gap) so there's no dead zone to lose the hover in. */
-    .rr-flyout {
-      position: absolute;
-      left: 100%;
-      top: 50%;
-      transform: translateY(-50%);
-      display: inline-flex;
-      align-items: center;
-      gap: var(--sp-4);
-      padding-left: var(--sp-4);
-      white-space: nowrap;
-    }
-    .rail-resume .rr-link {
-      display: inline-flex;
-      align-items: center;
-      font-size: var(--text-base);
-      letter-spacing: var(--tracking-wide);
-      color: var(--color-text-muted);
-      opacity: 0;
-      transform: translateX(-8px);
-      pointer-events: none;
-      transition: opacity 260ms var(--ease), transform 260ms var(--ease), color 240ms var(--ease);
-    }
-    .rail-resume:hover .rr-link { opacity: 1; transform: none; pointer-events: auto; }
-    .rail-resume:hover .rr-link:nth-of-type(2) { transition-delay: 70ms; }   /* MD trails PDF */
-    .rail-resume .rr-link:hover { color: var(--color-primary); }
-    .rail-resume .rr-icon { font-size: 16px; }
-
-    /* Touch / no-hover devices can't reveal a flyout — keep the
-       resume links laid out and visible so they stay reachable. */
-    @media (hover: none) {
-      .rr-flyout { position: static; transform: none; }
-      .rail-resume .rr-link { opacity: 1; transform: none; pointer-events: auto; }
-    }
 
     /* Social icons — inline SVG brand marks (Simple Icons / Material).
        Row is left-aligned flush with the rail; each icon sits in an
@@ -233,12 +291,29 @@
     }
 
     /* Overview grid — flows from the top, like Julie's */
-    .overview { width: 100%; }
-    /* Nudge the grid down from the top edge so it doesn't hug
-       the very top of the page (desktop only — on mobile the
-       rail stacks above it and provides its own spacing). */
+    .overview-hero { width: 100%; }
+    /* ── INTRO hero ───────────────────────────
+       Built from the design-system text classes (design.md §3):
+       .b-section-header headline → .b-section-subheader subheadline.
+       Type, weight, colour, and margins come from the classes; these
+       rules carry layout + spacing only. Width is matched to the
+       feature cards below (height-driven frame) so the column lines
+       up. The headline's own margin-bottom sets the gap. */
+    .overview-headline,
+    .overview-subhead {
+      width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
+    }
+    .overview-subhead { margin-top: 0; }
+    .overview-subhead em { font-style: normal; }   /* [data-highlight] phrase — no italics */
+    /* Nudge the grid down to bring the headline's cap-height into optical
+       alignment with the name (desktop only — on mobile the rail stacks
+       above it and provides its own spacing). Derived from the rail's own
+       stack — avatar height + the --sp-8 gap before .name, the same gap
+       token used for every other rail spacing (nav, context, tagline,
+       location) — rather than a pixel guess, so it stays correct if the
+       avatar size ever changes. */
     @media (min-width: 1024px) {
-      .overview { padding-top: 112px; }
+      .overview-hero { padding-top: calc(var(--rail-avatar-size) + var(--sp-8)); }
     }
     /* Explicit responsive columns + minmax(0,1fr).
        The minmax(0,…) is the classic trick: it lets tracks
@@ -275,12 +350,30 @@
       object-fit: cover;
     }
 
-    /* Feature sequence — live-media card + caption below */
+    /* Feature sequence — live-media card + caption below. The first feature
+       leads with the section eyebrow (Work); content stacks in a column and
+       centers as a group so the eyebrow sits a consistent --sp-6 above the
+       thumbnail — same eyebrow→content rhythm as Resume and About.
+       No min-height here on purpose — sizing by content + --sp-8 padding is
+       what makes consecutive thumbnails actually group tightly. */
     .feature {
-      min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      padding: var(--sp-16) 0;
+      padding: var(--sp-8) 0;
+    }
+    /* Container padding — same --sp-24 (96px) top/bottom as .resume and
+       .about, so all three sections share one rhythm. The .feature cards
+       inside keep their own --sp-8 padding for tight thumbnail-to-thumbnail
+       grouping, so the visible gap before the first / after the last card
+       is 96+32=128px — same pattern as the 96+96 gap between Resume and
+       About. */
+    .work-projects { padding: var(--sp-24) 0; }
+    /* The work-projects eyebrow leads the first feature; left-aligned like the
+       Resume/About eyebrows (not centered with the card). Its trailing gap
+       to the thumbnail comes from .section-eyebrow below. */
+    .feature > .section-eyebrow {
+      align-self: flex-start;
     }
     /* Centered column: proportional thumbnail on top, caption centered below. */
     .feature-card {
@@ -296,9 +389,13 @@
        Tune the size in one place via --feature-media-h. */
     .fc-media {
       position: relative;
-      height: var(--feature-media-h);
-      width: auto;
+      /* Height-driven target (65vh) capped to the content column so the media
+         never overflows and paints over the sticky rail. On wide columns the
+         width resolves to the height-driven value (height stays 65vh); on
+         narrow columns it clamps to 100% and the height shrinks with it. */
       aspect-ratio: var(--feature-media-ar);   /* frame proportions; image fills it exactly */
+      width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
+      height: auto;
       border-radius: 12px;
       overflow: hidden;
       background: var(--color-surface);
@@ -317,7 +414,7 @@
     .fc-scrim {
       position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
-      background: color-mix(in srgb, var(--color-primary) 50%, transparent);
+      background: color-mix(in srgb, var(--color-primary) 85%, transparent);
       opacity: 0;
       transition: opacity 320ms var(--ease);
     }
@@ -343,97 +440,357 @@
     }
     .feature-card:hover .fc-eyebrow { color: var(--color-primary); }
 
-    /* Closing spacer so the last project can center */
+    /* Bottom spacer so the About section can scroll up past the scroll-spy
+       line (its top crosses the 20% threshold) and the page ends with a
+       little breathing room instead of a hard stop. */
     .tail { height: 30vh; }
 
     /* ── THEME TOGGLE (fixed, bottom-right) ── */
     /* ─────────────────────────────────────────
-       RESPONSIVE — phone (≤ 720px)
+       RESPONSIVE — stacked rail (≤ 1023px)
        Rail collapses to a top header; nav persists as a
-       fixed translucent top bar.
+       fixed solid top bar (matches .site-nav's opaque
+       --color-bg treatment — see style.css). Runs right up to the
+       1024px desktop switch so there's no gap viewport
+       where the rail is stacked but the nav isn't fixed.
     ───────────────────────────────────────── */
-    @media (max-width: 720px) {
+    @media (max-width: 1023px) {
       /* Rail already stacks on top via the base layout;
-         just tighten it for phones. */
+         just tighten it for phones/tablets. */
       .rail-avatar { width: 72px; height: 72px; }
-      .rail-context { flex: none; min-height: 0; margin-top: var(--sp-5); }
-      .rail-intro .bio, .rail-intro .tagline, .rail-intro .location { margin-top: var(--sp-5); }
+      /* The reveal-on-scroll script only runs ≥1024px (see the script near
+         the closing body tag), so below that .rail-context sits permanently
+         in its hidden (opacity: 0) state. Left in flow, that invisible box
+         still reserves its full height — the "blank middle" that's meant to
+         separate identity from nav on desktop's sticky rail — which on
+         mobile (rail stacked, not sticky) shows up as a dead gap between the
+         name and the hero headline. Its text is already duplicated in the
+         .overview-subhead, so just take it out of flow here. */
+      .rail-context { display: none; }
 
-      .feature { display: block; min-height: 0; padding: var(--sp-12) 0 0; }
+      .feature { display: block; min-height: 0; padding: var(--sp-12) 0 var(--sp-6); }
       .fc-media { height: auto; width: 100%; aspect-ratio: 4 / 3; }   /* phones: size by width again */
       /* No hover on touch — keep the scrim from covering the still */
       .feature-card:hover .fc-scrim { opacity: 0; }
 
       /* ── Persistent nav — fixed top bar, always visible ── */
       body { padding-top: 54px; }
+      /* .rail-nav is a `position: fixed` child of this flex container.
+         Because .rail itself never establishes a stacking context, the
+         browser stacks the fixed nav using .rail's position in the DOM
+         (before .content) instead of the nav's own z-index — so once the
+         page scrolls, the feature cards (later in the DOM) paint over the
+         "fixed" nav instead of under it. Giving .rail its own stacking
+         context puts the whole rail — nav included — above .content. */
+      /* animation: none — load-animation retarget, see the PAGE LOAD
+         ANIMATION comment above. .rail-nav is fixed at this width, so
+         .rail must never transform (it'd hijack the nav's containing
+         block); the fly-in moves to .rail-identity instead, which has
+         no fixed descendants. */
+      .rail { position: relative; z-index: 1; animation: none; }
+      .rail-identity { animation: rail-fly-in 600ms var(--ease) both; }
       .rail-nav {
         position: fixed; left: 0; right: 0; top: 0; z-index: 25;
         flex-direction: row; justify-content: space-around; gap: 0; margin: 0;
         padding: calc(var(--sp-3) + env(safe-area-inset-top, 0px)) var(--sp-4) var(--sp-3);
-        background: color-mix(in srgb, var(--color-bg) 82%, transparent);
-        backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+        background: var(--color-surface);
         border-bottom: 1px solid var(--color-border);
       }
       .rail-nav a { font-size: var(--text-sm); letter-spacing: var(--tracking-wide); }
 
-      /* WORK/ABOUT are now the fixed top bar (out of flow), so the nav's
-         top margin no longer spaces RESUME away from the intro. Restore
-         that gap so RESUME isn't glued under "Based in Lisbon" — matching
-         the spacing it has when all three links sit in the rail.
-         There's no hover to fly the links out here, so decompose the row
-         into a stacked list: RESUME heading, then PDF and MD as their own
-         tappable options. */
-      .rail-resume {
-        margin-top: var(--sp-8);
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .rail-resume .rr-flyout {
-        position: static;
-        transform: none;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--sp-3);
-        padding-left: 0;
-        margin-top: var(--sp-3);
-      }
-      .rail-resume .rr-link { opacity: 1; transform: none; pointer-events: auto; }
+    }
+
+    /* Keep after the ≤1023px block so reduced-motion wins over the
+       mobile .rail-identity animation by source order. */
+    @media (prefers-reduced-motion: reduce) {
+      .rail, .rail-identity, .content { animation: none; }
+    }
+
+    /* ─────────────────────────────────────────
+       ACTIVE RAIL NAV
+       Marks the section currently in view.
+       Uses --color-primary (lavender/cobalt) — the
+       only accent in the system, so it stays
+       consistent with the rest of the page.
+    ─────────────────────────────────────────── */
+    .rail-nav a.is-active {
+      color: var(--color-primary);
+    }
+
+    /* ─────────────────────────────────────────
+       ABOUT SECTION
+       Last section, after RESUME.
+    ─────────────────────────────────────────── */
+    .about {
+      padding: var(--sp-24) 0;
+      max-width: 640px;
+    }
+    .about-heading {
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      line-height: var(--leading-snug);
+      letter-spacing: var(--tracking-snug);
+      color: var(--color-text);
+      margin-bottom: var(--sp-6);
+    }
+    .about-body {
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      color: var(--color-text);
+      max-width: 56ch;
+    }
+    .about-body + .about-body { margin-top: var(--sp-4); }
+
+    /* Contact buttons — layout only. Visual treatment (fill, hover,
+       type) comes from the shared .btn .btn--md (style.css). */
+    .about-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-3);
+      margin-top: var(--sp-10);
+    }
+
+    /* ─────────────────────────────────────────
+       RESUME SECTION
+       Eyebrow label + intro + one entry per role:
+       role/dates header, then two equal-width
+       "What I did" / "Takeaways" text columns
+       (~1.5 sentences each, no card chrome), then
+       a row of small initial-avatar buttons — one
+       per testimonial. Testimonials are collapsed
+       by default; clicking an avatar reveals that
+       person's quote in place (independent toggle,
+       more than one can be open at once).
+       Converged from playground explorations
+       2026-08-13 (two-track layout, then paired
+       boxes + avatar reveal — chosen).
+       Download pills close the section.
+    ─────────────────────────────────────────── */
+    .resume {
+      padding: var(--sp-24) 0;
+      max-width: 720px;
+    }
+    /* Section eyebrow — shared label above Work/Resume/About headings.
+       Matches the mono, uppercase, muted-gray treatment of resume-label. */
+    .section-eyebrow,
+    .resume-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: var(--sp-6);
+    }
+
+    /* Section title — the disciplines this resume covers */
+    .resume-title {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      line-height: var(--leading-snug);
+      letter-spacing: var(--tracking-snug);
+      color: var(--color-text);
+      margin: 0 0 var(--sp-6);
+    }
+
+    .resume-bio {
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      color: var(--color-text);
+      max-width: 60ch;
+    }
+
+    /* Asymmetric Split — full-width entries, "did / learned" blocks */
+    .resume-split {
+      list-style: none;
+      padding: 0;
+      margin: var(--sp-10) 0 0;
+    }
+    .rs-entry {
+      padding: var(--sp-6) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .rs-entry:last-child { border-bottom: none; }
+    .rs-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--sp-4);
+    }
+    .rs-role {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    /* Company names as links — follow the global <a> treatment from
+       style.css: underline at rest with --color-border, tint primary on
+       hover, 120ms ease (design.md §2, §3). */
+    .rs-role a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 1px;
+      text-decoration-color: var(--color-border);
+      transition: color 120ms ease, text-decoration-color 120ms ease;
+    }
+    .rs-role a:hover {
+      color: var(--color-primary);
+      text-decoration-color: var(--color-primary);
+    }
+    .rs-dates {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+    /* Paired boxes — "What I did" / "Takeaways", equal width,
+       no card chrome (plain text columns). */
+    .rs-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-4);
+      margin-top: var(--sp-5);
+    }
+    .rs-box-label {
+      font-size: var(--text-2xs);
+      font-weight: 700;
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: var(--sp-2);
+    }
+    .rs-box-text {
+      font-size: var(--text-sm);
+      line-height: var(--leading-body);
+      color: var(--color-text);
+    }
+    .rs-box-text a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: var(--color-border);
+      transition: color 120ms ease, text-decoration-color 120ms ease;
+    }
+    .rs-box-text a:hover {
+      color: var(--color-primary);
+      text-decoration-color: var(--color-primary);
+    }
+
+    /* Avatar row — one small initial button per testimonial.
+       Click reveals that person's quote in place; independent
+       toggles, more than one can be open at once. */
+    .rs-avatars {
+      display: flex;
+      gap: var(--sp-2);
+      margin-top: var(--sp-5);
+    }
+    .rs-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: var(--tracking-wide);
+      background: var(--color-primary-muted);
+      color: var(--color-primary);
+      border: 0;
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease, transform 150ms ease;
+    }
+    .rs-avatar:hover { transform: translateY(-1px); }
+    .rs-avatar[aria-expanded="true"] {
+      background: var(--color-primary);
+      color: var(--color-on-primary);
+    }
+
+    /* Quote reveal — collapsed by default (grid-rows 0fr trick avoids a
+       hardcoded max-height). A toggle, not a structural panel, so it
+       stays under the 200ms interactive-feedback ceiling (design.md §6). */
+    .rs-quote {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition: grid-template-rows 180ms ease, opacity 150ms ease, margin-top 180ms ease;
+    }
+    .rs-quote.is-open {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      margin-top: var(--sp-3);
+    }
+    .rs-quote-inner { overflow: hidden; min-height: 0; }
+    .rs-quote-text {
+      font-size: var(--text-sm);
+      line-height: var(--leading-body);
+      color: var(--color-text-muted);
+      max-width: 56ch;
+      padding-left: var(--sp-4);
+      border-left: 2px solid var(--color-border);
+    }
+    .rs-quote-attr {
+      font-size: var(--text-xs);
+      color: var(--color-text-subtle);
+      margin-top: var(--sp-1);
+      padding-left: var(--sp-4);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rs-quote { transition: opacity 150ms ease; }
+    }
+
+    /* Download pills — layout only. Visual treatment (fill, hover,
+       type) comes from the shared .btn .btn--md (style.css).
+       Sits right below the bio. */
+    .resume-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-3);
+      margin: var(--sp-6) 0 0;
+    }
+
+    /* Mobile — tighten spacing: sections use --sp-16 (64px); Work thumbnails
+       keep their own --sp-12/--sp-6 padding from the ≤1023px block. */
+    @media (max-width: 720px) {
+      .about, .resume, .work-projects { padding: var(--sp-16) 0; }
+      .about-heading { font-size: var(--text-lg); }
+      .about-actions { margin-top: var(--sp-8); }
+      .resume-buttons { margin: var(--sp-5) 0 0; }
+      .rs-head { flex-direction: column; align-items: flex-start; gap: var(--sp-1); }
+    }
+    @media (max-width: 560px) {
+      .rs-pair { grid-template-columns: 1fr; gap: var(--sp-3); }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="home-shell">
+  <div class="home-shell" id="top">
    <div class="home-cols">
 
   <!-- ── LEFT RAIL ──────────────────────────── -->
   <aside class="rail" id="rail">
-    <div class="rail-identity" id="top">
-      <img class="rail-avatar" src="project%20content/intro.png" alt="Aditya Gujaran" />
+    <div class="rail-identity">
+      <a class="rail-avatar-link" href="#top" aria-label="Back to top">
+        <span class="rail-avatar">
+          <img class="rail-avatar-face rail-avatar-face--photo" src="project-content/profile-photo.png" alt="Aditya Gujaran" />
+          <img class="rail-avatar-face rail-avatar-face--art" src="project-content/profile-caricature.png" alt="" aria-hidden="true" />
+        </span>
+      </a>
       <p class="name">Aditya Gujaran<br><span class="role">Product designer</span></p>
     </div>
 
     <div class="rail-context">
       <div class="rail-intro">
-        <p class="bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p>
-        <p class="tagline">the <em>why</em> behind the what,<br>has never been more important</p>
-        <p class="location">Based in Lisbon</p>
+        <!-- <p class="bio">Versatile designer with a practice that focuses on rigorous, rapid, flexible UX research to enable high velocity product delivery.</p> -->
+        <p class="location"><span data-tooltip="PT national · open to relocation">Based in Lisbon</span></p>
       </div>
     </div>
 
-    <nav class="rail-nav">
-      <a href="#overview">WORK</a>
-      <a href="#top">ABOUT</a>
+    <nav class="rail-nav" aria-label="Section navigation">
+      <a href="#work-projects" data-section-link="work-projects">WORK</a>
+      <a href="#resume"   data-section-link="resume">RESUME</a>
+      <a href="#about"    data-section-link="about">ABOUT</a>
     </nav>
-
-    <div class="rail-resume">
-      <span class="rr-label">Resume</span>
-      <span class="rr-flyout">
-        <a class="rr-link" href="https://drive.google.com/file/d/1FJDZI8xlQgeWfl7zgbS3LjaTYYZJbWh3/view" target="_blank" rel="noopener">PDF&thinsp;<span class="material-symbols-rounded rr-icon">download</span></a>
-        <a class="rr-link" href="resume.md" target="_blank" rel="noopener">MD&thinsp;<span class="material-symbols-rounded rr-icon">download</span></a>
-      </span>
-    </div>
 
     <div class="rail-social">
       <!-- Email (placeholder link) -->
@@ -454,29 +811,37 @@
   <!-- ── RIGHT COLUMN ──────────────────────── -->
   <main class="content">
 
-    <!-- Overview grid -->
-    <section class="overview" id="overview">
-      <div class="grid">
-        <a class="tile" href="lockers-reducing-cancellation.html">
-          <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Bounce — Lockers PUDO" />
-        </a>
-        <a class="tile" href="on-demand.html">
-          <img src="project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand — Unbabel" />
-        </a>
-        <a class="tile" href="decision-module.html">
-          <img src="project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module — Unbabel" />
-        </a>
-        <a class="tile" href="https://adityagujaran.me/projects/trq-dad/" target="_blank" rel="noopener">
-          <img src="project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Cocoon" />
-        </a>
-      </div>
+    <!-- Intro — design-system hero (design.md §3): .b-section-header
+         headline → .b-section-subheader subheadline. The subhead's phrase
+         is highlit and auto-sweeps in — beat 3 of the page load animation.
+         1520ms = 600 (rail fly-in) + 80 (gap) + 620 (column slide-up) + 220
+         (gap), timed to land after the column settles; see the PAGE LOAD
+         ANIMATION rules above. -->
+    <section class="overview-hero" id="overview-hero">
+      <h1 class="b-section-header overview-headline">Product builder with a design practice that anchors on continuous, rigorous, rapid UX research to enable high velocity product delivery.</h1>
+      <p class="b-section-subheader overview-subhead">the <em data-highlight data-highlight-auto="1520">why behind the what</em><br>has never been more important</p>
     </section>
 
-    <!-- Feature sequence -->
+    <!-- Feature sequence — the work-projects container. Its top edge is the
+         WORK nav's anchor: WORK only becomes selected once you've scrolled
+         past here. -->
+    <section class="work-projects" id="work-projects">
     <section class="feature">
+      <p class="section-eyebrow">Selected projects</p>
       <a class="feature-card" href="lockers-reducing-cancellation.html">
         <div class="fc-media">
-          <img src="project%20content/4%20Lockers%20PUDO%20for%20framer/0%20Hero.png" alt="Bounce — Lockers PUDO" />
+          <picture>
+            <source
+              type="image/webp"
+              srcset="project-content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO-480.webp 480w, project-content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO-960.webp 960w, project-content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO-1440.webp 1440w, project-content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO-1920.webp 1920w, project-content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO-2520.webp 2520w"
+              sizes="(max-width: 1023px) 90vw, calc(65vh * 4 / 3)"
+            />
+            <img
+              src="project-content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO.png"
+              alt="Bounce — Lockers PUDO"
+              loading="lazy"
+            />
+          </picture>
           <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
         </div>
         <div class="fc-caption">
@@ -486,21 +851,20 @@
     </section>
 
     <section class="feature">
-      <a class="feature-card" href="on-demand.html">
-        <div class="fc-media">
-          <img src="project%20content/1%20Ondemand%20img%20for%20framer/1%20Hero.png" alt="On-demand — Unbabel" />
-          <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
-        </div>
-        <div class="fc-caption">
-          <span class="fc-eyebrow b-label b-label-strong" data-eyebrow-for="on-demand"></span>
-        </div>
-      </a>
-    </section>
-
-    <section class="feature">
       <a class="feature-card" href="decision-module.html">
         <div class="fc-media">
-          <img src="project%20content/2%20Decision%20module%20for%20framer/1%20Hero.png" alt="Decision Module — Unbabel" />
+          <picture>
+            <source
+              type="image/webp"
+              srcset="project-content/2%20Decision%20module%20for%20framer/Thumbnail%20-%20decision%20module-480.webp 480w, project-content/2%20Decision%20module%20for%20framer/Thumbnail%20-%20decision%20module-960.webp 960w, project-content/2%20Decision%20module%20for%20framer/Thumbnail%20-%20decision%20module-1440.webp 1440w, project-content/2%20Decision%20module%20for%20framer/Thumbnail%20-%20decision%20module-1920.webp 1920w, project-content/2%20Decision%20module%20for%20framer/Thumbnail%20-%20decision%20module-2520.webp 2520w"
+              sizes="(max-width: 1023px) 90vw, calc(65vh * 4 / 3)"
+            />
+            <img
+              src="project-content/2%20Decision%20module%20for%20framer/Thumbnail%20-%20decision%20module.png"
+              alt="Decision Module — Unbabel"
+              loading="lazy"
+            />
+          </picture>
           <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
         </div>
         <div class="fc-caption">
@@ -510,15 +874,227 @@
     </section>
 
     <section class="feature">
-      <a class="feature-card" href="https://adityagujaran.me/projects/trq-dad/" target="_blank" rel="noopener">
+      <a class="feature-card" href="trq-dad.html">
         <div class="fc-media">
-          <img src="project%20content/3%20DAD%20Images%20for%20framer/1%20Hero.png" alt="TRQ DAD — Cocoon" />
+          <picture>
+            <source
+              type="image/webp"
+              srcset="project-content/3%20DAD%20Images%20for%20framer/Thumbnail%20-%20TRQ%20DAD-480.webp 480w, project-content/3%20DAD%20Images%20for%20framer/Thumbnail%20-%20TRQ%20DAD-960.webp 960w, project-content/3%20DAD%20Images%20for%20framer/Thumbnail%20-%20TRQ%20DAD-1440.webp 1440w, project-content/3%20DAD%20Images%20for%20framer/Thumbnail%20-%20TRQ%20DAD-1920.webp 1920w, project-content/3%20DAD%20Images%20for%20framer/Thumbnail%20-%20TRQ%20DAD-2520.webp 2520w"
+              sizes="(max-width: 1023px) 90vw, calc(65vh * 4 / 3)"
+            />
+            <img
+              src="project-content/3%20DAD%20Images%20for%20framer/Thumbnail%20-%20TRQ%20DAD.png"
+              alt="TRQ DAD — Cocoon"
+              loading="lazy"
+            />
+          </picture>
           <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
         </div>
         <div class="fc-caption">
           <span class="fc-eyebrow b-label b-label-strong" data-eyebrow-for="trq-dad"></span>
         </div>
       </a>
+    </section>
+    </section><!-- /.work-projects -->
+
+    <!-- ── RESUME ─────────────────────────────── -->
+    <section class="resume" id="resume">
+      <p class="resume-label">Resume</p>
+      <h2 class="resume-title">UX research, Product design, Service design</h2>
+      <p class="resume-bio">I am a business oriented product designer and digital storyteller — I have 10+ years of experience across B2B and B2C, in startups and consulting.</p>
+
+      <div class="resume-buttons">
+        <a class="btn btn--md" href="https://drive.google.com/file/d/1FJDZI8xlQgeWfl7zgbS3LjaTYYZJbWh3/view" target="_blank" rel="noopener">
+          <span class="material-symbols-rounded">download</span>
+          <span>RESUME.PDF</span>
+        </a>
+        <a class="btn btn--md" href="resume.md" target="_blank" rel="noopener">
+          <span class="material-symbols-rounded">download</span>
+          <span>RESUME.MD</span>
+        </a>
+      </div>
+
+      <ol class="resume-split">
+        <li class="rs-entry">
+          <header class="rs-head">
+            <h3 class="rs-role">Sr. Product Designer @ <a href="https://bounce.com/" target="_blank" rel="noopener">Bounce</a></h3>
+            <span class="rs-dates">2025–2024</span>
+          </header>
+          <div class="rs-pair">
+            <div class="rs-box">
+              <p class="rs-box-label">What I did</p>
+              <p class="rs-box-text">Built the lockers product from 0 to 1, reached 250K ARR.</p>
+            </div>
+            <div class="rs-box">
+              <p class="rs-box-label">Takeaways</p>
+              <p class="rs-box-text">Learned the art of making reversible decisions and internalising an experiment-centric process.</p>
+            </div>
+          </div>
+          <div class="rs-avatars" role="group" aria-label="Testimonials — Bounce">
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-bounce-0">SM</button>
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-bounce-1">JD</button>
+          </div>
+          <div class="rs-quote" id="q-bounce-0">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"Aditya took the lockers product from a rough idea to a shipped experience our hosts actually rely on. He always tied the design back to a metric, so nothing on the roadmap was a guess."</p>
+              <p class="rs-quote-attr">Sofia Martins · Product Manager</p>
+            </div>
+          </div>
+          <div class="rs-quote" id="q-bounce-1">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"Working with him on the cancellation-rate problem was like getting a second product brain in the room. He could explain the research, the business case, and the UI in the same breath."</p>
+              <p class="rs-quote-attr">Jonas Duarte · Engineering Lead</p>
+            </div>
+          </div>
+        </li>
+        <li class="rs-entry">
+          <header class="rs-head">
+            <h3 class="rs-role">Sr. Product Designer @ <a href="https://unbabel.com/" target="_blank" rel="noopener">Unbabel</a></h3>
+            <span class="rs-dates">2023–2020</span>
+          </header>
+          <div class="rs-pair">
+            <div class="rs-box">
+              <p class="rs-box-label">What I did</p>
+              <p class="rs-box-text">Built internal tooling for linguists, shipped 5 products total.</p>
+            </div>
+            <div class="rs-box">
+              <p class="rs-box-label">Takeaways</p>
+              <p class="rs-box-text">Great intro to AI pre-ChatGPT — showed me how going deep and mastering a business domain brings enormous advantages as a PD constantly connecting dots between business goals and customers.</p>
+            </div>
+          </div>
+          <div class="rs-avatars" role="group" aria-label="Testimonials — Unbabel">
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-unbabel-0">AL</button>
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-unbabel-1">RM</button>
+          </div>
+          <div class="rs-quote" id="q-unbabel-0">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"Aditya turned a tool nobody wanted to touch into something our linguists actually loved. He had a rare talent for translating a deep technical domain into plain interfaces."</p>
+              <p class="rs-quote-attr">Ana Lopes · Director of Product</p>
+            </div>
+          </div>
+          <div class="rs-quote" id="q-unbabel-1">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"He shipped five products in three years and every single one stuck. His research instinct meant we rarely had to redo a decision after it left his desk."</p>
+              <p class="rs-quote-attr">Ricardo Mendes · Head of Ops</p>
+            </div>
+          </div>
+        </li>
+        <li class="rs-entry">
+          <header class="rs-head">
+            <h3 class="rs-role">Freelance</h3>
+            <span class="rs-dates">2019–2016</span>
+          </header>
+          <div class="rs-pair">
+            <div class="rs-box">
+              <p class="rs-box-label">What I did</p>
+              <p class="rs-box-text">Embedded in teams at Cocoon Experience and With Company for long-term projects in <a href="https://www.generalitranquilidade.pt/" target="_blank" rel="noopener">Insurance</a> (service design for claims process), <a href="https://josedemello.pt/en/subsidiaries/cuf/" target="_blank" rel="noopener">Healthcare</a> (service design for patient experience), and <a href="https://www.jeronimomartins.com/en/about-us/what-we-do/food-distribution/" target="_blank" rel="noopener">Retail</a> (UX design for loyalty and engagement), also worked on an <a href="https://cordis.europa.eu/project/id/770145" target="_blank" rel="noopener">EU project for urban mobility</a>.</p>
+            </div>
+            <div class="rs-box">
+              <p class="rs-box-label">Takeaways</p>
+              <p class="rs-box-text">Gained exposure to service design as a method for thinking through problems — worked with lovely design generalist colleagues, learned how design is really a business method.</p>
+            </div>
+          </div>
+          <div class="rs-avatars" role="group" aria-label="Testimonials — Freelance">
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-freelance-0">CG</button>
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-freelance-1">BP</button>
+          </div>
+          <div class="rs-quote" id="q-freelance-0">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"Aditya ran a claims chatbot project that a client had tried to kill twice before. He brought the service design lens that finally got it approved and delivered."</p>
+              <p class="rs-quote-attr">Catarina Gomes · Client Partner</p>
+            </div>
+          </div>
+          <div class="rs-quote" id="q-freelance-1">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"He came in as a freelancer and left as a design partner people kept asking for. Generous, structured, and always thinking about the business behind the screens."</p>
+              <p class="rs-quote-attr">Bruno Pinto · Design Lead</p>
+            </div>
+          </div>
+        </li>
+        <li class="rs-entry">
+          <header class="rs-head">
+            <h3 class="rs-role">Experience Designer @ <a href="https://www.novabase.com/en/" target="_blank" rel="noopener">Novabase</a></h3>
+            <span class="rs-dates">2015–2013</span>
+          </header>
+          <div class="rs-pair">
+            <div class="rs-box">
+              <p class="rs-box-label">What I did</p>
+              <p class="rs-box-text">First real job — transitioned from UXR to IXD.</p>
+            </div>
+            <div class="rs-box">
+              <p class="rs-box-label">Takeaways</p>
+              <p class="rs-box-text">Made a lot of friends and learned the fundamentals of product design.</p>
+            </div>
+          </div>
+          <div class="rs-avatars" role="group" aria-label="Testimonials — Novabase">
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-novabase-0">TM</button>
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-novabase-1">LS</button>
+          </div>
+          <div class="rs-quote" id="q-novabase-0">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"Aditya was the junior everyone fought to staff. He absorbed the fundamentals fast and still found time to teach the rest of us a thing or two about research."</p>
+              <p class="rs-quote-attr">Tiago Marques · Principal Consultant</p>
+            </div>
+          </div>
+          <div class="rs-quote" id="q-novabase-1">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"I watched him shift from research to interaction design in a single project. Few people make that transition with so much ease and so little ego."</p>
+              <p class="rs-quote-attr">Laura Santos · UX Lead</p>
+            </div>
+          </div>
+        </li>
+        <li class="rs-entry">
+          <header class="rs-head">
+            <h3 class="rs-role">UX Researcher @ <a href="https://photos.google.com/" target="_blank" rel="noopener">Google</a></h3>
+            <span class="rs-dates">Summer 2012</span>
+          </header>
+          <div class="rs-pair">
+            <div class="rs-box">
+              <p class="rs-box-label">What I did</p>
+              <p class="rs-box-text">Conducted formative research, ran usability testing sessions.</p>
+            </div>
+            <div class="rs-box">
+              <p class="rs-box-label">Takeaways</p>
+              <p class="rs-box-text">Embedded in a world-class product team early in my career.</p>
+            </div>
+          </div>
+          <div class="rs-avatars" role="group" aria-label="Testimonials — Google">
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-google-0">EW</button>
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-google-1">KD</button>
+          </div>
+          <div class="rs-quote" id="q-google-0">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"In ten weeks Aditya ran a benchmark and a round of usability tests that most interns wouldn't have finished in a full term. He asked sharp questions from day one."</p>
+              <p class="rs-quote-attr">Ethan Walker · Researcher</p>
+            </div>
+          </div>
+          <div class="rs-quote" id="q-google-1">
+            <div class="rs-quote-inner">
+              <p class="rs-quote-text">"We kept his findings on the wall long after the summer ended. The team trusted his observations as much as any full-time researcher's."</p>
+              <p class="rs-quote-attr">Kim Davis · Product Manager</p>
+            </div>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ── ABOUT ──────────────────────────────── -->
+    <section class="about" id="about">
+      <p class="section-eyebrow">About me</p>
+      <h2 class="about-heading">I am here to design and define.</h2>
+      <p class="about-body">I'm a deep generalist — someone who'd rather be genuinely useful across research, product design, and service design than be the single deepest specialist in one narrow lane. That's a deliberate trade-off: over a decade moving between 0→1 consumer products, B2B tooling, and AI/ML interfaces, and I think the range is the point, not a compromise.</p>
+      <p class="about-body">For a year at Bounce, I was the entire design team — covering both the supply and demand sides of the product solo, which meant getting very fluent in arguing with myself in meetings. I'm looking for teams that want that same range: someone who can go from user research to shipped pixels without losing the thread in between.</p>
+      <p class="about-body">Looking for a role that breaks me out of the sr pd purgatory I find myself in. Seeking to immerse myself in a domain with real human impact, and a role that drives sustainable business growth.</p>
+      <div class="about-actions">
+        <a class="btn btn--md" href="https://cal.com/adi-g/design-for-growth" target="_blank" rel="noopener">
+          <span class="material-symbols-rounded">calendar_month</span>
+          <span>BOOK A CALL</span>
+        </a>
+        <button class="btn btn--md" type="button" data-copy="aditya.gujaran@gmail.com" data-tooltip="Click to copy">
+          <span class="material-symbols-rounded">content_copy</span>
+          <span class="btn-label">aditya.gu**** @gmail.com</span>
+        </button>
+      </div>
     </section>
 
     <div class="tail"></div>
@@ -529,8 +1105,206 @@
 
   <!-- Theme toggle — injected by components/theme.js -->
 
+  <!-- Signal to case-study pages that we came from home (used by TOC stagger).
+       Catches link clicks, survives bfcache and back/forward navigation. -->
+  <script>
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('a[href]');
+      if (a && a.hostname === location.hostname && a.pathname !== '/' && a.pathname !== '/index.html') {
+        sessionStorage.setItem('triggerEntrance', '1');
+      }
+    });
+  </script>
+
+  <!-- Resume testimonials — avatar click reveals that person's quote
+       in place (.rs-quote). Independent per avatar; more than one can
+       be open at once. -->
+  <script>
+    document.querySelectorAll('.rs-avatar').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var panel = document.getElementById(btn.getAttribute('aria-controls'));
+        if (!panel) return;
+        var open = panel.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', String(open));
+      });
+    });
+  </script>
+
+  <!-- Page-load animation cleanup. `fill: both` keeps the rail-fly-in /
+       column-slide-up animations "filled" indefinitely once they finish —
+       and a filled CSS animation keeps reporting a resolved transform
+       (an identity matrix, not the literal `none`) even though the
+       keyframe says `transform: none`. On desktop that resolved-but-
+       technically-non-none value would make .rail a containing block for
+       any fixed-position descendant; mobile already avoids this by
+       animating .rail-identity instead of .rail (see the ≤1023px PAGE
+       LOAD ANIMATION override), but both elements still get cleared here
+       so their transform genuinely settles on `none` rather than a
+       lingering filled matrix. -->
+  <script>
+    ['.rail', '.rail-identity', '.content'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (!el) return;
+      el.addEventListener('animationend', function onDone() {
+        el.style.animation = 'none';
+      }, { once: true });
+    });
+  </script>
+
   <!-- Project registry — fills the feature-card eyebrows above so they
        stay in sync with the case-study headers (single source of truth). -->
   <script src="components/projects.js"></script>
+
+  <!-- Image zoom: any image tagged class="zoomable" opens the drag-to-dismiss
+       modal. Self-contained (carries its own CSS). -->
+  <script src="components/image-modal.js"></script>
+
+  <!-- Highlighter marker behind the tagline phrase (hydrates [data-highlight]). -->
+  <script src="components/text_highlight.js"></script>
+
+  <!-- Tooltip — lightweight, theme-adaptive tooltip primitive -->
+  <script src="components/tooltip.js"></script>
+
+  <!-- Copy email to clipboard — [data-copy] buttons. Uses the Clipboard
+       API on secure contexts and falls back to a hidden textarea so it
+       works on plain http too. Always shows feedback. -->
+  <script>
+    (function () {
+      function copyToClipboard(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text);
+        }
+        return new Promise(function (resolve, reject) {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.top = '-9999px';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          ta.setSelectionRange(0, ta.value.length);
+          var ok = false;
+          try { ok = document.execCommand('copy'); }
+          catch (e) { ok = false; }
+          document.body.removeChild(ta);
+          ok ? resolve() : reject(new Error('copy failed'));
+        });
+      }
+
+      document.addEventListener('click', function (e) {
+        var pill = e.target.closest('[data-copy]');
+        if (!pill) return;
+        if (pill.classList.contains('is-copied')) return;
+        var label = pill.querySelector('.btn-label') || pill;
+        var original = label.textContent;
+        copyToClipboard(pill.dataset.copy).then(function () {
+          pill.classList.add('is-copied');
+          label.textContent = 'Copied!';
+        }).catch(function () {
+          label.textContent = 'Copy failed';
+        }).then(function () {
+          setTimeout(function () {
+            pill.classList.remove('is-copied');
+            label.textContent = original;
+          }, 2000);
+        });
+      });
+    })();
+  </script>
+
+  <!-- Section scroll-spy — highlights the rail nav link whose section has
+       scrolled up past the top edge of the viewport. A link only becomes
+       active once you've actually scrolled into its section, so nothing is
+       selected at the top of the page: WORK stays quiet until the work-projects
+       section has scrolled past the threshold (the moment its top hits the viewport
+       top — the same spot clicking WORK jumps to). -->
+  <script>
+    (function () {
+      var navLinks = document.querySelectorAll('.rail-nav a[data-section-link]');
+      if (!navLinks.length) return;
+
+      var sections = [];
+      navLinks.forEach(function (link) {
+        var id = link.getAttribute('data-section-link');
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el, link: link });
+      });
+      if (!sections.length) return;
+
+      // A section is active once its top crosses a line partway
+      // down the viewport so the highlight fires when the section
+      // enters the top fifth, not after you've already scrolled
+      // past it. The last (DOM order) section past the line wins.
+      var rafPending = false;
+
+      function update() {
+        rafPending = false;
+        var LINE = window.innerHeight * 0.2;
+        var activeId = null;
+        sections.forEach(function (s) {
+          if (s.el.getBoundingClientRect().top <= LINE) activeId = s.id;
+        });
+        navLinks.forEach(function (link) {
+          link.classList.toggle('is-active', link.getAttribute('data-section-link') === activeId);
+        });
+      }
+
+      function onScroll() {
+        if (rafPending) return;
+        rafPending = true;
+        requestAnimationFrame(update);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      window.addEventListener('load', onScroll);
+      update();
+    })();
+  </script>
+
+  <!-- Rail intro text is persistent (was: revealed on scroll past the overview).
+       The previous scroll-driven toggle has been removed so the rail-context
+       renders from first paint. -->
+
+  <!-- Avatar spin: an excited 2.5-turn entrance onto the caricature, then a
+       calm half-turn settle back to the photo. The asymmetric enter/leave
+       timing can't be done with :hover alone — once the entrance lands we
+       normalise the rotation to -180deg (visually identical) so leaving is a
+       single half-turn instead of unwinding all 2.5 turns. -->
+  <script>
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var link = document.querySelector('.rail-avatar-link');
+      var disc = link && link.querySelector('.rail-avatar');
+      if (!disc) return;
+
+      var ENTER_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';    /* excited, no wobble */
+      var LEAVE_EASE = 'cubic-bezier(0.34, 1.56, 0.64, 1)'; /* calm settle back  */
+      var ENTER_MS = 1200;   /* excited spin in  */
+      var LEAVE_MS = 500;    /* calm settle back */
+      var SPIN = -900;       /* 2.5 turns onto the far face */
+      var landTimer;
+
+      link.addEventListener('mouseenter', function () {
+        clearTimeout(landTimer);
+        disc.style.transition = 'transform ' + ENTER_MS + 'ms ' + ENTER_EASE;
+        disc.style.transform = 'rotateY(' + SPIN + 'deg)';
+        // Once it lands, snap to -180deg (same face) so the next leave is a
+        // quick half-turn rather than a full 2.5-turn unwind.
+        landTimer = setTimeout(function () {
+          disc.style.transition = 'none';
+          disc.style.transform = 'rotateY(-180deg)';
+          void disc.offsetWidth;   // flush so the leave transitions from here
+        }, ENTER_MS);
+      });
+
+      link.addEventListener('mouseleave', function () {
+        clearTimeout(landTimer);
+        disc.style.transition = 'transform ' + LEAVE_MS + 'ms ' + LEAVE_EASE;
+        disc.style.transform = 'rotateY(0deg)';
+      });
+    })();
+  </script>
 </body>
 </html>
