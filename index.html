@@ -620,12 +620,14 @@
       color: var(--color-text-muted);
       white-space: nowrap;
     }
-    /* Paired boxes — "What I did" / "Takeaways", equal width,
-       no card chrome (plain text columns). */
+    /* Stacked boxes — "What I did" stacks above "Takeaways",
+       no card chrome (plain text). Single column on every
+       breakpoint so the two read as one continuous thread
+       under the role header. */
     .rs-pair {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--sp-4);
+      grid-template-columns: 1fr;
+      gap: var(--sp-3);
       margin-top: var(--sp-5);
     }
     .rs-box-label {
@@ -733,9 +735,6 @@
       .about-actions { margin-top: var(--sp-8); }
       .resume-buttons { margin: var(--sp-5) 0 0; }
       .rs-head { flex-direction: column; align-items: flex-start; gap: var(--sp-1); }
-    }
-    @media (max-width: 560px) {
-      .rs-pair { grid-template-columns: 1fr; gap: var(--sp-3); }
     }
   </style>
 </head>
