@@ -16,6 +16,12 @@
   <meta name="twitter:description" content="Aditya Gujaran — product designer in Lisbon. Selected work in UX research, interaction design, and 0→1 product." />
   <meta name="twitter:image" content="https://adityagujaran.me/project-content/og-image.png" />
 
+  <!-- Disable the browser's automatic scroll-position restore on reload.
+       The page-load entrance animation (see column-slide-up below) causes
+       a transient scrollY that Chrome then replays on refresh, yanking the
+       hero column up against the sticky left rail. Forcing 'manual' keeps
+       every reload starting at the top, same as a fresh navigation. -->
+  <script>if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }</script>
   <link rel="stylesheet" href="style.css" />
   <!-- Shared fonts + analytics (Umami, Vercel) + llms discovery link.
        head.js also applies the saved theme before first paint. -->
