@@ -223,11 +223,17 @@
      Circular, playable identity avatar. Click plays it in place (stays a
      circle, no fullscreen); the sticky rail keeps it on screen while reading. */
   function videoAvatarHtml() {
+    /* Projects can supply their own filmed overview via a `video` field
+       in the registry; pages without one fall back to the shared clip. */
+    var slug = document.body.getAttribute('data-project');
+    var project = window.Projects && slug ? window.Projects.get(slug) : null;
+    var src = (project && project.video) || OVERVIEW_VIDEO;
+    var poster = (project && project.videoPoster) || OVERVIEW_POSTER;
     return '' +
       '<div class="csv" data-state="idle">' +
         '<button class="csv-btn" type="button" aria-label="Play the project overview video">' +
           '<video class="csv-video" playsinline preload="metadata" ' +
-            'poster="' + OVERVIEW_POSTER + '" src="' + OVERVIEW_VIDEO + '"></video>' +
+            'poster="' + poster + '" src="' + src + '"></video>' +
           '<svg class="csv-ring" viewBox="0 0 116 116" aria-hidden="true">' +
             '<circle cx="58" cy="58" r="' + RING_R + '"></circle></svg>' +
           '<span class="csv-play" aria-hidden="true"></span>' +
