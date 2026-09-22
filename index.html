@@ -16,6 +16,12 @@
   <meta name="twitter:description" content="Aditya Gujaran — product designer in Lisbon. Selected work in UX research, interaction design, and 0→1 product." />
   <meta name="twitter:image" content="https://adityagujaran.me/project-content/og-image.png" />
 
+  <!-- Disable the browser's automatic scroll-position restore on reload.
+       The page-load entrance animation (see column-slide-up below) causes
+       a transient scrollY that Chrome then replays on refresh, yanking the
+       hero column up against the sticky left rail. Forcing 'manual' keeps
+       every reload starting at the top, same as a fresh navigation. -->
+  <script>if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }</script>
   <link rel="stylesheet" href="style.css" />
   <!-- Shared fonts + analytics (Umami, Vercel) + llms discovery link.
        head.js also applies the saved theme before first paint. -->
@@ -282,7 +288,7 @@
       width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
     }
     .overview-subhead { margin-top: 0; }
-    .overview-subhead em { font-style: normal; }   /* [data-highlight] phrase — no italics */
+    .overview-headline em { font-style: normal; }   /* [data-highlight] phrase — no italics */
     /* Nudge the grid down to bring the headline's cap-height into optical
        alignment with the name (desktop only — on mobile the rail stacks
        above it and provides its own spacing). Derived from the rail's own
@@ -780,8 +786,8 @@
          (gap), timed to land after the column settles; see the PAGE LOAD
          ANIMATION rules above. -->
     <section class="overview-hero" id="overview-hero">
-      <h1 class="b-section-header overview-headline">Product builder with a design practice that anchors on continuous, rigorous, rapid UX research to enable high velocity product delivery.</h1>
-      <p class="b-section-subheader overview-subhead">the <em data-highlight data-highlight-auto="1520">why behind the what</em><br>has never been more important</p>
+      <h1 class="b-section-header overview-headline">the <em data-highlight data-highlight-auto="1520">why behind the what</em><br>has never been more important</h1>
+      <p class="b-section-subheader overview-subhead">Product builder with a design practice that anchors on continuous, rigorous, rapid UX research to enable high velocity product delivery.</p>
     </section>
 
     <!-- Feature sequence — the work-projects container. Its top edge is the
