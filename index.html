@@ -287,8 +287,7 @@
     .overview-subhead {
       width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
     }
-    .overview-hero { --overview-gap: var(--sp-6); }
-    .overview-headline { margin-bottom: var(--overview-gap); }
+    .overview-headline { margin-bottom: var(--sp-8); }
     .overview-subhead { margin-top: 0; }
     .overview-headline em { font-style: normal; }   /* [data-highlight] phrase — no italics */
     /* Nudge the grid down to bring the headline's cap-height into optical
@@ -1231,44 +1230,5 @@
     })();
   </script>
 
-  <!-- Disposable tuner — hero H1 -> subhead gap. ?tune=1 only, strip before shipping. -->
-  <script>
-    (function () {
-      if (!new URLSearchParams(location.search).has('tune')) return;
-      var hero = document.querySelector('.overview-hero');
-      var headline = document.querySelector('.overview-headline');
-      var startPx = parseFloat(getComputedStyle(headline).marginBottom) || 24;
-
-      var panel = document.createElement('div');
-      panel.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:9999;' +
-        'background:#1e1d1a;color:#f8f6ee;font:13px/1.4 -apple-system,sans-serif;' +
-        'padding:14px 16px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.4);' +
-        'width:240px;';
-      panel.innerHTML =
-        '<div style="font-weight:600;margin-bottom:8px;">H1 → subhead gap</div>' +
-        '<input id="tune-gap" type="range" min="0" max="64" step="1" value="' + startPx + '" style="width:100%;">' +
-        '<div style="display:flex;justify-content:space-between;margin-top:6px;">' +
-          '<span id="tune-readout">' + startPx + 'px</span>' +
-          '<button id="tune-copy" style="background:#ACA0E8;color:#1a1a1a;border:0;' +
-          'border-radius:6px;padding:3px 8px;cursor:pointer;font-size:12px;">Copy CSS</button>' +
-        '</div>';
-      document.body.appendChild(panel);
-
-      var slider = panel.querySelector('#tune-gap');
-      var readout = panel.querySelector('#tune-readout');
-      var copyBtn = panel.querySelector('#tune-copy');
-
-      slider.addEventListener('input', function () {
-        hero.style.setProperty('--overview-gap', slider.value + 'px');
-        readout.textContent = slider.value + 'px';
-      });
-      copyBtn.addEventListener('click', function () {
-        var rem = (parseFloat(slider.value) / 16).toFixed(3) + 'rem';
-        navigator.clipboard.writeText('margin-bottom: ' + rem + '; /* ' + slider.value + 'px */');
-        copyBtn.textContent = 'Copied!';
-        setTimeout(function () { copyBtn.textContent = 'Copy CSS'; }, 1200);
-      });
-    })();
-  </script>
 </body>
 </html>
