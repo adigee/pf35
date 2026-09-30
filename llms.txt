@@ -1,35 +1,37 @@
 # Aditya Gujaran — Product Designer
 
-> Senior product designer based in Lisbon with 10+ years of experience. Practice focuses on rigorous UX research to enable high-velocity product delivery. Works at the overlap of product strategy, user research, interaction design, and visual craft. Strong track record in B2B SaaS, AI/ML tooling, and mobile products. Available right now & open to relocation. Contact: aditya.gujaran@gmail.com
+> Senior product designer based in Lisbon, Portugal — Portuguese national, open to relocation. 10+ years of practice across B2B SaaS, AI/ML tooling, consumer mobile, and insurance products. A deep generalist working end-to-end from discovery to delivery, aligning business ambition and customer value with an experimental mindset. Available right now & open to relocation. Contact: aditya.gujaran@gmail.com
 
 ## Portfolio
 
 - [Portfolio home](index.html): Overview of selected work, experience, and skills
-- [Lockers PUDO — Bounce](lockers-reducing-cancellation.html): Reduced cancellation rate to prove product-market fit for a new locker pick-up/drop-off use case. Built from 0→1. Skills: Interaction design, Continuous discovery.
-- [The Decision Module — Unbabel](decision-module.html): Made Unbabel's AI quality-estimation model operable by ops linguists without specialist engineers — translating ML reasoning into a legible, actionable UI. Skills: Interaction design, AI/ML interfaces.
-- [TRQ DAD — Cocoon](trq-dad.html): Mobile chatbot for filing insurance claims after a car accident. Stripped verbose forms to their essentials. Skills: Service design, Conversational UI.
+- [Lockers PUDO — Bounce](lockers-reducing-cancellation.html): How continuous discovery drove the cancellation rate from 65% to 12% and proved product-market fit for a new locker pick-up/drop-off use case. Skills: Interaction design, Continuous discovery.
+- [The Decision Module — Unbabel](decision-module.html): Put Unbabel's AI quality-estimation model in the hands of the ops team, making the model's reasoning legible without making it overwhelming. Skills: Interaction design, AI/ML interfaces.
+- [TRQ DAD — Cocoon](trq-dad.html): Reimagined car-insurance claims for Tranquilidade as a chatbot that could infer 90% of accidents in two questions and near-fully automate the claim. Skills: Service design, Conversational UI.
 
 ## About
 
-Aditya Gujaran is a senior product designer with 10+ years of practice across B2B SaaS, AI tooling, consumer mobile, and insurance products. His work lives at the overlap of rigorous research, clear strategic thinking, and considered craft. He has a particular fondness for the 0→1 problem — the moment before the product exists — and believes good design is argued for, not just executed.
+Aditya Gujaran is a senior product designer with 10+ years of practice across B2B SaaS, AI/ML tooling, consumer mobile, and insurance products. He's a deep generalist — someone who'd rather be genuinely useful across every aspect of the product experience, from discovery all the way to delivery, than siloed in a specific lane. He builds processes and crafts experiences that align business ambition and customer value with an experimental mindset, always thinking in bets, listening carefully, and executing rapidly. He's seeking roles in teams using technology to deliver real value to society — customers, citizens, the commons — with a focus on real human impact.
 
 **Core skills:** UX Research · Interaction Design · Visual Design · Systems Thinking · Service Design · Conversational UI · AI/ML interface design · Design Strategy · Continuous Discovery · 0→1 product design
 
 **Industries:** B2B SaaS · Localisation / translation technology · AI operations tools · Logistics · Insurance / insurtech
 
-**Tools:** Figma · Prototyping · User research · Design systems
+**Tools:** Miro, FigJam, Mixpanel, Metabase, Figma, Framer, Maze, Dovetail, Lyssna, v0, Claude Code, Conductor, Cursor, Arduino and circuits
 
 ## Experience
 
-- **Bounce** — Senior Product Designer. Built new PUDO (pick-up/drop-off) locker product from scratch, reduced cancellation rate, established product-market fit.
-- **Unbabel** — Senior Product Designer. Led design for On-demand platform expansion post-acquisition; designed Decision Module AI tooling to scale ops efficiency.
-- **Cocoon** — Senior Product Designer. Service design and conversational UI for TRQ DAD, a mobile-first insurance claim chatbot.
+- **Bounce** — Senior Product Designer (Aug 2024–Oct 2025). Built the lockers PUDO product from 0→1, reaching 250K ARR; reduced the cancellation rate from 65% to 12%.
+- **Unbabel** — Senior Product Designer (Feb 2020–Feb 2023). Built internal tooling for ops linguists, shipping 5 products total, including the Decision Module AI interface.
+- **Freelance** — Product & Service Designer (Jun 2016–Dec 2019). Embedded across insurance and healthcare (Cocoon Experience, for Tranquilidade and CUF), retail (With Company, for Jerónimo Martins), and urban mobility (EU-funded Motiv project — Woorti).
+- **Novabase** — Experience Design Consultant (May 2013–Oct 2015). First full-time role; grew from UX researcher into UX designer; led Oneride and Wizzio.
+- **Google** — UX Research Intern (Summer 2012). Benchmarking and usability studies for Google+ Photos and Events.
 - 10+ years total design practice across multiple industries and company stages.
 
 ## Contact
 
 - **Email:** aditya.gujaran@gmail.com
 - **LinkedIn:** https://linkedin.com/in/agujaran/
-- **Website:** https://adityagujaran.me
+- **Website:** https://adityagujaran.com
 - **Location:** Lisbon, Portugal (GMT+1)
 - **Availability:** Available right now & open to relocation.
