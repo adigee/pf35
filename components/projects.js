@@ -29,18 +29,21 @@
       href: 'lockers-reducing-cancellation.html',
       name: 'Lockers PUDO',
       eyebrow: ['Bounce', 'B2C', 'Locker PUDO', 'Prove PMF'],
+      video: 'project-content/4%20Lockers%20PUDO%20for%20framer/Lockers%20talking%20head%20v1.mp4',
     },
     {
       slug: 'decision-module',
       href: 'decision-module.html',
       name: 'The Decision Module',
       eyebrow: ['Unbabel', 'B2B', 'Decision Module', 'Internal tool'],
+      video: 'project-content/2%20Decision%20module%20for%20framer/Decision%20module%20talking%20head%20v1.mp4',
     },
     {
       slug: 'trq-dad',
       href: 'trq-dad.html',
       name: 'TRQ DAD',
       eyebrow: ['Freelance', 'B2B', 'TRQ DAD', 'Increase ops efficiency'],
+      video: 'project-content/3%20DAD%20Images%20for%20framer/TRQ%20talking%20head%20v2.mp4',
     },
   ];
 

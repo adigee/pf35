@@ -67,11 +67,13 @@
     'transition:opacity 180ms ' + EASE + ',' +
     'transform 220ms ' + EASE + ',filter 220ms ' + EASE + ';}' +
 
-    /* bottom (default) — below trigger, centered, grows down */
+    /* bottom (default) — below trigger, centered, grows down.
+       --tt-shift nudges it back on-screen when centering would
+       push it past the viewport edge (set in JS on open). */
     '.b-tt--bottom{top:100%;left:50%;margin-top:10px;' +
     'transform-origin:top center;' +
-    'transform:translateX(-50%) translateY(-4px) scale(0.96);}' +
-    '.b-tt--bottom.is-open{transform:translateX(-50%) translateY(0) scale(1);}' +
+    'transform:translateX(calc(-50% + var(--tt-shift, 0px))) translateY(-4px) scale(0.96);}' +
+    '.b-tt--bottom.is-open{transform:translateX(calc(-50% + var(--tt-shift, 0px))) translateY(0) scale(1);}' +
 
     /* left — left of trigger, vertically centered */
     '.b-tt--left{right:100%;top:50%;margin-right:10px;' +
@@ -119,7 +121,18 @@
 
     function open() {
       clearTimeout(closeTimer);
+      tip.style.setProperty('--tt-shift', '0px');
       tip.classList.add('is-open');
+      if (side === 'bottom') {
+        requestAnimationFrame(function () {
+          var rect = tip.getBoundingClientRect();
+          var pad = 8;
+          var shift = 0;
+          if (rect.left < pad) shift = pad - rect.left;
+          else if (rect.right > window.innerWidth - pad) shift = (window.innerWidth - pad) - rect.right;
+          if (shift) tip.style.setProperty('--tt-shift', shift + 'px');
+        });
+      }
     }
     function close(immediate) {
       clearTimeout(closeTimer);

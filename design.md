@@ -334,6 +334,11 @@ Panels fade in/out via `opacity` only (`transition: opacity var(--panel-transiti
 | Contact email btn | `background` | 200ms | ease | `.p-email` hover |
 | Contact links | `color` | 150ms | ease | `.p-contact-links a` hover |
 | Reading marker | `opacity` | 300ms | ease | Appears/disappears |
+| Testimonial quote reveal | `grid-template-rows`, `opacity` | 180ms | ease | `.rs-quote` — avatar click toggle, resume section |
+| Testimonial avatar hover | `background`, `color`, `transform` | 150ms | ease | `.rs-avatar` |
+| Backstory toggle hover/press | `color`, `border-color`, `background` | 160ms | ease | `.cs-backstory-toggle` |
+| Annotation strike draw | `transform` (`scaleX` 0→1) | 260ms | `cubic-bezier(0.65,0,0.35,1)` | `.ann::after` — reduced-motion falls back to an opacity fade |
+| Annotation note / rail breadcrumb reveal | `opacity`, `transform` (pop-in) | 200–300ms | `cubic-bezier(0.34,1.45,0.64,1)` (spring) | `.ann-note`, `.cs-toc-note` |
 
 ### Rules
 
@@ -366,6 +371,16 @@ Nav links are hidden on mobile (`≤768px`).
 ### Tags
 
 `.b-tag` — 9px, uppercase, `--tracking-wide`, muted color, `1px solid --color-border` border, no fill. Tags signal taxonomy, not interactivity.
+
+### Resume Entry — Paired Boxes + Testimonial Reveal
+
+Each `.rs-entry` in the homepage Resume section (`index.html`) is: a header (role/company + dates, unchanged from the original asymmetric-split design), then two stacked plain-text boxes (`.rs-pair` → `.rs-box` × 2, no card chrome — no background or border), then a row of small testimonial avatars.
+
+- **Paired boxes**: `.rs-pair` is a single-column grid (`1fr`) on every breakpoint, so "What I did" stacks above "Takeaways" as one continuous thread. Each `.rs-box` is just a `.rs-box-label` (muted, `--text-2xs`, uppercase, `--tracking-widest` — same treatment as other section labels) followed by one `.rs-box-text` sentence (`--text-sm`, full `--color-text`, not muted — deliberately readable at full weight since there's no card background to lift it off the page). Content is kept to ~1.5 sentences per box.
+- **Avatars**: `.rs-avatar` — 32px circle, `--font-mono` initials, `--color-primary-muted` background / `--color-primary` text at rest, inverts to solid `--color-primary` fill (`--color-on-primary` text) when its quote is open (`aria-expanded="true"`) — the same fill-invert language as `.btn` hover.
+- **Testimonial reveal**: quotes (`.rs-quote`) are collapsed by default and expand via a `grid-template-rows: 0fr → 1fr` + `opacity` transition (180ms, under the interactive-feedback ceiling — this is a toggle, not a structural panel). Each avatar toggles independently; more than one quote can be open at once. No card background on the quote either — just a `--color-border` left rail, matching the boxes' plain-text treatment.
+
+Converged from three playground explorations (2026-08-13): an initial asymmetric-split-with-testimonial-cards design shipped in PR #149 read as too dense once takeaways were added; a two-track "Career list + Reflections column" layout was tried and also judged too dense; this paired-boxes-plus-click-to-reveal-avatars design was the one that landed — the resting state is just a header, two short sentences, and a couple of dots.
 
 ### Timezone Pill
 
@@ -415,6 +430,29 @@ A circular, icon-only control — currently only the floating light/dark toggle 
 | Hover | `transform: scale(1.08)` — no color change |
 | Icon | Material Symbols Rounded, 22px, swaps `dark_mode` / `light_mode` |
 | Transition | `transform` 240ms `cubic-bezier(0.22,1,0.36,1)` |
+
+#### Icon Toggle Chip (`.cs-backstory-toggle`)
+
+A small, playful toggle for a single low-emphasis aside control — currently only the case-study rail's "Add Backstory" button. Distinct from `.btn`: rectangular (not pill), quieter at rest, and carries an on/off state via `aria-pressed` rather than being a one-shot action.
+
+**Structure:**
+```html
+<button type="button" class="cs-backstory-toggle" aria-pressed="false">
+  <span class="cs-backstory-glyph" aria-hidden="true">✦</span>
+  <span class="cs-backstory-label">Add Backstory</span>
+</button>
+```
+
+| Property | Value |
+|---|---|
+| Shape | `border-radius: 6px`, `1px solid --color-border` |
+| Rest | `background: none`, `color: --color-text-muted` |
+| Hover | `color: --color-text`, `border-color: --color-text-muted` |
+| Pressed (`aria-pressed="true"`) | `color: --color-primary`, `border-color: --color-primary`, `background: --color-primary-muted` |
+| Font | `--font-mono`, `--text-2xs` (9px), uppercase, `--tracking-wider` |
+| Transition | `color`, `border-color`, `background` — 160ms ease |
+
+Use this chip family (not `.btn`) for small toggleable asides that shouldn't compete with primary content — it reads as a quiet control, not a call to action.
 
 ### Panel CTA (Link 1)
 
@@ -472,6 +510,40 @@ Case-study content uses a three-tier vertical rhythm inside `.cs-section`. The s
 Within `.cs-section`, the fallback is `margin-top: 16px` (`.cs-section > * + *`); the table above shows the overrides layered on top.
 
 **List (`cs-list`):** bullet lists are inline content, not structural blocks. They use `padding-left: var(--sp-6)` (24px) for the indent. The 24px trailing margin aligns with the list's own indent token and sits one tier above the paragraph rhythm, one tier below the section break.
+
+---
+
+### Case Study Annotations ("Backstory")
+
+Shared, page-agnostic system (`annotations.css`) for marginalia on any case study — the honest aside behind a phrase in the body copy. Markup: `<span class="ann">phrase</span><span class="ann-note">the note</span>` immediately adjacent in a `.b-body` paragraph. No JS positions the note — it uses the CSS default static position for an absolutely-positioned inline box, which places it beside the phrase automatically.
+
+Everything is gated by `data-backstory="on|off"` on `<html>`, set by the rail's `.cs-backstory-toggle` ([Icon Toggle Chip](#icon-toggle-chip-cs-backstory-toggle)) via `components/case-study.js`. Off by default — nothing is struck or visible until the reader opts in.
+
+- **Strike** (`.ann::after`): draws itself left-to-right (`scaleX(0)→scaleX(1)`) in `--color-primary` when backstory is on.
+- **Note** (`.ann-note`): sits in a reserved 180px right gutter on `.b-body`, pops in with a spring easing, `--color-primary` text.
+- **Rail annotation** (`data-rail-note="…"` on a `section.cs-section`): its own, independent annotation — not derived from that section's `.ann-note`, so the same beat is never written twice. A rail item's label is duplicated as its section's body header, so mounting strikes + writes the note under **both**: the TOC link (`.cs-toc-note` stacked underneath) and the header (`.cs-toc-note` inline right after it, smaller, `.b-section-header .cs-toc-note`). Mounted (not just revealed) when backstory turns on, and unmounted (after its fade-out) when it turns off — so nothing reserves empty space while off. A section may carry a body annotation, a rail annotation, both, or neither.
+
+Desktop only, `≥901px` — intentionally matches the rail's own fold-away breakpoint (`.cs-rail`/`.cs-toc` collapse at `≤900px`), since the toggle that controls all of this lives in the rail.
+
+Deliberately hand-written rather than importing a third-party annotation library (e.g. neat-annotations) — that library anchors notes to the phrase's own inline position (causes text overlap depending on line-wrap), has no versioned release to pin a CDN import against, and ships variants (8-directional arrows, color-cycle animation) this site never uses. Owning ~30 lines of CSS here is both smaller and more robust than depending on it.
+
+### Homepage — Section Rhythm
+
+The homepage's three scroll sections (Work → Resume → About) use a deliberate two-tier macro rhythm: thumbnails group tightly within Work, and section breaks open up clearly between Work / Resume / About.
+
+| Transition | Token | Value | Role |
+|---|---|---|---|
+| thumbnail → thumbnail | `--sp-8` | 32px | projects group together (32px trailing + 32px leading = 64px) |
+| eyebrow → heading/thumbnail | `--sp-6` | 24px | the section eyebrow introduces its content (owned by `.section-eyebrow` / `.resume-label`) |
+| heading → body | `--sp-6` | 24px | the section heading introduces its prose |
+| paragraph → paragraph | `--sp-4` | 16px | continuation of prose |
+| section → section | `--sp-24` | 96px | a new section begins (`--sp-24` padding on `.resume` / `.about`) |
+
+Work's thumbnails sit on a tight `--sp-8` (32px) padding so the projects read as one group; `.resume` and `.about` carry `--sp-24` (96px) so each section break is a clear, breathable stop. On desktop each `.feature` is also `min-height: 100vh` + centered, which adds viewport-driven slack above/below each thumbnail on top of the 32px padding.
+
+The trailing gap below every eyebrow is a single `--sp-6` owned by the shared `.section-eyebrow` / `.resume-label` rule — headings no longer carry their own top margin, and the heading's `margin-bottom` is `--sp-6` to match the eyebrow gap (a clean equal rhythm: eyebrow → heading → body at 24px each).
+
+Mobile (`≤720px`) keeps sections at `--sp-16` (64px) and Work thumbnails at `--sp-12` top / `--sp-6` bottom (48px/24px) — smaller frames need a proportionally tighter rhythm.
 
 ---
 
@@ -548,4 +620,4 @@ These rules are strict. They exist because this is a small, deliberate codebase 
 
 ---
 
-*Last updated: 2026-08-06*
+*Last updated: 2026-08-13*
