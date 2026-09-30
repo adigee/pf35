@@ -29,6 +29,7 @@
       href: 'lockers-reducing-cancellation.html',
       name: 'Lockers PUDO',
       eyebrow: ['Bounce', 'B2C', 'Locker PUDO', 'Prove PMF'],
+      video: 'project-content/4%20Lockers%20PUDO%20for%20framer/Lockers%20talking%20head%20v1.mp4',
     },
     {
       slug: 'decision-module',
