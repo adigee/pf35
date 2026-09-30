@@ -35,6 +35,7 @@
       href: 'decision-module.html',
       name: 'The Decision Module',
       eyebrow: ['Unbabel', 'B2B', 'Decision Module', 'Internal tool'],
+      video: 'project-content/2%20Decision%20module%20for%20framer/Decision%20module%20talking%20head%20v1.mp4',
     },
     {
       slug: 'trq-dad',
