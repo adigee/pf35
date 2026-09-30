@@ -41,6 +41,7 @@
       href: 'trq-dad.html',
       name: 'TRQ DAD',
       eyebrow: ['Freelance', 'B2B', 'TRQ DAD', 'Increase ops efficiency'],
+      video: 'project-content/3%20DAD%20Images%20for%20framer/TRQ%20talking%20head%20v1.mp4',
     },
   ];
 
