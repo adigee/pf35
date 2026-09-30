@@ -662,6 +662,29 @@
       color: var(--color-primary);
       text-decoration-color: var(--color-primary);
     }
+    .rs-box-list {
+      list-style: disc;
+      padding-left: var(--sp-4);
+      margin-top: var(--sp-2);
+      display: grid;
+      gap: var(--sp-2);
+    }
+    .rs-box-list li {
+      font-size: var(--text-sm);
+      line-height: var(--leading-body);
+      color: var(--color-text);
+    }
+    .rs-box-list a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: var(--color-border);
+      transition: color 120ms ease, text-decoration-color 120ms ease;
+    }
+    .rs-box-list a:hover {
+      color: var(--color-primary);
+      text-decoration-color: var(--color-primary);
+    }
 
     /* Avatar row — one small initial button per testimonial.
        Click reveals that person's quote in place; independent
@@ -902,19 +925,19 @@
             </div>
           </div>
           <div class="rs-avatars" role="group" aria-label="Testimonials — Bounce">
-            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-bounce-1">FL</button>
-            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-bounce-2">JB</button>
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-bounce-1">JB</button>
+            <button class="rs-avatar" type="button" aria-expanded="false" aria-controls="q-bounce-2">FL</button>
           </div>
           <div class="rs-quote" id="q-bounce-1">
             <div class="rs-quote-inner">
-              <p class="rs-quote-text">"I had the chance to work with Adi across a bunch of projects, and he was one of those people you're genuinely grateful to have on your team. He's a super clear communicator, deeply gets user experience, and has that rare mix of creativity and follow-through — he'll stick with a task until it's truly done right. As someone working on the business development side, I can't overstate how helpful he was. He always gave me clarity, structure, and designs that made it easier to sell ideas to partners. He just gets it — the user side and the business side — and that makes a huge difference. Aditya was consistently supportive, easy to collaborate with, and brought a ton of thoughtfulness to everything he worked on. I'd happily work with him again any day."</p>
-              <p class="rs-quote-attr">Francisco Lacerda · Business Development</p>
+              <p class="rs-quote-text">"I hired Adi at Unbabel, and later brought him onto my team at Bounce when I was leading the Lockers initiative. Adi is a designer who leads with customer research and uses it to drive design decisions and navigate ambiguity (super relevant for 0-1), and he does this very effectively in fast-paced environments. He's a generalist PD who can adapt process and posture depending on the team, is focused on product outcomes and occasionally cracks good jokes!"</p>
+              <p class="rs-quote-attr">Jérémy Bléhaut · Head of Product</p>
             </div>
           </div>
           <div class="rs-quote" id="q-bounce-2">
             <div class="rs-quote-inner">
-              <p class="rs-quote-text">"I hired Adi at Unbabel, and later brought him onto my team at Bounce when I was leading the Lockers initiative. Adi is a designer who leads with customer research and uses it to drive design decisions and navigate ambiguity (super relevant for 0-1), and he does this very effectively in fast-paced environments. He's a generalist PD who can adapt process and posture depending on the team, is focused on product outcomes and occasionally cracks good jokes!"</p>
-              <p class="rs-quote-attr">Jérémy Bléhaut · Head of Product</p>
+              <p class="rs-quote-text">"I had the chance to work with Adi across a bunch of projects, and he was one of those people you're genuinely grateful to have on your team. He's a super clear communicator, deeply gets user experience, and has that rare mix of creativity and follow-through — he'll stick with a task until it's truly done right. As someone working on the business development side, I can't overstate how helpful he was. He always gave me clarity, structure, and designs that made it easier to sell ideas to partners. He just gets it — the user side and the business side — and that makes a huge difference. Aditya was consistently supportive, easy to collaborate with, and brought a ton of thoughtfulness to everything he worked on. I'd happily work with him again any day."</p>
+              <p class="rs-quote-attr">Francisco Lacerda · Business Development</p>
             </div>
           </div>
         </li>
@@ -942,7 +965,12 @@
           <div class="rs-pair">
             <div class="rs-box">
               <p class="rs-box-label">What I did</p>
-              <p class="rs-box-text">Embedded in teams at Cocoon Experience and With Company for long-term projects in <a href="https://www.generalitranquilidade.pt/" target="_blank" rel="noopener">Insurance</a> (service design for claims process), <a href="https://josedemello.pt/en/subsidiaries/cuf/" target="_blank" rel="noopener">Healthcare</a> (service design for patient experience), and <a href="https://www.jeronimomartins.com/en/about-us/what-we-do/food-distribution/" target="_blank" rel="noopener">Retail</a> (UX design for loyalty and engagement), also worked on an <a href="https://cordis.europa.eu/project/id/770145" target="_blank" rel="noopener">EU project for urban mobility</a>.</p>
+              <p class="rs-box-text">Embedded in teams for long-term projects at</p>
+              <ul class="rs-box-list">
+                <li>Cocoon Experience: <a href="https://www.generalitranquilidade.pt/" target="_blank" rel="noopener">Insurance</a> (service design for claims process), <a href="https://josedemello.pt/en/subsidiaries/cuf/" target="_blank" rel="noopener">Healthcare</a> (service design for patient experience)</li>
+                <li>With Company: <a href="https://www.jeronimomartins.com/en/about-us/what-we-do/food-distribution/" target="_blank" rel="noopener">Retail</a> (UX design for loyalty and engagement)</li>
+                <li><a href="https://cordis.europa.eu/project/id/770145" target="_blank" rel="noopener">EU project</a> for Urban mobility (UX design for data collection tool)</li>
+              </ul>
             </div>
             <div class="rs-box">
               <p class="rs-box-label">Takeaways</p>
