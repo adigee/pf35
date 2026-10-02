@@ -227,6 +227,10 @@
       /* Light: caricature at rest, photo on hover (art stacks above photo,
          so its opacity is what gates which one shows). */
       [data-theme="light"] .rail-avatar-face--art { opacity: 1; }
+      /* Touch tap crossfade: no :hover on touch, so the avatar-spin script
+         toggles .is-flipped to briefly reveal the other face. */
+      .rail-avatar-link.is-flipped .rail-avatar-face--art { opacity: 1; }
+      [data-theme="light"] .rail-avatar-link.is-flipped .rail-avatar-face--art { opacity: 0; }
     }
     @media (prefers-reduced-motion: reduce) and (hover: hover) {
       /* Cancel the spin on real hover — desktop matches both this query and
@@ -1241,7 +1245,24 @@
         window.scrollTo({ top: 0 });   // html's scroll-behavior handles smooth vs. reduced-motion
       });
 
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // No spin here. On touch, briefly reveal the other face via the
+        // crossfade: tap fades it in, holds, then fades back — a motion-free
+        // stand-in for the spin/hold/settle cycle. Desktop keeps the :hover
+        // crossfade (see CSS).
+        var FADE_MS = 240;     /* matches the crossfade transition above */
+        var REVEAL_MS = 700;   /* hold on the far face before fading back */
+        var revealTimer;
+        link.addEventListener('pointerdown', function (e) {
+          if (e.pointerType === 'mouse') return;
+          clearTimeout(revealTimer);
+          link.classList.add('is-flipped');
+          revealTimer = setTimeout(function () {
+            link.classList.remove('is-flipped');
+          }, FADE_MS + REVEAL_MS);
+        });
+        return;
+      }
 
       var ENTER_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';    /* excited, no wobble */
       var LEAVE_EASE = 'cubic-bezier(0.34, 1.56, 0.64, 1)'; /* calm settle back  */
