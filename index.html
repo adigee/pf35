@@ -229,6 +229,10 @@
       [data-theme="light"] .rail-avatar-face--art { opacity: 1; }
     }
     @media (prefers-reduced-motion: reduce) and (hover: hover) {
+      /* Cancel the spin on real hover — desktop matches both this query and
+         (hover: hover) above, whose rotateY(-900deg) would otherwise flip the
+         disc (transition: none here makes it instant) and mirror the faces. */
+      .rail-avatar-link:hover .rail-avatar { transform: none; }
       .rail-avatar-link:hover .rail-avatar-face--art { opacity: 1; }
       [data-theme="light"] .rail-avatar-link:hover .rail-avatar-face--art { opacity: 0; }
     }
