@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playground — Hero subtext, six ideas</title>
+<meta name="robots" content="noindex">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,1,0&display=swap" rel="stylesheet" />
+
+<style>
+  /* ─────────────────────────────────────────
+     HERO SUBTEXT — six treatments
+     Real rail/hero markup + tokens (mirrored from style.css/index.html),
+     the real page-load choreography (rail fly-in → column slide-up →
+     headline highlight-sweep, same 600/80/620/220/1520ms timing as
+     production), and the real production text_highlight.js (loaded
+     unmodified) so idea C's highlight is pixel-identical to the
+     shipped one. One adaptation for this sandbox: the subhead area is
+     a 6-way switchable stage instead of a single fixed paragraph, and
+     its entrance timing is itself a dial (Concurrent = today's actual
+     behaviour, arrives with the column before the headline even
+     sweeps; Sequential = the proposed fix, held back until the
+     headline's sweep finishes so only one thing moves at a time).
+  ───────────────────────────────────────── */
+
+  :root {
+    --color-bg:               #121212;
+    --color-surface:          #1E1D1A;
+    --color-border:           rgba(248, 246, 238, 0.10);
+    --color-text:             #F8F6EE;
+    --color-text-muted:       rgba(248, 246, 238, 0.60);
+    --color-text-subtle:      rgba(248, 246, 238, 0.20);
+    --color-primary:          #ACA0E8;
+    --color-accent-on-accent: #121212;
+    --highlight-ink:          172, 160, 232;
+
+    --font-display: 'Manrope', sans-serif;
+    --font-body:    'Manrope', sans-serif;
+
+    --text-xs:   0.6875rem;
+    --text-sm:   0.875rem;
+    --text-base: 1rem;
+    --text-lg:   1.75rem;
+    --text-2xl:  2.75rem;
+
+    --leading-normal: 1.4;
+    --leading-body:   1.6;
+    --tracking-snug:  -0.02em;
+    --tracking-wide:   0.04em;
+    --tracking-wider:  0.1em;
+    --tracking-widest: 0.16em;
+
+    --sp-1:  0.25rem;
+    --sp-2:  0.5rem;
+    --sp-3:  0.75rem;
+    --sp-4:  1rem;
+    --sp-5:  1.25rem;
+    --sp-6:  1.5rem;
+    --sp-8:  2rem;
+    --sp-10: 2.5rem;
+    --sp-16: 4rem;
+
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --rail-w: 300px;
+    --page-pad: 40px;
+    --page-max: 1320px;
+    --media-h: 200px;
+    --media-ar: 4 / 3;
+    --controls-h: 148px;
+
+    /* Choreography constants — identical to production's 600/80/620/220/1520. */
+    --rail-dur: 600ms;
+    --rail-gap: 80ms;
+    --col-dur:  620ms;
+    --col-gap:  220ms;      /* 600+80+620+220 = 1520, matches data-highlight-auto on the headline */
+    --hl-dur:   1400ms;     /* the real sweep's own duration, from text_highlight.js */
+    --post-hl-gap: 260ms;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: var(--controls-h);
+    overflow-x: hidden;   /* the rail flies in from fully off-canvas */
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .home-shell { max-width: var(--page-max); margin-inline: auto; padding: var(--page-pad); }
+  .home-cols { display: grid; gap: var(--sp-10); }
+  @media (min-width: 900px) {
+    .home-cols { grid-template-columns: var(--rail-w) minmax(0, 1fr); gap: var(--sp-16); align-items: start; }
+  }
+
+  /* ── PAGE LOAD ANIMATION — identical shape to production ── */
+  @keyframes rail-fly-in {
+    from { transform: translateX(-140%); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+  @keyframes column-slide-up {
+    from { transform: translateY(110px); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+  .rail    { animation: rail-fly-in 600ms var(--ease) both; }
+  .content { animation: column-slide-up 620ms var(--ease) 680ms both; }
+
+  @keyframes subhead-rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── LEFT RAIL ── */
+  .rail { display: flex; flex-direction: column; }
+  .rail-avatar-link { display: inline-block; line-height: 0; }
+  .rail-avatar {
+    display: block; width: 84px; height: 84px; border-radius: 50%;
+    object-fit: cover; border: 1px solid var(--color-border); background: var(--color-surface);
+  }
+  .rail-identity .name {
+    font-size: var(--text-base); line-height: var(--leading-normal); font-weight: 700;
+    letter-spacing: var(--tracking-snug); margin: var(--sp-6) 0 0;
+  }
+  .rail-identity .name .role { color: var(--color-primary); }
+  .rail-nav { display: flex; flex-direction: column; gap: 3px; margin-top: var(--sp-6); }
+  .rail-nav a { font-size: 17px; letter-spacing: var(--tracking-wide); display: inline-block; }
+  .rail-nav a:hover { color: var(--color-primary); }
+
+  /* ── RIGHT COLUMN ── */
+  .content { min-width: 0; }
+  .overview { width: 100%; max-width: 62ch; }
+  .overview-headline {
+    font-family: var(--font-display); font-size: var(--text-lg); font-weight: 700;
+    line-height: var(--leading-normal); color: var(--color-text); margin: 0 0 var(--sp-6);
+  }
+  .overview-headline em { font-style: normal; }
+
+  /* ── SUBHEAD STAGE — six switchable treatments ── */
+  .subhead-stage { position: relative; min-height: 118px; }
+  .subhead-variant { font-family: var(--font-display); }
+  .subhead-variant[hidden] { display: none; }
+
+  .subhead-variant[data-playing] .enter {
+    opacity: 0;
+    animation: subhead-rise 420ms var(--ease) both;
+    animation-delay: calc(var(--subhead-delay, 0ms) + (var(--i, 0) * 90ms));
+  }
+
+  /* A — chip fragments */
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: inline-flex; align-items: center; padding: 8px 14px;
+    border: 1px solid var(--color-border); border-radius: 999px;
+    font-size: var(--text-sm); font-weight: 600; color: var(--color-text);
+    background: var(--color-surface);
+  }
+  .chip--quiet { color: var(--color-text-muted); font-weight: 500; border-style: dashed; }
+
+  /* B — typographic tiers */
+  .tier { margin: 0; }
+  .tier + .tier { margin-top: var(--sp-2); }
+  .tier--lead   { font-size: 1.125rem; font-weight: 700; line-height: var(--leading-normal); }
+  .tier--method { font-size: var(--text-base); font-weight: 500; color: var(--color-text-muted); line-height: var(--leading-body); }
+  .tier--aside  { font-size: var(--text-sm); font-style: italic; color: var(--color-text-subtle); }
+
+  /* C — encore highlight (reuses .b-section-subheader weight + the real highlight component) */
+  .c-paragraph {
+    font-size: var(--text-base); font-weight: 600; line-height: var(--leading-body); margin: 0;
+  }
+  .c-paragraph em { font-style: normal; }
+
+  /* D — capability strip */
+  .lead-line { margin: 0 0 var(--sp-4); font-size: 1.0625rem; font-weight: 600; line-height: var(--leading-normal); }
+  .strip-row { display: flex; flex-wrap: wrap; gap: var(--sp-3) var(--sp-6); }
+  .strip-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: var(--text-sm); font-weight: 600; color: var(--color-text);
+  }
+  .strip-icon { font-size: 18px; color: var(--color-primary); }
+  .strip-caption { margin: var(--sp-4) 0 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+
+  /* E — pull-quote + footnote */
+  .pull-quote {
+    margin: 0; font-size: var(--text-2xl); font-weight: 700; letter-spacing: var(--tracking-snug);
+    line-height: 1.15;
+  }
+  .footnote {
+    margin: var(--sp-3) 0 0; padding-top: var(--sp-3); border-top: 1px solid var(--color-border);
+    font-size: var(--text-sm); color: var(--color-text-muted); max-width: 48ch;
+  }
+
+  /* F — progressive disclosure */
+  .reveal-toggle {
+    all: unset; cursor: pointer; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px;
+    font-family: var(--font-display); font-size: 1.0625rem; font-weight: 600; color: var(--color-text);
+  }
+  .reveal-affordance { font-size: var(--text-sm); font-weight: 700; color: var(--color-primary); white-space: nowrap; }
+  .reveal-toggle:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+  .reveal-body-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 280ms var(--ease); }
+  .reveal-body-wrap.is-open { grid-template-rows: 1fr; }
+  .reveal-body-inner { overflow: hidden; }
+  .reveal-body { margin: var(--sp-3) 0 0; font-size: var(--text-sm); color: var(--color-text-muted); line-height: var(--leading-body); max-width: 58ch; }
+
+  /* ── PORTFOLIO ROW — simplified single row for layout context ── */
+  .portfolio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-6); margin-top: var(--sp-16); }
+  .feature-card { display: flex; flex-direction: column; }
+  .fc-media {
+    position: relative; aspect-ratio: var(--media-ar); border-radius: 10px; overflow: hidden;
+    background: var(--color-surface); border: 1px solid var(--color-border);
+  }
+  .fc-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .fc-scrim {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--color-primary) 50%, transparent);
+    opacity: 0; transition: opacity 280ms var(--ease);
+  }
+  .feature-card:hover .fc-scrim { opacity: 1; }
+  .fc-cta { display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-sm); font-weight: 600; color: #fff; letter-spacing: var(--tracking-wide); }
+  .fc-cta .material-symbols-rounded { font-size: 18px; }
+  .fc-caption { margin-top: var(--sp-3); }
+  .fc-eyebrow {
+    display: block; font-family: var(--font-display); font-size: var(--text-xs); font-weight: 500;
+    letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--color-text);
+  }
+  @media (max-width: 720px) { .portfolio { grid-template-columns: 1fr; } }
+
+  /* ── CONTROLS ── */
+  .controls {
+    position: fixed; left: 0; right: 0; bottom: 0; min-height: var(--controls-h);
+    display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+    padding: 14px 24px; background: var(--color-surface); border-top: 1px solid var(--color-border);
+    z-index: 50;
+  }
+  .ctl-group { display: flex; flex-direction: column; gap: 6px; }
+  .ctl-group .lbl { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
+  .seg { display: inline-flex; border: 1px solid var(--color-border); border-radius: 8px; overflow: hidden; }
+  .seg button {
+    appearance: none; cursor: pointer; background: transparent; color: var(--color-text-muted);
+    border: 0; font-family: var(--font-body); font-size: 12px; font-weight: 600; padding: 8px 12px;
+    border-right: 1px solid var(--color-border); transition: color 140ms var(--ease), background 140ms var(--ease);
+  }
+  .seg button:last-child { border-right: 0; }
+  .seg button:hover { color: var(--color-text); }
+  .seg button[aria-pressed="true"] { color: var(--color-bg); background: var(--color-primary); }
+
+  .hint { font-size: 12px; color: var(--color-text-muted); max-width: 34ch; line-height: 1.5; }
+  .hint b { color: var(--color-text); font-weight: 600; }
+
+  .ctl-side { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .replay, .toggle {
+    appearance: none; cursor: pointer; background: transparent; color: var(--color-text);
+    border: 1px solid var(--color-border); border-radius: 8px; font-family: var(--font-body);
+    font-size: 12.5px; font-weight: 600; padding: 9px 14px; transition: border-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .replay:hover, .toggle:hover { border-color: var(--color-primary); color: var(--color-primary); }
+  .toggle[aria-pressed="true"] { border-color: var(--color-primary); color: var(--color-primary); }
+
+  @media (max-width: 980px) {
+    .controls { position: static; min-height: auto; }
+    body { padding-bottom: 0; }
+  }
+
+  /* ── REDUCED MOTION — the in-page toggle forces the same no-animation
+       state as the real prefers-reduced-motion media query. ── */
+  body.force-reduced-motion *, body.force-reduced-motion *::before, body.force-reduced-motion *::after {
+    animation: none !important; transition: none !important;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="home-shell">
+   <div class="home-cols">
+
+    <!-- ── LEFT RAIL — flies in as one unit ── -->
+    <aside class="rail" id="rail">
+      <div class="rail-identity">
+        <a class="rail-avatar-link" href="#" onclick="return false"><img class="rail-avatar" src="../project-content/profile-photo.png" alt="Aditya Gujaran" /></a>
+        <p class="name">Aditya Gujaran<br><span class="role">Product designer</span></p>
+      </div>
+      <nav class="rail-nav" aria-label="Section navigation">
+        <a href="#" onclick="return false">WORK</a>
+        <a href="#" onclick="return false">RESUME</a>
+        <a href="#" onclick="return false">ABOUT</a>
+      </nav>
+    </aside>
+
+    <!-- ── RIGHT COLUMN — slides up as one unit; highlight sweeps in beat 3,
+         the subhead stage is beat 4 (timing set by the Timing dial) ── -->
+    <main class="content" id="content">
+      <section class="overview">
+        <h1 class="overview-headline">the <em id="headline-highlight" data-highlight data-highlight-auto="1520">why behind the what</em><br>has never been more important</h1>
+
+        <div class="subhead-stage" id="subhead-stage">
+
+          <div class="subhead-variant" data-variant="a">
+            <div class="chip-row">
+              <span class="chip enter" style="--i:0">Hiya, I'm Adi 👋</span>
+              <span class="chip enter" style="--i:1">Versatile product designer</span>
+              <span class="chip enter" style="--i:2">Continuous UX research</span>
+              <span class="chip enter" style="--i:3">High-velocity experimentation</span>
+              <span class="chip chip--quiet enter" style="--i:4">Interaction design · lemon cheesecakes · stormy views</span>
+            </div>
+          </div>
+
+          <div class="subhead-variant" data-variant="b" hidden>
+            <p class="tier tier--lead enter" style="--i:0">Hiya! I'm Adi — a versatile product designer.</p>
+            <p class="tier tier--method enter" style="--i:1">My practice is built on continuous UX research to fuel high-velocity product experimentation.</p>
+            <p class="tier tier--aside enter" style="--i:2">I enjoy interaction design, lemon cheesecakes and stormy views. Welcome!</p>
+          </div>
+
+          <div class="subhead-variant" data-variant="c" hidden>
+            <p class="c-paragraph enter" id="c-paragraph" style="--i:0"></p>
+          </div>
+
+          <div class="subhead-variant" data-variant="d" hidden>
+            <p class="lead-line enter" style="--i:0">Hiya! I'm Adi — a product designer who researches fast and ships faster.</p>
+            <div class="strip-row">
+              <div class="strip-item enter" style="--i:1"><span class="material-symbols-rounded strip-icon" aria-hidden="true">search_insights</span>Continuous UX research</div>
+              <div class="strip-item enter" style="--i:2"><span class="material-symbols-rounded strip-icon" aria-hidden="true">bolt</span>High-velocity experimentation</div>
+              <div class="strip-item enter" style="--i:3"><span class="material-symbols-rounded strip-icon" aria-hidden="true">tune</span>Interaction design</div>
+            </div>
+            <p class="strip-caption enter" style="--i:4">Also partial to lemon cheesecakes and stormy views. Welcome!</p>
+          </div>
+
+          <div class="subhead-variant" data-variant="e" hidden>
+            <p class="pull-quote enter" style="--i:0">I research obsessively, then ship fast.</p>
+            <p class="footnote enter" style="--i:1">— Adi, a versatile product designer. I enjoy interaction design, lemon cheesecakes and stormy views. Welcome!</p>
+          </div>
+
+          <div class="subhead-variant" data-variant="f" hidden>
+            <button type="button" class="reveal-toggle enter" id="f-toggle" aria-expanded="false" aria-controls="f-body-wrap" style="--i:0">
+              <span>Hiya! I'm Adi — a product designer who researches fast, ships faster.</span>
+              <span class="reveal-affordance">— more</span>
+            </button>
+            <div class="reveal-body-wrap" id="f-body-wrap">
+              <div class="reveal-body-inner">
+                <p class="reveal-body">My practice is built on continuous UX research to fuel high-velocity product experimentation. I enjoy interaction design, lemon cheesecakes and stormy views. Welcome!</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="portfolio">
+        <a class="feature-card" data-card>
+          <div class="fc-media">
+            <img src="../project-content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO.png" alt="Bounce — Lockers PUDO" />
+            <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
+          </div>
+          <div class="fc-caption"><span class="fc-eyebrow">Bounce · Growth</span></div>
+        </a>
+        <a class="feature-card" data-card>
+          <div class="fc-media">
+            <img src="../project-content/2%20Decision%20module%20for%20framer/Thumbnail%20-%20decision%20module.png" alt="Decision Module — Unbabel" />
+            <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
+          </div>
+          <div class="fc-caption"><span class="fc-eyebrow">Unbabel · AI</span></div>
+        </a>
+        <a class="feature-card" data-card>
+          <div class="fc-media">
+            <img src="../project-content/3%20DAD%20Images%20for%20framer/Thumbnail%20-%20TRQ%20DAD.png" alt="TRQ DAD — Cocoon" />
+            <span class="fc-scrim"><span class="fc-cta">View project<span class="material-symbols-rounded">arrow_forward</span></span></span>
+          </div>
+          <div class="fc-caption"><span class="fc-eyebrow">Cocoon · Service</span></div>
+        </a>
+      </section>
+    </main>
+
+   </div>
+  </div>
+
+  <!-- Real production highlight component — idea C's phrase, and the
+       headline's own phrase, both sweep via this unmodified script. -->
+  <script src="../components/text_highlight.js"></script>
+
+  <!-- ── CONTROLS ── -->
+  <div class="controls">
+    <div class="ctl-group">
+      <span class="lbl">Idea</span>
+      <div class="seg" id="ideaSeg" role="group" aria-label="Subhead idea">
+        <button type="button" data-idea="a" aria-pressed="true">A · Chips</button>
+        <button type="button" data-idea="b" aria-pressed="false">B · Tiers</button>
+        <button type="button" data-idea="c" aria-pressed="false">C · Encore highlight</button>
+        <button type="button" data-idea="d" aria-pressed="false">D · Capability strip</button>
+        <button type="button" data-idea="e" aria-pressed="false">E · Pull-quote</button>
+        <button type="button" data-idea="f" aria-pressed="false">F · Expand</button>
+      </div>
+    </div>
+
+    <div class="ctl-group">
+      <span class="lbl">Timing (replays in full)</span>
+      <div class="seg" id="timingSeg" role="group" aria-label="Subhead entrance timing">
+        <button type="button" data-mode="concurrent" aria-pressed="false">Concurrent — today's bug</button>
+        <button type="button" data-mode="sequential" aria-pressed="true">Sequential — the fix</button>
+      </div>
+    </div>
+
+    <p class="hint" id="hint"></p>
+
+    <div class="ctl-side">
+      <button type="button" class="toggle" id="reducedMotion" aria-pressed="false">Reduced motion</button>
+      <button type="button" class="replay" id="replay">↻ Replay full sequence</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var ROOT = document.getElementById('content');
+      var stage = document.getElementById('subhead-stage');
+      var railEl = document.getElementById('rail');
+      var hint = document.getElementById('hint');
+
+      var RAIL_DUR = 600, RAIL_GAP = 80, COL_DUR = 620, COL_GAP = 220, HL_DUR = 1400, POST_HL_GAP = 260;
+      var CONCURRENT_DELAY = RAIL_DUR + RAIL_GAP;                                   // 680ms — rides in with the column, as today
+      var SEQUENTIAL_DELAY = RAIL_DUR + RAIL_GAP + COL_DUR + COL_GAP + HL_DUR + POST_HL_GAP; // 3180ms — after the headline sweep
+
+      var HINTS = {
+        a: 'Chip fragments — role / method / personality as discrete scannable tags instead of a sentence.',
+        b: 'Typographic tiers — one bold "what I am" line, a muted "how I work" line, a quiet personal aside.',
+        c: 'Encore highlight — reuses the headline’s own marker to sweep the subhead’s key phrase as a second beat.',
+        d: 'Capability strip — one-line intro + an icon-led row of methodology items, like a credibility bar.',
+        e: 'Pull-quote + footnote — one bold statement carries the gist; a quiet caption carries the rest.',
+        f: 'Progressive disclosure — a short line by default; click "more" to expand the full bio in place.'
+      };
+
+      var idea = 'a';
+      var mode = 'sequential';
+
+      function variantEl(key) { return stage.querySelector('.subhead-variant[data-variant="' + key + '"]'); }
+
+      function buildCParagraph(delayMs) {
+        var p = document.getElementById('c-paragraph');
+        p.textContent = '';
+        var em = document.createElement('em');
+        em.id = 'c-highlight';
+        em.setAttribute('data-highlight', '');
+        em.setAttribute('data-highlight-auto', String(Math.max(0, Math.round(delayMs + 420 + 150))));
+        em.textContent = 'high-velocity product experimentation';
+        p.appendChild(document.createTextNode("Hiya! I'm Adi, a versatile product designer whose practice is built on continuous UX research to fuel "));
+        p.appendChild(em);
+        p.appendChild(document.createTextNode('. I enjoy interaction design, lemon cheesecakes and stormy views. Welcome!'));
+      }
+
+      function resetF() {
+        var wrap = document.getElementById('f-body-wrap');
+        var btn = document.getElementById('f-toggle');
+        wrap.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.querySelector('.reveal-affordance').textContent = '— more';
+      }
+
+      function showVariant(key) {
+        Array.prototype.forEach.call(stage.querySelectorAll('.subhead-variant'), function (el) {
+          el.hidden = el.getAttribute('data-variant') !== key;
+        });
+      }
+
+      function playVariant(key, delayMs) {
+        showVariant(key);
+        if (key === 'f') resetF();
+        if (key === 'c') buildCParagraph(delayMs);
+        var el = variantEl(key);
+        el.removeAttribute('data-playing');
+        ROOT.style.setProperty('--subhead-delay', delayMs + 'ms');
+        // force reflow so the CSS animation restarts from its 'from' state
+        void el.offsetWidth;
+        requestAnimationFrame(function () { el.setAttribute('data-playing', ''); });
+      }
+
+      function remountHeadlineHighlight(delayMs) {
+        var old = document.getElementById('headline-highlight');
+        var fresh = document.createElement('em');
+        fresh.id = 'headline-highlight';
+        fresh.setAttribute('data-highlight', '');
+        fresh.setAttribute('data-highlight-auto', String(delayMs));
+        fresh.textContent = 'why behind the what';
+        old.replaceWith(fresh);
+      }
+
+      function resetEntranceAnimations() {
+        [railEl, ROOT].forEach(function (el) { el.style.animation = 'none'; });
+        void document.body.offsetWidth;
+        [railEl, ROOT].forEach(function (el) { el.style.animation = ''; });
+      }
+
+      function fullReplay() {
+        resetEntranceAnimations();
+        remountHeadlineHighlight(RAIL_DUR + RAIL_GAP + COL_DUR + COL_GAP); // 1520ms, matches production
+        var delay = mode === 'sequential' ? SEQUENTIAL_DELAY : CONCURRENT_DELAY;
+        playVariant(idea, delay);
+      }
+
+      // ── Idea picker — quick, snappy preview; doesn't re-fly the rail/column ──
+      var ideaSeg = document.getElementById('ideaSeg');
+      ideaSeg.addEventListener('click', function (e) {
+        var btn = e.target.closest('button[data-idea]');
+        if (!btn) return;
+        idea = btn.getAttribute('data-idea');
+        Array.prototype.forEach.call(ideaSeg.querySelectorAll('button'), function (b) {
+          b.setAttribute('aria-pressed', String(b === btn));
+        });
+        hint.innerHTML = HINTS[idea];
+        playVariant(idea, 150); // quick preview delay, independent of the timing dial
+      });
+
+      // ── Timing dial — demonstrates the choreography fix; replays the whole sequence ──
+      var timingSeg = document.getElementById('timingSeg');
+      timingSeg.addEventListener('click', function (e) {
+        var btn = e.target.closest('button[data-mode]');
+        if (!btn) return;
+        mode = btn.getAttribute('data-mode');
+        Array.prototype.forEach.call(timingSeg.querySelectorAll('button'), function (b) {
+          b.setAttribute('aria-pressed', String(b === btn));
+        });
+        fullReplay();
+      });
+
+      document.getElementById('replay').addEventListener('click', fullReplay);
+
+      var reducedBtn = document.getElementById('reducedMotion');
+      reducedBtn.addEventListener('click', function () {
+        var on = document.body.classList.toggle('force-reduced-motion');
+        reducedBtn.setAttribute('aria-pressed', String(on));
+      });
+
+      // ── F — progressive disclosure interaction ──
+      document.getElementById('f-toggle').addEventListener('click', function () {
+        var wrap = document.getElementById('f-body-wrap');
+        var open = wrap.classList.toggle('is-open');
+        this.setAttribute('aria-expanded', String(open));
+        this.querySelector('.reveal-affordance').textContent = open ? '— less' : '— more';
+      });
+
+      // ── Page-load animation cleanup (mirrors production's own cleanup script) ──
+      [railEl, ROOT].forEach(function (el) {
+        el.addEventListener('animationend', function onDone() {
+          el.style.animation = 'none';
+        }, { once: true });
+      });
+
+      // ── Initial state on load: behaves exactly like production today
+      // (headline sweeps at 1520ms; subhead rides in with the column at 680ms,
+      // i.e. Concurrent) — then the Sequential default below immediately
+      // demonstrates the fix via one full replay. ──
+      hint.innerHTML = HINTS[idea];
+      buildCParagraph(CONCURRENT_DELAY);
+      ROOT.style.setProperty('--subhead-delay', CONCURRENT_DELAY + 'ms');
+      requestAnimationFrame(function () { variantEl(idea).setAttribute('data-playing', ''); });
+      setTimeout(fullReplay, 50); // kick straight into Sequential (the default dial position)
+    })();
+  </script>
+
+</body>
+</html>
