@@ -3,7 +3,7 @@
    Injects the boilerplate <head> resources that are
    identical on every page, so they live in one place:
      • Google Fonts (Manrope + Material Symbols)
-     • llms.txt discovery link
+     • /llms.txt discovery link (root-absolute for nested routes)
      • Umami analytics
      • Vercel Web Analytics
 
@@ -36,7 +36,7 @@
     '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />' +
     '<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />' +
     '<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,1,0" rel="stylesheet" />' +
-    '<link rel="llms" href="llms.txt" />'
+    '<link rel="llms" href="/llms.txt" />'
   );
 
   /* Umami analytics — appended as a real element so the

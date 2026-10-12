@@ -290,6 +290,11 @@ At `≤768px` the layout collapses to a single column. The fixed sidebar is hidd
 | `--left-col` | 400px | Desktop sidebar width |
 | `--nav-height` | 3.25rem (52px) | Sticky nav bar height |
 | `--panel-transition` | 420ms ease | Panel enter/exit opacity |
+| `--application-max-width` | 67rem | Maximum width for tailored application pages |
+| `--application-copy-width` | 62ch | Reading measure for tailored application copy |
+| `--application-profile-max-width` | 25rem | Maximum width of the application portrait |
+| `--focus-ring-width` | 2px | Visible keyboard focus outline |
+| `--border-width` | 1px | Hairline separators and image borders |
 
 ### Panels
 
@@ -359,6 +364,28 @@ The sticky top bar (`--nav-height: 52px`) contains:
 - **Nav links** (`.nav-links a`): 9px, uppercase, `--tracking-wider`, muted color — hover turns full text color
 
 Nav links are hidden on mobile (`≤768px`).
+
+### Tailored Application Pages
+
+Pages under `/spear-hunting/<company>/` use `spear-hunting/application.css` and the shared Manrope, color, spacing, type, and focus tokens. The core sequence follows the Wero reference: headline and role link, portrait and introduction, tailored pitch, four fact rows, then a closing CTA. The desktop intro pairs portrait and copy; mobile stacks them. Narrative copy uses `--application-copy-width`, while the headline can extend to `--application-max-width`. Extra story sections, work cards, figures, and video are opt-in blocks in an inert HTML template, not mandatory content on every application page. All new application layout classes are documented here:
+
+| Class | Purpose |
+|---|---|
+| `.sh-shell`, `.sh-main` | Centered page shell and main content spacing |
+| `.sh-pitch`, `.sh-title` | Opening hook and role context |
+| `.sh-role-line`, `.sh-role-link` | Role metadata and job-posting link |
+| `.sh-intro`, `.sh-profile`, `.sh-copy` | Portrait and introductory copy layout |
+| `.sh-pitch-body` | Core tailored argument paragraphs |
+| `.sh-facts`, `.sh-facts-grid`, `.sh-fact` | Compact opportunity facts constrained to `--application-copy-width`, using the resume `.rs-box-label` and `.rs-box-text` treatments |
+| `.sh-section` | One narrative section in the application argument |
+| `.b-pull` | Inline phrase emphasis using `--color-accent`; inherits surrounding font and weight |
+| `.sh-figure` | Captioned image block; images may use the shared `.zoomable` image modal |
+| `.sh-video` | Responsive video with controls, poster, and captions track; never autoplay |
+| `.sh-work-grid`, `.sh-work-card` | Links to selected existing case studies with image and per-opportunity relevance copy |
+| `.sh-closing`, `.sh-contact-links` | Closing pitch and contact actions |
+| `.sh-top-link`, `.sh-back-to-top` | Back-to-top wayfinding |
+
+Application section copy is authored per opportunity. The reusable template contains `TODO(adi)` placeholders only. These pages are independent from the project registry and case-study runtime.
 
 ### Timeline
 
@@ -577,6 +604,8 @@ This project targets **WCAG 2.1 AA**.
 | Normal text (<18px / <14px bold) | 4.5:1 |
 | Large text (≥18px / ≥14px bold) | 3:1 |
 | UI components and focus indicators | 3:1 |
+
+The visible keyboard focus outline uses `--focus-ring-width` (`2px`) and `--color-primary`.
 
 ### Known Checks
 
