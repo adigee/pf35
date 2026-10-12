@@ -403,6 +403,20 @@
     html[data-hero-playground] #hero-subtext.hs-playing .hs-chunk { animation: hs-chunk-rise 420ms var(--ease) both; }
     html[data-hero-playground] #hero-subtext.hs-playing .hs-glue  { animation: hs-glue-fade 480ms ease-out both; }
 
+    /* Highlight swipe — third idea: enter with ONLY the research→experimentation
+       phrase, let the real highlighter marker sweep it (reuses the unmodified
+       text_highlight.js component), then fade in the rest of the sentence
+       around it once the sweep finishes. */
+    .hs-sw-phrase { font-style: normal; }   /* [data-highlight] em — no italics */
+    html[data-hero-playground] #hero-subtext.hs-swipe-armed .hs-sw-phrase,
+    html[data-hero-playground] #hero-subtext.hs-swipe-armed .hs-sw-glue {
+      opacity: 0;
+    }
+    @keyframes hs-sw-rise { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes hs-sw-fade { from { opacity: 0; } to { opacity: 1; } }
+    html[data-hero-playground] #hero-subtext.hs-swipe-playing .hs-sw-phrase { animation: hs-sw-rise 420ms var(--ease) both; }
+    html[data-hero-playground] #hero-subtext.hs-swipe-playing .hs-sw-glue   { animation: hs-sw-fade 480ms ease-out both; }
+
     .hs-dial { display: none; }
     html[data-hero-playground] .hs-dial { display: flex; }
     .hs-dial {
@@ -427,6 +441,7 @@
       .hs-pair.is-running .hs-signal, .hs-pair.is-intro .hs-signal { animation: none; }
       .hs-node, .hs-support { animation: none; opacity: 1; transform: none; }
       .hs-chunk, .hs-glue { animation: none !important; opacity: 1 !important; transform: none !important; }
+      .hs-sw-phrase, .hs-sw-glue { animation: none !important; opacity: 1 !important; transform: none !important; }
       .hs-dial[data-ready] .hs-dial-highlight { transition: none; }
     }
     @media (max-width: 720px) {
@@ -1445,6 +1460,7 @@
       <button type="button" class="hs-dial-item" id="hsCurrent" aria-pressed="true">Current</button>
       <button type="button" class="hs-dial-item" id="hsLoop" aria-pressed="false">Insight loop</button>
       <button type="button" class="hs-dial-item" id="hsChunked" aria-pressed="false">Chunked reveal</button>
+      <button type="button" class="hs-dial-item" id="hsSwipe" aria-pressed="false">Highlight swipe</button>
     </span>
     <span class="hs-dial-divider" aria-hidden="true"></span>
     <button type="button" class="hs-dial-item hs-dial-replay" id="hsReplay" disabled aria-label="Replay the introduction">↻</button>
@@ -1462,6 +1478,7 @@
       var btnCurrent = document.getElementById('hsCurrent');
       var btnLoop = document.getElementById('hsLoop');
       var btnChunked = document.getElementById('hsChunked');
+      var btnSwipe = document.getElementById('hsSwipe');
       var btnReplay = document.getElementById('hsReplay');
       var currentMarkup = subtext.innerHTML; // pristine — real chunk/glue-spanned copy, as shipped
       var selected = 0;
@@ -1492,10 +1509,11 @@
       function showCurrent() {
         subtext.innerHTML = currentMarkup;
         subtext.removeAttribute('data-hero-idea');
-        subtext.classList.remove('hs-armed', 'hs-playing');
+        subtext.classList.remove('hs-armed', 'hs-playing', 'hs-swipe-armed', 'hs-swipe-playing');
       }
 
       function showChunked(delay) {
+        subtext.classList.remove('hs-swipe-armed', 'hs-swipe-playing');
         subtext.innerHTML = currentMarkup; // fresh, unanimated chunk/glue spans
         subtext.setAttribute('data-hero-idea', 'chunked');
         var chunks = subtext.querySelectorAll('.hs-chunk');
@@ -1516,8 +1534,48 @@
         requestAnimationFrame(function () { subtext.classList.add('hs-playing'); });
       }
 
-      function showLoop(delay) {
+      // Enters with ONLY "continuous UX research to fuel high-velocity product
+      // experimentation" visible; the real [data-highlight] marker (same
+      // component as the headline) sweeps it once it's settled; the rest of
+      // the sentence fades in only after that sweep completes.
+      function showSwipe(delay) {
         subtext.classList.remove('hs-armed', 'hs-playing');
+        subtext.innerHTML = '';
+        subtext.setAttribute('data-hero-idea', 'swipe');
+
+        var PHRASE_DUR = 420, PRE_SWEEP_PAUSE = 150, SWEEP_DUR = 1400, POST_SWEEP_PAUSE = 200;
+        var sweepDelay = delay + PHRASE_DUR + PRE_SWEEP_PAUSE;
+        var glueDelay = sweepDelay + SWEEP_DUR + POST_SWEEP_PAUSE;
+
+        var glueA = document.createElement('span');
+        glueA.className = 'hs-sw-glue';
+        glueA.textContent = 'Hiya! I’m Adi, a versatile product designer whose practice is built on ';
+        glueA.style.animationDelay = glueDelay + 'ms';
+
+        var phrase = document.createElement('em');
+        phrase.className = 'hs-sw-phrase';
+        phrase.setAttribute('data-highlight', '');
+        phrase.setAttribute('data-highlight-auto', String(sweepDelay));
+        phrase.textContent = 'continuous UX research to fuel high-velocity product experimentation';
+        phrase.style.animationDelay = delay + 'ms';
+
+        var glueB = document.createElement('span');
+        glueB.className = 'hs-sw-glue';
+        glueB.textContent = '. I enjoy interaction design, lemon cheesecakes and stormy views. Welcome!';
+        glueB.style.animationDelay = glueDelay + 'ms';
+
+        subtext.appendChild(glueA);
+        subtext.appendChild(phrase);
+        subtext.appendChild(glueB);
+
+        subtext.classList.remove('hs-swipe-playing');
+        subtext.classList.add('hs-swipe-armed');
+        void subtext.offsetWidth; // reflow so the animation restarts from 'from'
+        requestAnimationFrame(function () { subtext.classList.add('hs-swipe-playing'); });
+      }
+
+      function showLoop(delay) {
+        subtext.classList.remove('hs-armed', 'hs-playing', 'hs-swipe-armed', 'hs-swipe-playing');
         subtext.innerHTML = loopMarkup;
         subtext.setAttribute('data-hero-idea', 'loop');
         var pair = subtext.querySelector('.hs-pair');
@@ -1537,7 +1595,7 @@
         });
       }
 
-      var MODES = ['current', 'loop', 'chunked'];
+      var MODES = ['current', 'loop', 'chunked', 'swipe'];
 
       function setMode(next, delay, updateUrl) {
         mode = next;
@@ -1545,9 +1603,11 @@
         btnCurrent.setAttribute('aria-pressed', String(mode === 'current'));
         btnLoop.setAttribute('aria-pressed', String(mode === 'loop'));
         btnChunked.setAttribute('aria-pressed', String(mode === 'chunked'));
+        btnSwipe.setAttribute('aria-pressed', String(mode === 'swipe'));
         btnReplay.disabled = mode === 'current';
         if (mode === 'loop') showLoop(delay);
         else if (mode === 'chunked') showChunked(delay);
+        else if (mode === 'swipe') showSwipe(delay);
         else showCurrent();
         moveHighlight();
         if (updateUrl) {
@@ -1560,6 +1620,7 @@
       btnReplay.addEventListener('click', function () {
         if (mode === 'loop') showLoop(MANUAL_DELAY);
         else if (mode === 'chunked') showChunked(MANUAL_DELAY);
+        else if (mode === 'swipe') showSwipe(MANUAL_DELAY);
       });
       buttons.forEach(function (button, index) {
         button.addEventListener('click', function () { setMode(MODES[index], MANUAL_DELAY, true); });
@@ -1571,17 +1632,20 @@
         if (event.key === '1') setMode('current', 0, true);
         else if (event.key === '2') setMode('loop', MANUAL_DELAY, true);
         else if (event.key === '3') setMode('chunked', MANUAL_DELAY, true);
+        else if (event.key === '4') setMode('swipe', MANUAL_DELAY, true);
         else if (event.key === 'ArrowRight') setMode(MODES[(selected + 1) % MODES.length], MANUAL_DELAY, true);
         else if (event.key === 'ArrowLeft') setMode(MODES[(selected - 1 + MODES.length) % MODES.length], MANUAL_DELAY, true);
         else if (event.key === 'r' || event.key === 'R') {
           if (mode === 'loop') showLoop(MANUAL_DELAY);
           else if (mode === 'chunked') showChunked(MANUAL_DELAY);
+          else if (mode === 'swipe') showSwipe(MANUAL_DELAY);
         }
       });
 
       var requestedMode = params.get('mode');
       if (requestedMode === 'current') setMode('current', 0, false);
       else if (requestedMode === 'chunked') setMode('chunked', COLD_LOAD_DELAY, false);
+      else if (requestedMode === 'swipe') setMode('swipe', COLD_LOAD_DELAY, false);
       else setMode('loop', COLD_LOAD_DELAY, false);
       requestAnimationFrame(function () {
         requestAnimationFrame(function () { dial.setAttribute('data-ready', ''); });
