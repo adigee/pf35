@@ -312,6 +312,132 @@
     .overview-headline { margin-bottom: var(--sp-10); }
     .overview-subhead { margin-top: 0; }
     .overview-headline em { font-style: normal; }   /* [data-highlight] phrase — no italics */
+
+    /* ── HERO SUBTEXT DIAL KIT (query-param only) ──
+       The homepage stays intact; only #hero-subtext changes in preview mode. */
+    .hs-loop { display: block; }
+    .hs-pair {
+      --hs-flight: 56px;
+      display: grid;
+      grid-template-columns: minmax(0,1fr) 72px minmax(0,1.15fr);
+      gap: 12px;
+      align-items: center;
+      margin-bottom: var(--sp-4);
+    }
+    .hs-node {
+      display: block;
+      padding: 12px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-size: clamp(1rem, 1.65vw, 1.35rem);
+      font-weight: 700;
+      letter-spacing: -.025em;
+      line-height: 1.2;
+      opacity: 0;
+      animation: hs-node-in 280ms var(--ease) both;
+    }
+    .hs-node--experiment { animation-delay: 70ms; }
+    @keyframes hs-node-in { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+    .hs-link {
+      position: relative;
+      display: grid;
+      width: 72px;
+      height: 44px;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--color-primary);
+      cursor: pointer;
+    }
+    .hs-link::before { position: absolute; right: 5px; left: 5px; top: 50%; height: 1px; background: var(--color-border); content: ""; }
+    .hs-link .material-symbols-rounded {
+      position: relative;
+      z-index: 1;
+      padding: 4px;
+      border: 1px solid var(--color-border);
+      border-radius: 50%;
+      background: var(--color-bg);
+      font-size: 20px;
+      transition: transform 180ms var(--ease), color 180ms ease-out;
+    }
+    .hs-link:hover .material-symbols-rounded { color: var(--color-text); transform: rotate(45deg); }
+    .hs-link:active .material-symbols-rounded { transform: scale(.94); }
+    .hs-link:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; border-radius: 50%; }
+    .hs-signal {
+      position: absolute;
+      z-index: 2;
+      top: calc(50% - 4px);
+      left: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .hs-pair.is-running .hs-signal,
+    .hs-pair.is-intro .hs-signal { animation: hs-signal-pass 680ms var(--ease) both; }
+    @keyframes hs-signal-pass {
+      0%, 8% { opacity: 0; transform: translateX(0); }
+      18% { opacity: 1; }
+      48%, 56% { opacity: 1; transform: translateX(var(--hs-flight)); }
+      92%, 100% { opacity: 0; transform: translateX(0); }
+    }
+    .hs-support { display: block; color: var(--color-text-muted); font-size: var(--text-sm); font-weight: 500; line-height: 1.55; opacity: 0; animation: hs-support-in 280ms var(--ease) 1050ms both; }
+    .hs-support + .hs-support { margin-top: 4px; animation-delay: 1130ms; }
+    @keyframes hs-support-in { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Chunked reveal — second idea, same gated pattern as Insight loop above:
+       meaning-fragments (.hs-chunk) stagger-rise first, then the connective
+       text (.hs-glue) fades in around them to complete the sentence. */
+    html[data-hero-playground] #hero-subtext.hs-armed .hs-chunk,
+    html[data-hero-playground] #hero-subtext.hs-armed .hs-glue {
+      opacity: 0;
+    }
+    html[data-hero-playground] #hero-subtext.hs-armed .hs-chunk { font-weight: 700; }
+    @keyframes hs-chunk-rise { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes hs-glue-fade  { from { opacity: 0; } to { opacity: 1; } }
+    html[data-hero-playground] #hero-subtext.hs-playing .hs-chunk { animation: hs-chunk-rise 420ms var(--ease) both; }
+    html[data-hero-playground] #hero-subtext.hs-playing .hs-glue  { animation: hs-glue-fade 480ms ease-out both; }
+
+    .hs-dial { display: none; }
+    html[data-hero-playground] .hs-dial { display: flex; }
+    .hs-dial {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 2147483647;
+      align-items: center; gap: 2px; padding: 4px; border-radius: 999px;
+      background: rgba(10,10,10,.82); -webkit-backdrop-filter: blur(12px) saturate(1.4);
+      backdrop-filter: blur(12px) saturate(1.4);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset, 0 8px 24px rgba(0,0,0,.24), 0 2px 6px rgba(0,0,0,.12);
+      font: 13px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      -webkit-font-smoothing: antialiased; user-select: none; -webkit-user-select: none;
+    }
+    .hs-dial-seg { display: flex; align-items: center; }
+    .hs-dial-highlight { position: absolute; top: 4px; left: 0; height: 28px; border-radius: 999px; background: rgba(255,255,255,.12); will-change: transform; }
+    .hs-dial[data-ready] .hs-dial-highlight { transition: transform 250ms cubic-bezier(.23,1,.32,1),width 250ms cubic-bezier(.23,1,.32,1); }
+    .hs-dial-item { position: relative; display: flex; height: 28px; align-items: center; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; color: rgba(255,255,255,.55); font: inherit; cursor: pointer; transition: color 150ms ease-out; }
+    .hs-dial-item:hover { color: rgba(255,255,255,.85); }
+    .hs-dial-item:focus-visible { outline: 2px solid rgba(255,255,255,.4); outline-offset: 2px; }
+    .hs-dial-item[aria-pressed="true"] { color: #fff; }
+    .hs-dial-divider { width: 1px; height: 16px; margin: 0 4px; background: rgba(255,255,255,.12); }
+    .hs-dial-replay { padding: 0 10px; font-size: 14px; }
+    @media (prefers-reduced-motion: reduce) {
+      .hs-pair.is-running .hs-signal, .hs-pair.is-intro .hs-signal { animation: none; }
+      .hs-node, .hs-support { animation: none; opacity: 1; transform: none; }
+      .hs-chunk, .hs-glue { animation: none !important; opacity: 1 !important; transform: none !important; }
+      .hs-dial[data-ready] .hs-dial-highlight { transition: none; }
+    }
+    @media (max-width: 720px) {
+      .hs-pair { --hs-flight: 40px; grid-template-columns: minmax(0,1fr) 56px minmax(0,1.1fr); gap: 6px; }
+      .hs-link { width: 56px; }
+      .hs-node { padding: 10px; font-size: var(--text-sm); }
+      .hs-dial { bottom: 14px; }
+      .hs-dial-item { padding-inline: 10px; }
+      html[data-hero-playground] #themeBtn { right: 20px; bottom: 68px; }
+    }
+
     /* Nudge the grid down to bring the headline's cap-height into optical
        alignment with the name (desktop only — on mobile the rail stacks
        above it and provides its own spacing). Derived from the rail's own
@@ -835,7 +961,7 @@
          ANIMATION rules above. -->
     <section class="overview-hero" id="overview-hero">
       <h1 class="b-section-header overview-headline">the <em data-highlight data-highlight-auto="1520">why behind the what</em><br>has never been more important</h1>
-      <p class="b-section-subheader overview-subhead">Hiya! I'm Adi, a versatile product designer whose practice is built on continuous UX research to fuel high-velocity product experimentation. I enjoy interaction design, lemon cheesecakes and stormy views. Welcome!</p>
+      <p class="b-section-subheader overview-subhead" id="hero-subtext"><span class="hs-glue">Hiya! I'm Adi, </span><span class="hs-chunk">a versatile product designer</span><span class="hs-glue"> whose practice is built on </span><span class="hs-chunk">continuous UX research</span><span class="hs-glue"> to fuel </span><span class="hs-chunk">high-velocity product experimentation</span><span class="hs-glue">. I enjoy </span><span class="hs-chunk">interaction design, lemon cheesecakes and stormy views</span><span class="hs-glue">. Welcome!</span></p>
     </section>
 
     <!-- Feature sequence — the work-projects container. Its top edge is the
@@ -1307,6 +1433,158 @@
         spinIn();
         setTimeout(settleBack, ENTER_MS + HOLD_MS);
         setTimeout(function () { tapBusy = false; }, ENTER_MS + HOLD_MS + LEAVE_MS);
+      });
+    })();
+  </script>
+
+  <!-- In-context hero subheading dial. Dormant on the normal homepage;
+       preview mode changes only this existing paragraph. -->
+  <nav class="hs-dial" aria-label="Hero subtext reveal">
+    <span class="hs-dial-highlight" aria-hidden="true"></span>
+    <span class="hs-dial-seg" role="group" aria-label="Subtext treatment">
+      <button type="button" class="hs-dial-item" id="hsCurrent" aria-pressed="true">Current</button>
+      <button type="button" class="hs-dial-item" id="hsLoop" aria-pressed="false">Insight loop</button>
+      <button type="button" class="hs-dial-item" id="hsChunked" aria-pressed="false">Chunked reveal</button>
+    </span>
+    <span class="hs-dial-divider" aria-hidden="true"></span>
+    <button type="button" class="hs-dial-item hs-dial-replay" id="hsReplay" disabled aria-label="Replay the introduction">↻</button>
+  </nav>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      if (params.get('hero-playground') !== '1') return;
+
+      document.documentElement.setAttribute('data-hero-playground', '');
+      var subtext = document.getElementById('hero-subtext');
+      var dial = document.querySelector('.hs-dial');
+      var highlight = dial.querySelector('.hs-dial-highlight');
+      var buttons = Array.prototype.slice.call(dial.querySelectorAll('.hs-dial-item:not(.hs-dial-replay)'));
+      var btnCurrent = document.getElementById('hsCurrent');
+      var btnLoop = document.getElementById('hsLoop');
+      var btnChunked = document.getElementById('hsChunked');
+      var btnReplay = document.getElementById('hsReplay');
+      var currentMarkup = subtext.innerHTML; // pristine — real chunk/glue-spanned copy, as shipped
+      var selected = 0;
+      var mode = 'current';
+      var COLD_LOAD_DELAY = 1520 + 1400 + 160;
+      var MANUAL_DELAY = 120;
+      var CHUNK_STEP = 190, CHUNK_DUR = 420, GLUE_STEP = 60, PAUSE = 150;
+
+      var loopMarkup = '<span class="hs-loop">' +
+        '<span class="hs-pair is-intro">' +
+          '<span class="hs-node">Continuous UX discovery</span>' +
+          '<button class="hs-link" type="button" aria-label="Trace a discovery-to-experiment loop" title="Trace the loop">' +
+            '<span class="material-symbols-rounded" aria-hidden="true">sync_alt</span>' +
+            '<span class="hs-signal" aria-hidden="true"></span>' +
+          '</button>' +
+          '<span class="hs-node hs-node--experiment">High-velocity product experimentation</span>' +
+        '</span>' +
+        '<span class="hs-support">Hiya! I’m Adi, a versatile product designer.</span>' +
+        '<span class="hs-support">I enjoy interaction design, lemon cheesecakes and stormy views. Welcome!</span>' +
+      '</span>';
+
+      function moveHighlight() {
+        var button = buttons[selected];
+        highlight.style.width = button.offsetWidth + 'px';
+        highlight.style.transform = 'translateX(' + button.offsetLeft + 'px)';
+      }
+
+      function showCurrent() {
+        subtext.innerHTML = currentMarkup;
+        subtext.removeAttribute('data-hero-idea');
+        subtext.classList.remove('hs-armed', 'hs-playing');
+      }
+
+      function showChunked(delay) {
+        subtext.innerHTML = currentMarkup; // fresh, unanimated chunk/glue spans
+        subtext.setAttribute('data-hero-idea', 'chunked');
+        var chunks = subtext.querySelectorAll('.hs-chunk');
+        var glue = subtext.querySelectorAll('.hs-glue');
+
+        subtext.classList.remove('hs-playing');
+        subtext.classList.add('hs-armed');
+        void subtext.offsetWidth; // reflow so the animation restarts from 'from'
+
+        Array.prototype.forEach.call(chunks, function (el, i) {
+          el.style.animationDelay = (delay + i * CHUNK_STEP) + 'ms';
+        });
+        var glueStart = delay + (chunks.length - 1) * CHUNK_STEP + CHUNK_DUR + PAUSE;
+        Array.prototype.forEach.call(glue, function (el, i) {
+          el.style.animationDelay = (glueStart + i * GLUE_STEP) + 'ms';
+        });
+
+        requestAnimationFrame(function () { subtext.classList.add('hs-playing'); });
+      }
+
+      function showLoop(delay) {
+        subtext.classList.remove('hs-armed', 'hs-playing');
+        subtext.innerHTML = loopMarkup;
+        subtext.setAttribute('data-hero-idea', 'loop');
+        var pair = subtext.querySelector('.hs-pair');
+        var signal = subtext.querySelector('.hs-signal');
+        var support = subtext.querySelectorAll('.hs-support');
+        signal.style.animationDelay = delay + 'ms';
+        support[0].style.animationDelay = (delay + 760) + 'ms';
+        support[1].style.animationDelay = (delay + 840) + 'ms';
+
+        signal.addEventListener('animationend', function () {
+          pair.classList.remove('is-intro', 'is-running');
+        });
+        subtext.querySelector('.hs-link').addEventListener('click', function () {
+          pair.classList.remove('is-intro', 'is-running');
+          void signal.offsetWidth;
+          pair.classList.add('is-running');
+        });
+      }
+
+      var MODES = ['current', 'loop', 'chunked'];
+
+      function setMode(next, delay, updateUrl) {
+        mode = next;
+        selected = MODES.indexOf(mode);
+        btnCurrent.setAttribute('aria-pressed', String(mode === 'current'));
+        btnLoop.setAttribute('aria-pressed', String(mode === 'loop'));
+        btnChunked.setAttribute('aria-pressed', String(mode === 'chunked'));
+        btnReplay.disabled = mode === 'current';
+        if (mode === 'loop') showLoop(delay);
+        else if (mode === 'chunked') showChunked(delay);
+        else showCurrent();
+        moveHighlight();
+        if (updateUrl) {
+          var url = new URL(location.href);
+          url.searchParams.set('mode', mode);
+          history.replaceState(null, '', url);
+        }
+      }
+
+      btnReplay.addEventListener('click', function () {
+        if (mode === 'loop') showLoop(MANUAL_DELAY);
+        else if (mode === 'chunked') showChunked(MANUAL_DELAY);
+      });
+      buttons.forEach(function (button, index) {
+        button.addEventListener('click', function () { setMode(MODES[index], MANUAL_DELAY, true); });
+      });
+      window.addEventListener('resize', moveHighlight);
+      document.addEventListener('keydown', function (event) {
+        if (/^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName) || event.target.isContentEditable) return;
+        if (event.metaKey || event.ctrlKey || event.altKey) return;
+        if (event.key === '1') setMode('current', 0, true);
+        else if (event.key === '2') setMode('loop', MANUAL_DELAY, true);
+        else if (event.key === '3') setMode('chunked', MANUAL_DELAY, true);
+        else if (event.key === 'ArrowRight') setMode(MODES[(selected + 1) % MODES.length], MANUAL_DELAY, true);
+        else if (event.key === 'ArrowLeft') setMode(MODES[(selected - 1 + MODES.length) % MODES.length], MANUAL_DELAY, true);
+        else if (event.key === 'r' || event.key === 'R') {
+          if (mode === 'loop') showLoop(MANUAL_DELAY);
+          else if (mode === 'chunked') showChunked(MANUAL_DELAY);
+        }
+      });
+
+      var requestedMode = params.get('mode');
+      if (requestedMode === 'current') setMode('current', 0, false);
+      else if (requestedMode === 'chunked') setMode('chunked', COLD_LOAD_DELAY, false);
+      else setMode('loop', COLD_LOAD_DELAY, false);
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { dial.setAttribute('data-ready', ''); });
       });
     })();
   </script>
