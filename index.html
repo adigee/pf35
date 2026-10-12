@@ -418,6 +418,40 @@
     @keyframes hs-li-phrase-in { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
     html[data-hero-playground] #hero-subtext.hs-leadin-playing .hs-li-phrase { animation: hs-li-phrase-in 420ms var(--ease) both; }
 
+    /* Reveal style — three takes on how the surrounding words complete the
+       sentence once the H1 sweep has finished. */
+    .hs-li-cursor {
+      display: inline-block; width: 2px; height: 0.95em; margin-left: 1px;
+      background: var(--color-primary); vertical-align: -0.15em;
+      animation: hs-li-cursor-blink 900ms step-end infinite;
+    }
+    @keyframes hs-li-cursor-blink { 50% { opacity: 0; } }
+
+    /* An overlay bar, not a background-clip:text gradient: clipping the
+       gradient to the glyphs turned out to wash the whole phrase out to
+       invisible at some sweep positions in testing (the shine color and the
+       page background came out too close in lightness at exactly the wrong
+       moment). A translucent bar sweeping OVER solid, always-readable text
+       is simpler and can't ever un-render the phrase. */
+    .hs-li-phrase { position: relative; overflow: hidden; }
+    .hs-li-phrase.is-shimmering::after {
+      content: "";
+      position: absolute; top: 0; left: -60%; width: 45%; height: 100%;
+      background: linear-gradient(110deg,
+        transparent,
+        color-mix(in srgb, var(--color-primary) 65%, transparent) 50%,
+        transparent);
+      pointer-events: none;
+      /* !important: must outrank #hero-subtext.hs-leadin-playing .hs-li-phrase's
+         entrance-animation rule, which otherwise wins on specificity even
+         though it already finished (its 'both' fill just holds the end state). */
+      animation: hs-li-shimmer-sweep 1100ms ease-in-out !important;
+    }
+    @keyframes hs-li-shimmer-sweep {
+      from { left: -60%; }
+      to   { left: 115%; }
+    }
+
     .hs-dial { display: none; }
     html[data-hero-playground] .hs-dial { display: flex; }
     .hs-dial {
@@ -443,6 +477,8 @@
       .hs-node, .hs-support { animation: none; opacity: 1; transform: none; }
       .hs-chunk, .hs-glue { animation: none !important; opacity: 1 !important; transform: none !important; }
       .hs-li-phrase, .hs-li-glue { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+      .hs-li-cursor { animation: none !important; opacity: 0 !important; }
+      .hs-li-phrase.is-shimmering::after { animation: none !important; opacity: 0 !important; }
       .hs-dial[data-ready] .hs-dial-highlight { transition: none; }
     }
     @media (max-width: 720px) {
@@ -1466,6 +1502,16 @@
     <span class="hs-dial-divider" aria-hidden="true"></span>
     <button type="button" class="hs-dial-item hs-dial-replay" id="hsReplay" disabled aria-label="Replay the introduction">↻</button>
   </nav>
+
+  <!-- Only relevant to Phrase lead-in — how the surrounding words complete
+       the sentence. JS shows/hides this based on the active idea. -->
+  <nav class="hs-dial hs-subdial" id="hsRevealDial" aria-label="Phrase lead-in reveal style" style="display:none; bottom:68px;">
+    <span class="hs-dial-seg" role="group" aria-label="Reveal style">
+      <button type="button" class="hs-dial-item" id="hsRevealSlow" aria-pressed="true">Slow fade</button>
+      <button type="button" class="hs-dial-item" id="hsRevealType" aria-pressed="false">Typing cursor</button>
+      <button type="button" class="hs-dial-item" id="hsRevealShimmer" aria-pressed="false">Fade + shimmer</button>
+    </span>
+  </nav>
   <script>
     (function () {
       var params = new URLSearchParams(location.search);
@@ -1481,12 +1527,22 @@
       var btnChunked = document.getElementById('hsChunked');
       var btnLeadin = document.getElementById('hsLeadin');
       var btnReplay = document.getElementById('hsReplay');
+      var subdial = document.getElementById('hsRevealDial');
+      var revealButtons = Array.prototype.slice.call(subdial.querySelectorAll('.hs-dial-item'));
+      var btnRevealSlow = document.getElementById('hsRevealSlow');
+      var btnRevealType = document.getElementById('hsRevealType');
+      var btnRevealShimmer = document.getElementById('hsRevealShimmer');
       var currentMarkup = subtext.innerHTML; // pristine — real chunk/glue-spanned copy, as shipped
       var selected = 0;
       var mode = 'current';
+      var REVEAL_STYLES = ['slow-fade', 'typing', 'shimmer'];
+      var revealStyle = 'slow-fade';
+      var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var COLD_LOAD_DELAY = 1520 + 1400 + 160;
       var MANUAL_DELAY = 120;
       var CHUNK_STEP = 190, CHUNK_DUR = 420, GLUE_STEP = 60, PAUSE = 150;
+      var LEADIN_GLUE_A = 'Hiya! I’m Adi, a versatile product designer whose practice is built on ';
+      var LEADIN_GLUE_B = '. Welcome!';
       var LEADIN_PHRASE_COLD = 680;              // syncs with the real column-slide-up arrival
       var LEADIN_REFLOW_COLD = 1520 + 1400 + 300; // after the real headline sweep finishes, + a beat
       var LEADIN_PHRASE_MANUAL = 60;              // column's long since settled by the time this is clicked
@@ -1545,12 +1601,85 @@
         requestAnimationFrame(function () { subtext.classList.add('hs-playing'); });
       }
 
+      // Reveal style A — FLIP-smoothed reposition + fade, at a given pace.
+      // Slow fade and Fade+shimmer both use this; only the durations (and
+      // whether a shimmer follows) differ.
+      function revealFlipFade(phrase, moveDur, fadeDur, thenShimmer) {
+        var first = phrase.getBoundingClientRect();
+
+        var glueA = document.createElement('span');
+        glueA.className = 'hs-li-glue';
+        glueA.textContent = LEADIN_GLUE_A;
+        glueA.style.opacity = '0';
+
+        var glueB = document.createElement('span');
+        glueB.className = 'hs-li-glue';
+        glueB.textContent = LEADIN_GLUE_B;
+        glueB.style.opacity = '0';
+
+        subtext.insertBefore(glueA, phrase);
+        subtext.appendChild(glueB);
+
+        var last = phrase.getBoundingClientRect();
+        var dx = first.left - last.left, dy = first.top - last.top;
+
+        phrase.style.transition = 'none';
+        phrase.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+        void phrase.offsetWidth; // reflow so the inverse transform applies before animating
+
+        requestAnimationFrame(function () {
+          phrase.style.transition = 'transform ' + moveDur + 'ms var(--ease)';
+          phrase.style.transform = 'none';
+          glueA.style.transition = glueB.style.transition = 'opacity ' + fadeDur + 'ms ease-out';
+          glueA.style.opacity = glueB.style.opacity = '1';
+        });
+
+        if (thenShimmer) {
+          setTimeout(function () {
+            phrase.classList.add('is-shimmering');
+            phrase.addEventListener('animationend', function onEnd() {
+              phrase.classList.remove('is-shimmering');
+              phrase.removeEventListener('animationend', onEnd);
+            });
+          }, Math.max(moveDur, fadeDur) + 280);
+        }
+      }
+
+      // Reveal style B — a cursor types the surrounding words in, left to
+      // right; the already-visible phrase just sits there as if it had
+      // already been typed, and the natural reflow as glueA grows IS the
+      // effect (no FLIP — a typewriter is expected to push text along).
+      function typeInto(container, text, charDelay, onDone) {
+        if (reducedMotion) { container.textContent = text; if (onDone) onDone(); return; }
+        var textNode = document.createTextNode('');
+        var cursor = document.createElement('span');
+        cursor.className = 'hs-li-cursor';
+        container.appendChild(textNode);
+        container.appendChild(cursor);
+        var i = 0;
+        (function step() {
+          i++;
+          textNode.data = text.slice(0, i);
+          if (i < text.length) setTimeout(step, charDelay);
+          else { cursor.remove(); if (onDone) onDone(); }
+        })();
+      }
+
+      function revealTyping(phrase) {
+        var glueA = document.createElement('span');
+        glueA.className = 'hs-li-glue';
+        var glueB = document.createElement('span');
+        glueB.className = 'hs-li-glue';
+        subtext.insertBefore(glueA, phrase);
+        subtext.appendChild(glueB);
+        typeInto(glueA, LEADIN_GLUE_A, 22, function () { typeInto(glueB, LEADIN_GLUE_B, 22, null); });
+      }
+
       // Enters with ONLY "continuous UX research to fuel high-velocity product
       // experimentation" in the DOM — nothing else exists yet. The real H1
       // highlight sweep runs on its own (untouched); after it finishes + a
       // beat, the surrounding words are inserted for real (not pre-laid-out
-      // invisible text) and fade in, so the phrase's position genuinely
-      // shifts into its sentence slot. FLIP smooths that shift into a glide.
+      // invisible text) — how they're revealed depends on `revealStyle`.
       function showLeadin(phraseDelay, reflowDelay) {
         clearLeadinTimer(); // in case Replay is hit mid-wait
         subtext.classList.remove('hs-armed', 'hs-playing');
@@ -1568,37 +1697,11 @@
         void subtext.offsetWidth; // reflow so the animation restarts from 'from'
         requestAnimationFrame(function () { subtext.classList.add('hs-leadin-playing'); });
 
-        var reflowTimer = setTimeout(function () {
-          var first = phrase.getBoundingClientRect();
-
-          var glueA = document.createElement('span');
-          glueA.className = 'hs-li-glue';
-          glueA.textContent = 'Hiya! I’m Adi, a versatile product designer whose practice is built on ';
-          glueA.style.opacity = '0';
-
-          var glueB = document.createElement('span');
-          glueB.className = 'hs-li-glue';
-          glueB.textContent = '.';
-          glueB.style.opacity = '0';
-
-          subtext.insertBefore(glueA, phrase);
-          subtext.appendChild(glueB);
-
-          var last = phrase.getBoundingClientRect();
-          var dx = first.left - last.left, dy = first.top - last.top;
-
-          phrase.style.transition = 'none';
-          phrase.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
-          void phrase.offsetWidth; // reflow so the inverse transform applies before animating
-
-          requestAnimationFrame(function () {
-            phrase.style.transition = 'transform 520ms var(--ease)';
-            phrase.style.transform = 'none';
-            glueA.style.transition = glueB.style.transition = 'opacity 420ms ease-out';
-            glueA.style.opacity = glueB.style.opacity = '1';
-          });
+        subtext._hsLeadinTimer = setTimeout(function () {
+          if (revealStyle === 'typing') revealTyping(phrase);
+          else if (revealStyle === 'shimmer') revealFlipFade(phrase, 520, 420, true);
+          else revealFlipFade(phrase, 1700, 1700, false); // slow-fade
         }, reflowDelay);
-        subtext._hsLeadinTimer = reflowTimer; // cleared by other show*() fns if the mode changes mid-wait
       }
 
       function showLoop(delay) {
@@ -1630,6 +1733,22 @@
         else showLeadin(LEADIN_PHRASE_MANUAL, LEADIN_REFLOW_MANUAL);
       }
 
+      function setRevealStyle(next, replay, updateUrl) {
+        revealStyle = next;
+        btnRevealSlow.setAttribute('aria-pressed', String(next === 'slow-fade'));
+        btnRevealType.setAttribute('aria-pressed', String(next === 'typing'));
+        btnRevealShimmer.setAttribute('aria-pressed', String(next === 'shimmer'));
+        if (updateUrl) {
+          var url = new URL(location.href);
+          url.searchParams.set('reveal', next);
+          history.replaceState(null, '', url);
+        }
+        if (replay && mode === 'leadin') replayLeadin(false);
+      }
+      revealButtons.forEach(function (button, i) {
+        button.addEventListener('click', function () { setRevealStyle(REVEAL_STYLES[i], true, true); });
+      });
+
       function setMode(next, delay, updateUrl) {
         mode = next;
         selected = MODES.indexOf(mode);
@@ -1638,6 +1757,7 @@
         btnChunked.setAttribute('aria-pressed', String(mode === 'chunked'));
         btnLeadin.setAttribute('aria-pressed', String(mode === 'leadin'));
         btnReplay.disabled = mode === 'current';
+        subdial.style.display = mode === 'leadin' ? 'flex' : 'none';
         if (mode === 'loop') showLoop(delay);
         else if (mode === 'chunked') showChunked(delay);
         else if (mode === 'leadin') replayLeadin(delay === COLD_LOAD_DELAY);
@@ -1674,6 +1794,9 @@
           else if (mode === 'leadin') replayLeadin(false);
         }
       });
+
+      var requestedReveal = params.get('reveal');
+      if (REVEAL_STYLES.indexOf(requestedReveal) !== -1) setRevealStyle(requestedReveal, false, false);
 
       var requestedMode = params.get('mode');
       if (requestedMode === 'current') setMode('current', 0, false);
