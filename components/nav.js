@@ -3,8 +3,8 @@
    Injects the shared nav into any page that has
    <div data-component="nav"></div>.
 
-   On the homepage, section links use #anchor (enables
-   smooth scroll). On all other pages they use index.html#anchor.
+   Links are root-absolute so the shared nav works from nested
+   routes such as /spear-hunting/<company>/.
 ───────────────────────────────────────── */
 (function () {
   function render() {
@@ -16,11 +16,11 @@
     nav.setAttribute('role', 'navigation');
     nav.setAttribute('aria-label', 'Primary');
     nav.innerHTML =
-      '<a href="index.html" class="nav-name">Aditya Gujaran</a>' +
+      '<a href="/" class="nav-name">Aditya Gujaran</a>' +
       '<div class="nav-resume-group">' +
         '<span class="nav-resume-label">Resume</span>' +
         '<a href="https://drive.google.com/file/d/1FJDZI8xlQgeWfl7zgbS3LjaTYYZJbWh3/view" target="_blank" rel="noopener" class="nav-resume-label nav-resume-link">PDF&thinsp;<span class="material-symbols-rounded nav-resume-icon">download</span></a>' +
-        '<a href="resume.md" target="_blank" rel="noopener" class="nav-resume-label nav-resume-link">MD&thinsp;<span class="material-symbols-rounded nav-resume-icon">download</span></a>' +
+        '<a href="/resume.md" target="_blank" rel="noopener" class="nav-resume-label nav-resume-link">MD&thinsp;<span class="material-symbols-rounded nav-resume-icon">download</span></a>' +
       '</div>';
 
     el.replaceWith(nav);
