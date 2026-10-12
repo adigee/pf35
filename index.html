@@ -403,19 +403,20 @@
     html[data-hero-playground] #hero-subtext.hs-playing .hs-chunk { animation: hs-chunk-rise 420ms var(--ease) both; }
     html[data-hero-playground] #hero-subtext.hs-playing .hs-glue  { animation: hs-glue-fade 480ms ease-out both; }
 
-    /* Highlight swipe — third idea: enter with ONLY the research→experimentation
-       phrase, let the real highlighter marker sweep it (reuses the unmodified
-       text_highlight.js component), then fade in the rest of the sentence
-       around it once the sweep finishes. */
-    .hs-sw-phrase { font-style: normal; }   /* [data-highlight] em — no italics */
-    html[data-hero-playground] #hero-subtext.hs-swipe-armed .hs-sw-phrase,
-    html[data-hero-playground] #hero-subtext.hs-swipe-armed .hs-sw-glue {
-      opacity: 0;
-    }
-    @keyframes hs-sw-rise { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes hs-sw-fade { from { opacity: 0; } to { opacity: 1; } }
-    html[data-hero-playground] #hero-subtext.hs-swipe-playing .hs-sw-phrase { animation: hs-sw-rise 420ms var(--ease) both; }
-    html[data-hero-playground] #hero-subtext.hs-swipe-playing .hs-sw-glue   { animation: hs-sw-fade 480ms ease-out both; }
+    /* Phrase lead-in — fourth idea: the column enters with ONLY "continuous
+       UX research to fuel high-velocity product experimentation" in the
+       subhead slot (nothing else exists yet — not even hidden placeholder
+       text). The real H1 highlight sweep runs on its own, untouched. Only
+       after that sweep finishes + a beat do the surrounding words get
+       inserted and fade in — and because they're real text being inserted
+       (not pre-laid-out invisible text), the phrase's position genuinely
+       shifts to its sentence slot; a FLIP (measure-before/after + inverse
+       transform) smooths that shift into a glide instead of a jump cut.
+       Trailing "I enjoy..." sentence is dropped for this idea. */
+    .hs-li-phrase { display: inline-block; }   /* transforms don't apply to plain inline boxes */
+    html[data-hero-playground] #hero-subtext.hs-leadin-armed .hs-li-phrase { opacity: 0; }
+    @keyframes hs-li-phrase-in { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+    html[data-hero-playground] #hero-subtext.hs-leadin-playing .hs-li-phrase { animation: hs-li-phrase-in 420ms var(--ease) both; }
 
     .hs-dial { display: none; }
     html[data-hero-playground] .hs-dial { display: flex; }
@@ -441,7 +442,7 @@
       .hs-pair.is-running .hs-signal, .hs-pair.is-intro .hs-signal { animation: none; }
       .hs-node, .hs-support { animation: none; opacity: 1; transform: none; }
       .hs-chunk, .hs-glue { animation: none !important; opacity: 1 !important; transform: none !important; }
-      .hs-sw-phrase, .hs-sw-glue { animation: none !important; opacity: 1 !important; transform: none !important; }
+      .hs-li-phrase, .hs-li-glue { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
       .hs-dial[data-ready] .hs-dial-highlight { transition: none; }
     }
     @media (max-width: 720px) {
@@ -1460,7 +1461,7 @@
       <button type="button" class="hs-dial-item" id="hsCurrent" aria-pressed="true">Current</button>
       <button type="button" class="hs-dial-item" id="hsLoop" aria-pressed="false">Insight loop</button>
       <button type="button" class="hs-dial-item" id="hsChunked" aria-pressed="false">Chunked reveal</button>
-      <button type="button" class="hs-dial-item" id="hsSwipe" aria-pressed="false">Highlight swipe</button>
+      <button type="button" class="hs-dial-item" id="hsLeadin" aria-pressed="false">Phrase lead-in</button>
     </span>
     <span class="hs-dial-divider" aria-hidden="true"></span>
     <button type="button" class="hs-dial-item hs-dial-replay" id="hsReplay" disabled aria-label="Replay the introduction">↻</button>
@@ -1478,7 +1479,7 @@
       var btnCurrent = document.getElementById('hsCurrent');
       var btnLoop = document.getElementById('hsLoop');
       var btnChunked = document.getElementById('hsChunked');
-      var btnSwipe = document.getElementById('hsSwipe');
+      var btnLeadin = document.getElementById('hsLeadin');
       var btnReplay = document.getElementById('hsReplay');
       var currentMarkup = subtext.innerHTML; // pristine — real chunk/glue-spanned copy, as shipped
       var selected = 0;
@@ -1486,6 +1487,10 @@
       var COLD_LOAD_DELAY = 1520 + 1400 + 160;
       var MANUAL_DELAY = 120;
       var CHUNK_STEP = 190, CHUNK_DUR = 420, GLUE_STEP = 60, PAUSE = 150;
+      var LEADIN_PHRASE_COLD = 680;              // syncs with the real column-slide-up arrival
+      var LEADIN_REFLOW_COLD = 1520 + 1400 + 300; // after the real headline sweep finishes, + a beat
+      var LEADIN_PHRASE_MANUAL = 60;              // column's long since settled by the time this is clicked
+      var LEADIN_REFLOW_MANUAL = 500;             // a pretend beat, same spirit as the cold pause
 
       var loopMarkup = '<span class="hs-loop">' +
         '<span class="hs-pair is-intro">' +
@@ -1506,14 +1511,20 @@
         highlight.style.transform = 'translateX(' + button.offsetLeft + 'px)';
       }
 
+      function clearLeadinTimer() {
+        if (subtext._hsLeadinTimer) { clearTimeout(subtext._hsLeadinTimer); subtext._hsLeadinTimer = null; }
+      }
+
       function showCurrent() {
+        clearLeadinTimer();
         subtext.innerHTML = currentMarkup;
         subtext.removeAttribute('data-hero-idea');
-        subtext.classList.remove('hs-armed', 'hs-playing', 'hs-swipe-armed', 'hs-swipe-playing');
+        subtext.classList.remove('hs-armed', 'hs-playing', 'hs-leadin-armed', 'hs-leadin-playing');
       }
 
       function showChunked(delay) {
-        subtext.classList.remove('hs-swipe-armed', 'hs-swipe-playing');
+        clearLeadinTimer();
+        subtext.classList.remove('hs-leadin-armed', 'hs-leadin-playing');
         subtext.innerHTML = currentMarkup; // fresh, unanimated chunk/glue spans
         subtext.setAttribute('data-hero-idea', 'chunked');
         var chunks = subtext.querySelectorAll('.hs-chunk');
@@ -1535,47 +1546,64 @@
       }
 
       // Enters with ONLY "continuous UX research to fuel high-velocity product
-      // experimentation" visible; the real [data-highlight] marker (same
-      // component as the headline) sweeps it once it's settled; the rest of
-      // the sentence fades in only after that sweep completes.
-      function showSwipe(delay) {
+      // experimentation" in the DOM — nothing else exists yet. The real H1
+      // highlight sweep runs on its own (untouched); after it finishes + a
+      // beat, the surrounding words are inserted for real (not pre-laid-out
+      // invisible text) and fade in, so the phrase's position genuinely
+      // shifts into its sentence slot. FLIP smooths that shift into a glide.
+      function showLeadin(phraseDelay, reflowDelay) {
+        clearLeadinTimer(); // in case Replay is hit mid-wait
         subtext.classList.remove('hs-armed', 'hs-playing');
         subtext.innerHTML = '';
-        subtext.setAttribute('data-hero-idea', 'swipe');
+        subtext.setAttribute('data-hero-idea', 'leadin');
 
-        var PHRASE_DUR = 420, PRE_SWEEP_PAUSE = 150, SWEEP_DUR = 1400, POST_SWEEP_PAUSE = 200;
-        var sweepDelay = delay + PHRASE_DUR + PRE_SWEEP_PAUSE;
-        var glueDelay = sweepDelay + SWEEP_DUR + POST_SWEEP_PAUSE;
-
-        var glueA = document.createElement('span');
-        glueA.className = 'hs-sw-glue';
-        glueA.textContent = 'Hiya! I’m Adi, a versatile product designer whose practice is built on ';
-        glueA.style.animationDelay = glueDelay + 'ms';
-
-        var phrase = document.createElement('em');
-        phrase.className = 'hs-sw-phrase';
-        phrase.setAttribute('data-highlight', '');
-        phrase.setAttribute('data-highlight-auto', String(sweepDelay));
+        var phrase = document.createElement('span');
+        phrase.className = 'hs-li-phrase';
         phrase.textContent = 'continuous UX research to fuel high-velocity product experimentation';
-        phrase.style.animationDelay = delay + 'ms';
-
-        var glueB = document.createElement('span');
-        glueB.className = 'hs-sw-glue';
-        glueB.textContent = '. I enjoy interaction design, lemon cheesecakes and stormy views. Welcome!';
-        glueB.style.animationDelay = glueDelay + 'ms';
-
-        subtext.appendChild(glueA);
+        phrase.style.animationDelay = phraseDelay + 'ms';
         subtext.appendChild(phrase);
-        subtext.appendChild(glueB);
 
-        subtext.classList.remove('hs-swipe-playing');
-        subtext.classList.add('hs-swipe-armed');
+        subtext.classList.remove('hs-leadin-playing');
+        subtext.classList.add('hs-leadin-armed');
         void subtext.offsetWidth; // reflow so the animation restarts from 'from'
-        requestAnimationFrame(function () { subtext.classList.add('hs-swipe-playing'); });
+        requestAnimationFrame(function () { subtext.classList.add('hs-leadin-playing'); });
+
+        var reflowTimer = setTimeout(function () {
+          var first = phrase.getBoundingClientRect();
+
+          var glueA = document.createElement('span');
+          glueA.className = 'hs-li-glue';
+          glueA.textContent = 'Hiya! I’m Adi, a versatile product designer whose practice is built on ';
+          glueA.style.opacity = '0';
+
+          var glueB = document.createElement('span');
+          glueB.className = 'hs-li-glue';
+          glueB.textContent = '.';
+          glueB.style.opacity = '0';
+
+          subtext.insertBefore(glueA, phrase);
+          subtext.appendChild(glueB);
+
+          var last = phrase.getBoundingClientRect();
+          var dx = first.left - last.left, dy = first.top - last.top;
+
+          phrase.style.transition = 'none';
+          phrase.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+          void phrase.offsetWidth; // reflow so the inverse transform applies before animating
+
+          requestAnimationFrame(function () {
+            phrase.style.transition = 'transform 520ms var(--ease)';
+            phrase.style.transform = 'none';
+            glueA.style.transition = glueB.style.transition = 'opacity 420ms ease-out';
+            glueA.style.opacity = glueB.style.opacity = '1';
+          });
+        }, reflowDelay);
+        subtext._hsLeadinTimer = reflowTimer; // cleared by other show*() fns if the mode changes mid-wait
       }
 
       function showLoop(delay) {
-        subtext.classList.remove('hs-armed', 'hs-playing', 'hs-swipe-armed', 'hs-swipe-playing');
+        clearLeadinTimer();
+        subtext.classList.remove('hs-armed', 'hs-playing', 'hs-leadin-armed', 'hs-leadin-playing');
         subtext.innerHTML = loopMarkup;
         subtext.setAttribute('data-hero-idea', 'loop');
         var pair = subtext.querySelector('.hs-pair');
@@ -1595,7 +1623,12 @@
         });
       }
 
-      var MODES = ['current', 'loop', 'chunked', 'swipe'];
+      var MODES = ['current', 'loop', 'chunked', 'leadin'];
+
+      function replayLeadin(cold) {
+        if (cold) showLeadin(LEADIN_PHRASE_COLD, LEADIN_REFLOW_COLD);
+        else showLeadin(LEADIN_PHRASE_MANUAL, LEADIN_REFLOW_MANUAL);
+      }
 
       function setMode(next, delay, updateUrl) {
         mode = next;
@@ -1603,11 +1636,11 @@
         btnCurrent.setAttribute('aria-pressed', String(mode === 'current'));
         btnLoop.setAttribute('aria-pressed', String(mode === 'loop'));
         btnChunked.setAttribute('aria-pressed', String(mode === 'chunked'));
-        btnSwipe.setAttribute('aria-pressed', String(mode === 'swipe'));
+        btnLeadin.setAttribute('aria-pressed', String(mode === 'leadin'));
         btnReplay.disabled = mode === 'current';
         if (mode === 'loop') showLoop(delay);
         else if (mode === 'chunked') showChunked(delay);
-        else if (mode === 'swipe') showSwipe(delay);
+        else if (mode === 'leadin') replayLeadin(delay === COLD_LOAD_DELAY);
         else showCurrent();
         moveHighlight();
         if (updateUrl) {
@@ -1620,7 +1653,7 @@
       btnReplay.addEventListener('click', function () {
         if (mode === 'loop') showLoop(MANUAL_DELAY);
         else if (mode === 'chunked') showChunked(MANUAL_DELAY);
-        else if (mode === 'swipe') showSwipe(MANUAL_DELAY);
+        else if (mode === 'leadin') replayLeadin(false);
       });
       buttons.forEach(function (button, index) {
         button.addEventListener('click', function () { setMode(MODES[index], MANUAL_DELAY, true); });
@@ -1632,20 +1665,20 @@
         if (event.key === '1') setMode('current', 0, true);
         else if (event.key === '2') setMode('loop', MANUAL_DELAY, true);
         else if (event.key === '3') setMode('chunked', MANUAL_DELAY, true);
-        else if (event.key === '4') setMode('swipe', MANUAL_DELAY, true);
+        else if (event.key === '4') setMode('leadin', MANUAL_DELAY, true);
         else if (event.key === 'ArrowRight') setMode(MODES[(selected + 1) % MODES.length], MANUAL_DELAY, true);
         else if (event.key === 'ArrowLeft') setMode(MODES[(selected - 1 + MODES.length) % MODES.length], MANUAL_DELAY, true);
         else if (event.key === 'r' || event.key === 'R') {
           if (mode === 'loop') showLoop(MANUAL_DELAY);
           else if (mode === 'chunked') showChunked(MANUAL_DELAY);
-          else if (mode === 'swipe') showSwipe(MANUAL_DELAY);
+          else if (mode === 'leadin') replayLeadin(false);
         }
       });
 
       var requestedMode = params.get('mode');
       if (requestedMode === 'current') setMode('current', 0, false);
       else if (requestedMode === 'chunked') setMode('chunked', COLD_LOAD_DELAY, false);
-      else if (requestedMode === 'swipe') setMode('swipe', COLD_LOAD_DELAY, false);
+      else if (requestedMode === 'leadin') setMode('leadin', COLD_LOAD_DELAY, false);
       else setMode('loop', COLD_LOAD_DELAY, false);
       requestAnimationFrame(function () {
         requestAnimationFrame(function () { dial.setAttribute('data-ready', ''); });
