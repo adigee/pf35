@@ -191,6 +191,14 @@ button[data-copy].b-tt-anchor {
   font-size: var(--text-sm);
   letter-spacing: var(--tracking-wider);
 }
+/* Icon-only pill — same height as .btn--md but circular (no label). */
+.btn--icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  flex-shrink: 0;
+}
+.btn--icon svg { width: 18px; height: 18px; fill: currentColor; }
 
 /* ─────────────────────────────────────────
    RESET & BASE
