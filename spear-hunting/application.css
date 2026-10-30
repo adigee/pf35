@@ -1,4 +1,10 @@
 /* Shared layout and media blocks for tailored application pages. */
+
+/* Application pages hide the site-wide Resume (PDF/MD) nav group. */
+.nav-resume-group {
+  display: none;
+}
+
 .sh-shell {
   width: min(calc(100% - var(--sp-8) - var(--sp-8)), var(--application-max-width));
   margin-inline: auto;
@@ -276,7 +282,7 @@
 }
 
 .sh-closing .b-body-caption {
-  margin-top: var(--sp-4);
+  margin-top: var(--sp-6);
 }
 
 .sh-contact-links .b-link {
