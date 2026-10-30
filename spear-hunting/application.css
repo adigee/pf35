@@ -90,6 +90,10 @@
   margin-bottom: var(--sp-5);
 }
 
+.sh-copy > .b-body + .b-body-bold {
+  margin-top: var(--sp-4);
+}
+
 .sh-copy > .b-body + .b-body {
   margin-top: var(--sp-4);
 }
@@ -161,6 +165,16 @@
   display: block;
   width: 100%;
   height: auto;
+}
+
+.sh-section--continues {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.sh-shell-break {
+  padding-bottom: var(--sp-16);
+  border-bottom: var(--border-width) solid var(--color-border);
 }
 
 .sh-figure figcaption {
