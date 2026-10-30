@@ -393,6 +393,8 @@ Pages under `/spear-hunting/<company>/` use `spear-hunting/application.css` and 
 
 Application section copy is authored per opportunity. The reusable template contains `TODO(adi)` placeholders only. These pages are independent from the project registry and case-study runtime.
 
+The inventory at `/spearhunting/índice/` is generated from folders under `spear-hunting/` by running `npm run spearhunting:indice`. A page gets a publish date only when its root `<html>` has `data-status="ready"` and a valid ISO date in `data-published` (for example `data-published="2026-10-30"`).
+
 ### Timeline
 
 `.b-timeline-item` uses a two-column grid: `5.5rem` (date column) + `1fr` (content). Items are separated by `--sp-3` gaps.
