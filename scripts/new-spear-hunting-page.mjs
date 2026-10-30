@@ -1,6 +1,7 @@
 import { cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { generateInventory } from './generate-spear-hunting-indice.mjs';
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryDirectory = path.dirname(scriptDirectory);
@@ -71,6 +72,7 @@ export async function createPage(slug) {
       );
     }
     await updateHtmlUrls(targetDirectory, slug);
+    await generateInventory();
   } catch (error) {
     await rm(targetDirectory, { recursive: true, force: true });
     throw error;
