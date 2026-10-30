@@ -11,37 +11,19 @@ function isValidSlug(slug) {
   return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
 }
 
-function replaceCanonicalAndOgUrls(html, slug) {
-  return html.replace(/<(link|meta)\b[^>]*>/gi, (tag) => {
-    const isCanonical =
-      /^<link\b/i.test(tag) &&
-      /\s+rel\s*=\s*(["'])canonical\1/i.test(tag);
-    const isOgUrl =
-      /^<meta\b/i.test(tag) &&
-      /\s+(?:property|name)\s*=\s*(["'])og:url\1/i.test(tag);
-
-    if (!isCanonical && !isOgUrl) return tag;
-
-    const attribute = isCanonical ? 'href' : 'content';
-    const attributePattern = new RegExp(
-      `(\\s+${attribute}\\s*=\\s*)(["'])(.*?)\\2`,
-      'i',
-    );
-    return tag.replace(attributePattern, (match, prefix, quote, value) =>
-      `${prefix}${quote}${value.replaceAll('__SLUG__', slug)}${quote}`,
-    );
-  });
+function replaceSlugPlaceholder(html, slug) {
+  return html.replaceAll('__SLUG__', slug);
 }
 
-async function updateHtmlUrls(directory, slug) {
+async function updateHtmlSlugPlaceholders(directory, slug) {
   const entries = await readdir(directory, { withFileTypes: true });
   for (const entry of entries) {
     const entryPath = path.join(directory, entry.name);
     if (entry.isDirectory()) {
-      await updateHtmlUrls(entryPath, slug);
+      await updateHtmlSlugPlaceholders(entryPath, slug);
     } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.html')) {
       const html = await readFile(entryPath, 'utf8');
-      await writeFile(entryPath, replaceCanonicalAndOgUrls(html, slug));
+      await writeFile(entryPath, replaceSlugPlaceholder(html, slug));
     }
   }
 }
@@ -70,7 +52,7 @@ export async function createPage(slug) {
         { recursive: true, errorOnExist: true, force: false },
       );
     }
-    await updateHtmlUrls(targetDirectory, slug);
+    await updateHtmlSlugPlaceholders(targetDirectory, slug);
   } catch (error) {
     await rm(targetDirectory, { recursive: true, force: true });
     throw error;
