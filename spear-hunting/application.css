@@ -321,6 +321,16 @@
     gap: var(--sp-6);
   }
 
+  .sh-intro--mirror .sh-copy {
+    order: 0;
+  }
+
+  .sh-intro--mirror .sh-profile {
+    order: 0;
+    justify-self: start;
+    max-width: var(--application-profile-max-width);
+  }
+
   .sh-facts-grid,
   .sh-work-grid {
     grid-template-columns: 1fr;
