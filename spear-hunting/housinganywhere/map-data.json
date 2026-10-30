@@ -1,0 +1,155 @@
+{
+  "hint": "Tap to open",
+  "trees": [
+    {
+      "id": "demand",
+      "toggleLabel": "Demand side (tenants)",
+      "root": {
+        "id": "d-bo",
+        "type": "businessOutcome",
+        "label": "Retention and replay from booked tenants",
+        "open": true,
+        "children": [
+          {
+            "id": "d-po",
+            "type": "productOutcome",
+            "label": "Higher engagement post move-in",
+            "children": [
+              {
+                "id": "d-opp-settle",
+                "type": "opportunity",
+                "label": "Helping the tenant settle in",
+                "children": [
+                  {
+                    "id": "d-sol-checklist",
+                    "type": "solution",
+                    "label": "Checklist before approving payment to landlord",
+                    "highlight": true,
+                    "link": {
+                      "href": "#prototype",
+                      "label": "See the prototype"
+                    }
+                  },
+                  {
+                    "id": "d-sol-optin",
+                    "type": "solution",
+                    "label": "Opt-in for rent payments (2 to n month)"
+                  },
+                  {
+                    "id": "d-sol-email",
+                    "type": "solution",
+                    "label": "Email campaign with supermarkets / gyms / library nearby"
+                  }
+                ]
+              },
+              {
+                "id": "d-opp-referrals",
+                "type": "opportunity",
+                "label": "Referrals to other students/friends for discounts with future bookings"
+              },
+              {
+                "id": "d-opp-extensions",
+                "type": "opportunity",
+                "label": "Request extensions with discount based on behavior so far",
+                "children": [
+                  {
+                    "id": "d-sol-note",
+                    "type": "solution",
+                    "label": "Write a note to landlord"
+                  }
+                ]
+              },
+              {
+                "id": "d-opp-relationship",
+                "type": "opportunity",
+                "label": "Relationship building with landlord",
+                "children": [
+                  {
+                    "id": "d-sol-rating",
+                    "type": "solution",
+                    "label": "Anonymous rating of the landlord (across topics like communication style, promptness on fixing)"
+                  },
+                  {
+                    "id": "d-sol-deposit",
+                    "type": "solution",
+                    "label": "Create clarity around the deposit ( what it covers, what it includes, when will it be returned)"
+                  }
+                ]
+              },
+              {
+                "id": "d-opp-friends",
+                "type": "opportunity",
+                "label": "Make new local friends",
+                "children": [
+                  {
+                    "id": "d-sol-clubs",
+                    "type": "solution",
+                    "label": "Language clubs (meet other Italian students in CPH)"
+                  },
+                  {
+                    "id": "d-sol-ambassadors",
+                    "type": "solution",
+                    "label": "Meet Local ambassadors (city level / neighborhood level)"
+                  }
+                ]
+              },
+              {
+                "id": "d-opp-support",
+                "type": "opportunity",
+                "label": "Get support fast",
+                "children": [
+                  {
+                    "id": "d-sol-escalation",
+                    "type": "solution",
+                    "label": "Escalation path to Housing Anywhere for time sensitive issues like plumbing, robbery, neighbours"
+                  },
+                  {
+                    "id": "d-sol-report",
+                    "type": "solution",
+                    "label": "Report landlord for slow solutioning"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "supply",
+      "toggleLabel": "Supply side (landlords)",
+      "root": {
+        "id": "s-bo",
+        "type": "businessOutcome",
+        "label": "Grow the supply (more landlords on platform)",
+        "open": true,
+        "children": [
+          {
+            "id": "s-po",
+            "type": "productOutcome",
+            "label": "Referrals to other landlords",
+            "children": [
+              {
+                "id": "s-opp-tenants",
+                "type": "opportunity",
+                "label": "Provide reliable tenants",
+                "children": [
+                  {
+                    "id": "s-sol-referrals",
+                    "type": "solution",
+                    "label": "Referrals from existing tenants"
+                  }
+                ]
+              },
+              {
+                "id": "s-opp-legalese",
+                "type": "opportunity",
+                "label": "Simplify legalese"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

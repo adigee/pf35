@@ -387,6 +387,20 @@ Pages under `/spear-hunting/<company>/` use `spear-hunting/application.css` and 
 
 Application section copy is authored per opportunity. The reusable template contains `TODO(adi)` placeholders only. These pages are independent from the project registry and case-study runtime.
 
+### Opportunity Map (HousingAnywhere application)
+
+`spear-hunting/housinganywhere/` holds an interactive opportunity solution tree: `opportunity-map.js` (vanilla, no dependencies), `opportunity-map.css`, and `map-data.json`. All wording lives in the JSON; nodes have `id`, `type` (`businessOutcome`, `productOutcome`, `opportunity`, `solution`), `label`, and optional `children`, `open` (starts expanded), `evidence` (`{image, alt, caption}` or `{quote, source}`), `highlight`, and `link`. `map-demo.html` is a standalone review page. Desktop (≥768px) runs left to right with connector lines; below 768px it is a nested accordion. Nodes with children are `<button aria-expanded>`; expand and collapse run 200ms on `transform` and `opacity` only and are skipped under `prefers-reduced-motion`.
+
+| Token | Dark | Light | Purpose |
+|---|---|---|---|
+| `--om-business-chip` / `-border` | `#D9BDF7` / same | `#D9BDF7` / `#8450C4` | Business outcome |
+| `--om-product-chip` / `-border` | `#ADD5F7` / same | `#ADD5F7` / `#2E78BC` | Product outcome |
+| `--om-opportunity-chip` / `-border` | `#A2E8B8` / same | `#A2E8B8` / `#237F46` | Opportunity |
+| `--om-solution-chip` / `-border` | `#F8DA8C` / same | `#F8DA8C` / `#8F6A00` | Solution |
+| `--om-chip-text` | `#1A1A1A` | `#1A1A1A` | Chip text, 10.4:1 or better on every chip |
+
+Everything else reuses the system tokens: node fill is the type chip colour tinted over `--color-surface` (dark) or `--color-bg` (light), text is `--color-text`, box outlines, connectors and chevrons are `--color-text-muted`, and the toggle and prototype button use `--color-primary` with `--color-on-primary`. The system has no green, yellow or blue, so the four type hues are the only new colours. Light borders are at least 3.7:1 against `--color-surface`. Classes: `.om-section`, `.om-head`, `.om`, `.om-toggle`, `.om-tree`, `.om-item`, `.om-cell`, `.om-node`, `.om-tag`, `.om-label`, `.om-chevron`, `.om-children`, `.om-evidence`, `.om-link`.
+
 ### Timeline
 
 `.b-timeline-item` uses a two-column grid: `5.5rem` (date column) + `1fr` (content). Items are separated by `--sp-3` gaps.
