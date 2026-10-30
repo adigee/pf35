@@ -381,6 +381,9 @@ Pages under `/spear-hunting/<company>/` use `spear-hunting/application.css` and 
 | `.b-pull` | Inline phrase emphasis using `--color-accent`; inherits surrounding font and weight |
 | `.sh-figure` | Captioned image block; images may use the shared `.zoomable` image modal |
 | `.sh-video` | Responsive video with controls, poster, and captions track; never autoplay |
+| `.sh-media-row` | Static 3-up image row (e.g. UXR fieldwork stills); stays 3 columns at all widths |
+| `.sh-youtube-embed` | Responsive 16:9 wrapper for an embedded YouTube iframe |
+| `.sh-subsection` | Groups a label + paragraph pair within a section, adding spacing between consecutive groups |
 | `.sh-work-grid`, `.sh-work-card` | Links to selected existing case studies with image and per-opportunity relevance copy |
 | `.sh-closing`, `.sh-contact-links` | Closing pitch and contact actions |
 | `.sh-top-link`, `.sh-back-to-top` | Back-to-top wayfinding |
