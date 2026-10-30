@@ -81,6 +81,8 @@
 
 .sh-intro--mirror .sh-profile {
   order: 2;
+  align-self: start;
+  justify-self: end;
   max-width: calc(var(--application-profile-max-width) * 0.6);
 }
 
@@ -106,9 +108,9 @@
 
 .sh-fact {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-8);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
   padding-block: var(--sp-4);
   border-bottom: var(--border-width) solid var(--color-border);
 }
@@ -130,7 +132,6 @@
   font-size: var(--text-sm);
   line-height: var(--leading-body);
   color: var(--color-text);
-  text-align: right;
 }
 
 .sh-section {
@@ -260,6 +261,10 @@
   margin-top: var(--sp-6);
 }
 
+.sh-closing .b-body-caption {
+  margin-top: var(--sp-4);
+}
+
 .sh-contact-links .b-link {
   display: inline-flex;
   align-items: center;
@@ -300,16 +305,6 @@
     grid-template-columns: 1fr;
     justify-items: start;
     gap: var(--sp-6);
-  }
-
-  .sh-fact {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--sp-2);
-  }
-
-  .sh-fact .rs-box-text {
-    text-align: left;
   }
 
   .sh-facts-grid,
