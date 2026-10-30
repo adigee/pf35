@@ -6,3 +6,6 @@ dev/
 # are left intact so they work again once restored) and re-add it to the
 # homepage grid, feature sequence, projects.js registry, and LLM index.
 _archive/
+
+# Application page source template is copied to public company routes by the helper.
+spear-hunting/_template/

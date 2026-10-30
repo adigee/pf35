@@ -82,6 +82,11 @@
   --left-col: 400px;
   --panel-transition: 420ms ease;
   --nav-height: 3.25rem;
+  --application-max-width: 67rem;
+  --application-copy-width: 62ch;
+  --application-profile-max-width: 25rem;
+  --focus-ring-width: 2px;
+  --border-width: 1px;
 
   /* ── COMPONENT: Link 1 — Panel CTA (.panel-cta) ──────────────────
      Text + filled circle arrow. Used in right-column panels below image.
