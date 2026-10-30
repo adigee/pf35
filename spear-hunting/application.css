@@ -71,6 +71,19 @@
   max-width: var(--application-copy-width);
 }
 
+.sh-intro--mirror {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+}
+
+.sh-intro--mirror .sh-copy {
+  order: 1;
+}
+
+.sh-intro--mirror .sh-profile {
+  order: 2;
+  max-width: calc(var(--application-profile-max-width) * 0.6);
+}
+
 .sh-copy > .b-title {
   margin-bottom: var(--sp-5);
 }
