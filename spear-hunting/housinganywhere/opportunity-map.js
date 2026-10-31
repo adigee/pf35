@@ -97,7 +97,6 @@
     item.appendChild(cell);
 
     var node = make(expandable ? 'button' : 'div', 'om-node');
-    if (data.highlight) node.classList.add('om-node--highlight');
     node.appendChild(make('span', 'om-tag', TYPE_LABELS[data.type] || data.type));
     node.appendChild(make('span', 'om-label', data.label));
     if (data.link) {

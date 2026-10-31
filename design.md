@@ -407,7 +407,7 @@ The inventory at `/spearhunting/índice/` is generated from folders under `spear
 | `--om-solution-chip` | `#F8DA8C` | Solution |
 | `--om-chip-text` | `#1A1A1A` | Chip text, 10.4:1 or better on every chip |
 
-Everything else reuses the system tokens: node fill is the type chip colour tinted over `--color-surface` (dark) or `--color-bg` (light), text is `--color-text`, box outlines, connectors and chevrons are `--color-text-muted`, and the toggle and prototype button use `--color-primary` with `--color-on-primary`. The system has no green, yellow or blue, so the four type hues are the only new colours. Classes: `.om-section`, `.om-head`, `.om`, `.om-toggle`, `.om-tree`, `.om-item`, `.om-cell`, `.om-node`, `.om-node--highlight`, `.om-tag`, `.om-label`, `.om-chevron`, `.om-children`, `.om-evidence`, `.om-link`.
+Everything else reuses the system tokens: node fill is the type chip colour tinted over `--color-surface` (dark) or `--color-bg` (light), text is `--color-text`, box outlines, connectors and chevrons are `--color-text-muted`, and the toggle and prototype button use `--color-primary` with `--color-on-primary`. The system has no green, yellow or blue, so the four type hues are the only new colours. Classes: `.om-section`, `.om-head`, `.om`, `.om-toggle`, `.om-tree`, `.om-item`, `.om-cell`, `.om-node`, `.om-tag`, `.om-label`, `.om-chevron`, `.om-children`, `.om-evidence`, `.om-link`.
 
 ### Timeline
 
