@@ -2,17 +2,12 @@
 
 :root {
   /* Node type colours echo the FigJam board. Chips keep the same pastel in
-     both themes with dark text; borders switch to a deeper shade on light. */
+     both themes with dark text. */
   --om-business-chip: #d9bdf7;
   --om-product-chip: #add5f7;
   --om-opportunity-chip: #a2e8b8;
   --om-solution-chip: #f8da8c;
   --om-chip-text: #1a1a1a;
-
-  --om-business-border: var(--om-business-chip);
-  --om-product-border: var(--om-product-chip);
-  --om-opportunity-border: var(--om-opportunity-chip);
-  --om-solution-border: var(--om-solution-chip);
 
   --om-outline: var(--color-text-muted);
   --om-line: var(--om-outline);
@@ -26,10 +21,6 @@
 [data-theme="light"] {
   --om-tint: 42%;
   --om-base: var(--color-bg);
-  --om-business-border: #8450c4;
-  --om-product-border: #2e78bc;
-  --om-opportunity-border: #237f46;
-  --om-solution-border: #8f6a00;
 }
 
 /* The map is wider than the reading column; headings stay on the column. */
@@ -194,22 +185,18 @@ button.om-node:hover {
 }
 
 .om-item[data-type="businessOutcome"] {
-  --om-border: var(--om-business-border);
   --om-chip: var(--om-business-chip);
 }
 
 .om-item[data-type="productOutcome"] {
-  --om-border: var(--om-product-border);
   --om-chip: var(--om-product-chip);
 }
 
 .om-item[data-type="opportunity"] {
-  --om-border: var(--om-opportunity-border);
   --om-chip: var(--om-opportunity-chip);
 }
 
 .om-item[data-type="solution"] {
-  --om-border: var(--om-solution-border);
   --om-chip: var(--om-solution-chip);
 }
 
