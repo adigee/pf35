@@ -395,6 +395,20 @@ Application section copy is authored per opportunity. The reusable template cont
 
 The inventory at `/spearhunting/índice/` is generated from folders under `spear-hunting/` by running `npm run spearhunting:indice`. A page gets a publish date only when its root `<html>` has `data-status="ready"` and a valid ISO date in `data-published` (for example `data-published="2026-10-30"`).
 
+### Opportunity Map (HousingAnywhere application)
+
+`spear-hunting/housinganywhere/` holds an interactive opportunity solution tree: `opportunity-map.js` (vanilla, no dependencies), `opportunity-map.css`, and `map-data.json`. All wording lives in the JSON; nodes have `id`, `type` (`businessOutcome`, `productOutcome`, `opportunity`, `solution`), `label`, and optional `children`, `open` (starts expanded), `evidence` (`{image, alt, caption}` or `{quote, source}`), `highlight`, and `link`. `map-demo.html` is a standalone review page. Desktop (≥768px) runs left to right with connector lines; below 768px it is a nested accordion. Nodes with children are `<button aria-expanded>`; expand and collapse run 200ms on `transform` and `opacity` only and are skipped under `prefers-reduced-motion`.
+
+| Token | Value | Purpose |
+|---|---|---|
+| `--om-business-chip` | `#D9BDF7` | Business outcome |
+| `--om-product-chip` | `#ADD5F7` | Product outcome |
+| `--om-opportunity-chip` | `#A2E8B8` | Opportunity |
+| `--om-solution-chip` | `#F8DA8C` | Solution |
+| `--om-chip-text` | `#1A1A1A` | Chip text, 10.4:1 or better on every chip |
+
+Everything else reuses the system tokens: node fill is the type chip colour tinted over `--color-surface` (dark) or `--color-bg` (light), text is `--color-text`, box outlines, connectors and chevrons are `--color-text-muted`, and the toggle and prototype button use `--color-primary` with `--color-on-primary`. The system has no green, yellow or blue, so the four type hues are the only new colours. Classes: `.om-section`, `.om-head`, `.om`, `.om-toggle`, `.om-tree`, `.om-item`, `.om-cell`, `.om-node`, `.om-node--highlight`, `.om-tag`, `.om-label`, `.om-chevron`, `.om-children`, `.om-evidence`, `.om-link`.
+
 ### Timeline
 
 `.b-timeline-item` uses a two-column grid: `5.5rem` (date column) + `1fr` (content). Items are separated by `--sp-3` gaps.
