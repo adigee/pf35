@@ -184,6 +184,13 @@ button.om-node:hover {
   background: color-mix(in srgb, var(--om-chip) calc(var(--om-tint) + 14%), var(--om-base));
 }
 
+/* Highlighted node: the solution being called out. Keeps the type chip
+   colour, adds a primary ring so it reads as the thing to look at. */
+.om-node--highlight {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 22%, transparent);
+}
+
 .om-item[data-type="businessOutcome"] {
   --om-chip: var(--om-business-chip);
 }
