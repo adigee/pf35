@@ -185,10 +185,9 @@ button.om-node:hover {
 }
 
 /* Highlighted node: the solution being called out. Keeps the type chip
-   colour, adds a primary ring so it reads as the thing to look at. */
+   colour, switches the border to primary so it reads as the thing to look at. */
 .om-node--highlight {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 22%, transparent);
 }
 
 .om-item[data-type="businessOutcome"] {
