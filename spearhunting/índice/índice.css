@@ -44,10 +44,6 @@
 }
 
 .indice-table a {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  min-height: 2.75rem;
   color: var(--color-text);
   text-decoration: none;
 }
@@ -57,8 +53,11 @@
 }
 
 .indice-table a .material-symbols-rounded {
-  flex: 0 0 auto;
+  display: inline-block;
   font-size: var(--text-sm);
+  line-height: 1;
+  vertical-align: -0.15em;
+  margin-left: var(--sp-2);
 }
 
 @media (max-width: 640px) {
