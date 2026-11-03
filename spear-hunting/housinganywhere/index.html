@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-status="ready" data-published="2026-11-01" data-company="HousingAnywhere">
+<html lang="en" data-status="draft" data-published="2026-11-01" data-company="HousingAnywhere">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="/spear-hunting/application.css" />
   <link rel="stylesheet" href="/spear-hunting/housinganywhere/opportunity-map.css" />
+  <link rel="stylesheet" href="/spear-hunting/housinganywhere/prototype.css" />
   <script src="/components/head.js"></script>
   <script src="/components/theme.js"></script>
 </head>
@@ -39,7 +40,7 @@
       </header>
 
       <section class="sh-intro sh-intro--mirror" aria-labelledby="sh-intro-title">
-        <img class="sh-profile" src="/spear-hunting/housinganywhere/assets/profile-headshot.png" alt="Portrait of Aditya Gujaran" />
+        <img class="sh-profile" src="/spear-hunting/housinganywhere/assets/profile-headshot.webp" alt="Portrait of Aditya Gujaran" width="770" height="800" />
         <div class="sh-copy">
           <h2 class="b-title" id="sh-intro-title">Hi I’m Adi 👋</h2>
           <p class="b-body">When I moved to Lisbon, my first landlord picked me up at the airport! I still remember that day, she even had a placard with my name!</p>
@@ -139,8 +140,41 @@
       <section class="sh-section sh-section--start" id="prototype" aria-labelledby="prototype-title">
         <p class="b-label">B</p>
         <h2 class="b-title" id="prototype-title">Prototype</h2>
-        <div class="sh-prototype">
-          <iframe src="/prototypes/verify-rental/" title="Move-in check prototype" width="390" height="844" loading="lazy" allow="camera"></iframe>
+        <p class="b-body-caption">TODO(adi): what goes here</p>
+        <div class="sh-proto" data-prototype>
+          <div class="sh-proto-row">
+            <div class="sh-proto-stage" data-prototype-stage>
+              <div class="sh-proto-phone" data-prototype-phone>
+                <template data-prototype-frame>
+                  <iframe src="/prototypes/verify-rental/?embed=1" title="Move-in check prototype" width="390" height="844" loading="lazy" allow="camera"></iframe>
+                </template>
+                <img class="sh-proto-poster" data-prototype-poster src="/spear-hunting/housinganywhere/assets/prototype-poster.webp" alt="First screen of the move-in check prototype" width="780" height="1688" loading="lazy" />
+                <a class="btn btn--md sh-proto-open" href="/prototypes/verify-rental/" target="_blank" rel="noopener" data-umami-event="Open the prototype">Open the prototype</a>
+              </div>
+            </div>
+            <figure class="sh-proto-qr">
+              <img src="/spear-hunting/housinganywhere/assets/prototype-qr.svg" alt="QR code to open the prototype on a phone" width="160" height="160" />
+              <figcaption class="b-body-caption">Scan to open on a phone</figcaption>
+            </figure>
+          </div>
+          <div class="sh-proto-controls">
+            <button class="btn btn--md" type="button" data-prototype-restart data-umami-event="Prototype restart">
+              <span class="material-symbols-rounded" aria-hidden="true">restart_alt</span>
+              <span>Restart</span>
+            </button>
+            <button class="btn btn--md sh-proto-toggle" type="button" role="switch" aria-checked="false" data-prototype-option="under-6-hours">
+              <span class="material-symbols-rounded sh-proto-check" aria-hidden="true">check</span>
+              <span>Under 6 hours left</span>
+            </button>
+            <button class="btn btn--md sh-proto-toggle" type="button" role="switch" aria-checked="false" data-prototype-option="offline">
+              <span class="material-symbols-rounded sh-proto-check" aria-hidden="true">check</span>
+              <span>Offline</span>
+            </button>
+            <a class="btn btn--md" href="/prototypes/verify-rental/" target="_blank" rel="noopener" data-umami-event="Prototype open full screen">
+              <span class="material-symbols-rounded" aria-hidden="true">open_in_new</span>
+              <span>Open full screen</span>
+            </a>
+          </div>
         </div>
       </section>
 
@@ -224,5 +258,6 @@
   <script src="/components/image-modal.js"></script>
   <script src="/main.js"></script>
   <script src="/spear-hunting/housinganywhere/opportunity-map.js"></script>
+  <script src="/spear-hunting/housinganywhere/prototype.js"></script>
 </body>
 </html>
