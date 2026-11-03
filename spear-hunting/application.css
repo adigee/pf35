@@ -159,6 +159,53 @@
   margin-bottom: var(--sp-6);
 }
 
+.sh-section--start {
+  margin-inline: 0;
+}
+
+.sh-section--wide {
+  max-width: var(--application-max-width);
+}
+
+.sh-section--wide > .b-title {
+  max-width: var(--application-copy-width);
+}
+
+.comparison {
+  margin: 0;
+}
+
+.comparison-scroll {
+  overflow-x: auto;
+}
+
+.comparison table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  line-height: var(--leading-body);
+  text-align: left;
+}
+
+.comparison caption {
+  text-align: left;
+  font-weight: 700;
+  padding-bottom: var(--sp-3);
+}
+
+.comparison th,
+.comparison td {
+  padding: var(--sp-3);
+  vertical-align: top;
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.comparison figcaption {
+  margin-top: var(--sp-3);
+  font-size: var(--text-2xs);
+  color: var(--color-text-muted);
+}
+
 .b-pull {
   color: var(--color-accent);
 }
