@@ -167,6 +167,20 @@
   max-width: var(--application-max-width);
 }
 
+.sh-prototype {
+  display: flex;
+  justify-content: center;
+}
+
+.sh-prototype iframe {
+  display: block;
+  max-width: 100%;
+  aspect-ratio: 390 / 844;
+  height: auto;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg, 24px);
+}
+
 .sh-section--wide > .b-title {
   max-width: var(--application-copy-width);
 }
