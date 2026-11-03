@@ -181,6 +181,7 @@
 
 .comparison table {
   width: 100%;
+  min-width: 40rem;
   border-collapse: collapse;
   font-size: var(--text-sm);
   line-height: var(--leading-body);
