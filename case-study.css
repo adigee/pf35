@@ -771,18 +771,6 @@ html.cs-modal-open, html.cs-modal-open body { overflow: hidden; }
   flex-direction: column;
   gap: var(--sp-3);
 }
-.cs-meta dt {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  font-weight: 500;
-  letter-spacing: var(--tracking-wider);
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-.cs-meta dd {
-  font-size: var(--text-base);
-  color: var(--color-text);
-}
 
 /* Anchor offset so sections clear the top edge on jump */
 .cs-content .cs-section {
@@ -886,11 +874,6 @@ html.cs-modal-open, html.cs-modal-open body { overflow: hidden; }
 .cs-content > * + *  { margin-top: 64px; }   /* header-zone fallback    */
 .cs-section > * + *  { margin-top: 16px; }   /* reading-rhythm fallback */
 .cs-section > .b-section-header { margin-bottom: 0; }
-/* The eyebrow + sub-labels ship margin-bottom: var(--sp-5) (20px), which
-   would collapse with and floor the following gap — zero it so the rules
-   below own each space in full (this is what lets eyebrow→title reach 4px). */
-.cs-content > .b-label,
-.cs-section > .b-label { margin-bottom: 0; }
 
 /* Header */
 .cs-content > h1                { margin-top: 4px; }

@@ -369,7 +369,7 @@ a:hover {
   letter-spacing: var(--tracking-widest);
   text-transform: uppercase;
   color: var(--color-text-muted);
-  margin-bottom: var(--sp-5);
+  margin: 0;   /* spacing is owned by the context (flex gap or sibling rule) */
 }
 /* Color variant — same type, full-strength text instead of muted.
    Compose onto .b-label: class="b-label b-label-strong". */
@@ -431,6 +431,13 @@ a:hover {
   max-width: 62ch;   /* readable measure — long-form line length cap */
 }
 .b-body + .b-body { margin-top: var(--sp-4); }
+
+/* Value — small text under a .b-label (resume boxes, case-study meta, facts) */
+.b-value {
+  font-size: var(--text-sm);
+  line-height: var(--leading-body);
+  color: var(--color-text);
+}
 
 /* Body bold */
 .b-body-bold {

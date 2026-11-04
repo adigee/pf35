@@ -226,13 +226,14 @@ These classes encapsulate the full typographic treatment. Use these — do not r
 
 | Class | Size | Weight | Leading | Tracking | Transform | Notes | Where used |
 |---|---|---|---|---|---|---|---|
-| `.b-label` | `--text-xs` | 500 | — | `--tracking-widest` | uppercase | Muted. Eyebrow / kicker above titles | Case-study hero eyebrow, all case studies (shared via `components/case-study.js`); homepage project-card eyebrows in `index.html` (as `.b-label.b-label-strong`) |
+| `.b-label` | `--text-xs` | 500 | — | `--tracking-widest` | uppercase | Muted. Eyebrow / kicker above titles. No margin of its own — the parent owns spacing (flex gap or sibling rule) | Case-study hero eyebrow, all case studies (shared via `components/case-study.js`); `<dt>` in the case-study meta row (`.cs-meta`); resume "What I did" / "Takeaways" labels (`.rs-box`) and spear-hunting facts (`.sh-fact`); homepage project-card eyebrows in `index.html` (as `.b-label.b-label-strong`) |
 | `.b-title` | `--text-2xl` | 700 | `--leading-snug` | `--tracking-snug` | — | Panel / large headings | H2 mid-page section titles in `decision-module.html` only |
 | `.b-title--xl` | `--text-4xl` | 700 | `--leading-tight` | `--tracking-tight` | — | Hero title; case-study title (single-column) | Defined in `style.css`, not currently used on any page |
 | `.b-title--article` | `clamp(2.25→3.25rem)` | 700 | `--leading-tight` | `--tracking-snug` | — | Case-study hero title (two-column, responsive) | Case-study hero H1, all case studies (`trq-dad.html`, `lockers-reducing-cancellation.html`, `decision-module.html`) and the shared template |
 | `.b-section-header` | `--text-lg` | 700 | `--leading-normal` | — | — | Long-form section heading | Case-study section headings, all case studies; also the case-study lock/gate modal title (`components/case-study.js`); homepage intro headline in `index.html` |
-| `.b-section-subheader` | `--text-base` | 600 | `--leading-body` | — | — | Sub-heading within a section | Homepage intro subheadline in `index.html`; section sub-headings in `decision-module.html` (as `<h3>`) |
-| `.b-body` | `--text-base` | 400 | `--leading-body` | — | — | Max-width 62ch | Case-study body paragraphs, all case studies |
+| `.b-section-subheader` | `--text-base` | 600 | `--leading-body` | — | — | Sub-heading within a section | Section sub-headings in `decision-module.html` (as `<h3>`) |
+| `.b-body` | `--text-base` | 400 | `--leading-body` | — | — | Max-width 62ch | Case-study body paragraphs, all case studies; homepage intro paragraph in `index.html` |
+| `.b-value` | `--text-sm` | 400 | `--leading-body` | — | — | Full text color. Value paired with a `.b-label` | Resume boxes (`.rs-box`), spear-hunting facts (`.sh-fact`), case-study meta `<dd>` (`.cs-meta`) |
 | `.b-body-bold` | `--text-base` | 600 | `--leading-loose` | — | — | Emphasis within body | Defined in `style.css`, not currently used on any page |
 | `.b-body-caption` | `--text-sm` | 500 | `--leading-normal` | — | — | Captions | Stat-block descriptions (`.cs-stat-desc`) in `trq-dad.html` and `decision-module.html` |
 | `.b-body-small` | `--text-sm` | 400 | `--leading-medium` | — | — | Secondary content | Defined in `style.css`, not currently used on any page |
@@ -378,7 +379,7 @@ Pages under `/spear-hunting/<company>/` use `spear-hunting/application.css` and 
 | `.sh-intro`, `.sh-profile`, `.sh-copy` | Portrait and introductory copy layout |
 | `.sh-intro--mirror` | Mirrors the intro so copy sits left and portrait right; desktop only, mobile stacks normally |
 | `.sh-pitch-body` | Core tailored argument paragraphs |
-| `.sh-facts`, `.sh-facts-grid`, `.sh-fact` | Compact opportunity facts constrained to `--application-copy-width`, using the resume `.rs-box-label` and `.rs-box-text` treatments |
+| `.sh-facts`, `.sh-facts-grid`, `.sh-fact` | Compact opportunity facts constrained to `--application-copy-width`, using the shared `.b-label` and `.b-value` treatments |
 | `.sh-section` | One narrative section in the application argument |
 | `.sh-section--continues` | Drops a section's bottom border/padding so a following full-width block reads as continuous |
 | `.b-pull` | Inline phrase emphasis using `--color-accent`; inherits surrounding font and weight |
@@ -450,7 +451,7 @@ The frame border uses `--border-width` and `--color-border`. The scale is set on
 
 Each `.rs-entry` in the homepage Resume section (`index.html`) is: a header (role/company + dates, unchanged from the original asymmetric-split design), then two stacked plain-text boxes (`.rs-pair` → `.rs-box` × 2, no card chrome — no background or border), then a row of small testimonial avatars.
 
-- **Paired boxes**: `.rs-pair` is a single-column grid (`1fr`) on every breakpoint, so "What I did" stacks above "Takeaways" as one continuous thread. Each `.rs-box` is just a `.rs-box-label` (muted, `--text-2xs`, uppercase, `--tracking-widest` — same treatment as other section labels) followed by one `.rs-box-text` sentence (`--text-sm`, full `--color-text`, not muted — deliberately readable at full weight since there's no card background to lift it off the page). Content is kept to ~1.5 sentences per box.
+- **Paired boxes**: `.rs-pair` is a single-column grid (`1fr`) on every breakpoint, so "What I did" stacks above "Takeaways" as one continuous thread. Each `.rs-box` is just a `.b-label` (muted, `--text-xs`, 500, uppercase, `--tracking-widest`; `.rs-box` is a flex column with an `--sp-2` gap, so the label carries no margin) followed by one `.b-value` sentence (`--text-sm`, full `--color-text`, not muted — deliberately readable at full weight since there's no card background to lift it off the page). Content is kept to ~1.5 sentences per box.
 - **Avatars**: `.rs-avatar` — 32px circle, `--font-mono` initials, `--color-primary-muted` background / `--color-primary` text at rest, inverts to solid `--color-primary` fill (`--color-on-primary` text) when its quote is open (`aria-expanded="true"`) — the same fill-invert language as `.btn` hover.
 - **Testimonial reveal**: quotes (`.rs-quote`) are collapsed by default and expand via a `grid-template-rows: 0fr → 1fr` + `opacity` transition (180ms, under the interactive-feedback ceiling — this is a toggle, not a structural panel). Each avatar toggles independently; more than one quote can be open at once. No card background on the quote either — just a `--color-border` left rail, matching the boxes' plain-text treatment.
 
@@ -608,14 +609,14 @@ The homepage's three scroll sections (Work → Resume → About) use a deliberat
 | Transition | Token | Value | Role |
 |---|---|---|---|
 | thumbnail → thumbnail | `--sp-8` | 32px | projects group together (32px trailing + 32px leading = 64px) |
-| eyebrow → heading/thumbnail | `--sp-6` | 24px | the section eyebrow introduces its content (owned by `.section-eyebrow` / `.resume-label`) |
+| eyebrow → heading/thumbnail | `--sp-6` | 24px | the section eyebrow introduces its content (owned by `.section-eyebrow`) |
 | heading → body | `--sp-6` | 24px | the section heading introduces its prose |
 | paragraph → paragraph | `--sp-4` | 16px | continuation of prose |
 | section → section | `--sp-24` | 96px | a new section begins (`--sp-24` padding on `.resume` / `.about`) |
 
 Work's thumbnails sit on a tight `--sp-8` (32px) padding so the projects read as one group; `.resume` and `.about` carry `--sp-24` (96px) so each section break is a clear, breathable stop. On desktop each `.feature` is also `min-height: 100vh` + centered, which adds viewport-driven slack above/below each thumbnail on top of the 32px padding.
 
-The trailing gap below every eyebrow is a single `--sp-6` owned by the shared `.section-eyebrow` / `.resume-label` rule — headings no longer carry their own top margin, and the heading's `margin-bottom` is `--sp-6` to match the eyebrow gap (a clean equal rhythm: eyebrow → heading → body at 24px each).
+The trailing gap below every eyebrow is a single `--sp-6` owned by the shared `.section-eyebrow` rule — headings no longer carry their own top margin, and the heading's `margin-bottom` is `--sp-6` to match the eyebrow gap (a clean equal rhythm: eyebrow → heading → body at 24px each).
 
 Mobile (`≤720px`) keeps sections at `--sp-16` (64px) and Work thumbnails at `--sp-12` top / `--sp-6` bottom (48px/24px) — smaller frames need a proportionally tighter rhythm.
 
