@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<title>Opportunity map: redesign options (throwaway)</title>
+<link rel="stylesheet" href="/style.css" />
+<style>
+  body { background: var(--color-bg); color: var(--color-text); padding: 48px 56px 120px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  .lede { color: var(--color-text-muted); margin: 0 0 32px; max-width: 70ch; }
+  .themebtn { position: absolute; top: 16px; right: 16px; z-index: 9; padding: 8px 14px; border-radius: 999px; border: 0; background: var(--color-primary); color: var(--color-on-primary); font: inherit; cursor: pointer; }
+  .opt { margin: 0 0 96px; }
+  .opt-head { display: flex; gap: 14px; align-items: baseline; margin-bottom: 8px; }
+  .opt-head b { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--color-primary); }
+  .opt-head h2 { font-size: 22px; margin: 0; }
+  .opt-note { color: var(--color-text-muted); margin: 0 0 28px; max-width: 75ch; font-size: 15px; line-height: 1.5; }
+  .stage { position: relative; overflow-x: auto; padding: 8px 0 8px; }
+
+  /* shared tree skeleton: same nested-flex structure as the live map */
+  .t { --gap: 72px; --w: 232px; position: relative; display: inline-block; min-width: 100%; }
+  .t ul { list-style: none; margin: 0; padding: 0; }
+  .t .item { display: flex; align-items: center; }
+  .t .cell { flex: 0 0 var(--w); width: var(--w); }
+  .t .kids { display: flex; flex-direction: column; margin-left: var(--gap); }
+  .t .kids > .item { padding-block: 8px; }
+  .t svg.wires { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+  .t svg.wires path { fill: none; stroke-linecap: round; }
+
+  .node { display: block; text-align: left; font-size: 14.5px; line-height: 1.45; font-weight: 500; color: var(--color-text); }
+  .node .sub { display: block; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
+  .cta { display: inline-flex; margin-top: 12px; padding: 8px 14px; border-radius: 999px; background: var(--color-primary); color: var(--color-on-primary); font-size: 13px; font-weight: 600; }
+
+  /* type colours (pastel hue per type) */
+  .item[data-type=businessOutcome] { --c: #b88be8; --tint: #e9dcfa; }
+  .item[data-type=productOutcome]  { --c: #5aa3e6; --tint: #d6e8fa; }
+  .item[data-type=opportunity]     { --c: #3fbf74; --tint: #d3f1df; }
+  .item[data-type=solution]        { --c: #e8b53a; --tint: #fbeccb; }
+  [data-theme=dark] .item[data-type=businessOutcome] { --tint: #2c2540; }
+  [data-theme=dark] .item[data-type=productOutcome]  { --tint: #1f2f42; }
+  [data-theme=dark] .item[data-type=opportunity]     { --tint: #1d3a2b; }
+  [data-theme=dark] .item[data-type=solution]        { --tint: #3d3220; }
+
+  /* ---------- A: Soft tint ---------- */
+  .A .node { padding: 18px 22px; border-radius: 16px; background: var(--tint); }
+  .A .node .sub { color: color-mix(in srgb, var(--c) 75%, var(--color-text)); }
+  .A .wires path { stroke: color-mix(in srgb, var(--color-text) 22%, transparent); stroke-width: 1.5; }
+
+  /* ---------- B: Lifted white cards + dot ---------- */
+  .B .node { padding: 18px 22px 18px 22px; border-radius: 14px; background: var(--color-surface); box-shadow: 0 1px 2px rgba(26,42,94,.06), 0 6px 18px rgba(26,42,94,.07); }
+  [data-theme=light] .B .node { background: #fff; }
+  .B .node .sub { display: flex; align-items: center; gap: 8px; color: var(--color-text-muted); font-weight: 600; }
+  .B .node .sub::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+  .B .wires path { stroke: color-mix(in srgb, var(--color-text) 20%, transparent); stroke-width: 1.5; }
+
+  /* ---------- C: Swim-lane columns, no per-node tag ---------- */
+  .C .lanes { display: flex; margin-bottom: 18px; }
+  .C .lane { flex: 0 0 var(--w); margin-right: var(--gap); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-muted); display: flex; align-items: center; gap: 8px; }
+  .C .lane::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+  .C .lane:nth-child(1) { --c: #b88be8; } .C .lane:nth-child(2) { --c: #5aa3e6; } .C .lane:nth-child(3) { --c: #3fbf74; } .C .lane:nth-child(4) { --c: #e8b53a; }
+  .C .node { padding: 18px 22px; border-radius: 14px; background: var(--tint); }
+  .C .wires path { stroke: color-mix(in srgb, var(--c, #888) 70%, var(--color-text) 0%); stroke-width: 2; opacity: .55; }
+
+  /* ---------- D: Editorial outline, text first ---------- */
+  .D .t { --gap: 56px; --w: 260px; }
+  .D .node { padding: 10px 4px; background: none; }
+  .D .node .sub { display: flex; align-items: center; gap: 8px; color: var(--color-text-muted); }
+  .D .node .sub::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+  .D .item.hl > .cell > .node { padding: 18px 22px; border-radius: 16px; background: var(--tint); margin-left: -22px; }
+  .D .wires path { stroke: color-mix(in srgb, var(--color-text) 16%, transparent); stroke-width: 1.5; }
+  .D .item[data-type=businessOutcome] > .cell > .node { font-size: 17px; font-weight: 600; }
+</style>
+</head>
+<body>
+<button class="themebtn" onclick="document.documentElement.dataset.theme = document.documentElement.dataset.theme==='light'?'dark':'light'; drawAll()">Toggle light / dark</button>
+<h1>Opportunity map: 4 directions</h1>
+<p class="lede">Demand-side tree, fully expanded. Every option applies your notes: no outlines on boxes, no heavy chips, generous padding (18–22px inside, 72px between columns). Throwaway page, the live map is untouched.</p>
+
+<section class="opt A"><div class="opt-head"><b>Option A</b><h2>Soft tint</h2></div>
+<p class="opt-note">Closest to today, just calmer. Borderless pastel cards, type shown as small coloured text instead of a pill, hairline curved connectors. Safest swap; keeps the FigJam colour language you already use.</p>
+<div class="stage"><div class="t" data-lanes="0"></div></div></section>
+
+<section class="opt B"><div class="opt-head"><b>Option B</b><h2>Lifted cards</h2></div>
+<p class="opt-note">Neutral white cards with a soft shadow (think Linear / Notion / Whimsical). Type is just a small coloured dot + label. Colour is nearly gone, so the highlighted solution can really pop. Most "product UI", least "diagram".</p>
+<div class="stage"><div class="t" data-lanes="0"></div></div></section>
+
+<section class="opt C"><div class="opt-head"><b>Option C</b><h2>Lanes (OST-style)</h2></div>
+<p class="opt-note">Borrowed from how Teresa Torres draws opportunity solution trees: the level is named once in a column header, so no tag on every box. Boxes become pure content; connectors take the colour of the level they lead into, so the tree reads left to right at a glance.</p>
+<div class="stage"><div class="t" data-lanes="1"></div></div></section>
+
+<section class="opt D"><div class="opt-head"><b>Option D</b><h2>Editorial outline</h2></div>
+<p class="opt-note">Boxes disappear. Text sits straight on the page with a coloured dot and fine connectors; only the highlighted solution gets a filled card. Most portfolio-like and calm, but nodes are less obviously tappable, so we'd lean on hover states and a chevron.</p>
+<div class="stage"><div class="t" data-lanes="0"></div></div></section>
+
+<script>
+const LABELS = {businessOutcome:'Business outcome',productOutcome:'Product outcome',opportunity:'Opportunity',solution:'Solution'};
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function item(d){
+  const li=el('li','item'); li.dataset.type=d.type; if(d.highlight) li.classList.add('hl');
+  const cell=el('div','cell'); const n=el('div','node');
+  n.appendChild(el('span','sub',LABELS[d.type]));
+  n.appendChild(document.createTextNode(d.label));
+  if(d.link) n.appendChild(el('div')).appendChild(el('span','cta',d.link.label+' ↓'));
+  cell.appendChild(n); li.appendChild(cell);
+  if(d.children&&d.children.length){const ul=el('ul','kids');d.children.forEach(c=>ul.appendChild(item(c)));li.appendChild(ul);}
+  return li;
+}
+const COLORS={businessOutcome:'#b88be8',productOutcome:'#5aa3e6',opportunity:'#3fbf74',solution:'#e8b53a'};
+function draw(t){
+  t.querySelector('svg.wires')?.remove();
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('class','wires');
+  const base=t.getBoundingClientRect(); const colored=t.closest('.C');
+  svg.setAttribute('width',base.width); svg.setAttribute('height',base.height);
+  t.querySelectorAll('li.item').forEach(li=>{
+    const pn=li.querySelector(':scope > .cell > .node'); const kids=li.querySelectorAll(':scope > .kids > .item');
+    kids.forEach(k=>{
+      const kn=k.querySelector(':scope > .cell > .node');
+      const a=pn.getBoundingClientRect(), b=kn.getBoundingClientRect();
+      const x1=a.right-base.left, y1=a.top+a.height/2-base.top, x2=b.left-base.left, y2=b.top+b.height/2-base.top;
+      const mx=(x1+x2)/2;
+      const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+      p.setAttribute('d',`M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`);
+      if(colored) p.setAttribute('style','stroke:'+COLORS[k.dataset.type]);
+      svg.appendChild(p);
+    });
+  });
+  t.prepend(svg);
+}
+function drawAll(){document.querySelectorAll('.t').forEach(draw)}
+const DATA = {"hint": "Tap to open", "trees": [{"id": "demand", "toggleLabel": "Demand side (tenants)", "root": {"id": "d-bo", "type": "businessOutcome", "label": "Retention and replay from booked tenants", "open": true, "children": [{"id": "d-po", "type": "productOutcome", "label": "Higher engagement post move-in", "children": [{"id": "d-opp-settle", "type": "opportunity", "label": "I want to move in without surprises", "children": [{"id": "d-sol-checklist", "type": "solution", "label": "Checklist before approving payment to landlord", "highlight": true, "link": {"href": "#prototype", "label": "See the prototype"}}, {"id": "d-sol-optin", "type": "solution", "label": "Opt-in for rent payments (2 to n month)"}, {"id": "d-sol-email", "type": "solution", "label": "Email campaign with supermarkets / gyms / library nearby"}]}, {"id": "d-opp-referrals", "type": "opportunity", "label": "My friends or I might need a place again next semester"}, {"id": "d-opp-extensions", "type": "opportunity", "label": "I want to stay longer with someone who already trusts me", "children": [{"id": "d-sol-note", "type": "solution", "label": "Write a note to landlord"}]}, {"id": "d-opp-relationship", "type": "opportunity", "label": "I want to trust my landlord, and be trusted back", "children": [{"id": "d-sol-rating", "type": "solution", "label": "Anonymous rating of the landlord (across topics like communication style, promptness on fixing)"}, {"id": "d-sol-deposit", "type": "solution", "label": "Create clarity around the deposit ( what it covers, what it includes, when will it be returned)"}]}, {"id": "d-opp-friends", "type": "opportunity", "label": "I want to feel at home in a new city (later bet)", "children": [{"id": "d-sol-clubs", "type": "solution", "label": "Language clubs (meet other Italian students in CPH)"}, {"id": "d-sol-ambassadors", "type": "solution", "label": "Meet Local ambassadors (city level / neighborhood level)"}]}, {"id": "d-opp-support", "type": "opportunity", "label": "Get support fast", "children": [{"id": "d-sol-escalation", "type": "solution", "label": "Escalation path to Housing Anywhere for time sensitive issues like plumbing, robbery, neighbours"}, {"id": "d-sol-report", "type": "solution", "label": "Report landlord for slow solutioning"}]}]}]}}, {"id": "supply", "toggleLabel": "Supply side (landlords)", "root": {"id": "s-bo", "type": "businessOutcome", "label": "Grow the supply (more landlords on platform)", "open": true, "children": [{"id": "s-po", "type": "productOutcome", "label": "Referrals to other landlords", "children": [{"id": "s-opp-tenants", "type": "opportunity", "label": "I want a tenant who pays on time and leaves the room as they found it", "children": [{"id": "s-sol-referrals", "type": "solution", "label": "Referrals from existing tenants"}]}, {"id": "s-opp-legalese", "type": "opportunity", "label": "I want to understand the contract I’m signing"}, {"id": "s-opp-proof", "type": "opportunity", "label": "I want proof of the room’s condition if there’s damage"}]}]}}]};
+Promise.resolve(DATA).then(data=>{
+  const root=data.trees[0].root;
+  document.querySelectorAll('.t').forEach(t=>{
+    if(t.dataset.lanes==='1'){const l=el('div','lanes');['Business outcome','Product outcome','Opportunity','Solution'].forEach(x=>l.appendChild(el('div','lane',x)));t.appendChild(l);}
+    const ul=el('ul'); ul.appendChild(item(root)); t.appendChild(ul);
+  });
+  // lane headers hide the per-node tag in C
+  document.querySelectorAll('.C .node .sub').forEach(s=>s.remove());
+  drawAll(); addEventListener('resize',drawAll); document.fonts?.ready.then(drawAll);
+});
+</script>
+</body>
+</html>

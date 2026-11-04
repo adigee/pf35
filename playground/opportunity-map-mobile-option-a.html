@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Opportunity map: Option A on mobile (throwaway)</title>
+<link rel="stylesheet" href="/style.css" />
+<style>
+  body { margin: 0; background: var(--color-bg); color: var(--color-text); }
+  .wrap { max-width: 430px; margin: 0 auto; padding: 32px 20px 96px; }
+  .themebtn { position: absolute; top: 12px; right: 12px; padding: 6px 12px; border-radius: 999px; border: 0; background: var(--color-primary-muted); color: var(--color-text); font: inherit; font-size: 12px; cursor: pointer; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); margin: 0 0 8px; }
+  h2 { font-size: 26px; line-height: 1.15; margin: 0 0 24px; color: var(--color-text); }
+
+  .toggle { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--color-primary-muted); }
+  .toggle button { flex: 1; min-height: 40px; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; color: var(--color-text-muted); font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; }
+  .toggle button[aria-pressed=true] { background: var(--color-primary); color: var(--color-on-primary); }
+  .hint { margin: 16px 0 24px; color: var(--color-text-muted); font-size: 13px; }
+
+  /* tree */
+  :where(ul.t, ul.kids) { list-style: none; margin: 0; padding: 0; }
+  .kids { margin-left: 18px; padding-left: 18px; margin-top: 12px; }
+  .kids[hidden] { display: none; }
+  .item { position: relative; padding-bottom: 12px; }
+  .item:last-child { padding-bottom: 0; }
+  .t > .item { padding-bottom: 0; }
+
+  /* curved elbow into each child, vertical spine continues to next sibling */
+  .kids > .item::before { content: ""; position: absolute; left: -18px; top: 0; width: 18px; height: 30px; border-left: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); border-bottom-left-radius: 14px; }
+  .kids > .item:not(:last-child)::after { content: ""; position: absolute; left: -18px; top: 30px; bottom: 0; border-left: 1.5px solid var(--line); }
+  .t { --line: color-mix(in srgb, var(--color-text) 22%, transparent); }
+
+  .item[data-type=businessOutcome] { --c: #b88be8; --tint: #e9dcfa; }
+  .item[data-type=productOutcome]  { --c: #5aa3e6; --tint: #d6e8fa; }
+  .item[data-type=opportunity]     { --c: #3fbf74; --tint: #d3f1df; }
+  .item[data-type=solution]        { --c: #e8b53a; --tint: #fbeccb; }
+  [data-theme=dark] .item[data-type=businessOutcome] { --tint: #2c2540; }
+  [data-theme=dark] .item[data-type=productOutcome]  { --tint: #1f2f42; }
+  [data-theme=dark] .item[data-type=opportunity]     { --tint: #1d3a2b; }
+  [data-theme=dark] .item[data-type=solution]        { --tint: #3d3220; }
+
+  .node { position: relative; display: block; width: 100%; box-sizing: border-box; margin: 0; padding: 18px 48px 18px 20px; border: 0; border-radius: 16px; background: var(--tint); color: var(--color-text); font: inherit; font-size: 15px; line-height: 1.45; font-weight: 500; text-align: left; }
+  .node.leaf { padding-right: 20px; }
+  button.node { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  button.node:active { background: color-mix(in srgb, var(--c) 28%, var(--color-bg)); }
+  .sub { display: block; margin-bottom: 6px; font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: color-mix(in srgb, var(--c) 75%, var(--color-text)); }
+  .chev { position: absolute; top: 24px; right: 20px; width: 8px; height: 8px; border-right: 2px solid var(--color-text-muted); border-bottom: 2px solid var(--color-text-muted); transform: rotate(45deg); transition: transform .2s ease; }
+  [aria-expanded=true] > .chev { transform: rotate(-135deg); top: 28px; }
+  .cta { display: inline-flex; align-items: center; margin-top: 14px; min-height: 40px; padding: 0 18px; border-radius: 999px; background: var(--color-primary); color: var(--color-on-primary); font-size: 14px; font-weight: 600; text-decoration: none; }
+  .highlight .node { box-shadow: 0 0 0 2px var(--c); }
+
+  /* opening animation: transform + opacity only, staggered per level */
+  @keyframes om-in { from { opacity: 0; transform: translateY(-10px) scale(.98); } to { opacity: 1; transform: none; } }
+  @keyframes om-out { to { opacity: 0; transform: translateY(-6px); } }
+  .item.enter { animation: om-in 380ms cubic-bezier(.22,1,.36,1) both; animation-delay: calc(var(--d, 0) * 1ms); }
+  .kids.leaving { animation: om-out 160ms ease-in forwards; }
+  .chev { transition: transform 260ms cubic-bezier(.22,1,.36,1); }
+  @media (prefers-reduced-motion: reduce) { .item.enter, .kids.leaving { animation: none; } .chev { transition: none; } }
+  .themebtn.replay { right: 112px; }
+</style>
+</head>
+<body>
+<button class="themebtn replay" onclick="window.replay()">Replay intro</button>
+<button class="themebtn" onclick="document.documentElement.dataset.theme = document.documentElement.dataset.theme==='light'?'dark':'light'">Light / dark</button>
+<div class="wrap">
+  <p class="eyebrow">Demo</p>
+  <h2 id="title">Opportunity map</h2>
+  <div class="toggle" role="group"></div>
+  <p class="hint">Tap to open</p>
+  <div id="mount"></div>
+</div>
+<script>
+const LABELS={businessOutcome:'Business outcome',productOutcome:'Product outcome',opportunity:'Opportunity',solution:'Solution'};
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+// which ids start open on load, so the first screen shows the shape of the tree
+const OPEN=new Set(['d-bo','d-po','d-opp-settle','s-bo','s-po']);
+function stagger(ul,base,deep){
+  [...ul.children].forEach((li,i)=>{
+    li.classList.remove('enter'); void li.offsetWidth;
+    li.style.setProperty('--d',base+i*55); li.classList.add('enter');
+    const k=li.querySelector(':scope > .kids'); if(deep&&k&&!k.hidden) stagger(k,base+130+i*55,true);
+  });
+}
+function item(d,isRoot){
+  const li=el('li','item'); li.dataset.type=d.type; if(d.highlight) li.classList.add('highlight');
+  const kids=d.children||[]; const expandable=kids.length>0;
+  const n=el(expandable?'button':'div','node'+(expandable?'':' leaf'));
+  n.appendChild(el('span','sub',LABELS[d.type])); n.appendChild(document.createTextNode(d.label));
+  let ul=null;
+  if(d.link){const a=el('a','cta',d.link.label+'  ↓');a.href=d.link.href;n.appendChild(el('div')).appendChild(a);}
+  li.appendChild(n);
+  if(expandable){
+    n.type='button'; n.appendChild(el('span','chev'));
+    ul=el('ul','kids'); kids.forEach(k=>ul.appendChild(item(k)));
+    const open=OPEN.has(d.id); ul.hidden=!open; n.setAttribute('aria-expanded',open);
+    n.addEventListener('click',()=>{
+      const o=n.getAttribute('aria-expanded')==='true'; n.setAttribute('aria-expanded',!o);
+      if(o){ ul.classList.add('leaving'); setTimeout(()=>{ul.hidden=true;ul.classList.remove('leaving');},160); }
+      else { ul.hidden=false; stagger(ul,0,false); }
+    });
+    li.appendChild(ul);
+  }
+  return li;
+}
+const DATA = {"hint": "Tap to open", "trees": [{"id": "demand", "toggleLabel": "Demand side (tenants)", "root": {"id": "d-bo", "type": "businessOutcome", "label": "Retention and replay from booked tenants", "open": true, "children": [{"id": "d-po", "type": "productOutcome", "label": "Higher engagement post move-in", "children": [{"id": "d-opp-settle", "type": "opportunity", "label": "I want to move in without surprises", "children": [{"id": "d-sol-checklist", "type": "solution", "label": "Checklist before approving payment to landlord", "highlight": true, "link": {"href": "#prototype", "label": "See the prototype"}}, {"id": "d-sol-optin", "type": "solution", "label": "Opt-in for rent payments (2 to n month)"}, {"id": "d-sol-email", "type": "solution", "label": "Email campaign with supermarkets / gyms / library nearby"}]}, {"id": "d-opp-referrals", "type": "opportunity", "label": "My friends or I might need a place again next semester"}, {"id": "d-opp-extensions", "type": "opportunity", "label": "I want to stay longer with someone who already trusts me", "children": [{"id": "d-sol-note", "type": "solution", "label": "Write a note to landlord"}]}, {"id": "d-opp-relationship", "type": "opportunity", "label": "I want to trust my landlord, and be trusted back", "children": [{"id": "d-sol-rating", "type": "solution", "label": "Anonymous rating of the landlord (across topics like communication style, promptness on fixing)"}, {"id": "d-sol-deposit", "type": "solution", "label": "Create clarity around the deposit ( what it covers, what it includes, when will it be returned)"}]}, {"id": "d-opp-friends", "type": "opportunity", "label": "I want to feel at home in a new city (later bet)", "children": [{"id": "d-sol-clubs", "type": "solution", "label": "Language clubs (meet other Italian students in CPH)"}, {"id": "d-sol-ambassadors", "type": "solution", "label": "Meet Local ambassadors (city level / neighborhood level)"}]}, {"id": "d-opp-support", "type": "opportunity", "label": "Get support fast", "children": [{"id": "d-sol-escalation", "type": "solution", "label": "Escalation path to Housing Anywhere for time sensitive issues like plumbing, robbery, neighbours"}, {"id": "d-sol-report", "type": "solution", "label": "Report landlord for slow solutioning"}]}]}]}}, {"id": "supply", "toggleLabel": "Supply side (landlords)", "root": {"id": "s-bo", "type": "businessOutcome", "label": "Grow the supply (more landlords on platform)", "open": true, "children": [{"id": "s-po", "type": "productOutcome", "label": "Referrals to other landlords", "children": [{"id": "s-opp-tenants", "type": "opportunity", "label": "I want a tenant who pays on time and leaves the room as they found it", "children": [{"id": "s-sol-referrals", "type": "solution", "label": "Referrals from existing tenants"}]}, {"id": "s-opp-legalese", "type": "opportunity", "label": "I want to understand the contract I’m signing"}, {"id": "s-opp-proof", "type": "opportunity", "label": "I want proof of the room’s condition if there’s damage"}]}]}}]};
+Promise.resolve(DATA).then(data=>{
+  const tg=document.querySelector('.toggle'),m=document.getElementById('mount');
+  function render(i){m.innerHTML='';const ul=el('ul','t');ul.appendChild(item(data.trees[i].root,true));m.appendChild(ul);
+    tg.querySelectorAll('button').forEach((b,j)=>b.setAttribute('aria-pressed',j===i));
+    stagger(ul,0,true);}
+  window.replay=()=>{const ul=m.querySelector('.t'); stagger(ul,0,true);};
+  data.trees.forEach((t,i)=>{const b=el('button',null,t.toggleLabel);b.addEventListener('click',()=>render(i));tg.appendChild(b);});
+  render(0);
+});
+</script>
+</body>
+</html>
