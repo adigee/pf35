@@ -108,7 +108,7 @@
 .sh-facts {
   max-width: var(--application-copy-width);
   margin-inline: auto;
-  padding-block: var(--sp-16);
+  padding-block: var(--sp-16) var(--sp-4);
   border-bottom: var(--border-width) solid var(--color-border);
 }
 
@@ -127,7 +127,21 @@
 }
 
 .sh-fact:last-child {
+  padding-bottom: 0;
   border-bottom: 0;
+}
+
+/* Housekeeping notes — detail strip (Visas / Availability) */
+.sh-notes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-8) var(--sp-10);
+  margin-top: var(--sp-6);
+}
+
+/* .b-section-subheader carries sp-10 top margin for stacked prose; not wanted in the grid */
+.sh-note .b-section-subheader {
+  margin-top: 0;
 }
 
 .sh-section {
@@ -386,6 +400,7 @@
   }
 
   .sh-facts-grid,
+  .sh-notes,
   .sh-work-grid {
     grid-template-columns: 1fr;
   }
