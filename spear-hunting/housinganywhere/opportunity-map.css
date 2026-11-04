@@ -29,6 +29,10 @@
 }
 
 .om-head {
+  max-width: var(--application-max-width);
+}
+
+.om-head .b-title {
   max-width: var(--application-copy-width);
 }
 
