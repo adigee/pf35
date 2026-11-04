@@ -34,7 +34,7 @@
   head.insertAdjacentHTML('beforeend',
     '<link rel="preconnect" href="https://fonts.googleapis.com" />' +
     '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />' +
-    '<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />' +
+    '<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=optional" rel="stylesheet" />' +
     '<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,1,0" rel="stylesheet" />' +
     '<link rel="llms" href="/llms.txt" />'
   );
