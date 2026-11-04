@@ -7,7 +7,7 @@
       "root": {
         "id": "d-bo",
         "type": "businessOutcome",
-        "label": "Retention and replay from booked tenants",
+        "label": "Retention and replay from booked tenants (eg: 10% lift within 18 months)",
         "open": true,
         "children": [
           {
