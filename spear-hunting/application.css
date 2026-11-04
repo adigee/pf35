@@ -70,6 +70,7 @@
 .sh-profile {
   display: block;
   width: 100%;
+  height: auto;
   max-width: var(--application-profile-max-width);
   aspect-ratio: 1;
   object-fit: cover;
