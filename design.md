@@ -126,6 +126,7 @@ These are intentional exceptions, not tokens. Do not generalise them.
 | `rgba(0,0,0,0.35)` | Image captions (light mode) | Overlaid on photos — must be literal black |
 | `#f4f4f6` | `.panel--decision` background | Deliberate light-gray deviation for that specific panel |
 | `rgba(255,255,255,0.4)` | Email button border in contact panel | Contact panel uses inverted `--color-primary` bg; literal white required |
+| `#1A2A5E` modules on `#FFF3E8` | QR code, `spear-hunting/housinganywhere/assets/prototype-qr.svg` | Light-mode `--color-text` and `--color-bg` values, fixed in both themes so the code is always dark on light and scans |
 
 ---
 
@@ -409,6 +410,30 @@ The inventory at `/spearhunting/índice/` is generated from folders under `spear
 
 Everything else reuses the system tokens: node fill is the type chip colour tinted over `--color-surface` (dark) or `--color-bg` (light), text is `--color-text`, box outlines, connectors and chevrons are `--color-text-muted`, and the toggle and prototype button use `--color-primary` with `--color-on-primary`. The system has no green, yellow or blue, so the four type hues are the only new colours. Classes: `.om-section`, `.om-head`, `.om`, `.om-toggle`, `.om-tree`, `.om-item`, `.om-cell`, `.om-node`, `.om-tag`, `.om-label`, `.om-chevron`, `.om-children`, `.om-evidence`, `.om-link`.
 
+### Prototype Embed (HousingAnywhere application)
+
+`spear-hunting/housinganywhere/prototype.css` and `prototype.js` embed the move-in check prototype at `/prototypes/verify-rental/?embed=1`. On desktop (above 768px) the iframe sits in a phone frame that is scaled down to fit the viewport and never scaled above 1. The phone and the section heading stay in view at 1440 x 900. A QR code sits beside the phone. Restart and one toggle per demo option sit under it, and send `postMessage` to the iframe with the page's own origin as `targetOrigin`. On phones (768px and below) no iframe is mounted. The poster shows in the frame with an "Open the prototype" link. The iframe is created from a `<template>`, so it is never fetched on phones.
+
+| Token | Value | Purpose |
+|---|---|---|
+| `--proto-phone-width` | 390px | Prototype screen width, the 390 x 844 phone |
+| `--proto-phone-height` | 844px | Prototype screen height |
+| `--proto-phone-aspect` | 390 / 844 | Width to height ratio of the phone, used on phones where the frame is fluid |
+| `--proto-frame-radius` | 1.5rem (24px) | Corner radius of the phone frame, which clips the iframe |
+
+The frame border uses `--border-width` and `--color-border`. The scale is set on `.sh-proto-stage` as `--proto-scale`, computed in `prototype.js`.
+
+| Class | Purpose |
+|---|---|
+| `.sh-proto`, `.sh-proto-row` | Section layout: phone and QR in a row, controls below |
+| `.sh-proto-stage`, `.sh-proto-phone` | Scaled box and the phone frame around the iframe or the poster |
+| `.sh-proto-poster`, `.sh-proto-open` | Phone-only poster and "Open the prototype" link |
+| `.is-placeholder` (on `.sh-proto-phone`) | Surface shown when the poster is missing |
+| `.sh-proto-qr` | QR code figure, desktop only |
+| `.sh-proto-controls` | Restart, toggles and "Open full screen", desktop only |
+| `.sh-proto-toggle` | Demo option toggle. `aria-checked` drives the pressed style and the check icon |
+| `.sh-proto-check` | Check icon shown on a pressed toggle |
+
 ### Timeline
 
 `.b-timeline-item` uses a two-column grid: `5.5rem` (date column) + `1fr` (content). Items are separated by `--sp-3` gaps.
@@ -671,4 +696,4 @@ These rules are strict. They exist because this is a small, deliberate codebase 
 
 ---
 
-*Last updated: 2026-08-13*
+*Last updated: 2026-11-03*
