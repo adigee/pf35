@@ -18,7 +18,7 @@
               {
                 "id": "d-opp-settle",
                 "type": "opportunity",
-                "label": "Helping the tenant settle in",
+                "label": "I want to move in without surprises",
                 "children": [
                   {
                     "id": "d-sol-checklist",
@@ -45,12 +45,12 @@
               {
                 "id": "d-opp-referrals",
                 "type": "opportunity",
-                "label": "Referrals to other students/friends for discounts with future bookings"
+                "label": "My friends or I might need a place again next semester"
               },
               {
                 "id": "d-opp-extensions",
                 "type": "opportunity",
-                "label": "Request extensions with discount based on behavior so far",
+                "label": "I want to stay longer with someone who already trusts me",
                 "children": [
                   {
                     "id": "d-sol-note",
@@ -62,7 +62,7 @@
               {
                 "id": "d-opp-relationship",
                 "type": "opportunity",
-                "label": "Relationship building with landlord",
+                "label": "I want to trust my landlord, and be trusted back",
                 "children": [
                   {
                     "id": "d-sol-rating",
@@ -79,7 +79,7 @@
               {
                 "id": "d-opp-friends",
                 "type": "opportunity",
-                "label": "Make new local friends",
+                "label": "I want to feel at home in a new city (later bet)",
                 "children": [
                   {
                     "id": "d-sol-clubs",
@@ -132,7 +132,7 @@
               {
                 "id": "s-opp-tenants",
                 "type": "opportunity",
-                "label": "Provide reliable tenants",
+                "label": "I want a tenant who pays on time and leaves the room as they found it",
                 "children": [
                   {
                     "id": "s-sol-referrals",
@@ -144,7 +144,12 @@
               {
                 "id": "s-opp-legalese",
                 "type": "opportunity",
-                "label": "Simplify legalese"
+                "label": "I want to understand the contract I’m signing"
+              },
+              {
+                "id": "s-opp-proof",
+                "type": "opportunity",
+                "label": "I want proof of the room’s condition if there’s damage"
               }
             ]
           }

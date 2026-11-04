@@ -23,6 +23,10 @@
   max-width: var(--application-max-width);
 }
 
+.sh-title-accent {
+  color: var(--color-primary);
+}
+
 .sh-role-line {
   display: flex;
   flex-wrap: wrap;
