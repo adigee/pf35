@@ -136,6 +136,7 @@
       var path = existing.get(wire.child);
       if (path) {
         existing.delete(wire.child);
+        if (entering && entering.contains(wire.child)) path.classList.remove('om-out');
       } else {
         path = document.createElementNS(SVG_NS, 'path');
         path._omChild = wire.child;
