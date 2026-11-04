@@ -403,7 +403,7 @@ The inventory at `/spearhunting/índice/` is generated from folders under `spear
 
 Nodes are borderless tinted cards (radius 1rem, 1.125rem by 1.375rem padding). The type name is plain coloured uppercase text above the label, not a pill. On desktop, `opportunity-map.js` draws one SVG curve from each open parent to each child (positions come from `offsetLeft`/`offsetTop`, so a card mid-animation does not skew them); on mobile the SVG is hidden and CSS draws a rounded elbow and a spine at each level (1.125rem indent).
 
-Motion happens on tap only, never on page load. Opening a node settles its children in one after another (320ms each, 50ms apart, `transform` and `opacity` only) and fades their connectors with them; closing fades them out in 160ms; the chevron turns over 260ms. All of it is skipped under `prefers-reduced-motion`. The enter class is removed on `animationend`, so switching sides never replays it.
+Motion happens on tap only, never on page load. Opening a node springs its children in one after another (280ms each, 50ms apart); closing springs them back out together (200ms) while their connectors fade (160ms); the chevron turns over 280ms. All of it uses the system spring `cubic-bezier(0.34,1.45,0.64,1)` (`--om-spring`, the same curve as annotation notes), on `transform` and `opacity` only, and is skipped under `prefers-reduced-motion`. The enter class is removed on `animationend`, so switching sides never replays it. There is no "Tap to open" hint line; `hint` in the JSON is optional and renders nothing when absent.
 
 | Token | Value (dark / light) | Purpose |
 |---|---|---|

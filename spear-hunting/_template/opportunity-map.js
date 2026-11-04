@@ -8,7 +8,7 @@
     opportunity: 'Opportunity',
     solution: 'Solution'
   };
-  var DURATION = 160;
+  var DURATION = 200;
   var STAGGER = 50;
   var SVG_NS = 'http://www.w3.org/2000/svg';
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');

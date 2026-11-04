@@ -20,6 +20,8 @@
   --om-pad-x: 1.375rem;
   --om-gap: clamp(2.5rem, 6cqw, 4rem);
   --om-stagger: 50ms;
+  /* The system spring from design.md (annotation notes, rail breadcrumbs). */
+  --om-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
 }
 
 [data-theme="light"] {
@@ -219,7 +221,7 @@ button.om-node:hover {
   border-top: 2px solid var(--color-text-muted);
   border-right: 2px solid var(--color-text-muted);
   transform: rotate(45deg);
-  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 280ms var(--om-spring);
 }
 
 .om-node[aria-expanded="true"] .om-chevron {
@@ -280,11 +282,16 @@ button.om-node:hover {
   line-height: var(--leading-body);
 }
 
-/* Tap to open: children settle in one after another, connectors fade with
+/* Tap to open and close: children spring in one after another (a small
+   overshoot, then settle) and spring back out together; connectors fade with
    them. Transform and opacity only. Nothing animates on page load. */
 @keyframes om-enter {
   from { opacity: 0; transform: translateX(calc(var(--sp-2) * -1)); }
   to { opacity: 1; transform: none; }
+}
+
+@keyframes om-leave {
+  to { opacity: 0; transform: translateX(calc(var(--sp-2) * -1)); }
 }
 
 @keyframes om-fade-in {
@@ -297,7 +304,7 @@ button.om-node:hover {
 }
 
 .om-enter {
-  animation: om-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: om-enter 280ms var(--om-spring) both;
   animation-delay: calc(var(--om-d, 0) * 1ms);
 }
 
@@ -305,8 +312,11 @@ button.om-node:hover {
   animation-name: om-fade-in;
 }
 
-.om-wires path.om-out,
 .om-out {
+  animation: om-leave 200ms var(--om-spring) forwards;
+}
+
+.om-wires path.om-out {
   animation: om-fade-out 160ms ease-in forwards;
 }
 
@@ -405,5 +415,9 @@ button.om-node:hover {
   @keyframes om-enter {
     from { opacity: 0; transform: translateY(calc(var(--sp-2) * -1)) scale(0.98); }
     to { opacity: 1; transform: none; }
+  }
+
+  @keyframes om-leave {
+    to { opacity: 0; transform: translateY(calc(var(--sp-2) * -1)) scale(0.98); }
   }
 }
