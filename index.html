@@ -300,7 +300,7 @@
     .overview-hero { width: 100%; }
     /* ── INTRO hero ───────────────────────────
        Built from the design-system text classes (design.md §3):
-       .b-section-header headline → .b-section-subheader subheadline.
+       .b-section-header headline → .b-body intro paragraph.
        Type, weight, colour, and margins come from the classes; these
        rules carry layout + spacing only. Width is matched to the
        feature cards below (height-driven frame) so the column lines
@@ -310,7 +310,7 @@
       width: min(100%, calc(var(--feature-media-h) * var(--feature-media-ar)));
     }
     .overview-headline { margin-bottom: var(--sp-10); }
-    .overview-subhead { margin-top: 0; }
+    .overview-subhead { margin-top: 0; max-width: none; }
     .overview-headline em { font-style: normal; }   /* [data-highlight] phrase — no italics */
     /* Nudge the grid down to bring the headline's cap-height into optical
        alignment with the name (desktop only — on mobile the rail stacks
@@ -442,7 +442,6 @@
     .fc-caption { margin-top: var(--sp-5); }
     /* Type + color come from .b-label .b-label-strong; this rule is layout + hover only. */
     .fc-eyebrow {
-      margin-bottom: 0;                 /* below-media caption — no trailing gap */
       transition: color 240ms var(--ease);
     }
     .feature-card:hover .fc-eyebrow { color: var(--color-primary); }
@@ -577,10 +576,9 @@
       padding: var(--sp-24) 0;
       max-width: 720px;
     }
-    /* Section eyebrow — shared label above Work/Resume/About headings.
-       Matches the mono, uppercase, muted-gray treatment of resume-label. */
-    .section-eyebrow,
-    .resume-label {
+    /* Section eyebrow — shared label above Work/Resume/About headings
+       (mono, uppercase, muted-gray). */
+    .section-eyebrow {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
       font-weight: 500;
@@ -660,34 +658,28 @@
       gap: var(--sp-5);
       margin-top: var(--sp-5);
     }
-    .rs-box-label {
-      font-size: var(--text-2xs);
-      font-weight: 700;
-      letter-spacing: var(--tracking-widest);
-      text-transform: uppercase;
-      color: var(--color-text-muted);
-      margin-bottom: var(--sp-2);
+    /* Label → text → list spacing is one flex gap; type comes from
+       .b-label / .b-value. */
+    .rs-box {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
     }
-    .rs-box-text {
-      font-size: var(--text-sm);
-      line-height: var(--leading-body);
-      color: var(--color-text);
-    }
-    .rs-box-text a {
+    /* Value type comes from .b-value; these rules add link styling. */
+    .rs-box .b-value a {
       color: inherit;
       text-decoration: underline;
       text-underline-offset: 3px;
       text-decoration-color: var(--color-border);
       transition: color 120ms ease, text-decoration-color 120ms ease;
     }
-    .rs-box-text a:hover {
+    .rs-box .b-value a:hover {
       color: var(--color-primary);
       text-decoration-color: var(--color-primary);
     }
     .rs-box-list {
       list-style: disc;
       padding-left: var(--sp-4);
-      margin-top: var(--sp-2);
       display: grid;
       gap: var(--sp-2);
     }
@@ -828,14 +820,14 @@
   <main class="content">
 
     <!-- Intro — design-system hero (design.md §3): .b-section-header
-         headline → .b-section-subheader subheadline. The subhead's phrase
+         headline → .b-body intro paragraph. The intro's phrase
          is highlit and auto-sweeps in — beat 3 of the page load animation.
          1520ms = 600 (rail fly-in) + 80 (gap) + 620 (column slide-up) + 220
          (gap), timed to land after the column settles; see the PAGE LOAD
          ANIMATION rules above. -->
     <section class="overview-hero" id="overview-hero">
       <h1 class="b-section-header overview-headline">the <em data-highlight data-highlight-auto="1520">why behind the what</em><br>has never been more important</h1>
-      <p class="b-section-subheader overview-subhead">Hiya! I’m Adi, a versatile product designer whose practice is built on continuous UX research to fuel high-velocity product experimentation. Welcome!</p>
+      <p class="b-body overview-subhead">Hiya! I’m Adi, a versatile product designer whose practice is built on continuous UX research to fuel high-velocity product experimentation. Welcome!</p>
     </section>
 
     <!-- Feature sequence — the work-projects container. Its top edge is the
@@ -915,7 +907,7 @@
 
     <!-- ── RESUME ─────────────────────────────── -->
     <section class="resume" id="resume">
-      <p class="resume-label">Resume</p>
+      <p class="section-eyebrow">Resume</p>
       <h2 class="resume-title">10+ years across UX research, Product design, Service design</h2>
       <p class="resume-bio">Hybrid PM-PD business oriented designer. I enjoy looking at data, speaking with customers, sketching first on paper and shipping every day.</p>
 
@@ -938,12 +930,12 @@
           </header>
           <div class="rs-pair">
             <div class="rs-box">
-              <p class="rs-box-label">What I did</p>
-              <p class="rs-box-text">Built the lockers product from 0 to 1, reached 250K ARR.</p>
+              <p class="b-label">What I did</p>
+              <p class="b-value">Built the lockers product from 0 to 1, reached 250K ARR.</p>
             </div>
             <div class="rs-box">
-              <p class="rs-box-label">Takeaways</p>
-              <p class="rs-box-text">Learned the art of making reversible decisions</p>
+              <p class="b-label">Takeaways</p>
+              <p class="b-value">Learned the art of making reversible decisions</p>
             </div>
           </div>
           <div class="rs-avatars" role="group" aria-label="Testimonials — Bounce">
@@ -970,12 +962,12 @@
           </header>
           <div class="rs-pair">
             <div class="rs-box">
-              <p class="rs-box-label">What I did</p>
-              <p class="rs-box-text">Built internal tooling for linguists, shipped 5 products total.</p>
+              <p class="b-label">What I did</p>
+              <p class="b-value">Built internal tooling for linguists, shipped 5 products total.</p>
             </div>
             <div class="rs-box">
-              <p class="rs-box-label">Takeaways</p>
-              <p class="rs-box-text">Going deep on a domain has compounding advantages for a PD</p>
+              <p class="b-label">Takeaways</p>
+              <p class="b-value">Going deep on a domain has compounding advantages for a PD</p>
             </div>
           </div>
         </li>
@@ -986,8 +978,8 @@
           </header>
           <div class="rs-pair">
             <div class="rs-box">
-              <p class="rs-box-label">What I did</p>
-              <p class="rs-box-text">Embedded in teams for long-term projects at</p>
+              <p class="b-label">What I did</p>
+              <p class="b-value">Embedded in teams for long-term projects at</p>
               <ul class="rs-box-list">
                 <li>Cocoon Experience: <a href="https://www.generalitranquilidade.pt/" target="_blank" rel="noopener">Insurance</a> (service design for claims process), <a href="https://josedemello.pt/en/subsidiaries/cuf/" target="_blank" rel="noopener">Healthcare</a> (service design for patient experience)</li>
                 <li>With Company: <a href="https://www.jeronimomartins.com/en/about-us/what-we-do/food-distribution/" target="_blank" rel="noopener">Retail</a> (UX design for loyalty and engagement)</li>
@@ -995,8 +987,8 @@
               </ul>
             </div>
             <div class="rs-box">
-              <p class="rs-box-label">Takeaways</p>
-              <p class="rs-box-text">Applied service design in the real world, learnt how design is really a business tool.</p>
+              <p class="b-label">Takeaways</p>
+              <p class="b-value">Applied service design in the real world, learnt how design is really a business tool.</p>
             </div>
           </div>
         </li>
@@ -1007,12 +999,12 @@
           </header>
           <div class="rs-pair">
             <div class="rs-box">
-              <p class="rs-box-label">What I did</p>
-              <p class="rs-box-text">First full time job, grew from UXR to UX designer.</p>
+              <p class="b-label">What I did</p>
+              <p class="b-value">First full time job, grew from UXR to UX designer.</p>
             </div>
             <div class="rs-box">
-              <p class="rs-box-label">Takeaways</p>
-              <p class="rs-box-text">Made friends and learned the Portuguese way of life</p>
+              <p class="b-label">Takeaways</p>
+              <p class="b-value">Made friends and learned the Portuguese way of life</p>
             </div>
           </div>
         </li>
@@ -1023,12 +1015,12 @@
           </header>
           <div class="rs-pair">
             <div class="rs-box">
-              <p class="rs-box-label">What I did</p>
-              <p class="rs-box-text">Conducted formative research and evaluative studies for Google Photos and Events</p>
+              <p class="b-label">What I did</p>
+              <p class="b-value">Conducted formative research and evaluative studies for Google Photos and Events</p>
             </div>
             <div class="rs-box">
-              <p class="rs-box-label">Takeaways</p>
-              <p class="rs-box-text">Embedded in a world-class product team early in my career.</p>
+              <p class="b-label">Takeaways</p>
+              <p class="b-value">Embedded in a world-class product team early in my career.</p>
             </div>
           </div>
         </li>

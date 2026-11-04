@@ -35,10 +35,6 @@
   margin-top: var(--sp-8);
 }
 
-.sh-role-line .b-label {
-  margin: 0;
-}
-
 .sh-role-link {
   color: var(--color-text);
   text-decoration: none;
@@ -133,21 +129,6 @@
 .sh-fact:last-child {
   padding-bottom: 0;
   border-bottom: 0;
-}
-
-.sh-fact .rs-box-label {
-  font-size: var(--text-2xs);
-  font-weight: 700;
-  letter-spacing: var(--tracking-widest);
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin: 0;
-}
-
-.sh-fact .rs-box-text {
-  font-size: var(--text-sm);
-  line-height: var(--leading-body);
-  color: var(--color-text);
 }
 
 /* Housekeeping notes — detail strip (Visas / Availability) */
