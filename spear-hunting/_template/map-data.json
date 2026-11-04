@@ -1,0 +1,82 @@
+{
+  "hint": "Tap to open",
+  "trees": [
+    {
+      "id": "side-one",
+      "toggleLabel": "TODO(adi): first side, e.g. Demand side",
+      "root": {
+        "id": "one-bo",
+        "type": "businessOutcome",
+        "label": "TODO(adi): the business outcome",
+        "open": true,
+        "children": [
+          {
+            "id": "one-po",
+            "type": "productOutcome",
+            "label": "TODO(adi): the product outcome",
+            "children": [
+              {
+                "id": "one-opp-a",
+                "type": "opportunity",
+                "label": "TODO(adi): an opportunity, written as the user would say it",
+                "children": [
+                  {
+                    "id": "one-sol-a",
+                    "type": "solution",
+                    "label": "TODO(adi): the solution you are pitching",
+                    "highlight": true,
+                    "link": {
+                      "href": "#prototype",
+                      "label": "TODO(adi): link label, or delete this link block"
+                    }
+                  },
+                  {
+                    "id": "one-sol-b",
+                    "type": "solution",
+                    "label": "TODO(adi): another solution"
+                  }
+                ]
+              },
+              {
+                "id": "one-opp-b",
+                "type": "opportunity",
+                "label": "TODO(adi): another opportunity"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "side-two",
+      "toggleLabel": "TODO(adi): second side, e.g. Supply side. Delete this whole tree for a single map.",
+      "root": {
+        "id": "two-bo",
+        "type": "businessOutcome",
+        "label": "TODO(adi): the business outcome",
+        "open": true,
+        "children": [
+          {
+            "id": "two-po",
+            "type": "productOutcome",
+            "label": "TODO(adi): the product outcome",
+            "children": [
+              {
+                "id": "two-opp-a",
+                "type": "opportunity",
+                "label": "TODO(adi): an opportunity",
+                "children": [
+                  {
+                    "id": "two-sol-a",
+                    "type": "solution",
+                    "label": "TODO(adi): a solution"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

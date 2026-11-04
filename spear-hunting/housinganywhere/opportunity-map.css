@@ -1,26 +1,34 @@
 /* Interactive opportunity map. Content lives in map-data.json. */
 
 :root {
-  /* Node type colours echo the FigJam board. Chips keep the same pastel in
-     both themes with dark text. */
-  --om-business-chip: #d9bdf7;
-  --om-product-chip: #add5f7;
-  --om-opportunity-chip: #a2e8b8;
-  --om-solution-chip: #f8da8c;
-  --om-chip-text: #1a1a1a;
+  /* One hue per node type. Dark theme: deep tinted cards, bright type label. */
+  --om-business: #b88be8;
+  --om-product: #5aa3e6;
+  --om-opportunity: #3fbf74;
+  --om-solution: #e8b53a;
 
-  --om-outline: var(--color-text-muted);
-  --om-line: var(--om-outline);
-  --om-line-width: 2px;
-  --om-gap: var(--sp-5);
-  --om-duration: 200ms;
-  --om-tint: 14%;
-  --om-base: var(--color-surface);
+  --om-business-fill: #2c2540;
+  --om-product-fill: #1f2f42;
+  --om-opportunity-fill: #1d3a2b;
+  --om-solution-fill: #3d3220;
+  --om-label-mix: 75%;
+
+  --om-line: color-mix(in srgb, var(--color-text) 22%, transparent);
+  --om-line-width: 1.5px;
+  --om-radius: 1rem;
+  --om-pad-y: 1.125rem;
+  --om-pad-x: 1.375rem;
+  --om-gap: clamp(2.5rem, 6cqw, 4rem);
+  --om-stagger: 50ms;
 }
 
 [data-theme="light"] {
-  --om-tint: 42%;
-  --om-base: var(--color-bg);
+  --om-business-fill: #e9dcfa;
+  --om-product-fill: #d6e8fa;
+  --om-opportunity-fill: #d3f1df;
+  --om-solution-fill: #fbeccb;
+  /* Labels mix toward the navy text so they stay readable on pastel fills. */
+  --om-label-mix: 45%;
 }
 
 /* The map is wider than the reading column; headings stay on the column. */
@@ -52,8 +60,8 @@
   display: inline-flex;
   gap: var(--sp-1);
   padding: var(--sp-1);
-  border: var(--border-width) solid var(--color-border);
   border-radius: 999px;
+  background: var(--color-primary-muted);
 }
 
 .om-toggle button {
@@ -80,7 +88,8 @@
 
 /* Tree */
 .om-tree {
-  --om-node-w: min(16rem, calc((100cqw - 6 * var(--om-gap) - var(--sp-2)) / 4));
+  --om-node-w: min(16rem, calc((100cqw - 3 * var(--om-gap)) / 4));
+  position: relative;
   margin-top: var(--sp-8);
 }
 
@@ -94,6 +103,23 @@
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+/* Curved connectors are drawn by opportunity-map.js on desktop. */
+.om-wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.om-wires path {
+  fill: none;
+  stroke: var(--om-line);
+  stroke-width: var(--om-line-width);
+  stroke-linecap: round;
 }
 
 .om-item {
@@ -114,54 +140,11 @@
   margin-left: var(--om-gap);
 }
 
-/* Connector from a parent to the trunk of its children */
-.om-children::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: calc(var(--om-gap) * -1);
-  width: var(--om-gap);
-  border-top: var(--om-line-width) solid var(--om-line);
-}
-
 .om-children > .om-item {
-  position: relative;
   padding-block: var(--sp-2);
-  padding-left: var(--om-gap);
 }
 
-/* Trunk segment and branch into each child */
-.om-children > .om-item::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: var(--om-gap);
-  border-top: var(--om-line-width) solid var(--om-line);
-}
-
-.om-children > .om-item::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  border-left: var(--om-line-width) solid var(--om-line);
-}
-
-.om-children > .om-item:first-child::after {
-  top: 50%;
-}
-
-.om-children > .om-item:last-child::after {
-  bottom: 50%;
-}
-
-.om-children > .om-item:only-child::after {
-  display: none;
-}
-
-/* Node */
+/* Node: borderless tinted card */
 .om-node {
   position: relative;
   display: flex;
@@ -170,48 +153,54 @@
   gap: var(--sp-2);
   width: 100%;
   margin: 0;
-  padding: var(--sp-3) var(--sp-4);
-  border: var(--border-width) solid var(--om-outline);
-  border-radius: var(--sp-2);
-  background: color-mix(in srgb, var(--om-chip) var(--om-tint), var(--om-base));
+  padding: var(--om-pad-y) var(--om-pad-x);
+  border: 0;
+  border-radius: var(--om-radius);
+  background: var(--om-fill);
   color: var(--color-text);
   font: inherit;
   text-align: left;
+  transition: background-color 150ms ease;
 }
 
 button.om-node {
-  padding-right: var(--sp-8);
+  padding-right: calc(var(--om-pad-x) + var(--sp-5));
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button.om-node:hover {
-  background: color-mix(in srgb, var(--om-chip) calc(var(--om-tint) + 14%), var(--om-base));
+  background: color-mix(in srgb, var(--om-accent) 14%, var(--om-fill));
 }
 
 .om-item[data-type="businessOutcome"] {
-  --om-chip: var(--om-business-chip);
+  --om-accent: var(--om-business);
+  --om-fill: var(--om-business-fill);
 }
 
 .om-item[data-type="productOutcome"] {
-  --om-chip: var(--om-product-chip);
+  --om-accent: var(--om-product);
+  --om-fill: var(--om-product-fill);
 }
 
 .om-item[data-type="opportunity"] {
-  --om-chip: var(--om-opportunity-chip);
+  --om-accent: var(--om-opportunity);
+  --om-fill: var(--om-opportunity-fill);
 }
 
 .om-item[data-type="solution"] {
-  --om-chip: var(--om-solution-chip);
+  --om-accent: var(--om-solution);
+  --om-fill: var(--om-solution-fill);
 }
 
+/* Type label: plain coloured text, no pill */
 .om-tag {
-  padding: 1px var(--sp-2);
-  border-radius: 999px;
-  background: var(--om-chip);
-  color: var(--om-chip-text);
+  color: color-mix(in srgb, var(--om-accent) var(--om-label-mix), var(--color-text));
   font-size: var(--text-xs);
   font-weight: 700;
+  letter-spacing: 0.07em;
   line-height: 1.5;
+  text-transform: uppercase;
 }
 
 .om-label {
@@ -223,13 +212,14 @@ button.om-node:hover {
 
 .om-chevron {
   position: absolute;
-  top: var(--sp-4);
-  right: var(--sp-4);
+  top: calc(var(--om-pad-y) + var(--sp-1));
+  right: var(--om-pad-x);
   width: var(--sp-2);
   height: var(--sp-2);
-  border-top: var(--om-line-width) solid var(--om-outline);
-  border-right: var(--om-line-width) solid var(--om-outline);
+  border-top: 2px solid var(--color-text-muted);
+  border-right: 2px solid var(--color-text-muted);
   transform: rotate(45deg);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .om-node[aria-expanded="true"] .om-chevron {
@@ -240,10 +230,12 @@ button.om-node:hover {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  min-height: var(--sp-8);
-  margin-top: var(--sp-1);
-  padding-inline: var(--sp-4);
+  min-height: var(--sp-10);
+  margin-top: var(--sp-3);
+  padding: var(--sp-2) var(--sp-4);
   border-radius: 999px;
+  line-height: 1.3;
+  text-align: left;
   background: var(--color-primary);
   color: var(--color-on-primary);
   font-size: var(--text-sm);
@@ -271,7 +263,7 @@ button.om-node:hover {
   display: block;
   width: 100%;
   height: auto;
-  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--sp-3);
 }
 
 .om-evidence figcaption,
@@ -288,34 +280,60 @@ button.om-node:hover {
   line-height: var(--leading-body);
 }
 
-/* Expand and collapse: transform and opacity only */
-@keyframes om-in {
+/* Tap to open: children settle in one after another, connectors fade with
+   them. Transform and opacity only. Nothing animates on page load. */
+@keyframes om-enter {
   from { opacity: 0; transform: translateX(calc(var(--sp-2) * -1)); }
   to { opacity: 1; transform: none; }
 }
 
-@keyframes om-out {
-  from { opacity: 1; transform: none; }
-  to { opacity: 0; transform: translateX(calc(var(--sp-2) * -1)); }
+@keyframes om-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.om-in {
-  animation: om-in var(--om-duration) ease-out;
+@keyframes om-fade-out {
+  to { opacity: 0; }
 }
 
+.om-enter {
+  animation: om-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--om-d, 0) * 1ms);
+}
+
+.om-wires path.om-enter {
+  animation-name: om-fade-in;
+}
+
+.om-wires path.om-out,
 .om-out {
-  animation: om-out var(--om-duration) ease-in forwards;
+  animation: om-fade-out 160ms ease-in forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .om-in,
-  .om-out {
+  .om-enter,
+  .om-out,
+  .om-wires path.om-out {
     animation: none;
+  }
+
+  .om-chevron,
+  .om-node {
+    transition: none;
   }
 }
 
-/* Mobile: nested accordion, top to bottom */
+/* Mobile: nested accordion, top to bottom, curved elbow into each child */
 @media (max-width: 767px) {
+  .om-tree {
+    --om-indent: 1.125rem;
+    --om-elbow: 1.875rem;
+  }
+
+  .om-wires {
+    display: none;
+  }
+
   .om-toggle {
     display: flex;
   }
@@ -334,24 +352,46 @@ button.om-node:hover {
   }
 
   .om-children {
-    margin-left: var(--sp-4);
-    padding-left: var(--sp-4);
-    border-left: var(--om-line-width) solid var(--om-line);
-  }
-
-  .om-children::before,
-  .om-children > .om-item::after {
-    display: none;
+    margin-left: var(--om-indent);
+    margin-top: var(--sp-3);
+    padding-left: var(--om-indent);
   }
 
   .om-children > .om-item {
-    padding-left: 0;
+    position: relative;
+    padding-block: 0 var(--sp-3);
   }
 
+  .om-children > .om-item:last-child {
+    padding-bottom: 0;
+  }
+
+  /* Elbow from the spine into the card */
   .om-children > .om-item::before {
-    top: var(--sp-8);
-    left: calc(var(--sp-4) * -1);
-    width: var(--sp-4);
+    content: "";
+    position: absolute;
+    top: 0;
+    left: calc(var(--om-indent) * -1);
+    width: var(--om-indent);
+    height: var(--om-elbow);
+    border-bottom: var(--om-line-width) solid var(--om-line);
+    border-left: var(--om-line-width) solid var(--om-line);
+    border-bottom-left-radius: var(--sp-3);
+  }
+
+  .om-children > .om-item:first-child::before {
+    top: calc(var(--sp-3) * -1);
+    height: calc(var(--om-elbow) + var(--sp-3));
+  }
+
+  /* Spine runs on to the next sibling */
+  .om-children > .om-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: var(--om-elbow);
+    bottom: 0;
+    left: calc(var(--om-indent) * -1);
+    border-left: var(--om-line-width) solid var(--om-line);
   }
 
   .om-chevron {
@@ -362,13 +402,8 @@ button.om-node:hover {
     transform: rotate(-45deg);
   }
 
-  @keyframes om-in {
-    from { opacity: 0; transform: translateY(calc(var(--sp-2) * -1)); }
+  @keyframes om-enter {
+    from { opacity: 0; transform: translateY(calc(var(--sp-2) * -1)) scale(0.98); }
     to { opacity: 1; transform: none; }
-  }
-
-  @keyframes om-out {
-    from { opacity: 1; transform: none; }
-    to { opacity: 0; transform: translateY(calc(var(--sp-2) * -1)); }
   }
 }

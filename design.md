@@ -399,17 +399,22 @@ The inventory at `/spearhunting/índice/` is generated from folders under `spear
 
 ### Opportunity Map (HousingAnywhere application)
 
-`spear-hunting/housinganywhere/` holds an interactive opportunity solution tree: `opportunity-map.js` (vanilla, no dependencies), `opportunity-map.css`, and `map-data.json`. All wording lives in the JSON; nodes have `id`, `type` (`businessOutcome`, `productOutcome`, `opportunity`, `solution`), `label`, and optional `children`, `open` (starts expanded), `evidence` (`{image, alt, caption}` or `{quote, source}`), `highlight`, and `link`. `map-demo.html` is a standalone review page. Desktop (≥768px) runs left to right with connector lines; below 768px it is a nested accordion. Nodes with children are `<button aria-expanded>`; expand and collapse run 200ms on `transform` and `opacity` only and are skipped under `prefers-reduced-motion`.
+`spear-hunting/housinganywhere/` holds an interactive opportunity solution tree: `opportunity-map.js` (vanilla, no dependencies), `opportunity-map.css`, and `map-data.json`. A copy of all three, with placeholder wording and an opt-in section block in the `sh-optional-blocks` template, lives in `spear-hunting/_template/` so new application pages start with it. All wording lives in the JSON; nodes have `id`, `type` (`businessOutcome`, `productOutcome`, `opportunity`, `solution`), `label`, and optional `children`, `open` (starts expanded), `evidence` (`{image, alt, caption}` or `{quote, source}`), `highlight`, and `link`. `map-demo.html` is a standalone review page. Desktop (≥768px) runs left to right; below 768px it is a nested accordion. Nodes with children are `<button aria-expanded>`.
 
-| Token | Value | Purpose |
+Nodes are borderless tinted cards (radius 1rem, 1.125rem by 1.375rem padding). The type name is plain coloured uppercase text above the label, not a pill. On desktop, `opportunity-map.js` draws one SVG curve from each open parent to each child (positions come from `offsetLeft`/`offsetTop`, so a card mid-animation does not skew them); on mobile the SVG is hidden and CSS draws a rounded elbow and a spine at each level (1.125rem indent).
+
+Motion happens on tap only, never on page load. Opening a node settles its children in one after another (320ms each, 50ms apart, `transform` and `opacity` only) and fades their connectors with them; closing fades them out in 160ms; the chevron turns over 260ms. All of it is skipped under `prefers-reduced-motion`. The enter class is removed on `animationend`, so switching sides never replays it.
+
+| Token | Value (dark / light) | Purpose |
 |---|---|---|
-| `--om-business-chip` | `#D9BDF7` | Business outcome |
-| `--om-product-chip` | `#ADD5F7` | Product outcome |
-| `--om-opportunity-chip` | `#A2E8B8` | Opportunity |
-| `--om-solution-chip` | `#F8DA8C` | Solution |
-| `--om-chip-text` | `#1A1A1A` | Chip text, 10.4:1 or better on every chip |
+| `--om-business`, `--om-product`, `--om-opportunity`, `--om-solution` | `#B88BE8`, `#5AA3E6`, `#3FBF74`, `#E8B53A` | Type hues. Used for the label and the hover tint |
+| `--om-business-fill` | `#2C2540` / `#E9DCFA` | Business outcome card |
+| `--om-product-fill` | `#1F2F42` / `#D6E8FA` | Product outcome card |
+| `--om-opportunity-fill` | `#1D3A2B` / `#D3F1DF` | Opportunity card |
+| `--om-solution-fill` | `#3D3220` / `#FBECCB` | Solution card |
+| `--om-label-mix` | `75%` / `45%` | How much of the type hue the label keeps; light mode mixes toward the navy text so labels stay readable on pastel fills |
 
-Everything else reuses the system tokens: node fill is the type chip colour tinted over `--color-surface` (dark) or `--color-bg` (light), text is `--color-text`, box outlines, connectors and chevrons are `--color-text-muted`, and the toggle and prototype button use `--color-primary` with `--color-on-primary`. The system has no green, yellow or blue, so the four type hues are the only new colours. Classes: `.om-section`, `.om-head`, `.om`, `.om-toggle`, `.om-tree`, `.om-item`, `.om-cell`, `.om-node`, `.om-tag`, `.om-label`, `.om-chevron`, `.om-children`, `.om-evidence`, `.om-link`.
+Everything else reuses the system tokens: text is `--color-text`, connectors are `--color-text` at 22%, chevrons are `--color-text-muted`, and the toggle and prototype button use `--color-primary` with `--color-on-primary`. The system has no green, yellow or blue, so the four type hues are the only new colours. Classes: `.om-section`, `.om-head`, `.om`, `.om-toggle`, `.om-tree`, `.om-wires`, `.om-item`, `.om-cell`, `.om-node`, `.om-tag`, `.om-label`, `.om-chevron`, `.om-children`, `.om-evidence`, `.om-link`.
 
 ### Prototype Embed (HousingAnywhere application)
 

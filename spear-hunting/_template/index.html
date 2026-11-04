@@ -19,6 +19,7 @@
   <meta name="twitter:image" content="https://www.adityagujaran.com/project-content/og-image.png" />
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="/spear-hunting/application.css" />
+  <!-- Opportunity map (optional): also add <link rel="stylesheet" href="/spear-hunting/__SLUG__/opportunity-map.css" /> here. -->
   <script src="/components/head.js"></script>
   <script src="/components/theme.js"></script>
 </head>
@@ -114,6 +115,15 @@
       </video>
     </section>
 
+    <!-- Opportunity map: needs opportunity-map.css in the head, opportunity-map.js before </body>, and wording in map-data.json. -->
+    <section class="sh-section sh-section--start om-section" aria-labelledby="mind-map-title">
+      <div class="om-head">
+        <p class="b-label">Opportunity solution tree</p>
+        <h2 class="b-title" id="mind-map-title">TODO(adi): what goes here</h2>
+      </div>
+      <div class="om" data-opportunity-map data-src="/spear-hunting/__SLUG__/map-data.json"></div>
+    </section>
+
     <div class="sh-work-grid" aria-label="Selected past work">
       <a class="sh-work-card" href="/lockers-reducing-cancellation.html">
         <img src="/project-content/4%20Lockers%20PUDO%20for%20framer/Thumbnail%20-%20lockers%20PUDO-480.webp" alt="TODO(adi): describe the project thumbnail" loading="lazy" />
@@ -142,5 +152,6 @@
   <script src="/components/nav.js"></script>
   <script src="/components/image-modal.js"></script>
   <script src="/main.js"></script>
+  <!-- Opportunity map (optional): <script src="/spear-hunting/__SLUG__/opportunity-map.js"></script> -->
 </body>
 </html>
