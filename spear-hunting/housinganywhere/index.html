@@ -74,61 +74,201 @@
       <section class="sh-section sh-section--start sh-section--wide" aria-labelledby="post-booking-benchmark-title">
         <p class="b-label">Benchmark</p>
         <h2 class="b-title" id="post-booking-benchmark-title">The first 48 hours is where the first impression is made</h2>
-<!-- Post-booking comparison: HousingAnywhere and three student rental platforms.
-     Checked against each company's own pages on 3 Nov 2026. -->
-<figure class="comparison">
-  <div class="comparison-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th scope="col"></th>
-          <th scope="col">HousingAnywhere</th>
-          <th scope="col">Spotahome</th>
-          <th scope="col">Uniplaces</th>
-          <th scope="col">Erasmusu</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">Time to report a problem after move-in</th>
-          <td>48 hours from the official move-in date</td>
-          <td>24 hours from move-in</td>
-          <td>24 hours from the move-in date</td>
-          <td>Not stated</td>
-        </tr>
-        <tr>
-          <th scope="row">Security deposit</th>
-          <td>Paid to the landlord, no deposit protection</td>
-          <td>Spotahome refunds for listings with “Deposit protection”</td>
-          <td>Paid to the landlord. No deposit protection</td>
-          <td>Paid to the landlord, usually at key handover</td>
-        </tr>
-        <tr>
-          <th scope="row">Landlord cancels at the last minute</th>
-          <td>Help finding a similar place, a hotel stay, or a refund of the first month and the fee</td>
-          <td>A hotel stay, or a full refund of the booking fee</td>
-          <td>A full refund, including the service fee, and help finding somewhere else</td>
-          <td>Up to €300 towards a stay at Erasmusu’s discretion</td>
-        </tr>
-        <tr>
-          <th scope="row">When the landlord gets the first month's rent</th>
-          <td>2 days after the official move-in date</td>
-          <td>Within 48 hours of arrival</td>
-          <td>Within 2 business days of the move-in date</td>
-          <td>Once the student arrives and confirms</td>
-        </tr>
-        <tr>
-          <th scope="row">Cover during the stay</th>
-          <td>Rent Guarantee, paid by the tenant: covers unpaid rent, damages, legal costs</td>
-          <td>Spotahome Plus, paid by the landlord: covers unpaid rent, damages</td>
-          <td>Rent Guarantee for landlords: only covers a tenant leaving early</td>
-          <td>None found</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <figcaption>Pulled by Claude agent from each company's own help and product pages, checked on 3 November 2026. Erasmusu's help pages carry no date.</figcaption>
-</figure>
+
+        <!-- Arriving protection areas hung off the move-in → move-out timeline.
+             Steps through the protections one full-width card at a time (benchmark.js).
+             Facts from each company's own help and product pages, checked on 3 Nov 2026. -->
+        <figure class="bench" data-benchmark data-benchmark-step="0">
+          <ol class="bench-timeline" aria-label="The rental stay, from move-in to move-out">
+            <li class="bench-stop" style="--stop: 0;">
+              <span class="bench-stop-icon"><span class="material-symbols-rounded" aria-hidden="true">home</span></span>
+              <span class="bench-stop-label">Move-in</span>
+            </li>
+            <li class="bench-stop" style="--stop: 25;">
+              <span class="bench-stop-icon"><span class="material-symbols-rounded" aria-hidden="true">schedule</span></span>
+              <span class="bench-stop-label">24h</span>
+            </li>
+            <li class="bench-stop" style="--stop: 50;">
+              <span class="bench-stop-icon"><span class="material-symbols-rounded" aria-hidden="true">pending</span></span>
+              <span class="bench-stop-label">48h</span>
+            </li>
+            <li class="bench-stop" style="--stop: 75;">
+              <span class="bench-stop-icon"><span class="material-symbols-rounded" aria-hidden="true">calendar_month</span></span>
+              <span class="bench-stop-label">Rest of stay</span>
+            </li>
+            <li class="bench-stop" style="--stop: 100;">
+              <span class="bench-stop-icon"><span class="material-symbols-rounded" aria-hidden="true">logout</span></span>
+              <span class="bench-stop-label">Move-out</span>
+            </li>
+          </ol>
+
+          <div class="bench-cards">
+            <article class="bench-card bench-card--arrival">
+              <header class="bench-card-head">
+                <p class="bench-tag">01 · Tenant</p>
+              </header>
+              <span class="bench-blob" aria-hidden="true"><span class="material-symbols-rounded">key</span></span>
+              <div class="bench-card-main">
+                <h3 class="bench-card-title">A safe arrival</h3>
+                <p class="bench-card-sub">When things aren’t as expected, how quickly can tenants get help?</p>
+                <div class="bench-reveal">
+                  <p class="b-label">What the benchmark reveals</p>
+                  <dl class="bench-stats">
+                    <div class="bench-stat">
+                      <dt>Spotahome</dt>
+                      <dd>24h</dd>
+                    </div>
+                    <div class="bench-stat">
+                      <dt>Uniplaces</dt>
+                      <dd>24h</dd>
+                    </div>
+                    <div class="bench-stat">
+                      <dt>HousingAnywhere</dt>
+                      <dd>48h</dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+              <aside class="bench-opportunity">
+                <span class="bench-bulb" aria-hidden="true"><span class="material-symbols-rounded">lightbulb</span></span>
+                <div>
+                  <p class="b-body-bold">Design opportunity</p>
+                  <p class="bench-opportunity-body">Make the move-in process feel supported, with clear guidance on what to check, how to report issues and what happens next.</p>
+                </div>
+              </aside>
+            </article>
+
+            <article class="bench-card bench-card--ongoing">
+              <header class="bench-card-head">
+                <p class="bench-tag">02 · Tenant</p>
+              </header>
+              <span class="bench-blob" aria-hidden="true"><span class="material-symbols-rounded">verified_user</span></span>
+              <div class="bench-card-main">
+                <h3 class="bench-card-title">Confidence beyond check-in</h3>
+                <p class="bench-card-sub">Once the keys are handed over, what protection remains for tenants?</p>
+                <div class="bench-reveal">
+                  <p class="b-label">What the benchmark reveals</p>
+                  <div class="bench-warning">
+                    <span class="bench-alert" aria-hidden="true"><span class="material-symbols-rounded">exclamation</span></span>
+                    <div>
+                      <p class="b-body-bold">Deposit protection is inconsistent</p>
+                      <p class="bench-opportunity-body">Spotahome offers protection on eligible listings; the other platforms do not explicitly offer equivalent protection.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <aside class="bench-opportunity">
+                <span class="bench-bulb" aria-hidden="true"><span class="material-symbols-rounded">lightbulb</span></span>
+                <div>
+                  <p class="b-body-bold">Design opportunity</p>
+                  <p class="bench-opportunity-body">Help tenants understand where their money goes, what protection applies and where to turn when something goes wrong.</p>
+                </div>
+              </aside>
+            </article>
+
+            <article class="bench-card bench-card--landlord">
+              <header class="bench-card-head">
+                <p class="bench-tag">03 · Landlord</p>
+              </header>
+              <span class="bench-blob" aria-hidden="true"><span class="material-symbols-rounded">home_work</span></span>
+              <div class="bench-card-main">
+                <h3 class="bench-card-title">Protection against financial loss</h3>
+                <p class="bench-card-sub">What happens when a tenant leaves early, damages a property or stops paying rent?</p>
+                <div class="bench-reveal">
+                  <p class="b-label">What the benchmark reveals</p>
+                  <ul class="bench-coverage">
+                    <li><span class="bench-coverage-name">HousingAnywhere</span><span class="chip chip--broad">Broad coverage</span></li>
+                    <li><span class="bench-coverage-name">Spotahome</span><span class="chip chip--limited">Partial coverage</span></li>
+                    <li><span class="bench-coverage-name">Uniplaces</span><span class="chip chip--limited">Limited coverage</span></li>
+                    <li><span class="bench-coverage-name">Erasmusu</span><span class="chip chip--none">Not identified</span></li>
+                  </ul>
+                </div>
+              </div>
+              <aside class="bench-opportunity">
+                <span class="bench-bulb" aria-hidden="true"><span class="material-symbols-rounded">lightbulb</span></span>
+                <div>
+                  <p class="b-body-bold">Design opportunity</p>
+                  <p class="bench-opportunity-body">Make landlord protection tangible and transparent, so landlords understand what’s covered and how to claim.</p>
+                </div>
+              </aside>
+            </article>
+          </div>
+          <div class="bench-controls">
+            <button class="btn btn--sm" type="button" data-benchmark-back disabled>
+              <span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>
+              <span>Back</span>
+            </button>
+            <p class="bench-count" data-benchmark-count>01 / 03</p>
+            <button class="btn btn--sm" type="button" data-benchmark-next disabled>
+              <span>Next</span>
+              <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
+            </button>
+          </div>
+          <figcaption class="bench-caption">Checked against each company’s own help and product pages on 3 November 2026. Erasmusu’s help pages carry no date.</figcaption>
+        </figure>
+
+        <!-- Per-platform comparison, kept out of the way until it is asked for. -->
+        <div class="bench-table-toggle">
+          <button class="btn btn--sm" type="button" data-benchmark-table-toggle aria-expanded="false" aria-controls="bench-comparison-table">
+            <span class="material-symbols-rounded" aria-hidden="true">table_chart</span>
+            <span data-benchmark-table-label>View comparison table</span>
+          </button>
+        </div>
+        <div class="bench-comparison" id="bench-comparison-table" hidden>
+          <figure class="comparison">
+            <div class="comparison-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col">HousingAnywhere</th>
+                    <th scope="col">Spotahome</th>
+                    <th scope="col">Uniplaces</th>
+                    <th scope="col">Erasmusu</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Time to report a problem after move-in</th>
+                    <td>48 hours from the official move-in date</td>
+                    <td>24 hours from move-in</td>
+                    <td>24 hours from the move-in date</td>
+                    <td>Not stated</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Security deposit</th>
+                    <td>Paid to the landlord, no deposit protection</td>
+                    <td>Spotahome refunds for listings with “Deposit protection”</td>
+                    <td>Paid to the landlord. No deposit protection</td>
+                    <td>Paid to the landlord, usually at key handover</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Landlord cancels at the last minute</th>
+                    <td>Help finding a similar place, a hotel stay, or a refund of the first month and the fee</td>
+                    <td>A hotel stay, or a full refund of the booking fee</td>
+                    <td>A full refund, including the service fee, and help finding somewhere else</td>
+                    <td>Up to €300 towards a stay at Erasmusu’s discretion</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">When the landlord gets the first month's rent</th>
+                    <td>2 days after the official move-in date</td>
+                    <td>Within 48 hours of arrival</td>
+                    <td>Within 2 business days of the move-in date</td>
+                    <td>Once the student arrives and confirms</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Cover during the stay</th>
+                    <td>Rent Guarantee, paid by the tenant: covers unpaid rent, damages, legal costs</td>
+                    <td>Spotahome Plus, paid by the landlord: covers unpaid rent, damages</td>
+                    <td>Rent Guarantee for landlords: only covers a tenant leaving early</td>
+                    <td>None found</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <figcaption>Checked against each company’s own help and product pages, 3 November 2026. Erasmusu’s help pages carry no date.</figcaption>
+          </figure>
+        </div>
       </section>
 
       <section class="sh-section sh-section--start om-section" aria-labelledby="mind-map-title">
@@ -260,6 +400,7 @@
   <script src="/main.js"></script>
   <script src="/spear-hunting/housinganywhere/opportunity-map.js"></script>
   <script src="/spear-hunting/housinganywhere/prototype.js"></script>
+  <script src="/spear-hunting/housinganywhere/benchmark.js"></script>
   <script src="/components/text_highlight.js"></script>
 </body>
 </html>
