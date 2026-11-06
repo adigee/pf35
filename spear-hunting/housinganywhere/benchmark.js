@@ -53,7 +53,7 @@
     card.addEventListener('mouseenter', function () { if (!phone.matches) setActive(i); });
     card.addEventListener('focus', function () { if (!phone.matches) setActive(i); });
     card.addEventListener('blur', function (event) {
-      if (!phone.matches && !card.contains(event.relatedTarget)) setActive(-1);
+      if (!phone.matches && !cardsWrap.contains(event.relatedTarget)) setActive(-1);
     });
   });
   cardsWrap.addEventListener('mouseleave', function () { if (!phone.matches) setActive(-1); });
@@ -136,8 +136,8 @@
 
   bench.addEventListener('keydown', function (event) {
     if (!phone.matches) return;
-    if (event.key === 'ArrowRight') { current = (current + 1) % count; renderDeck(); }
-    if (event.key === 'ArrowLeft') { current = (current + count - 1) % count; renderDeck(); }
+    if (event.key === 'ArrowRight') { current = (current + 1) % count; renderDeck(); dots[current].focus(); }
+    if (event.key === 'ArrowLeft') { current = (current + count - 1) % count; renderDeck(); dots[current].focus(); }
   });
 
   phone.addEventListener('change', layout);
