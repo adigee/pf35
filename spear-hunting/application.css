@@ -499,8 +499,6 @@
   align-items: baseline;
   gap: var(--sp-6);
   margin-top: var(--sp-6);
-  padding-top: var(--sp-3);
-  border-top: var(--border-width) solid var(--color-border);
 }
 
 .bench-link {
