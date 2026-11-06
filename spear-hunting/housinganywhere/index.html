@@ -77,144 +77,104 @@
         <h2 class="b-title" id="post-booking-benchmark-title">The first 48 hours is where the first impression is made</h2>
 
         <!-- Arriving protection areas hung off the move-in → move-out timeline.
-             Steps through the protections one full-width card at a time (benchmark.js).
+             Three protection cards side by side; hovering one fills its timeline segment, and on phones they stack as a swipeable deck (benchmark.js).
              Facts from each company's own help and product pages, checked on 3 Nov 2026. -->
-        <figure class="bench" data-benchmark data-benchmark-step="0">
+        <figure class="bench" data-benchmark>
           <ol class="bench-timeline" aria-label="The rental stay, from move-in to move-out">
             <li class="bench-stop" style="--stop: 0;">
-              <span class="bench-stop-icon"><span class="material-symbols-rounded" aria-hidden="true">home</span></span>
+              <span class="bench-tick" aria-hidden="true"></span>
               <span class="bench-stop-label">Move-in</span>
             </li>
-            <li class="bench-stop" style="--stop: 25;">
-              <span class="bench-stop-icon"><span class="material-symbols-rounded" aria-hidden="true">schedule</span></span>
-              <span class="bench-stop-label">24h</span>
-            </li>
-            <li class="bench-stop" style="--stop: 50;">
-              <span class="bench-stop-icon"><span class="material-symbols-rounded" aria-hidden="true">pending</span></span>
+            <li class="bench-stop" style="--stop: 33.3333;">
+              <span class="bench-tick" aria-hidden="true"></span>
               <span class="bench-stop-label">48h</span>
             </li>
-            <li class="bench-stop" style="--stop: 75;">
-              <span class="bench-stop-icon"><span class="material-symbols-rounded" aria-hidden="true">calendar_month</span></span>
+            <li class="bench-stop" style="--stop: 66.6667;">
+              <span class="bench-tick" aria-hidden="true"></span>
               <span class="bench-stop-label">Rest of stay</span>
             </li>
             <li class="bench-stop" style="--stop: 100;">
-              <span class="bench-stop-icon"><span class="material-symbols-rounded" aria-hidden="true">logout</span></span>
+              <span class="bench-tick" aria-hidden="true"></span>
               <span class="bench-stop-label">Move-out</span>
             </li>
           </ol>
 
           <div class="bench-cards">
-            <article class="bench-card bench-card--arrival">
-              <header class="bench-card-head">
-                <p class="bench-tag">01 · Tenant</p>
-              </header>
-              <span class="bench-blob" aria-hidden="true"><span class="material-symbols-rounded">key</span></span>
-              <div class="bench-card-main">
-                <h3 class="bench-card-title">A safe arrival</h3>
-                <p class="bench-card-sub">When things aren’t as expected, how quickly can tenants get help?</p>
-                <div class="bench-reveal">
-                  <p class="b-label">What the benchmark reveals</p>
-                  <dl class="bench-stats">
-                    <div class="bench-stat">
-                      <dt>Spotahome</dt>
-                      <dd>24h</dd>
-                    </div>
-                    <div class="bench-stat">
-                      <dt>Uniplaces</dt>
-                      <dd>24h</dd>
-                    </div>
-                    <div class="bench-stat">
-                      <dt>HousingAnywhere</dt>
-                      <dd>48h</dd>
-                    </div>
-                  </dl>
-                </div>
-              </div>
-              <aside class="bench-opportunity">
-                <span class="bench-bulb" aria-hidden="true"><span class="material-symbols-rounded">lightbulb</span></span>
-                <div>
-                  <p class="b-body-bold">Design opportunity</p>
-                  <p class="bench-opportunity-body">Make the move-in process feel supported, with clear guidance on what to check, how to report issues and what happens next.</p>
-                </div>
-              </aside>
-            </article>
-
-            <article class="bench-card bench-card--ongoing">
-              <header class="bench-card-head">
-                <p class="bench-tag">02 · Tenant</p>
-              </header>
-              <span class="bench-blob" aria-hidden="true"><span class="material-symbols-rounded">verified_user</span></span>
-              <div class="bench-card-main">
-                <h3 class="bench-card-title">Confidence beyond check-in</h3>
-                <p class="bench-card-sub">Once the keys are handed over, what protection remains for tenants?</p>
-                <div class="bench-reveal">
-                  <p class="b-label">What the benchmark reveals</p>
-                  <div class="bench-warning">
-                    <span class="bench-alert" aria-hidden="true"><span class="material-symbols-rounded">exclamation</span></span>
-                    <div>
-                      <p class="b-body-bold">Deposit protection is inconsistent</p>
-                      <p class="bench-opportunity-body">Spotahome offers protection on eligible listings; the other platforms do not explicitly offer equivalent protection.</p>
-                    </div>
+            <article class="bench-card" tabindex="0">
+              <p class="bench-persona">Tenant</p>
+              <h3 class="bench-card-title">Arrival protection</h3>
+              <p class="bench-card-sub">When things aren’t as expected, how long do tenants have to get help?</p>
+              <div class="bench-evidence">
+                <p class="b-label">What the benchmark reveals</p>
+                <dl class="bench-stats">
+                  <div class="bench-stat">
+                    <dt>Spotahome</dt>
+                    <dd>24h</dd>
                   </div>
-                </div>
+                  <div class="bench-stat">
+                    <dt>Uniplaces</dt>
+                    <dd>24h</dd>
+                  </div>
+                  <div class="bench-stat">
+                    <dt>HousingAnywhere</dt>
+                    <dd>48h</dd>
+                  </div>
+                </dl>
               </div>
               <aside class="bench-opportunity">
-                <span class="bench-bulb" aria-hidden="true"><span class="material-symbols-rounded">lightbulb</span></span>
-                <div>
-                  <p class="b-body-bold">Design opportunity</p>
-                  <p class="bench-opportunity-body">Help tenants understand where their money goes, what protection applies and where to turn when something goes wrong.</p>
-                </div>
+                <p class="b-body-bold">Design opportunity</p>
+                <p class="bench-opportunity-body">Make the move-in process feel supported.</p>
               </aside>
             </article>
 
-            <article class="bench-card bench-card--landlord">
-              <header class="bench-card-head">
-                <p class="bench-tag">03 · Landlord</p>
-              </header>
-              <span class="bench-blob" aria-hidden="true"><span class="material-symbols-rounded">home_work</span></span>
-              <div class="bench-card-main">
-                <h3 class="bench-card-title">Protection against financial loss</h3>
-                <p class="bench-card-sub">What happens when a tenant leaves early, damages a property or stops paying rent?</p>
-                <div class="bench-reveal">
-                  <p class="b-label">What the benchmark reveals</p>
-                  <ul class="bench-coverage">
-                    <li><span class="bench-coverage-name">HousingAnywhere</span><span class="chip chip--broad">Broad coverage</span></li>
-                    <li><span class="bench-coverage-name">Spotahome</span><span class="chip chip--limited">Partial coverage</span></li>
-                    <li><span class="bench-coverage-name">Uniplaces</span><span class="chip chip--limited">Limited coverage</span></li>
-                    <li><span class="bench-coverage-name">Erasmusu</span><span class="chip chip--none">Not identified</span></li>
-                  </ul>
+            <article class="bench-card" tabindex="0">
+              <p class="bench-persona">Tenant</p>
+              <h3 class="bench-card-title">Stay protection</h3>
+              <p class="bench-card-sub">Once the keys are handed over, what protection remains for tenants?</p>
+              <div class="bench-evidence">
+                <p class="b-label">What the benchmark reveals</p>
+                <div class="bench-fact">
+                  <p class="b-body-bold">Deposit protection is inconsistent</p>
+                  <p class="bench-fact-body">Spotahome offers protection on listings with Deposit protection.</p>
                 </div>
               </div>
               <aside class="bench-opportunity">
-                <span class="bench-bulb" aria-hidden="true"><span class="material-symbols-rounded">lightbulb</span></span>
-                <div>
-                  <p class="b-body-bold">Design opportunity</p>
-                  <p class="bench-opportunity-body">Make landlord protection tangible and transparent, so landlords understand what’s covered and how to claim.</p>
-                </div>
+                <p class="b-body-bold">Design opportunity</p>
+                <p class="bench-opportunity-body">Help tenants understand where their money goes and what the deposit includes.</p>
+              </aside>
+            </article>
+
+            <article class="bench-card" tabindex="0">
+              <p class="bench-persona">Landlord</p>
+              <h3 class="bench-card-title">Protection against damages</h3>
+              <p class="bench-card-sub">What happens when a tenant leaves early, damages a property or stops paying rent?</p>
+              <div class="bench-evidence">
+                <p class="b-label">What the benchmark reveals</p>
+                <ul class="bench-coverage">
+                  <li><span class="bench-coverage-name">HousingAnywhere</span><span class="chip chip--broad">Broad coverage</span></li>
+                  <li><span class="bench-coverage-name">Spotahome</span><span class="chip chip--limited">Partial coverage</span></li>
+                  <li><span class="bench-coverage-name">Uniplaces</span><span class="chip chip--limited">Limited coverage</span></li>
+                  <li><span class="bench-coverage-name">Erasmusu</span><span class="chip chip--none">Not identified</span></li>
+                </ul>
+              </div>
+              <aside class="bench-opportunity">
+                <p class="b-body-bold">Design opportunity</p>
+                <p class="bench-opportunity-body">Make landlord protection tangible and transparent.</p>
               </aside>
             </article>
           </div>
-          <div class="bench-controls">
-            <button class="btn btn--sm" type="button" data-benchmark-back disabled>
-              <span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>
-              <span>Back</span>
-            </button>
-            <p class="bench-count" data-benchmark-count>01 / 03</p>
-            <button class="btn btn--sm" type="button" data-benchmark-next disabled>
-              <span>Next</span>
-              <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
+
+          <div class="bench-dots" data-benchmark-dots role="group" aria-label="Protection cards"></div>
+
+          <div class="bench-foot">
+            <!-- Per-platform comparison, kept out of the way until it is asked for. -->
+            <button class="bench-link" type="button" data-benchmark-table-toggle aria-expanded="false" aria-controls="bench-comparison-table">
+              <span data-benchmark-table-label>View comparison table</span>
+              <span class="material-symbols-rounded" aria-hidden="true">chevron_right</span>
             </button>
           </div>
-          <figcaption class="bench-caption">Checked against each company’s own help and product pages on 3 November 2026. Erasmusu’s help pages carry no date.</figcaption>
         </figure>
 
-        <!-- Per-platform comparison, kept out of the way until it is asked for. -->
-        <div class="bench-table-toggle">
-          <button class="btn btn--sm" type="button" data-benchmark-table-toggle aria-expanded="false" aria-controls="bench-comparison-table">
-            <span class="material-symbols-rounded" aria-hidden="true">table_chart</span>
-            <span data-benchmark-table-label>View comparison table</span>
-          </button>
-        </div>
         <div class="bench-comparison" id="bench-comparison-table" hidden>
           <figure class="comparison">
             <div class="comparison-scroll">
