@@ -159,6 +159,14 @@
   margin-bottom: var(--sp-6);
 }
 
+.sh-section .b-head {
+  margin-bottom: var(--sp-6);
+}
+
+.sh-section .b-head .b-title {
+  margin-bottom: 0;
+}
+
 .sh-section--start {
   margin-inline: 0;
 }
@@ -181,7 +189,7 @@
   border-radius: var(--radius-lg, 24px);
 }
 
-.sh-section--wide > .b-title {
+.sh-section--wide > .b-head > .b-title {
   max-width: var(--application-copy-width);
 }
 
