@@ -392,6 +392,14 @@ a:hover {
   margin-bottom: var(--sp-4);
 }
 
+/* Eyebrow + title pair — wrap a .b-label and its .b-title in .b-head.
+   The wrapper owns the gap (.b-label carries no margin). */
+.b-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
 /* Article title — responsive hero for long-form case studies (two-column) */
 .b-title--article {
   font-family: var(--font-display);
