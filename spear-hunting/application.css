@@ -193,190 +193,159 @@
   max-width: var(--application-copy-width);
 }
 
-/* ── Benchmark: move-in → move-out timeline + arriving protection cards ──
-   Hue chips stay the same pastel in both themes (see opportunity-map.css);
-   card surfaces tint the pastel over a theme base via color-mix. */
+/* ── Benchmark: move-in → move-out timeline + three protection cards ──
+   Desktop: cards sit side by side, each under its own timeline segment;
+   hovering (or focusing) one fades the others and fills its segment.
+   Phones: the rail stays horizontal and the cards stack as a swipeable deck.
+   Greys derive from the theme text colour over the page background, so card
+   and note read as two steps of grey in both themes. */
 .bench {
-  --bench-arrival: #a2e8b8;
-  --bench-ongoing: #add5f7;
-  --bench-landlord: #f8d2a0;
-  --bench-chip-text: #1a1a1a;
-  --bench-edge: 3rem;         /* room for the first/last stop's own width */
-  --bench-tint: 14%;
-  --bench-base: var(--color-surface);
-  --bench-line: color-mix(in srgb, var(--color-text-muted) 55%, transparent);
+  --bench-line: color-mix(in srgb, var(--color-text) 22%, transparent);
+  --bench-card-bg: color-mix(in srgb, var(--color-text) 6%, var(--color-bg));
+  --bench-note-bg: color-mix(in srgb, var(--color-text) 11%, var(--color-bg));
+  --bench-rule: color-mix(in srgb, var(--color-text) 14%, transparent);
+  --bench-ease: cubic-bezier(0.22, 1, 0.36, 1);   /* ease-out, no overshoot */
 
   position: relative;
   margin: 0;
 }
 
-[data-theme="light"] .bench {
-  --bench-tint: 65%;
-  --bench-base: var(--color-bg);
-}
-
-/* Timeline */
+/* ── Timeline: a rail split into three segments, one per card ── */
 .bench-timeline {
+  --bench-track-y: 0.5rem;   /* centre line of the rail */
+
   position: relative;
-  height: 5.25rem;
+  height: 3.5rem;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.bench-timeline::before {
-  content: "";
-  position: absolute;
-  top: calc(3.5rem / 2);
-  left: var(--bench-edge);
-  right: var(--bench-edge);
-  border-top: 1px solid var(--bench-line);
-}
-
-/* Progress fill — grows with the active step, set by benchmark.js */
+.bench-timeline::before,
 .bench-timeline::after {
   content: "";
   position: absolute;
-  top: calc(3.5rem / 2);
-  left: var(--bench-edge);
-  width: calc(var(--bench-fill, 0) * (100% - 2 * var(--bench-edge)) / 100);
-  border-top: 2px solid var(--color-primary);
+  top: calc(var(--bench-track-y) - 1px);
+  left: 0;
   border-radius: 999px;
-  transition: width var(--panel-transition);
 }
+
+.bench-timeline::before {
+  right: 0;
+  height: 2px;
+  background: var(--bench-line);
+}
+
+/* Progress fill — grows linearly from Move-in through the active card's
+   segment (--fill = number of thirds, set by benchmark.js) and fades out when
+   no card is active. */
+.bench-timeline::after {
+  top: calc(var(--bench-track-y) - 1.5px);
+  width: calc(var(--fill, 0) * 33.3333%);
+  height: 3px;
+  background: var(--color-primary);
+  opacity: 0;
+  transition: width 450ms linear, opacity 250ms ease;
+}
+
+.bench-timeline.is-filled::after { opacity: 1; }
+.bench-timeline.is-resetting::after { transition: none; }
 
 .bench-stop {
   position: absolute;
   top: 0;
-  left: calc(var(--bench-edge) + (var(--stop) / 100) * (100% - 2 * var(--bench-edge)));
+  left: calc(var(--stop) * 1%);
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--sp-2);
+  gap: var(--sp-3);
   z-index: 1;
 }
 
-.bench-stop-icon {
-  display: grid;
-  place-items: center;
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 999px;
-  border: var(--border-width) solid var(--bench-line);
-  background: var(--bench-base);
-}
+.bench-stop:first-child { transform: none; align-items: flex-start; }
+.bench-stop:last-child  { transform: translateX(-100%); align-items: flex-end; }
 
-.bench-stop-icon .material-symbols-rounded {
-  font-size: 1.375rem;
-  color: var(--color-text);
+.bench-tick {
+  width: 2px;
+  height: 0.875rem;
+  margin-top: calc(var(--bench-track-y) - 0.4375rem);
+  border-radius: 999px;
+  background: var(--bench-line);
+  transition: background 300ms ease;
 }
 
 .bench-stop-label {
-  font-size: var(--text-sm);
-  font-weight: 600;
+  padding: 2px var(--sp-3);
+  border-radius: 999px;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
   line-height: var(--leading-medium);
-  color: var(--color-text);
+  color: var(--color-text-muted);
   white-space: nowrap;
+  transition: color 300ms ease, background 300ms ease;
 }
 
-/* Cards — one full-width card at a time; markup wraps the narrative
-   (head, title, sub, reveal) in .bench-card-main, next to the
-   bottom-aligned design-opportunity note. */
+.bench-stop:first-child .bench-stop-label { padding-left: 0; }
+.bench-stop:last-child .bench-stop-label  { padding-right: 0; }
+
+/* States — set by benchmark.js: every stop the fill has reached, the end stop is current */
+.bench-stop.is-reached .bench-tick { background: var(--color-primary); }
+.bench-stop.is-reached .bench-stop-label { color: var(--color-text); }
+.bench-stop.is-current .bench-stop-label {
+  padding-inline: var(--sp-3);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+/* ── Cards ── */
 .bench-cards {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
   margin-top: var(--sp-6);
 }
 
 .bench-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
-  align-items: end;
-  gap: var(--sp-5) var(--sp-8);
-  padding: var(--sp-5);
-  border: var(--border-width) solid var(--bench-card-border);
-  border-radius: 1.5rem;
-  background: color-mix(in srgb, var(--hue) var(--bench-tint), var(--bench-base));
-}
-
-.bench-card--arrival  { --hue: var(--bench-arrival); }
-.bench-card--ongoing  { --hue: var(--bench-ongoing); }
-.bench-card--landlord { --hue: var(--bench-landlord); }
-
-.bench-card {
-  --bench-card-border: color-mix(in srgb, var(--hue) 35%, var(--color-border));
-
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
-  grid-template-rows: auto 1fr;
-  grid-template-areas:
-    "head blob"
-    "main note";
-  padding: var(--sp-5);
-  border: var(--border-width) solid var(--bench-card-border);
-  border-radius: 1.5rem;
-  background: color-mix(in srgb, var(--hue) var(--bench-tint), var(--bench-base));
-}
-
-/* display: grid above beats the UA [hidden] rule — state the override */
-.bench-card[hidden] {
-  display: none;
-}
-
-.bench-card-head {
-  grid-area: head;
-  align-self: center;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--sp-3);
-}
-
-.bench-blob {
-  grid-area: blob;
-  justify-self: end;
-}
-
-.bench-card-main {
-  grid-area: main;
   display: flex;
   flex-direction: column;
-  gap: var(--sp-3);
+  gap: var(--sp-4);
+  padding: var(--sp-6);
+  border-radius: 1.5rem;
+  background: var(--bench-card-bg);
+  transition: opacity 300ms ease;
 }
 
-.bench-tag {
-  margin: 0;
-  padding: 2px var(--sp-2);
-  border-radius: 999px;
-  background: var(--hue);
-  color: var(--bench-chip-text);
-  font-size: var(--text-xs);
-  font-weight: 700;
-  line-height: 1.6;
-  letter-spacing: var(--tracking-wider);
-  text-transform: uppercase;
-}
-
-.bench-blob {
-  display: grid;
-  place-items: center;
-  width: 4.5rem;
-  height: 4.5rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--hue) 45%, var(--bench-base));
-}
-
-.bench-blob .material-symbols-rounded {
-  font-size: 2.25rem;
-  color: var(--color-text);
+.bench-card:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
 }
 
 .bench-card-title {
   font-family: var(--font-display);
   font-size: var(--text-lg);
   font-weight: 700;
-  line-height: var(--leading-snug);
+  line-height: var(--leading-normal);
   margin: 0;
+}
+
+/* Who it's for — a small, quiet label above the title */
+.bench-persona {
+  align-self: start;
+  justify-self: start;
+  margin: 0;
+  padding: 2px var(--sp-2);
+  border-radius: 999px;
+  /* Same warm hue as the opportunity map's "solution" cards (opportunity-map.css) */
+  background: var(--om-solution-fill);
+  color: color-mix(in srgb, var(--om-solution) var(--om-label-mix), var(--color-text));
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
 }
 
 .bench-card-sub {
@@ -386,32 +355,32 @@
   margin: 0;
 }
 
-/* Reveal block — hairline finish, label + per-card facts */
-.bench-reveal {
+/* Evidence — label + per-card facts, closed off by a hairline */
+.bench-evidence {
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
-  padding-top: var(--sp-3);
-  border-top: var(--border-width) solid var(--bench-card-border);
+  padding-top: var(--sp-4);
+  border-top: var(--border-width) solid var(--bench-rule);
 }
 
 /* Reporting-window stats (card 01) */
 .bench-stats {
   display: flex;
   margin: 0;
-  max-width: 30rem;
 }
 
 .bench-stat {
-  flex: 1 1 0;
-  min-width: 0;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column-reverse;   /* number above its label */
 }
 
+.bench-stat:last-child { flex: 1 1 auto; }
+.bench-stat:not(:last-child) { padding-right: var(--sp-2); }
 .bench-stat + .bench-stat {
-  border-left: var(--border-width) solid var(--bench-card-border);
-  padding-left: var(--sp-3);
+  padding-left: var(--sp-2);
+  border-left: var(--border-width) solid var(--bench-rule);
 }
 
 .bench-stat dt {
@@ -424,40 +393,24 @@
   margin: 0 0 var(--sp-1);
   font-size: var(--text-lg);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: var(--leading-normal);
   color: var(--color-text);
 }
 
-/* Warning fact (card 02) */
-.bench-warning {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-3);
-  max-width: 30rem;
+/* Single fact (card 02) */
+.bench-fact { display: flex; flex-direction: column; gap: var(--sp-1); }
+.bench-fact p { margin: 0; }
+.bench-fact-body {
+  font-size: var(--text-sm);
+  line-height: var(--leading-medium);
+  color: var(--color-text-muted);
 }
 
-.bench-alert {
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 999px;
-  background: var(--color-text);
-}
-
-.bench-alert .material-symbols-rounded {
-  font-size: 1.25rem;
-  color: var(--color-bg);
-  font-variation-settings: 'FILL' 0, 'wght' 500;
-}
-
-/* Coverage chips (card 03) */
+/* Coverage rows (card 03) */
 .bench-coverage {
   list-style: none;
   margin: 0;
   padding: 0;
-  max-width: 30rem;
 }
 
 .bench-coverage li {
@@ -468,69 +421,116 @@
   padding-block: var(--sp-2);
 }
 
+.bench-coverage li + li { border-top: var(--border-width) solid var(--bench-rule); }
+
 .bench-coverage-name {
   font-size: var(--text-sm);
   line-height: var(--leading-medium);
 }
 
+/* Status chip — a coloured dot carries the meaning */
 .chip {
-  padding: 3px var(--sp-2);
-  border-radius: 999px;
-  color: var(--bench-chip-text);
-  font-size: var(--text-xs);
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
   line-height: 1.5;
+  color: var(--color-text);
 }
-
-.chip--broad   { background: var(--bench-arrival); }
-.chip--limited { background: var(--bench-landlord); }
-.chip--none {
-  background: color-mix(in srgb, var(--color-text-muted) 22%, var(--bench-base));
-  color: var(--color-text-muted);
-}
-
-/* Design-opportunity note — tinted more strongly than its card,
-   bottom-aligned in its own column next to the card narrative */
-.bench-opportunity {
-  grid-area: note;
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-3);
-  padding: var(--sp-4);
-  border-radius: 1rem;
-  background: color-mix(in srgb, var(--hue) calc(var(--bench-tint) + 22%), var(--bench-base));
-}
-
-.bench-bulb {
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  width: 2.75rem;
-  height: 2.75rem;
+.chip::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
   border-radius: 999px;
-  background: var(--hue);
+  background: var(--chip-dot);
+}
+.chip--broad   { --chip-dot: #3fbf6b; }
+.chip--limited { --chip-dot: #e8a23a; }
+.chip--none    { --chip-dot: color-mix(in srgb, var(--color-text) 35%, transparent); color: var(--color-text-muted); }
+
+/* Design-opportunity note — grey panel at the foot of the card; its heading (.b-body-bold) carries the primary colour */
+.bench-opportunity {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  border-radius: 0.875rem;
+  background: var(--bench-note-bg);
 }
 
-.bench-bulb .material-symbols-rounded {
-  font-size: 1.75rem;
-  color: var(--bench-chip-text);
-  font-variation-settings: 'FILL' 0;
+.bench-opportunity .b-body-bold {
+  margin: 0;
+  color: var(--color-primary);
+  line-height: var(--leading-normal);
 }
 
 .bench-opportunity-body {
-  margin-top: var(--sp-1);
+  margin: 0;
   font-size: var(--text-sm);
-  line-height: var(--leading-medium);
-  color: var(--color-text);
+  font-weight: 500;
+  line-height: var(--leading-normal);
 }
 
-.bench-caption {
+/* Deck dots — only used when the cards stack (phones) */
+.bench-dots {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
   margin-top: var(--sp-4);
-  font-size: var(--text-2xs);
-  color: var(--color-text-muted);
 }
 
-/* Comparison table — hidden behind the toggle button above; legacy table styling */
+.bench-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 25%, transparent);
+  cursor: pointer;
+  transition: width 400ms var(--bench-ease), background 300ms ease;
+}
+.bench-dot.is-active { width: 1.5rem; background: var(--color-primary); }
+
+.bench-foot {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-6);
+  margin-top: var(--sp-6);
+  padding-top: var(--sp-3);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.bench-link {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+.bench-link:hover { color: var(--color-primary); }
+.bench-link .material-symbols-rounded {
+  font-size: 1.25rem;
+  font-variation-settings: 'wght' 300;
+  transition: transform 250ms var(--bench-ease);
+}
+.bench-link[aria-expanded="true"] .material-symbols-rounded { transform: rotate(90deg); }
+
+.bench-comparison { margin-top: var(--sp-4); }
+
+/* Comparison table — hidden behind the toggle above; legacy table styling */
 .comparison {
   margin: 0;
 }
@@ -567,80 +567,76 @@
   color: var(--color-text-muted);
 }
 
-/* Stepper controls + counter */
-.bench-controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-4);
-  margin-top: var(--sp-4);
-}
-
-.bench-count {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: var(--tracking-widest);
-  color: var(--color-text-muted);
-}
-
-/* Hidden per-platform comparison table */
-.bench-table-toggle {
-  margin-top: var(--sp-4);
-}
-
-.bench-comparison {
-  margin-top: var(--sp-4);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bench-timeline::after {
-    transition: none;
-  }
-}
-
-@media (max-width: 810px) {
-  .bench {
-    --bench-edge: 2.5rem;
-  }
-
-  .bench-stop-label {
-    font-size: var(--text-xs);
-  }
-
-  .bench-stop-icon {
-    width: 3rem;
-    height: 3rem;
-  }
-
-  .bench-timeline {
-    height: 4.75rem;
-  }
-
-  .bench-timeline::before,
-  .bench-timeline::after {
-    top: calc(3rem / 2);
-  }
-
+/* ── Wide screens (design.md's 1200px step): three cards, hover/focus fades the other two ── */
+@media (min-width: 1200px) {
   .bench-cards {
-    margin-top: var(--sp-5);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--sp-6);
+  }
+
+  /* Align label, title, question, evidence and note rows across the three cards */
+  @supports (grid-template-rows: subgrid) {
+    .bench-cards { grid-template-rows: auto auto auto 1fr auto; row-gap: 0; }
+    .bench-card {
+      display: grid;
+      grid-row: 1 / span 5;
+      grid-template-rows: subgrid;
+      row-gap: var(--sp-4);
+    }
+    .bench-opportunity { margin-top: 0; }
+  }
+
+  .bench.has-active .bench-card:not(.is-active) { opacity: 0.25; }
+}
+
+/* ── Below 1200px the three cards are too narrow side by side, so they stack
+   as a swipeable deck. The rail stays horizontal at the full width. ── */
+@media (max-width: 1199px) {
+  .bench-cards {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 44rem;
+    margin: var(--sp-4) auto 0;
+    padding-bottom: 1.75rem;      /* room for the cards peeking out behind */
+    touch-action: pan-y;
   }
 
   .bench-card {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "head blob"
-      "main main"
-      "note note";
-    grid-template-rows: auto auto 1fr;
-    padding: var(--sp-4);
+    grid-area: 1 / 1;
+    padding: var(--sp-5);
+    transform-origin: 50% 100%;   /* scale up from the bottom edge so the stack peeks out below */
+    transition: transform 600ms var(--bench-ease), opacity 400ms ease;
+    user-select: none;
   }
 
-  .bench-stats,
-  .bench-warning,
-  .bench-coverage {
-    max-width: none;
-  }
+  .bench-card[data-pos="0"] { z-index: 3; cursor: grab; }
+  .bench-card[data-pos="1"] { z-index: 2; transform: translateY(0.875rem) scale(0.94); opacity: 0.6; }
+  .bench-card[data-pos="2"] { z-index: 1; transform: translateY(1.75rem) scale(0.88); opacity: 0.35; }
+  .bench-card.is-dragging { transition: none; cursor: grabbing; }
+
+  /* Only the front card shows its content; the ones behind are plain edges */
+  .bench-card > * { transition: opacity 400ms ease; }
+  .bench-card:not([data-pos="0"]) > * { opacity: 0; }
+
+  .bench-opportunity { margin-top: auto; }
+  .bench-dots { display: flex; }
+}
+
+/* Phones: a tighter rail */
+@media (max-width: 810px) {
+  .bench-timeline { height: 3rem; }
+  .bench-stop-label { font-size: var(--text-2xs); letter-spacing: var(--tracking-wide); padding-inline: var(--sp-2); }
+  .bench-stop.is-current .bench-stop-label { padding-inline: var(--sp-2); }
+  .bench-cards { margin-top: var(--sp-4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bench-timeline::after,
+  .bench-tick,
+  .bench-stop-label,
+  .bench-card,
+  .bench-dot { transition: none; }
 }
 
 .b-pull {
