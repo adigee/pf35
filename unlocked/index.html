@@ -24,9 +24,21 @@
 
   <!-- Magic link: seed the same session cookie the password form sets
        (cs_unlock, path=/, session-only), then send the reader on to the
-       portfolio. Any protected case study then unlocks silently. -->
+       portfolio. Any protected case study then unlocks silently.
+       Analytics: remembers in localStorage that this browser came via the
+       link, so components/head.js tags every visit "unlocked" (vs "cold").
+       Optional ?to=<company> (e.g. /unlocked/?to=housinganywhere) also
+       labels who it was; pf_arrived makes analytics.js log one "Magic
+       link" event for this arrival. Nothing is added to the reader's URL. -->
   <script>
     document.cookie = 'cs_unlock=' + encodeURIComponent('designforgrowth') + '; path=/; SameSite=Lax';
+    try {
+      var to = (new URLSearchParams(location.search).get('to') || '')
+        .toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 40);
+      var prev = JSON.parse(localStorage.getItem('pf_via') || '{}');
+      localStorage.setItem('pf_via', JSON.stringify({ to: to || prev.to || '' }));
+      sessionStorage.setItem('pf_arrived', '1');
+    } catch (e) {}
     window.location.replace('/');
   </script>
 </head>
