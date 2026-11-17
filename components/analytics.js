@@ -92,8 +92,12 @@
         if (via.to) u.identify('link:' + via.to, props);
         else u.identify(props);
       });
-      if (sessionStorage.getItem('pf_arrived')) {
-        sessionStorage.removeItem('pf_arrived');
+      if (sessionStorage.getItem('pf_arrived') && !sessionStorage.getItem('pf_arrived_logged')) {
+        /* Keep pf_arrived (head.js re-seeds it on every spear-hunting page,
+           and its `!getItem('pf_arrived')` guard relies on it staying put);
+           track "already logged" separately so the arrival fires once per
+           session. */
+        sessionStorage.setItem('pf_arrived_logged', '1');
         var arriveEvent = via.via === 'spear-hunting' ? 'Spear-hunting visit' : 'Magic link';
         track(arriveEvent, via.to ? { to: via.to } : undefined);
       }
