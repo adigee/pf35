@@ -51,6 +51,12 @@
 
   var UNLOCK_COOKIE = 'cs_unlock';
 
+  /* Analytics hook — components/analytics.js listens for these
+     (cs:gate-open, cs:unlock, cs:unlock-failed) and sends them to Umami. */
+  function emit(name, detail) {
+    try { document.dispatchEvent(new CustomEvent(name, { detail: detail || {} })); } catch (e) {}
+  }
+
   /* ── RAIL VIDEO OVERVIEW ──
      A single placeholder clip on every case study for now; the poster is the
      same face as the homepage avatar. Per-project clips can override this
@@ -535,7 +541,10 @@
 
     /* Already unlocked this session? Try the cookie password silently. */
     var saved = readCookie(UNLOCK_COOKIE);
-    if (saved) decryptPayload(saved, data).then(reveal).catch(function () {});
+    if (saved) decryptPayload(saved, data).then(function (html) {
+      reveal(html);
+      emit('cs:unlock', { method: 'session' });   // magic link, spear-hunting page or earlier password
+    }).catch(function () {});
   }
 
   /* Locked rail: back link + blurred skeleton bars in place of the TOC. */
@@ -654,6 +663,7 @@
     var error = root.querySelector('.cs-gate-error');
 
     function open() {
+      emit('cs:gate-open');
       root.classList.add('is-open');
       document.documentElement.classList.add('cs-modal-open');
       setTimeout(function () { input.focus(); }, 60);
@@ -679,7 +689,9 @@
       decryptPayload(pw, data).then(function (html) {
         writeSessionCookie(UNLOCK_COOKIE, pw);   // stay unlocked this session
         reveal(html);
+        emit('cs:unlock', { method: 'password' });
       }).catch(function () {
+        emit('cs:unlock-failed');
         form.classList.remove('is-checking');
         error.hidden = false;
         card.classList.remove('is-shaking');
