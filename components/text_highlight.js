@@ -9,6 +9,15 @@
 
      <em data-highlight>why behind the what</em>
 
+   Sweep timing: data-highlight-auto="<delay ms>" sweeps the marker in
+   on load after the delay; data-highlight-auto="wait" holds it until
+   a 'highlight-sweep' event is dispatched on the element.
+
+   Narrow screens: if a marked phrase is wider than its container it
+   can't wrap (nowrap by design), so it is restructured into one
+   highlight per word — words wrap, each gets a small swipe, and the
+   sweep fans out across them staggered.
+
    The marker colour comes from the --highlight-ink token
    (defined per theme in style.css); a lilac fallback is baked
    in so the component still renders on pages that don't set it.
@@ -92,6 +101,83 @@
       '</svg>' +
     '</span>';
 
+  function replay(el) {
+    if (el.classList.contains('redrawing')) return;
+    el.classList.add('removing');
+    var marker = el.querySelector('.highlight__marker');
+    if (!marker) return;
+    marker.addEventListener('transitionend', function onRemoveDone() {
+      el.classList.remove('removing');
+      el.classList.add('redrawing');
+      marker.addEventListener('animationend', function () {
+        el.classList.remove('redrawing');
+      }, { once: true });
+    }, { once: true });
+  }
+
+  /* The span is nowrap by design so the marker reads as one long swipe —
+     which means a long phrase overflows narrow viewports instead of
+     wrapping ("HousingAnywhere builds trust" on a 375px phone). When the
+     marked span is wider than its parent, restructure it into one
+     highlight per word: the words wrap naturally, each gets its own
+     small swipe, and the sweep fans out across them with a slight
+     stagger — like a hand moving along the phrase. Desktop (where the
+     phrase fits) keeps the single swipe. A single word that still
+     overflows on its own is left as-is. */
+  function splitOnOverflow(el) {
+    var parent = el.parentElement;
+    if (!parent || !parent.clientWidth || el.scrollWidth <= parent.clientWidth) return;
+    var textEl = el.querySelector('.highlight__text');
+    var words = ((textEl && textEl.textContent) || '').trim().split(/\s+/);
+    if (words.length < 2) return;
+
+    var auto = el.getAttribute('data-highlight-auto');
+    /* The wrapper stops being a highlight itself — it just coordinates. */
+    el.classList.remove('highlight', 'auto-sweep', 'redrawing', 'removing');
+    el.removeAttribute('data-highlight-ready');
+    el.textContent = '';
+
+    var kids = [];
+    for (var i = 0; i < words.length; i++) {
+      var word = document.createElement('span');
+      word.setAttribute('data-highlight', '');
+      word.setAttribute('data-highlight-noreplay', '1');
+      if (auto !== null) word.setAttribute('data-highlight-auto', 'wait');
+      word.textContent = words[i];
+      el.appendChild(word);
+      if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
+      mark(word);
+      kids.push(word);
+    }
+
+    /* Fan the sweep (or timed sweep) out across the words. */
+    var fan = function () {
+      for (var j = 0; j < kids.length; j++) {
+        (function (node, k) {
+          setTimeout(function () {
+            node.dispatchEvent(new CustomEvent('highlight-sweep'));
+          }, k * 120);
+        })(kids[j], j);
+      }
+    };
+    if (auto === 'wait') {
+      el.addEventListener('highlight-sweep', fan);
+    } else if (auto !== null) {
+      var delay = parseInt(auto, 10);
+      if (isNaN(delay) || delay < 0) delay = 200;
+      setTimeout(fan, delay);
+    }
+
+    /* Clicking the phrase replays every word in sequence. */
+    el.addEventListener('click', function () {
+      for (var j = 0; j < kids.length; j++) {
+        (function (node, k) {
+          setTimeout(function () { replay(node); }, k * 120);
+        })(kids[j], j);
+      }
+    });
+  }
+
   function mark(el) {
     if (el.getAttribute('data-highlight-ready')) return;
 
@@ -103,38 +189,26 @@
     el.querySelector('.highlight__text').textContent = text;
     el.setAttribute('data-highlight-ready', '1');
 
-    el.addEventListener('click', function () {
-      if (el.classList.contains('redrawing')) return;
-
-      el.classList.add('removing');
-
-      var marker = el.querySelector('.highlight__marker');
-      if (!marker) return;
-
-      marker.addEventListener('transitionend', function onRemoveDone() {
-        el.classList.remove('removing');
-        el.classList.add('redrawing');
-
-        marker.addEventListener('animationend', function () {
-          el.classList.remove('redrawing');
-        }, { once: true });
-      }, { once: true });
-    });
+    if (!el.getAttribute('data-highlight-noreplay')) {
+      el.addEventListener('click', function () { replay(el); });
+    }
 
     /* ── On-load sweep ──
-       Opt in with data-highlight-auto="<delay ms>" (default 200). The marker
-       is held hidden while the phrase loads in its normal colour; after the
-       delay the marker sweeps in (same motion as a click replay) and the
-       text animates into its on-marker colour in sync — ending identical to
-       every other highlight. Skipped under prefers-reduced-motion. */
+       Opt in with data-highlight-auto="<delay ms>" (default 200), or with
+       data-highlight-auto="wait" to hold the marker until something dispatches
+       a 'highlight-sweep' event on the element — e.g. the HousingAnywhere
+       typewriter, which types the headline first and fires the event when the
+       last character lands. The marker is held hidden while the phrase loads
+       in its normal colour; after the delay/event the marker sweeps in (same
+       motion as a click replay) and the text animates into its on-marker
+       colour in sync — ending identical to every other highlight. Skipped
+       under prefers-reduced-motion. */
     var auto = el.getAttribute('data-highlight-auto');
     if (auto !== null &&
         window.matchMedia &&
         !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      var delay = parseInt(auto, 10);
-      if (isNaN(delay) || delay < 0) delay = 200;
       el.classList.add('auto-sweep');
-      setTimeout(function () {
+      var sweep = function () {
         if (!el.classList.contains('auto-sweep')) return;
         el.classList.add('redrawing');
         var marker = el.querySelector('.highlight__marker');
@@ -142,8 +216,19 @@
           el.classList.remove('redrawing');
           el.classList.remove('auto-sweep');
         }, { once: true });
-      }, delay);
+      };
+      if (auto === 'wait') {
+        el.addEventListener('highlight-sweep', sweep, { once: true });
+      } else {
+        var delay = parseInt(auto, 10);
+        if (isNaN(delay) || delay < 0) delay = 200;
+        setTimeout(sweep, delay);
+      }
     }
+
+    /* Narrow screens: restructure into per-word highlights if this
+       phrase can't fit on one line. */
+    splitOnOverflow(el);
   }
 
   function mount() {
