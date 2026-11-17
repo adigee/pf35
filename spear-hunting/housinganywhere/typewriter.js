@@ -86,7 +86,6 @@
   var MAX_DELAY = 58;         /* ms per character at curve output 1 (slowest) */
   var PAUSE_COMMA = 340;      /* rest after a phrase ending in ',' */
   var PAUSE_STOP = 560;       /* longer rest after a phrase ending in '.' */
-  var PAUSE_BEFORE_SWEEP = 0; /* no rest — the second sentence types in one fluid arc */
   var PAUSE_TYPED_TO_SWEEP = 560; /* pause after the phrase is read plainly, before the marker sweeps */
 
   /* CSS cubic-bezier evaluator: returns a function mapping x∈[0,1]
@@ -142,7 +141,7 @@
 
   function begin(attempt) {
     var title = document.querySelector('.sh-title');
-    if (!title) return;
+    if (!title) { revealPage(); return; }
     var span = title.querySelector('[data-highlight]');
     /* On narrow screens the highlighter may have restructured the phrase
        into one highlight per word (splitOnOverflow) — type across every
@@ -182,8 +181,6 @@
       texts.push(targets[i].textContent);
       targets[i].textContent = '';
     }
-    var phraseText = texts.join(' ');
-
     /* One caret, travelling ahead of the typed text. */
     var caret = document.createElement('span');
     caret.className = 'type-caret';
