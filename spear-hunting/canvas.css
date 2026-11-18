@@ -508,6 +508,35 @@ body.cv-page [data-component="nav"] {
   color: var(--color-on-primary);
 }
 
+/* Guided tour mode: reveal the stepper and step counter. */
+.cv-btn--step,
+.cv-tour-count {
+  display: none;
+}
+
+.cv-controls.is-touring .cv-btn--step {
+  display: inline-flex;
+}
+
+.cv-controls.is-touring .cv-tour-count {
+  display: block;
+}
+
+.cv-tour-count {
+  min-width: 5ch;
+  text-align: center;
+  font-size: var(--text-2xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.cv-btn:disabled {
+  opacity: 0.35;
+  color: var(--color-text);
+  background: transparent;
+  cursor: default;
+}
+
 /* ── MINIMAP ────────────────────────────────────────────── */
 .cv-minimap {
   position: fixed;

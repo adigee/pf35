@@ -166,7 +166,7 @@
   </div>
 
   <!-- Controls: zoom, fit, guided tour -->
-  <div class="cv-controls" role="group" aria-label="Canvas controls">
+  <div class="cv-controls" id="cv-controls" role="group" aria-label="Canvas controls">
     <button class="cv-btn" id="cv-zoom-out" type="button" aria-label="Zoom out">
       <span class="material-symbols-rounded" aria-hidden="true">remove</span>
     </button>
@@ -178,10 +178,18 @@
     <button class="cv-btn" id="cv-fit" type="button" aria-label="Fit everything in view">
       <span class="material-symbols-rounded" aria-hidden="true">fit_screen</span>
     </button>
-    <button class="cv-btn cv-btn--tour" id="cv-tour" type="button" aria-label="Play the guided tour">
-      <span class="material-symbols-rounded" aria-hidden="true">play_arrow</span>
-      <span class="cv-btn-tour-label">Tour</span>
+    <!-- Guided tour controls: hidden until Tour is playing -->
+    <button class="cv-btn cv-btn--step" id="cv-prev" type="button" aria-label="Previous step">
+      <span class="material-symbols-rounded" aria-hidden="true">chevron_left</span>
     </button>
+    <span class="cv-tour-count" id="cv-tour-count" aria-live="polite">1 / 9</span>
+    <button class="cv-btn cv-btn--step" id="cv-next" type="button" aria-label="Next step">
+      <span class="material-symbols-rounded" aria-hidden="true">chevron_right</span>
+    </button>
+    <button class="cv-btn cv-btn--tour" id="cv-tour" type="button" aria-label="Play the guided tour">
+          <span class="material-symbols-rounded" aria-hidden="true">play_arrow</span>
+          <span class="cv-btn-tour-label">Tour</span>
+        </button>
   </div>
 
   <!-- Minimap -->

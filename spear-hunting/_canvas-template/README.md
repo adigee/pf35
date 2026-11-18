@@ -31,8 +31,9 @@ Copy this folder to `spear-hunting/<slug>/`, or adapt
 - Scroll pans, pinch or ctrl/cmd + scroll zooms
 - Zoom buttons, fit button, keyboard `+ - = 0` and arrow keys
 - Minimap: click or drag to jump the camera
-- Tour: flies the camera through the `data-step` cards, auto
-  advancing, stop by clicking again or pressing Escape
+- Tour: click Tour to enter, then step with the prev and next
+  buttons or the left and right arrow keys; Exit or Escape
+  returns to the fit view
 
 Cards keep normal links and buttons working; content stays in the
 DOM for screen readers and crawlers.

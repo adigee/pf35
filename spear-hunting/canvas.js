@@ -103,10 +103,6 @@
     applyTransform(animate);
   }
 
-  function stopTourIfPlaying(reason) {
-    if (tour.playing) stopTour();
-  }
-
   /* ── Wires ───────────────────────────────────────────────── */
 
   function drawWires() {
@@ -215,7 +211,6 @@
       minimapDragging = true;
       minimap.setPointerCapture(event.pointerId);
       minimapJump(event.clientX, event.clientY);
-      stopTourIfPlaying();
     });
     minimap.addEventListener('pointermove', function (event) {
       if (minimapDragging) minimapJump(event.clientX, event.clientY);
@@ -264,7 +259,6 @@
     panState = { x: event.clientX, y: event.clientY, tx: tx, ty: ty };
     canvas.classList.add('is-panning');
     canvas.setPointerCapture(event.pointerId);
-    stopTourIfPlaying();
   });
 
   canvas.addEventListener('pointermove', function (event) {
@@ -310,7 +304,6 @@
 
   canvas.addEventListener('wheel', function (event) {
     event.preventDefault();
-    stopTourIfPlaying();
     if (event.ctrlKey || event.metaKey) {
       var rect = canvas.getBoundingClientRect();
       zoomAt(event.clientX - rect.left, event.clientY - rect.top, Math.exp(-event.deltaY * 0.0022), false);
@@ -343,28 +336,36 @@
   canvas.addEventListener('keydown', function (event) {
     var step = 80 / scale;
     var handled = true;
-    if (event.key === 'ArrowLeft') tx += step;
+    if (tour.playing && event.key === 'ArrowRight') nextStep();
+    else if (tour.playing && event.key === 'ArrowLeft') prevStep();
+    else if (event.key === 'ArrowLeft') tx += step;
     else if (event.key === 'ArrowRight') tx -= step;
     else if (event.key === 'ArrowUp') ty += step;
     else if (event.key === 'ArrowDown') ty -= step;
     else if (event.key === '+' || event.key === '=') zoomAt(canvas.clientWidth / 2, canvas.clientHeight / 2, 1.2, true);
     else if (event.key === '-') zoomAt(canvas.clientWidth / 2, canvas.clientHeight / 2, 1 / 1.2, true);
     else if (event.key === '0') fitView(true);
-    else if (event.key === 'Escape') stopTourIfPlaying();
+    else if (event.key === 'Escape') { if (tour.playing) stopTour(); else handled = false; }
     else handled = false;
     if (handled) {
       event.preventDefault();
-      if (event.key.startsWith('Arrow')) {
-        stopTourIfPlaying();
+      if (event.key.startsWith('Arrow') && !tour.playing) {
         applyTransform(false);
       }
     }
   });
 
-  /* ── Guided tour ─────────────────────────────────────────── */
+  /* ── Guided tour ───────────────────────────────────────────
+     Manual mode: click Tour to enter, then step with the
+     prev and next buttons or the left and right arrow keys.
+     Click again (Exit) or press Escape to leave. */
 
-  var tour = { playing: false, index: 0, timer: null };
+  var tour = { playing: false, index: 0 };
   var tourButton = document.getElementById('cv-tour');
+  var tourPrev = document.getElementById('cv-prev');
+  var tourNext = document.getElementById('cv-next');
+  var tourCount = document.getElementById('cv-tour-count');
+  var tourControls = document.getElementById('cv-controls');
   var tourSteps = [];
 
   function collectSteps() {
@@ -373,48 +374,51 @@
       .sort(function (a, b) { return Number(a.dataset.step) - Number(b.dataset.step); });
   }
 
-  function tourIcon(name) {
+  function updateTourUi() {
     if (!tourButton) return;
     var icon = tourButton.querySelector('.material-symbols-rounded');
-    if (icon) icon.textContent = name;
-    tourButton.classList.toggle('is-playing', name === 'pause');
-    tourButton.setAttribute('aria-label', name === 'pause' ? 'Pause the guided tour' : 'Play the guided tour');
+    var label = tourButton.querySelector('.cv-btn-tour-label');
+    if (icon) icon.textContent = tour.playing ? 'close' : 'play_arrow';
+    if (label) label.textContent = tour.playing ? 'Exit' : 'Tour';
+    tourButton.classList.toggle('is-playing', tour.playing);
+    tourButton.setAttribute('aria-label', tour.playing ? 'Exit the guided tour' : 'Play the guided tour');
+    if (tourControls) tourControls.classList.toggle('is-touring', tour.playing);
+    if (tourCount) tourCount.textContent = (tour.index + 1) + ' / ' + tourSteps.length;
+    if (tourPrev) tourPrev.disabled = !tour.playing || tour.index <= 0;
+    if (tourNext) tourNext.disabled = !tour.playing || tour.index >= tourSteps.length - 1;
   }
 
   function tourShow(index) {
-    tour.index = index;
-    var el = tourSteps[index];
+    tour.index = clamp(index, 0, Math.max(0, tourSteps.length - 1));
+    var el = tourSteps[tour.index];
     if (!el) { stopTour(); return; }
     world.querySelectorAll('.is-tour-target').forEach(function (n) { n.classList.remove('is-tour-target'); });
     el.classList.add('is-tour-target');
     var r = rectToWorld(el);
     var zoom = clamp(1.0 * (900 / Math.max(r.w, 640)), 0.5, 1.1);
     flyToWorldPoint(r.cx, r.cy, zoom, true);
+    updateTourUi();
   }
 
   function startTour() {
     if (!tourSteps.length) return;
     tour.playing = true;
-    tourIcon('pause');
     tourShow(0);
-    scheduleAdvance();
-  }
-
-  function scheduleAdvance() {
-    clearTimeout(tour.timer);
-    tour.timer = setTimeout(function () {
-      if (!tour.playing) return;
-      if (tour.index + 1 >= tourSteps.length) { stopTour(); fitView(true); return; }
-      tourShow(tour.index + 1);
-      scheduleAdvance();
-    }, reduceMotion ? 1400 : 2600);
   }
 
   function stopTour() {
     tour.playing = false;
-    clearTimeout(tour.timer);
-    tourIcon('play_arrow');
     world.querySelectorAll('.is-tour-target').forEach(function (n) { n.classList.remove('is-tour-target'); });
+    updateTourUi();
+    fitView(true);
+  }
+
+  function nextStep() {
+    if (tour.playing) tourShow(tour.index + 1);
+  }
+
+  function prevStep() {
+    if (tour.playing) tourShow(tour.index - 1);
   }
 
   if (tourButton) {
@@ -423,6 +427,8 @@
       else startTour();
     });
   }
+  if (tourPrev) tourPrev.addEventListener('click', prevStep);
+  if (tourNext) tourNext.addEventListener('click', nextStep);
 
   /* ── Boot ────────────────────────────────────────────────── */
 
