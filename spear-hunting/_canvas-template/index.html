@@ -158,6 +158,51 @@
           </div>
           <p class="cv-caption">Click to copy email address 👆</p>
         </article>
+        <!-- FLOATING TEXT: chrome-less statement on the board -->
+        <article class="cv-card cv-card--text" id="text-statement" data-step="10" style="--x: 620px; --y: 250px; --w: 340px;">
+          <p class="cv-float-text">TODO(adi): one line that carries the whole argument, floating free.</p>
+        </article>
+
+        <!-- ANNOTATED PHOTO: pins on the image, callouts beside
+             them. Pins and callouts share data-pin numbers and
+             --px / --py (percent of the photo box). Callout
+             data-side: right, left or below. Swap the
+             .cv-media-ph block for a real img when the asset
+             lands. -->
+        <figure class="cv-card cv-card--annotated" id="media-annotated" data-step="11" style="--x: 1470px; --y: 960px; --w: 480px; --ar: 16 / 10;">
+          <div class="cv-annotated">
+            <div class="cv-annotated-media">
+              <div class="cv-media-ph">
+                <span class="material-symbols-rounded" aria-hidden="true">image</span>
+                <p class="cv-media-ph-text">TODO(adi): drop an annotated screenshot</p>
+              </div>
+              <!-- <img class="cv-media" src="/spear-hunting/__SLUG__/assets/TODO-image-file" alt="TODO(adi): describe this image" loading="lazy" /> -->
+              <span class="cv-pin" data-pin="1" style="--px: 30%; --py: 36%;">1</span>
+              <span class="cv-pin" data-pin="2" style="--px: 72%; --py: 72%;">2</span>
+            </div>
+            <p class="cv-callout" data-pin="1" data-side="right" style="--px: 30%; --py: 36%;">
+              <span class="cv-callout-num" aria-hidden="true">1</span>
+              TODO(adi): what this spot shows.
+            </p>
+            <p class="cv-callout" data-pin="2" data-side="left" style="--px: 72%; --py: 72%;">
+              <span class="cv-callout-num" aria-hidden="true">2</span>
+              TODO(adi): what this spot shows.
+            </p>
+          </div>
+          <figcaption class="cv-caption">TODO(adi): one line of caption</figcaption>
+        </figure>
+
+        <!-- PHOTO: bare photo card, set --ar for the ratio -->
+        <figure class="cv-card cv-card--photo" id="media-photo" data-step="12" style="--x: 300px; --y: 1260px; --w: 420px;">
+          <div class="cv-media-frame">
+            <div class="cv-media-ph">
+              <span class="material-symbols-rounded" aria-hidden="true">image</span>
+              <p class="cv-media-ph-text">TODO(adi): drop a photo</p>
+            </div>
+            <!-- <img class="cv-media" src="/spear-hunting/__SLUG__/assets/TODO-image-file" alt="TODO(adi): describe this image" loading="lazy" /> -->
+          </div>
+          <figcaption class="cv-caption">TODO(adi): one line of caption</figcaption>
+        </figure>
       </div>
     </div>
   </main>

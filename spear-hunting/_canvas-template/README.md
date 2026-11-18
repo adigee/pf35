@@ -23,8 +23,38 @@ Copy this folder to `spear-hunting/<slug>/`, or adapt
    order the Tour button follows.
 4. Point the wires SVG's `data-connect="fromId > toId, ..."` at the
    card ids you want connected.
-5. Swap the placeholder `.cv-media-ph` block for a real
-   `<img class="cv-media">` from `assets/`.
+5. Swap the placeholder `.cv-media-ph` blocks for real
+   `<img class="cv-media">` tags from `assets/`.
+
+## Card types
+
+- `cv-card--title` - the pitch, chrome-less headline
+- `cv-card--note` - normal prose block
+- `cv-card--text` - chrome-less floating statement, bigger type
+- `cv-card--fact` - small index card, label plus one value
+- `cv-card--quote` - pull quote with a source line
+- `cv-card--image` - framed visual with a caption, set `--ar`
+  on the frame for the aspect ratio
+- `cv-card--photo` - bare photo, minimal chrome
+- `cv-card--annotated` - photo with numbered pins and floating
+  callouts (see below)
+- `cv-sticky--lilac` / `cv-sticky--ink` - stickies, small tilt
+  via `--r`
+- `cv-chip` - floating section label
+- `cv-card--contact` - email and links, last stop
+
+## Annotated photos
+
+Inside `cv-card--annotated`, pins and callouts are paired by
+`data-pin="1..n"` and positioned with the same `--px` / `--py`
+percentages relative to the photo box:
+
+    <span class="cv-pin" data-pin="1" style="--px: 30%; --py: 36%;">1</span>
+    <p class="cv-callout" data-pin="1" data-side="right" style="--px: 30%; --py: 36%;">...</p>
+
+Callout `data-side` is `right`, `left` or `below`. Hovering a pin
+highlights its callout and the other way round. On small screens
+callouts drop out of the photo and stack underneath it.
 6. Set `data-status="ready"` and fill the meta tags when done.
 
 ## Interactions the engine gives you

@@ -349,6 +349,48 @@ body[data-cv-skin="acid"] .cv-card .btn:hover {
   border-color: var(--cv-ink);
 }
 
+/* Pins and callouts: hard squares, mono numbers, hard shadows. */
+body[data-cv-skin="acid"] .cv-card--photo .cv-media-frame,
+body[data-cv-skin="acid"] .cv-card--annotated .cv-annotated-media {
+  border-radius: 0;
+}
+
+body[data-cv-skin="acid"] .cv-photo,
+body[data-cv-skin="acid"] .cv-media {
+  border-radius: 0;
+}
+
+body[data-cv-skin="acid"] .cv-pin {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border: 2px solid var(--cv-ink);
+  border-radius: 0;
+  box-shadow: 3px 3px 0 var(--color-accent);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+body[data-cv-skin="acid"] .cv-pin:hover {
+  translate: -1px -2px;
+}
+
+body[data-cv-skin="acid"] .cv-callout {
+  border: 2px solid var(--cv-card-text-muted);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 var(--color-primary);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: var(--text-2xs);
+  letter-spacing: 0.04em;
+}
+
+body[data-cv-skin="acid"] .cv-callout::before {
+  background: var(--cv-card-text-subtle);
+}
+
+body[data-cv-skin="acid"] .cv-callout-num {
+  border-radius: 0;
+  border: 1px solid currentColor;
+}
+
 /* ═══════════════════════════════════════════════════════════
    SKIN SWITCHER (template demo only)
    ═══════════════════════════════════════════════════════════ */
