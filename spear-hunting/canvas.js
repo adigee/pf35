@@ -38,7 +38,7 @@
       ? 'transform 700ms cubic-bezier(0.22, 1, 0.36, 1)'
       : 'none';
     world.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
-    canvas.style.setProperty('--cv-dot-size', (28 * scale) + 'px');
+    canvas.style.setProperty('--cv-dot-size', (34 * scale) + 'px');
     canvas.style.setProperty('--cv-dot-x', tx + 'px');
     canvas.style.setProperty('--cv-dot-y', ty + 'px');
     updateZoomLabel();
