@@ -331,11 +331,25 @@
     fitView(true);
   });
 
-  /* ── Keyboard ────────────────────────────────────────────── */
+  /* ── Keyboard ──────────────────────────────────────────────
+     Global, so keys work without focusing the canvas first.
+     Control buttons hand focus to the canvas on handled keys,
+     so arrow keys never get stuck cycling through the buttons
+     themselves. */
 
-  canvas.addEventListener('keydown', function (event) {
-    var step = 80 / scale;
+  function isEditableTarget(target) {
+    if (!target || !target.tagName) return false;
+    var tag = target.tagName;
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable;
+  }
+
+  window.addEventListener('keydown', function (event) {
+    if (isEditableTarget(event.target)) return;
+    var active = document.activeElement;
+    var inChrome = active && active !== document.body && active.closest &&
+      active.closest('.cv-controls, .cv-minimap, .cv-topbar');
     var handled = true;
+    var step = 80 / scale;
     if (tour.playing && event.key === 'ArrowRight') nextStep();
     else if (tour.playing && event.key === 'ArrowLeft') prevStep();
     else if (event.key === 'ArrowLeft') tx += step;
@@ -349,6 +363,7 @@
     else handled = false;
     if (handled) {
       event.preventDefault();
+      if (inChrome) canvas.focus({ preventScroll: true });
       if (event.key.startsWith('Arrow') && !tour.playing) {
         applyTransform(false);
       }
@@ -425,10 +440,11 @@
     tourButton.addEventListener('click', function () {
       if (tour.playing) stopTour();
       else startTour();
+      canvas.focus({ preventScroll: true });
     });
   }
-  if (tourPrev) tourPrev.addEventListener('click', prevStep);
-  if (tourNext) tourNext.addEventListener('click', nextStep);
+  if (tourPrev) tourPrev.addEventListener('click', function () { prevStep(); canvas.focus({ preventScroll: true }); });
+  if (tourNext) tourNext.addEventListener('click', function () { nextStep(); canvas.focus({ preventScroll: true }); });
 
   /* ── Skin switcher (template demo only) ──────────────────── */
 
