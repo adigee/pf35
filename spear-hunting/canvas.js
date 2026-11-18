@@ -432,7 +432,7 @@
 
   /* ── Skin switcher (template demo only) ──────────────────── */
 
-  var SKINS = ['signal', 'marker', 'acid'];
+  var SKINS = ['signal', 'acid'];
   var skinButtons = Array.prototype.slice.call(
     document.querySelectorAll('[data-cv-skin-option]')
   );

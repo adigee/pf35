@@ -7,8 +7,8 @@ scattered cards and pans and zooms instead of scrolling.
 
 - `index.html` - the template page, full of TODO(adi) slots
 - `/spear-hunting/canvas.css` - shared layout and default skin
-- `/spear-hunting/canvas-skins.css` - alternate looks: marker (middle
-  ground) and acid (outlandish), plus the demo switcher styles
+- `/spear-hunting/canvas-skins.css` - the acid skin (dark and
+  light) plus the demo switcher styles
 - `/spear-hunting/canvas.js` - shared pan, zoom, wires, minimap, tour engine
 
 ## Create a new canvas page
@@ -46,16 +46,15 @@ A page picks a look with `data-cv-skin` on the body:
 
 - `signal` (default) - the site's design language, midnight,
   ivory, lavender, soft rounded cards
-- `marker` - middle ground: same palette, but glass cards with
-  accent top borders, tape on stickies, stitched wires, a
-  squiggle under the headline
-- `acid` - fully outlandish: neo brutalist rave board, black
-  graph paper, bone cards with 2px ink borders and hard neon
-  shadows, tilted twice as hard, marching ant wires, mono
-  uppercase labels
+- `acid` - neo brutalist rave board, in both of the site's
+  themes: acid dark is bone cards with 2px ink borders and
+  hard neon shadows on black graph paper; acid light is the
+  full inversion, black cards with hard shadows on bone
+  paper, pink taking over as the primary
 
-To use a skin, set `data-cv-skin="marker"` or `acid` on the body
-and link `/spear-hunting/canvas-skins.css` in the head. The
-template page also has a Signal / Marker / Acid switcher in the
-top pill (demo only, saves the choice to localStorage; remove it
+Both skins react to the site theme toggle like the rest of
+the portfolio. To use a skin, set `data-cv-skin="acid"` on the
+body and link `/spear-hunting/canvas-skins.css` in the head.
+The template page also has a Signal / Acid switcher in the top
+pill (demo only, saves the choice to localStorage; remove it
 on real project pages).
