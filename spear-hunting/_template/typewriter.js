@@ -225,9 +225,8 @@
     }
 
     /* Phrase order → curve: the opening beats run on ease; the bridge
-       into the highlight runs on the sweep curve, so the rhythm hands
-       off to the marker sweep without changing curve. */
-    var curves = [CURVE_EASE, CURVE_EASE, CURVE_EASE, CURVE_SWEEP];
+       (the final lead phrase) runs on the sweep curve, so the rhythm
+       hands off to the marker sweep without changing curve. */
 
     setTimeout(function () {
       (function nextPhrase(i) {
@@ -260,7 +259,7 @@
           })(0);
           return;
         }
-        typePhrase(leadNode, chunks[i], curves[i] || CURVE_EASE, function () {
+        typePhrase(leadNode, chunks[i], i === chunks.length - 1 ? CURVE_SWEEP : CURVE_EASE, function () {
           /* The final lead phrase skips its comma-pause -- the second
              sentence types on as one fluid arc, no rest before the
              highlight phrase. */
