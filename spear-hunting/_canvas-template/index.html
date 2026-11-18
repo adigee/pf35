@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" data-status="draft" data-published="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TODO(adi): what goes here | Aditya Gujaran</title>
+  <meta name="description" content="TODO(adi): what goes here" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://www.adityagujaran.com/spear-hunting/__SLUG__/" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍊</text></svg>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.adityagujaran.com/spear-hunting/__SLUG__/" />
+  <meta property="og:title" content="TODO(adi): what goes here | Aditya Gujaran" />
+  <meta property="og:description" content="TODO(adi): what goes here" />
+  <meta property="og:image" content="https://www.adityagujaran.com/project-content/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="TODO(adi): what goes here" />
+  <meta name="twitter:description" content="TODO(adi): what goes here" />
+  <meta name="twitter:image" content="https://www.adityagujaran.com/project-content/og-image.png" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/spear-hunting/canvas.css" />
+  <script src="/components/head.js"></script>
+  <script src="/components/theme.js"></script>
+</head>
+<body id="top" class="cv-page">
+  <div data-component="nav"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       CANVAS PAGE
+       No scroll. One world of scattered cards the visitor
+       pans and zooms through, Miro style.
+
+       HOW TO PLACE A CARD
+       Every card is positioned with two custom properties:
+         style="--x: 240px; --y: 60px;"   world coordinates, top left
+       Optional extras:
+         --w: card width (default: fixed per card type)
+         --r: rotation in deg, small tilts for stickies only
+         data-step="3"   order for the guided tour (1, 2, 3, ...)
+         id              used by wires: data-connect="idFrom > idTo"
+       Copy any block below into a project page and fill the
+       TODO(adi) slots. Delete blocks you do not need.
+       ═══════════════════════════════════════════════════════════ -->
+
+  <main class="cv-main">
+    <div class="cv-canvas" id="cv-canvas" tabindex="0" aria-label="Interactive canvas. Drag to pan, scroll to move, pinch or control scroll to zoom.">
+      <div class="cv-world" id="cv-world">
+        <!-- Wires: dashed connectors between cards. Comma list of
+             fromId > toId, ids of cards in this file. -->
+        <svg class="cv-wires" id="cv-wires" data-connect="card-title > sticky-why, card-title > note-context, note-context > fact-why, quote-principle > media-prototype, note-plan > card-contact" aria-hidden="true"></svg>
+
+        <!-- SECTION CHIP: small label floating in space -->
+        <div class="cv-chip cv-chip--hello" id="chip-start" aria-hidden="true">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">01 · Hello</span>
+        </div>
+
+        <!-- TITLE CARD: the pitch, top of the reading path -->
+        <article class="cv-card cv-card--title" id="card-title" data-step="1" style="--x: 300px; --y: 40px; --w: 560px;">
+          <p class="cv-eyebrow">Spear hunting · <span class="cv-eyebrow-accent">TODO(adi): role title</span></p>
+          <h1 class="cv-headline">TODO(adi): the one line that makes them keep reading.</h1>
+          <a class="cv-role-link" href="TODO-add-job-posting-url" target="_blank" rel="noopener">
+            TODO(adi): the job posting
+            <span class="material-symbols-rounded" aria-hidden="true">arrow_outward</span>
+          </a>
+        </article>
+
+        <!-- STICKY: accent note, one breath of copy -->
+        <aside class="cv-sticky cv-sticky--lilac" id="sticky-why" data-step="2" style="--x: 940px; --y: 130px; --w: 280px; --r: 3deg;">
+          <p class="cv-sticky-label">Why this team</p>
+          <p class="cv-sticky-text">TODO(adi): why this company, in one breath.</p>
+        </aside>
+
+        <!-- NOTE CARD: normal prose block -->
+        <article class="cv-card cv-card--note" id="note-context" data-step="3" style="--x: 990px; --y: 350px; --w: 440px;">
+          <p class="cv-label">Context</p>
+          <p class="cv-body">TODO(adi): what goes here. Two short paragraphs max.</p>
+          <p class="cv-body">TODO(adi): what goes here.</p>
+        </article>
+
+        <!-- FACT CARDS: the details strip, scattered like index cards -->
+        <article class="cv-card cv-card--fact" id="fact-why" data-step="4" style="--x: 300px; --y: 480px; --w: 220px;">
+          <p class="cv-label">Why</p>
+          <p class="cv-fact-value">TODO(adi): what goes here</p>
+        </article>
+        <article class="cv-card cv-card--fact" id="fact-process" data-step="4" style="--x: 545px; --y: 560px; --w: 220px; --r: -2deg;">
+          <p class="cv-label">Process</p>
+          <p class="cv-fact-value">TODO(adi): what goes here</p>
+        </article>
+        <article class="cv-card cv-card--fact" id="fact-location" data-step="4" style="--x: 300px; --y: 680px; --w: 220px; --r: 2deg;">
+          <p class="cv-label">Location</p>
+          <p class="cv-fact-value">TODO(adi): what goes here</p>
+        </article>
+        <article class="cv-card cv-card--fact" id="fact-availability" data-step="4" style="--x: 545px; --y: 760px; --w: 220px;">
+          <p class="cv-label">Availability</p>
+          <p class="cv-fact-value">TODO(adi): what goes here</p>
+        </article>
+
+        <!-- QUOTE CARD: pull quote -->
+        <aside class="cv-card cv-card--quote" id="quote-principle" data-step="5" style="--x: 1320px; --y: 120px; --w: 400px;">
+          <span class="cv-quote-mark" aria-hidden="true">“</span>
+          <p class="cv-quote-text">TODO(adi): a line from research or a principle I design by.</p>
+          <p class="cv-quote-source">TODO(adi): who said it and when</p>
+        </aside>
+
+        <!-- IMAGE FRAME: drop real files into assets/ and swap the src.
+             The .cv-media-ph block is a placeholder: delete it when the
+             img goes in. -->
+        <figure class="cv-card cv-card--image" id="media-prototype" data-step="6" style="--x: 1450px; --y: 520px; --w: 500px;">
+          <div class="cv-media-frame">
+            <div class="cv-media-ph">
+              <span class="material-symbols-rounded" aria-hidden="true">image</span>
+              <p class="cv-media-ph-text">TODO(adi): drop a visual here</p>
+            </div>
+            <!-- <img class="cv-media" src="/spear-hunting/__SLUG__/assets/TODO-image-file" alt="TODO(adi): describe this image" loading="lazy" /> -->
+          </div>
+          <figcaption class="cv-caption">TODO(adi): one line of caption</figcaption>
+        </figure>
+
+        <!-- STICKY: a number that lands -->
+        <aside class="cv-sticky cv-sticky--ink" id="sticky-metric" data-step="7" style="--x: 1990px; --y: 640px; --w: 260px; --r: -3deg;">
+          <p class="cv-sticky-label">TODO(adi): label</p>
+          <p class="cv-sticky-big">00%</p>
+          <p class="cv-sticky-text">TODO(adi): the metric behind the number.</p>
+        </aside>
+
+        <!-- NOTE CARD: the plan -->
+        <article class="cv-card cv-card--note" id="note-plan" data-step="8" style="--x: 300px; --y: 940px; --w: 500px;">
+          <p class="cv-label">How I would attack it</p>
+          <ul class="cv-list">
+            <li>TODO(adi): first move, in week one.</li>
+            <li>TODO(adi): second move, in week two.</li>
+            <li>TODO(adi): third move, in week three.</li>
+          </ul>
+        </article>
+
+        <!-- SECTION CHIP -->
+        <div class="cv-chip" id="chip-next" aria-hidden="true" style="--x: 990px; --y: 980px;">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">02 · Next</span>
+        </div>
+
+        <!-- CONTACT CARD: last stop of the tour -->
+        <article class="cv-card cv-card--contact" id="card-contact" data-step="9" style="--x: 990px; --y: 1080px; --w: 460px;">
+          <p class="cv-label">TODO(adi): closing line</p>
+          <div class="cv-contact-links">
+            <button class="btn btn--md" type="button" data-copy="aditya.gujaran@gmail.com" data-tooltip="Click to copy">
+              <span class="material-symbols-rounded" aria-hidden="true">content_copy</span>
+              <span class="btn-label">aditya.gujaran@gmail.com</span>
+            </button>
+            <a class="btn btn--md" href="https://www.linkedin.com/in/agujaran/" target="_blank" rel="noopener">
+              <span class="material-symbols-rounded" aria-hidden="true">open_in_new</span>
+              <span>LinkedIn</span>
+            </a>
+          </div>
+          <p class="cv-caption">Click to copy email address 👆</p>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Floating header pill -->
+  <div class="cv-topbar" aria-hidden="false">
+    <p class="cv-topbar-title">TODO(adi): company · role</p>
+    <p class="cv-topbar-hint">Drag to pan · Scroll to move · Pinch to zoom</p>
+  </div>
+
+  <!-- Controls: zoom, fit, guided tour -->
+  <div class="cv-controls" role="group" aria-label="Canvas controls">
+    <button class="cv-btn" id="cv-zoom-out" type="button" aria-label="Zoom out">
+      <span class="material-symbols-rounded" aria-hidden="true">remove</span>
+    </button>
+    <span class="cv-zoom-label" id="cv-zoom-label" aria-live="polite">100%</span>
+    <button class="cv-btn" id="cv-zoom-in" type="button" aria-label="Zoom in">
+      <span class="material-symbols-rounded" aria-hidden="true">add</span>
+    </button>
+    <span class="cv-controls-sep" aria-hidden="true"></span>
+    <button class="cv-btn" id="cv-fit" type="button" aria-label="Fit everything in view">
+      <span class="material-symbols-rounded" aria-hidden="true">fit_screen</span>
+    </button>
+    <button class="cv-btn cv-btn--tour" id="cv-tour" type="button" aria-label="Play the guided tour">
+      <span class="material-symbols-rounded" aria-hidden="true">play_arrow</span>
+      <span class="cv-btn-tour-label">Tour</span>
+    </button>
+  </div>
+
+  <!-- Minimap -->
+  <div class="cv-minimap" id="cv-minimap" role="group" aria-label="Canvas map, click to jump">
+    <div class="cv-minimap-cards" id="cv-minimap-cards"></div>
+    <div class="cv-minimap-viewport" id="cv-minimap-viewport" aria-hidden="true"></div>
+  </div>
+
+  <noscript>
+    <p class="cv-noscript">This page is an interactive canvas. Enable JavaScript to pan and zoom the content.</p>
+  </noscript>
+
+  <script src="/components/nav.js"></script>
+  <script src="/components/image-modal.js"></script>
+  <script src="/main.js"></script>
+  <script src="/spear-hunting/canvas.js"></script>
+</body>
+</html>
