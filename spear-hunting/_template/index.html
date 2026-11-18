@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="/spear-hunting/application.css" />
   <!-- Opportunity map (optional): also add <link rel="stylesheet" href="/spear-hunting/__SLUG__/opportunity-map.css" /> here. -->
+  <!-- Headline typewriter (optional): no head stylesheet needed; uncomment the two scripts at the bottom of <body> to use it. -->
   <script src="/components/head.js"></script>
   <script src="/components/theme.js"></script>
 </head>
@@ -29,6 +30,14 @@
   <main class="sh-main">
     <div class="sh-shell">
       <header class="sh-pitch">
+        <!-- Headline typewriter (optional): to enable the typed headline + blur reveal,
+             wrap the phrase that should carry the highlight marker, e.g.
+               <h1 class="b-title--article sh-title">TODO(adi): first sentence. TODO(adi): second sentence leads into
+                 <span data-highlight data-highlight-auto="wait">TODO(adi): highlight phrase</span></h1>
+             The typewriter types each sentence as a beat, pauses at punctuation, then lets
+             the highlight marker sweep and blurs the page into focus. Requires
+             /components/text_highlight.js loaded BEFORE /spear-hunting/__SLUG__/typewriter.js
+             (see the commented scripts before </body>). Without them the headline renders statically. -->
         <h1 class="b-title--article sh-title">TODO(adi): what goes here. TODO(adi): what goes here.</h1>
         <div class="sh-role-line">
           <a class="b-body-bold sh-role-link" href="TODO-add-job-posting-url" target="_blank" rel="noopener">
@@ -159,5 +168,9 @@
   <script src="/components/image-modal.js"></script>
   <script src="/main.js"></script>
   <!-- Opportunity map (optional): <script src="/spear-hunting/__SLUG__/opportunity-map.js"></script> -->
+  <!-- Headline typewriter (optional): text_highlight.js MUST load BEFORE typewriter.js,
+       so the highlight span is already wrapped when typing starts. Delete this file if unused. -->
+  <!-- <script src="/components/text_highlight.js"></script>
+  <script src="/spear-hunting/__SLUG__/typewriter.js"></script> -->
 </body>
 </html>

@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────
-   HEADLINE TYPEWRITER — HousingAnywhere page
+   HEADLINE TYPEWRITER -- HousingAnywhere page
    Types the .sh-title headline letter by letter, but the per-character
    cadence follows the motion curves from design.md, phrase by phrase:
 
@@ -10,14 +10,14 @@
      "it's time to move in."             ease (0.25,0.1,0.25,1)     560ms
      "The next 48 hours is where"        sweep (0.65,0,0.35,1)      flows straight on
      "HousingAnywhere builds trust"      sweep (0.65,0,0.35,1)      560ms, then marker
-                                         (marker sweep, 1.4s)       —
+                                         (marker sweep, 1.4s)       --
 
      - ease is the site's default curve (design.md §Motion: "Ease
-       everywhere") — fast start, decelerating early into each
+       everywhere") -- fast start, decelerating early into each
        punctuation pause.
      - The bridge phrase types on cubic-bezier(0.65,0,0.35,1), the
        annotation-strike curve text_highlight.js already sweeps the
-       marker with — its S-shape holds the brisk middle pace longer
+       marker with -- its S-shape holds the brisk middle pace longer
        before the same soft landing, so the typing hands off to the
        sweep without changing curve.
      - The spring (0.34,1.45,0.64,1) is deliberately NOT used here:
@@ -28,7 +28,7 @@
    the curve's output (0→1) interpolates the per-character delay
    between MIN_DELAY and MAX_DELAY, plus a ±3ms human jitter.
 
-   Skipped entirely under prefers-reduced-motion — the headline,
+   Skipped entirely under prefers-reduced-motion -- the headline,
    its static highlight and the page all render as normal.
 
    Page reveal: everything below the headline is held blurred-out
@@ -58,7 +58,7 @@
     document.body.classList.add('revealed');
   }
 
-  /* Reveal + caret styles, injected once — self-contained like the other components. */
+  /* Reveal + caret styles, injected once -- self-contained like the other components. */
   if (!document.getElementById('typewriter-styles')) {
     var style = document.createElement('style');
     style.id = 'typewriter-styles';
@@ -90,7 +90,7 @@
 
   /* CSS cubic-bezier evaluator: returns a function mapping x∈[0,1]
      to the curve's y (progress). Newton-Raphson with a bisection
-     fallback — standard, small, and no dependencies. */
+     fallback -- standard, small, and no dependencies. */
   function cubicBezier(x1, y1, x2, y2) {
     var cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx;
     var cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
@@ -144,10 +144,10 @@
     if (!title) { revealPage(); return; }
     var span = title.querySelector('[data-highlight]');
     /* On narrow screens the highlighter may have restructured the phrase
-       into one highlight per word (splitOnOverflow) — type across every
+       into one highlight per word (splitOnOverflow) -- type across every
        word's text span in order; on desktop there is just one. */
     var targets = span ? span.querySelectorAll('.highlight__text') : [];
-    /* The highlighter wraps the span on DOMContentLoaded — this script is
+    /* The highlighter wraps the span on DOMContentLoaded -- this script is
        loaded after it, so the wrap is normally already there. A few short
        retries just in case ordering ever shifts; give up quietly so the
        headline stays static rather than half-typed. */
@@ -217,7 +217,7 @@
     setTimeout(function () {
       (function nextPhrase(i) {
         if (i >= chunks.length) {
-          /* Final beat: the highlight phrase — typed out plainly first
+          /* Final beat: the highlight phrase -- typed out plainly first
              (normal text colour, marker still held), so the words are
              read before the marker sweeps over them. Words are typed in
              sequence (one per highlight on narrow screens); the wrapper's
@@ -246,7 +246,7 @@
           return;
         }
         typePhrase(leadNode, chunks[i], curves[i] || CURVE_EASE, function () {
-          /* The final lead phrase skips its comma-pause — the second
+          /* The final lead phrase skips its comma-pause -- the second
              sentence types on as one fluid arc, no rest before the
              highlight phrase. */
           if (i === chunks.length - 1) nextPhrase(i + 1);
