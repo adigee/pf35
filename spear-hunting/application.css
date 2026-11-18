@@ -131,7 +131,7 @@
   border-bottom: 0;
 }
 
-/* Housekeeping notes — detail strip (Visas / Availability) */
+/* Housekeeping notes -- detail strip (Visas / Availability) */
 .sh-notes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -236,7 +236,7 @@
   background: var(--bench-line);
 }
 
-/* Progress fill — grows linearly from Move-in through the active card's
+/* Progress fill -- grows linearly from Move-in through the active card's
    segment (--fill = number of thirds, set by benchmark.js) and fades out when
    no card is active. */
 .bench-timeline::after {
@@ -291,7 +291,7 @@
 .bench-stop:first-child .bench-stop-label { padding-left: 0; }
 .bench-stop:last-child .bench-stop-label  { padding-right: 0; }
 
-/* States — set by benchmark.js: every stop the fill has reached, the end stop is current */
+/* States -- set by benchmark.js: every stop the fill has reached, the end stop is current */
 .bench-stop.is-reached .bench-tick { background: var(--color-primary); }
 .bench-stop.is-reached .bench-stop-label { color: var(--color-text); }
 .bench-stop.is-current .bench-stop-label {
@@ -331,7 +331,7 @@
   margin: 0;
 }
 
-/* Who it's for — a small, quiet label above the title */
+/* Who it's for -- a small, quiet label above the title */
 .bench-persona {
   align-self: start;
   justify-self: start;
@@ -355,7 +355,7 @@
   margin: 0;
 }
 
-/* Evidence — label + per-card facts, closed off by a hairline */
+/* Evidence -- label + per-card facts, closed off by a hairline */
 .bench-evidence {
   display: flex;
   flex-direction: column;
@@ -428,7 +428,7 @@
   line-height: var(--leading-medium);
 }
 
-/* Status chip — a coloured dot carries the meaning */
+/* Status chip -- a coloured dot carries the meaning */
 .chip {
   display: inline-flex;
   align-items: center;
@@ -449,7 +449,7 @@
 .chip--limited { --chip-dot: #e8a23a; }
 .chip--none    { --chip-dot: color-mix(in srgb, var(--color-text) 35%, transparent); color: var(--color-text-muted); }
 
-/* Design-opportunity note — grey panel at the foot of the card; its heading (.b-body-bold) carries the primary colour */
+/* Design-opportunity note -- grey panel at the foot of the card; its heading (.b-body-bold) carries the primary colour */
 .bench-opportunity {
   margin-top: auto;
   display: flex;
@@ -473,7 +473,7 @@
   line-height: var(--leading-normal);
 }
 
-/* Deck dots — only used when the cards stack (phones) */
+/* Deck dots -- only used when the cards stack (phones) */
 .bench-dots {
   display: none;
   align-items: center;
@@ -528,7 +528,7 @@
 
 .bench-comparison { margin-top: var(--sp-4); }
 
-/* Comparison table — hidden behind the toggle above; legacy table styling */
+/* Comparison table -- hidden behind the toggle above; legacy table styling */
 .comparison {
   margin: 0;
 }

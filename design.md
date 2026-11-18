@@ -347,6 +347,9 @@ Panels fade in/out via `opacity` only (`transition: opacity var(--panel-transiti
 | Backstory toggle hover/press | `color`, `border-color`, `background` | 160ms | ease | `.cs-backstory-toggle` |
 | Annotation strike draw | `transform` (`scaleX` 0→1) | 260ms | `cubic-bezier(0.65,0,0.35,1)` | `.ann::after` — reduced-motion falls back to an opacity fade |
 | Annotation note / rail breadcrumb reveal | `opacity`, `transform` (pop-in) | 200–300ms | `cubic-bezier(0.34,1.45,0.64,1)` (spring) | `.ann-note`, `.cs-toc-note` |
+| Headline typewriter | text (per character, JS-driven) | 12–58ms/char + ±3ms jitter | ease / `cubic-bezier(0.65,0,0.35,1)` per phrase | `.sh-title` (HousingAnywhere + template copy): each phrase is a beat on one curve; no CSS transition involved |
+| Typewriter caret blink | `opacity` | 0.9s steps | `steps(1,end)` | `.type-caret` — a deliberate loop (the only keyframe exception): a caret must blink continuously while typing |
+| Spear-hunting page reveal | `opacity`, `filter: blur(12px → 0)` | 420ms | `cubic-bezier(0.65,0,0.35,1)` | Held while the headline types (`body.pre-reveal`), blurs into focus once the highlight marker sweep lands (`body.revealed`); fire-safe reveal so the page can never stay hidden |
 
 ### Rules
 
@@ -416,6 +419,14 @@ Motion happens on tap only, never on page load. Opening a node springs its child
 | `--om-label-mix` | `75%` / `45%` | How much of the type hue the label keeps; light mode mixes toward the navy text so labels stay readable on pastel fills |
 
 Everything else reuses the system tokens: text is `--color-text`, connectors are `--color-text` at 22%, chevrons are `--color-text-muted`, and the toggle and prototype button use `--color-primary` with `--color-on-primary`. The system has no green, yellow or blue, so the four type hues are the only new colours. Classes: `.om-section`, `.om-head`, `.om`, `.om-toggle`, `.om-tree`, `.om-wires`, `.om-item`, `.om-cell`, `.om-node`, `.om-tag`, `.om-label`, `.om-chevron`, `.om-children`, `.om-evidence`, `.om-link`.
+
+### Headline Typewriter & Blur Reveal (HousingAnywhere application, reusable template resource)
+
+`spear-hunting/housinganywhere/typewriter.js` types the `.sh-title` headline letter by letter, then blurs the rest of the page into focus. A generic copy with the same code lives in `spear-hunting/_template/typewriter.js`, so any new application page can opt in the same way it opts into the opportunity map: uncomment the two script tags before `</body>` (`/components/text_highlight.js` first, then `/spear-hunting/__SLUG__/typewriter.js`) and wrap the phrase that should carry the marker in `<span data-highlight data-highlight-auto="wait">…</span>`. `data-highlight-auto="wait"` holds the marker sweep until the typewriter dispatches `highlight-sweep`, so the words are read plainly first and the marker lands right after. When unused, the headline renders statically and the page reveals immediately.
+
+Typing runs phrase by phrase — the lead text is split at sentence punctuation, each phrase is one beat, and per-character delay interpolates 12–58ms along the phrase's curve with ±3ms jitter: opening beats on `ease`, the bridge into the highlight on the sweep curve `cubic-bezier(0.65,0,0.35,1)` so the rhythm hands off to the marker sweep without changing curve. The spring is deliberately not used (its overshoot reads as negative per-character delay). Pauses (340ms after a comma, 560ms after a stop) are constants at the top of the file, retuned per headline — the template copy marks them `TODO(adi)`. A travelling caret (`.type-caret`) blinks ahead of the text and is removed at the sweep. Screen readers get the full sentence up front via `aria-label`; the whole choreography is skipped under `prefers-reduced-motion`.
+
+The page reveal holds everything below the headline blurred-out (`body.pre-reveal`: `opacity 0` + 12px blur, including the pitch's bottom divider) and blurs it into focus over 420ms on the sweep curve once the last marker's `animationend` fires (`body.revealed`), with a 2.6s safety timeout. The reveal is idempotent and also fires from every abort path — a missing `.sh-title`, a highlight span that never wraps, a choreography error — so the page can never stay hidden. Styles are injected by the script; no stylesheet is needed in the head.
 
 ### Prototype Embed (HousingAnywhere application)
 
