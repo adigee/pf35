@@ -489,7 +489,21 @@
 
   function boot() {
     collectSteps();
-    fitView(false);
+    /* Big boards can ask for a landing view: data-cv-focus on
+       the canvas names an element the camera centres on at
+       boot, instead of fitting the whole world. */
+    var focusId = canvas.getAttribute('data-cv-focus');
+    var focusEl = focusId ? document.getElementById(focusId) : null;
+    if (focusEl) {
+      var r = rectToWorld(focusEl);
+      var s = clamp(Math.min(
+        canvas.clientWidth / (r.w * 2.2),
+        canvas.clientHeight / (r.h * 1.5)
+      ), MIN_SCALE, 1);
+      flyToWorldPoint(r.cx, r.cy, s, false);
+    } else {
+      fitView(false);
+    }
     drawWires();
     buildMinimap();
     staggerEntrance();

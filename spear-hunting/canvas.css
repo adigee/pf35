@@ -765,6 +765,47 @@ body.cv-page [data-component="nav"] {
   border-color: var(--color-primary);
 }
 
+/* ── STICKY: tinted (board-true colour) ───────────────────
+   For pages that mirror an existing board: --sc carries the
+   original sticky colour. Text stays dark ink on any tint. */
+.cv-sticky--tint {
+  background: var(--sc, var(--color-accent));
+  color: #101010;
+  border: 0;
+}
+
+.cv-sticky--tint .cv-sticky-label {
+  color: rgba(16, 16, 16, 0.55);
+}
+
+.cv-sticky--tint .cv-sticky-text,
+.cv-sticky--tint .cv-sticky-big {
+  color: #101010;
+}
+
+/* ── BOARD SECTION: dashed region frame ─────────────────── */
+.cv-board-section {
+  position: absolute;
+  left: var(--x, 0px);
+  top: var(--y, 0px);
+  width: var(--w, 400px);
+  height: var(--h, 300px);
+  border: 1.5px dashed var(--color-text-subtle);
+  background: color-mix(in srgb, var(--color-surface-2) 30%, transparent);
+  pointer-events: none;
+}
+
+/* ── BOARD RULE: separator line ─────────────────────────── */
+.cv-rule {
+  position: absolute;
+  left: var(--x, 0px);
+  top: var(--y, 0px);
+  width: var(--w, 100px);
+  height: 2px;
+  background: var(--color-text-subtle);
+  pointer-events: none;
+}
+
 /* ── REDUCED MOTION ─────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .cv-world.is-ready .cv-card,

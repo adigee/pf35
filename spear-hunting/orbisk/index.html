@@ -25,105 +25,134 @@
 <body id="top" class="cv-page" data-cv-skin="signal">
   <div data-component="nav"></div>
 
-  <!-- Content pulled from the Orbisk Figma board
-       (figma.com/design/MrJmv65w3QdHY77WQUiua6). Screens are
-       exported frames; stickies are the real notes from the
-       board. Skin: signal. Flip to acid with
-       data-cv-skin="acid" plus the canvas-skins.css link. -->
+  <!-- Faithful 1:1 translation of the Orbisk Figma board
+       (figma.com/design/MrJmv65w3QdHY77WQUiua6). Every element
+       sits at its original board coordinates and size. Sticky
+       colours are the board's own. Board arrows are mirrored by
+       the wire pairs in data-connect. -->
 
   <main class="cv-main">
-    <div class="cv-canvas" id="cv-canvas" tabindex="0" aria-label="Interactive canvas. Drag to pan, scroll to move, pinch or control scroll to zoom.">
+    <div class="cv-canvas" id="cv-canvas" tabindex="0" data-cv-focus="n9x89" aria-label="Interactive canvas. Drag to pan, scroll to move, pinch or control scroll to zoom.">
       <div class="cv-world" id="cv-world">
-        <!-- Wires mirror the arrows on the original board. -->
-        <svg class="cv-wires" id="cv-wires" data-connect="card-title > sticky-preshift, sticky-preshift > note-context, media-brief > fact-73, note-call > media-annotated, media-annotated > sticky-control, fact-customer > sticky-covers, sticky-covers > sticky-affects, sticky-affects > sticky-walkins, fact-weather > sticky-holidays, fact-pastusage > sticky-plates, sticky-plates > sticky-prep, fact-inventory > sticky-stock, sticky-stock > sticky-ordered" aria-hidden="true"></svg>
+        <svg class="cv-wires" id="cv-wires" data-connect="sticky-proactive > sticky-nudge, sticky-nudge > n19x227, sticky-proactive > n19x248, sticky-nudge > n9x89" aria-hidden="true"></svg>
 
-        <div class="cv-chip" id="chip-hello" aria-hidden="true" style="--x: 120px; --y: 120px;">
-          <span class="cv-chip-dot"></span>
-          <span class="cv-chip-text">01 · Hello</span>
-        </div>
-
-        <article class="cv-card cv-card--title" id="card-title" data-step="1" style="--x: 300px; --y: 40px; --w: 640px;">
-          <p class="cv-eyebrow">Concept board · <span class="cv-eyebrow-accent">Orbisk (Mise)</span></p>
-          <h1 class="cv-headline">Food planning happens pre-shift, not mid-service.</h1>
-          <a class="cv-role-link" href="https://www.figma.com/design/MrJmv65w3QdHY77WQUiua6/orbisk?node-id=0-1" target="_blank" rel="noopener">
-            See the original board
-            <span class="material-symbols-rounded" aria-hidden="true">arrow_outward</span>
-          </a>
-        </article>
-
-        <aside class="cv-sticky cv-sticky--lilac" id="sticky-preshift" data-step="2" style="--x: 1020px; --y: 120px; --w: 280px; --r: 3deg;">
-          <p class="cv-sticky-label">The insight</p>
-          <p class="cv-sticky-text">💡 Food planning happens pre-shift</p>
-        </aside>
-
-        <aside class="cv-sticky cv-sticky--ink" id="sticky-proactive" data-step="3" style="--x: 1350px; --y: 240px; --w: 260px; --r: -2deg;">
-          <p class="cv-sticky-label">So</p>
-          <p class="cv-sticky-text">Pre-shift means proactive</p>
-        </aside>
-
-        <aside class="cv-sticky cv-sticky--lilac" id="sticky-nudge" data-step="4" style="--x: 1660px; --y: 80px; --w: 290px; --r: 2deg;">
-          <p class="cv-sticky-label">Where it lands</p>
-          <p class="cv-sticky-text">A nudge at the daily standup is more likely to be acted on</p>
-        </aside>
-
-        <aside class="cv-card cv-card--quote" id="quote-lasttime" data-step="5" style="--x: 2010px; --y: 60px; --w: 420px;">
-          <span class="cv-quote-mark" aria-hidden="true">“</span>
-          <p class="cv-quote-text">Last Tuesday, you cut 15% and waste dropped to 0.9 kg from a typical 5.8 kg, no shortfalls.</p>
-          <p class="cv-quote-source">The brief, on last time</p>
-        </aside>
-
-        <article class="cv-card cv-card--note" id="note-context" data-step="6" style="--x: 1020px; --y: 500px; --w: 470px;">
-          <p class="cv-label">Context</p>
-          <p class="cv-body">Orbisk turns yesterday's waste into today's prep plan.</p>
-          <p class="cv-body">The brief reads covers, weather, past usage and stock, then calls one clear adjustment. It lands at the standup, before the kitchen starts prepping.</p>
-        </article>
-
-        <figure class="cv-card cv-card--photo" id="media-brief" data-step="7" style="--x: 300px; --y: 520px; --w: 560px;">
+        <figure data-step="8" class="cv-card cv-card--photo" id="n9x89" style="--x: 382px; --y: -1384px; --w: 1133px;">
           <div class="cv-media-frame" style="--ar: 1133 / 1389;">
             <img class="cv-media" src="/spear-hunting/orbisk/assets/brief-ui.webp" alt="The Daily Brief screen: tonight's covers, today's call, prep adjustments and holds" loading="lazy" />
           </div>
-          <figcaption class="cv-caption">The Daily Brief, on the pass screen</figcaption>
         </figure>
 
-        <div class="cv-chip" id="chip-brief" aria-hidden="true" style="--x: 1460px; --y: 470px;">
-          <span class="cv-chip-dot"></span>
-          <span class="cv-chip-text">02 · The brief</span>
-        </div>
+        <figure data-step="2" class="cv-card cv-card--photo" id="n19x114" style="--x: -1773px; --y: -3190px; --w: 1470px;">
+          <div class="cv-media-frame" style="--ar: 1470 / 923;">
+            <img class="cv-media" src="/spear-hunting/orbisk/assets/screen-1.webp" alt="Earlier exploration screenshot of the daily brief, one" loading="lazy" />
+          </div>
+        </figure>
 
-        <article class="cv-card cv-card--fact" id="fact-73" data-step="8" style="--x: 1460px; --y: 560px; --w: 240px;">
-          <p class="cv-label">Covers tonight</p>
-          <p class="cv-fact-value">73 🍽️ · 68 booked, 5 walk-ins</p>
-        </article>
-        <article class="cv-card cv-card--fact" id="fact-focaccia" data-step="8" style="--x: 1730px; --y: 640px; --w: 240px; --r: -2deg;">
-          <p class="cv-label">Focaccia</p>
-          <p class="cv-fact-value">19 rolls binned yesterday, average 7</p>
-        </article>
-        <article class="cv-card cv-card--fact" id="fact-brussels" data-step="8" style="--x: 1460px; --y: 780px; --w: 240px; --r: 2deg;">
-          <p class="cv-label">Brussels sprouts</p>
-          <p class="cv-fact-value">6 kgs binned, average 1 kg</p>
-        </article>
-        <article class="cv-card cv-card--fact" id="fact-lamb" data-step="8" style="--x: 1730px; --y: 860px; --w: 220px;">
-          <p class="cv-label">Lamb</p>
-          <p class="cv-fact-value">1 kg binned, average 1.5 kg</p>
-        </article>
-        <article class="cv-card cv-card--fact" id="fact-rain" data-step="8" style="--x: 1730px; --y: 980px; --w: 220px; --r: -2deg;">
-          <p class="cv-label">Weather</p>
-          <p class="cv-fact-value">18% chance of rain tonight</p>
-        </article>
+        <figure data-step="3" class="cv-card cv-card--photo" id="n19x166" style="--x: -1773px; --y: -3190px; --w: 1470px;">
+          <div class="cv-media-frame" style="--ar: 1470 / 923;">
+            <img class="cv-media" src="/spear-hunting/orbisk/assets/screen-2.webp" alt="Earlier exploration screenshot of the daily brief, two" loading="lazy" />
+          </div>
+        </figure>
 
-        <article class="cv-card cv-card--note" id="note-call" data-step="9" style="--x: 1460px; --y: 1120px; --w: 480px;">
-          <p class="cv-label">Today's call</p>
-          <ul class="cv-list">
-            <li>Focaccia: reduce the bake by 10 rolls.</li>
-            <li>Brussels sprouts: reduce prep by 5 kgs.</li>
-            <li>Lamb and prawn: hold steady.</li>
-          </ul>
-          <p class="cv-body">High confidence, based on the past four Tuesdays.</p>
-        </article>
+        <figure data-step="4" class="cv-card cv-card--photo" id="n19x169" style="--x: -1773px; --y: -3190px; --w: 1470px;">
+          <div class="cv-media-frame" style="--ar: 1470 / 923;">
+            <img class="cv-media" src="/spear-hunting/orbisk/assets/screen-3.webp" alt="Earlier exploration screenshot of the daily brief, three" loading="lazy" />
+          </div>
+        </figure>
 
-        <figure class="cv-card cv-card--annotated" id="media-annotated" data-step="10" style="--x: 2020px; --y: 560px; --w: 380px;">
+        <aside data-step="1" class="cv-sticky cv-sticky--tint" id="sticky-preshift" style="--x: -1518px; --y: -3373px; --w: 360px; --sc: rgb(255 175 163);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">💡Food planning happens pre-shift</p>
+        </aside>
+
+        <aside data-step="9" class="cv-sticky cv-sticky--tint" id="n19x227" style="--x: -987px; --y: -1613px; --w: 240px; --sc: rgb(255 217 102);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">Past food usage</p>
+        </aside>
+
+        <aside data-step="7" class="cv-sticky cv-sticky--tint" id="n19x241" style="--x: -1687px; --y: -1613px; --w: 240px; --sc: rgb(255 217 102);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">Customer volume</p>
+        </aside>
+
+        <aside data-step="13" class="cv-sticky cv-sticky--tint" id="n19x255" style="--x: -1687px; --y: -1314px; --w: 240px; --sc: rgb(175 188 207);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">covers booked</p>
+        </aside>
+
+        <aside data-step="15" class="cv-sticky cv-sticky--tint" id="n19x283" style="--x: -987px; --y: -1314px; --w: 240px; --sc: rgb(175 188 207);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">review plates wasted</p>
+        </aside>
+
+        <aside data-step="16" class="cv-sticky cv-sticky--tint" id="n19x297" style="--x: -637px; --y: -1314px; --w: 240px; --sc: rgb(175 188 207);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">ingredients in stock</p>
+        </aside>
+
+        <aside data-step="21" class="cv-sticky cv-sticky--tint" id="n19x304" style="--x: -637px; --y: -1051px; --w: 240px; --sc: rgb(175 188 207);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">ingredients ordered/ arriving </p>
+        </aside>
+
+        <aside data-step="20" class="cv-sticky cv-sticky--tint" id="n19x290" style="--x: -987px; --y: -1051px; --w: 240px; --sc: rgb(175 188 207);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">review prep wasted</p>
+        </aside>
+
+        <aside data-step="14" class="cv-sticky cv-sticky--tint" id="n19x269" style="--x: -1337px; --y: -1314px; --w: 240px; --sc: rgb(175 188 207);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">affects walk-ins</p>
+        </aside>
+
+        <aside data-step="18" class="cv-sticky cv-sticky--tint" id="n19x262" style="--x: -1687px; --y: -1051px; --w: 240px; --sc: rgb(175 188 207);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">walk-ins estimated</p>
+        </aside>
+
+        <aside data-step="19" class="cv-sticky cv-sticky--tint" id="n19x276" style="--x: -1337px; --y: -1051px; --w: 240px; --sc: rgb(175 188 207);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">bank holidays, time of year</p>
+        </aside>
+
+        <aside data-step="10" class="cv-sticky cv-sticky--tint" id="n19x234" style="--x: -637px; --y: -1613px; --w: 240px; --sc: rgb(255 217 102);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">Inventory</p>
+        </aside>
+
+        <aside data-step="22" class="cv-sticky cv-sticky--tint" id="n22x916" style="--x: 258px; --y: -894px; --w: 240px; --sc: rgb(255 217 102);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">Surface recent wastage to daily build habit</p>
+        </aside>
+
+        <aside data-step="24" class="cv-sticky cv-sticky--tint" id="n22x937" style="--x: 1481px; --y: -566px; --w: 240px; --sc: rgb(255 217 102);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">Seperate actions from info to help busy kitchen chef scan</p>
+        </aside>
+
+        <aside data-step="17" class="cv-sticky cv-sticky--tint" id="n22x944" style="--x: 1432px; --y: -1088px; --w: 240px; --sc: rgb(255 217 102);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">Exploring a more editorial style to probe if it resonates with chefs</p>
+        </aside>
+
+        <aside data-step="8" class="cv-sticky cv-sticky--tint" id="n19x248" style="--x: -1337px; --y: -1613px; --w: 240px; --sc: rgb(255 217 102);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">Weather and season</p>
+        </aside>
+
+        <aside data-step="5" class="cv-sticky cv-sticky--tint" id="sticky-proactive" style="--x: -1204px; --y: -2097px; --w: 240px; --sc: rgb(217 184 255);">
+          
+          <p class="cv-sticky-text">Pre-shift = proactive </p>
+        </aside>
+
+        <aside data-step="6" class="cv-sticky cv-sticky--tint" id="sticky-nudge" style="--x: -1122px; --y: -2026px; --w: 240px; --sc: rgb(255 217 102);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">A nudge at the daily standup is more likely to be acted on</p>
+        </aside>
+
+        <figure class="cv-card cv-card--annotated" id="media-history" data-step="0" style="--x: 2616px; --y: -1384px; --w: 680px;">
           <div class="cv-annotated">
-            <div class="cv-annotated-media" style="--ar: 680 / 1389;">
+            <div class="cv-media-frame" style="--ar: 680 / 1389;">
               <img class="cv-media" src="/spear-hunting/orbisk/assets/waste-history.webp" alt="Waste history detail: focaccia binned per day across four Tuesdays, with adjust and ignore actions" loading="lazy" />
               <span class="cv-pin" data-pin="1" style="--px: 50%; --py: 10%;">1</span>
               <span class="cv-pin" data-pin="2" style="--px: 50%; --py: 58%;">2</span>
@@ -145,113 +174,64 @@
           <figcaption class="cv-caption">Waste history detail, four Tuesdays deep</figcaption>
         </figure>
 
-        <aside class="cv-sticky cv-sticky--ink" id="sticky-control" data-step="11" style="--x: 2470px; --y: 700px; --w: 270px; --r: 3deg;">
-          <p class="cv-sticky-label">Trust</p>
-          <p class="cv-sticky-text">Enable full control to build trust with the chef</p>
+        <aside data-step="23" class="cv-sticky cv-sticky--tint" id="n25x1267" style="--x: 2456px; --y: -768px; --w: 240px; --sc: rgb(255 217 102);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">Enable full control to build trust with chef</p>
         </aside>
 
-        <aside class="cv-sticky cv-sticky--lilac" id="sticky-scan" data-step="12" style="--x: 2470px; --y: 960px; --w: 280px; --r: -2deg;">
-          <p class="cv-sticky-label">Scannable</p>
-          <p class="cv-sticky-text">Separate actions from info to help a busy kitchen chef scan</p>
-        </aside>
+        <div class="cv-board-section" style="--x: -1761px; --y: 4820px; --w: 2269px; --h: 2457px;"></div>
 
-        <aside class="cv-sticky cv-sticky--ink" id="sticky-habit" data-step="13" style="--x: 1660px; --y: 1330px; --w: 280px; --r: 2deg;">
-          <p class="cv-sticky-label">Habit</p>
-          <p class="cv-sticky-text">Surface recent wastage to build the daily habit</p>
-        </aside>
-
-        <div class="cv-chip" id="chip-archive" aria-hidden="true" style="--x: 2900px; --y: 470px;">
-          <span class="cv-chip-dot"></span>
-          <span class="cv-chip-text">03 · Archive</span>
-        </div>
-
-        <figure class="cv-card cv-card--photo" id="media-arch1" style="--x: 2900px; --y: 560px; --w: 380px;">
-          <div class="cv-media-frame" style="--ar: 1470 / 923;">
-            <img class="cv-media" src="/spear-hunting/orbisk/assets/screen-1.webp" alt="Earlier exploration of the daily brief, screen one" loading="lazy" />
+        <figure data-step="30" class="cv-card cv-card--photo" id="n3x2" style="--x: -1576px; --y: 5110px; --w: 680px;">
+          <div class="cv-media-frame" style="--ar: 680 / 920;">
+            <img class="cv-media" src="/spear-hunting/orbisk/assets/mise-brief.webp" alt="Mise brief screen from the archive section" loading="lazy" />
           </div>
-          <figcaption class="cv-caption">Earlier pass, screen one</figcaption>
-        </figure>
-        <figure class="cv-card cv-card--photo" id="media-arch2" style="--x: 2900px; --y: 940px; --w: 380px;">
-          <div class="cv-media-frame" style="--ar: 1470 / 923;">
-            <img class="cv-media" src="/spear-hunting/orbisk/assets/screen-2.webp" alt="Earlier exploration of the daily brief, screen two" loading="lazy" />
-          </div>
-          <figcaption class="cv-caption">Earlier pass, screen two</figcaption>
-        </figure>
-        <figure class="cv-card cv-card--photo" id="media-arch3" style="--x: 3330px; --y: 560px; --w: 380px;">
-          <div class="cv-media-frame" style="--ar: 1470 / 923;">
-            <img class="cv-media" src="/spear-hunting/orbisk/assets/screen-3.webp" alt="Earlier exploration of the daily brief, screen three" loading="lazy" />
-          </div>
-          <figcaption class="cv-caption">Earlier pass, screen three</figcaption>
-        </figure>
-        <figure class="cv-card cv-card--photo" id="media-arch4" style="--x: 3330px; --y: 940px; --w: 380px;">
-          <div class="cv-media-frame" style="--ar: 1470 / 923;">
-            <img class="cv-media" src="/spear-hunting/orbisk/assets/screen-6.webp" alt="Earlier exploration of the daily brief, screen four" loading="lazy" />
-          </div>
-          <figcaption class="cv-caption">Earlier pass, screen four</figcaption>
         </figure>
 
-        <div class="cv-chip" id="chip-idea" aria-hidden="true" style="--x: 120px; --y: 1220px;">
-          <span class="cv-chip-dot"></span>
-          <span class="cv-chip-text">04 · The idea tree</span>
-        </div>
-
-        <article class="cv-card cv-card--fact" id="fact-customer" data-step="14" style="--x: 300px; --y: 1320px; --w: 240px;">
-          <p class="cv-label">Input</p>
-          <p class="cv-fact-value">Customer volume</p>
-        </article>
-        <article class="cv-card cv-card--fact" id="fact-weather" data-step="14" style="--x: 590px; --y: 1400px; --w: 240px; --r: -2deg;">
-          <p class="cv-label">Input</p>
-          <p class="cv-fact-value">Weather and season</p>
-        </article>
-        <article class="cv-card cv-card--fact" id="fact-pastusage" data-step="14" style="--x: 880px; --y: 1320px; --w: 260px; --r: 2deg;">
-          <p class="cv-label">Input</p>
-          <p class="cv-fact-value">Past food usage</p>
-        </article>
-        <article class="cv-card cv-card--fact" id="fact-inventory" data-step="14" style="--x: 1190px; --y: 1400px; --w: 240px;">
-          <p class="cv-label">Input</p>
-          <p class="cv-fact-value">Inventory</p>
-        </article>
-
-        <aside class="cv-sticky cv-sticky--lilac" id="sticky-covers" data-step="15" style="--x: 300px; --y: 1560px; --w: 220px;">
-          <p class="cv-sticky-text">covers booked</p>
-        </aside>
-        <aside class="cv-sticky cv-sticky--ink" id="sticky-affects" data-step="15" style="--x: 300px; --y: 1770px; --w: 220px; --r: 2deg;">
-          <p class="cv-sticky-text">affects walk-ins</p>
-        </aside>
-        <aside class="cv-sticky cv-sticky--lilac" id="sticky-walkins" data-step="15" style="--x: 300px; --y: 1980px; --w: 220px; --r: -2deg;">
-          <p class="cv-sticky-text">walk-ins estimated</p>
-        </aside>
-        <aside class="cv-sticky cv-sticky--ink" id="sticky-holidays" data-step="15" style="--x: 590px; --y: 1660px; --w: 220px; --r: -2deg;">
-          <p class="cv-sticky-text">bank holidays, time of year</p>
-        </aside>
-        <aside class="cv-sticky cv-sticky--lilac" id="sticky-plates" data-step="15" style="--x: 880px; --y: 1560px; --w: 230px;">
-          <p class="cv-sticky-text">review plates wasted</p>
-        </aside>
-        <aside class="cv-sticky cv-sticky--ink" id="sticky-prep" data-step="15" style="--x: 880px; --y: 1770px; --w: 230px; --r: 2deg;">
-          <p class="cv-sticky-text">review prep wasted</p>
-        </aside>
-        <aside class="cv-sticky cv-sticky--lilac" id="sticky-stock" data-step="15" style="--x: 1190px; --y: 1660px; --w: 230px;">
-          <p class="cv-sticky-text">ingredients in stock</p>
-        </aside>
-        <aside class="cv-sticky cv-sticky--ink" id="sticky-ordered" data-step="15" style="--x: 1190px; --y: 1870px; --w: 230px; --r: -2deg;">
-          <p class="cv-sticky-text">ingredients ordered or arriving</p>
-        </aside>
-
-        <article class="cv-card cv-card--contact" id="card-contact" data-step="16" style="--x: 1720px; --y: 1520px; --w: 460px;">
-          <p class="cv-label">Thank you for taking a look! 🫶</p>
-          <p class="cv-body">Up next: a live prototype of the brief.</p>
-          <div class="cv-contact-links">
-            <button class="btn btn--md" type="button" data-copy="aditya.gujaran@gmail.com" data-tooltip="Click to copy">
-              <span class="material-symbols-rounded" aria-hidden="true">content_copy</span>
-              <span class="btn-label">aditya.gujaran@gmail.com</span>
-            </button>
-            <a class="btn btn--md" href="https://www.linkedin.com/in/agujaran/" target="_blank" rel="noopener">
-              <span class="material-symbols-rounded" aria-hidden="true">open_in_new</span>
-              <span>LinkedIn</span>
-            </a>
+        <figure data-step="31" class="cv-card cv-card--photo" id="n7x2" style="--x: -776px; --y: 5110px; --w: 680px;">
+          <div class="cv-media-frame" style="--ar: 680 / 1485;">
+            <img class="cv-media" src="/spear-hunting/orbisk/assets/mise-seewhy.webp" alt="Mise see-why screen from the archive section" loading="lazy" />
           </div>
-          <p class="cv-caption">Click to copy email address 👆</p>
+        </figure>
+
+        <div class="cv-board-section" style="--x: 679px; --y: 4820px; --w: 3403px; --h: 2093px;"></div>
+
+        <figure data-step="28" class="cv-card cv-card--photo" id="n12x108" style="--x: 847px; --y: 5071px; --w: 1470px;">
+          <div class="cv-media-frame" style="--ar: 1470 / 923;">
+            <img class="cv-media" src="/spear-hunting/orbisk/assets/arch-1.webp" alt="Archive screenshot of the daily brief, one" loading="lazy" />
+          </div>
+        </figure>
+
+        <figure data-step="29" class="cv-card cv-card--photo" id="n12x111" style="--x: 2562px; --y: 5071px; --w: 1470px;">
+          <div class="cv-media-frame" style="--ar: 1470 / 923;">
+            <img class="cv-media" src="/spear-hunting/orbisk/assets/arch-2.webp" alt="Archive screenshot of the daily brief, two" loading="lazy" />
+          </div>
+        </figure>
+
+        <div class="cv-rule" style="--x: -1761px; --y: 3873px; --w: 6876px;"></div>
+
+        <article class="cv-card cv-card--text" id="n25x1283" style="--x: -1769px; --y: 4040px; --w: 425px;">
+          <p class="cv-float-text" style="font-size: 88px;">Archive</p>
         </article>
+
+        <figure data-step="25" class="cv-card cv-card--photo" id="n25x1285" style="--x: 3633px; --y: 325px; --w: 1470px;">
+          <div class="cv-media-frame" style="--ar: 1470 / 923;">
+            <img class="cv-media" src="/spear-hunting/orbisk/assets/screen-6.webp" alt="Later exploration screenshot of the daily brief" loading="lazy" />
+          </div>
+        </figure>
+
+        <aside data-step="26" class="cv-sticky cv-sticky--tint" id="n25x1287" style="--x: 4829px; --y: 1092px; --w: 360px; --sc: rgb(175 188 207);">
+          <p class="cv-sticky-label">Adi</p>
+          <p class="cv-sticky-text">Thank you for taking a look! 🫶</p>
+        </aside>
+
+        <article data-step="27" class="cv-card cv-card--text" id="n25x1298" style="--x: 4837px; --y: 1628px; --w: 830px;">
+          <p class="cv-float-text">Up next: 👉 <a href="/">about me</a> · 👉 live proto</p>
+        </article>
+
+        <article class="cv-card cv-card--text" id="n53x2" style="--x: -1373px; --y: 9503px; --w: 84px;">
+          <p class="cv-float-text">Aditya Gujaran</p>
+        </article>
+
       </div>
     </div>
   </main>
@@ -281,11 +261,10 @@
       <span class="material-symbols-rounded" aria-hidden="true">play_arrow</span>
       <span class="cv-btn-tour-label">Tour</span>
     </button>
-    <!-- Guided tour controls: hidden until Tour is playing -->
     <button class="cv-btn cv-btn--step" id="cv-prev" type="button" aria-label="Previous step">
       <span class="material-symbols-rounded" aria-hidden="true">chevron_left</span>
     </button>
-    <span class="cv-tour-count" id="cv-tour-count" aria-live="polite">1 / 16</span>
+    <span class="cv-tour-count" id="cv-tour-count" aria-live="polite">1 / 31</span>
     <button class="cv-btn cv-btn--step" id="cv-next" type="button" aria-label="Next step">
       <span class="material-symbols-rounded" aria-hidden="true">chevron_right</span>
     </button>

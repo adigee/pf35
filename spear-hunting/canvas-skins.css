@@ -391,6 +391,20 @@ body[data-cv-skin="acid"] .cv-callout-num {
   border: 1px solid currentColor;
 }
 
+body[data-cv-skin="acid"] .cv-sticky--tint {
+  border: 2px solid var(--cv-ink);
+  border-radius: 0;
+  box-shadow: 8px 8px 0 var(--color-accent);
+}
+
+body[data-cv-skin="acid"] .cv-board-section {
+  border-color: var(--cv-chrome-muted);
+}
+
+body[data-cv-skin="acid"] .cv-rule {
+  background: var(--cv-chrome-muted);
+}
+
 /* ═══════════════════════════════════════════════════════════
    SKIN SWITCHER (template demo only)
    ═══════════════════════════════════════════════════════════ */
