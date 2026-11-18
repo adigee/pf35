@@ -19,10 +19,13 @@
   <meta name="twitter:image" content="https://www.adityagujaran.com/project-content/og-image.png" />
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="/spear-hunting/canvas.css" />
+  <!-- Skins: optional alternate looks. Drop this link on project
+       pages that only want the default skin. -->
+  <link rel="stylesheet" href="/spear-hunting/canvas-skins.css" />
   <script src="/components/head.js"></script>
   <script src="/components/theme.js"></script>
 </head>
-<body id="top" class="cv-page">
+<body id="top" class="cv-page" data-cv-skin="signal">
   <div data-component="nav"></div>
 
   <!-- ═══════════════════════════════════════════════════════════
@@ -161,8 +164,15 @@
 
   <!-- Floating header pill -->
   <div class="cv-topbar" aria-hidden="false">
-    <p class="cv-topbar-title">TODO(adi): company · role</p>
-    <p class="cv-topbar-hint">Drag to pan · Scroll to move · Pinch to zoom</p>
+    <div class="cv-topbar-text">
+      <p class="cv-topbar-title">TODO(adi): company · role</p>
+      <p class="cv-topbar-hint">Drag to pan · Scroll to move · Pinch to zoom</p>
+    </div>
+    <div class="cv-skin-switch" role="group" aria-label="Canvas skin">
+      <button type="button" class="cv-skin-btn is-active" data-cv-skin-option="signal">Signal</button>
+      <button type="button" class="cv-skin-btn" data-cv-skin-option="marker">Marker</button>
+      <button type="button" class="cv-skin-btn" data-cv-skin-option="acid">Acid</button>
+    </div>
   </div>
 
   <!-- Controls: zoom, fit, guided tour -->

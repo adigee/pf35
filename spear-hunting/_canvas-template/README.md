@@ -6,7 +6,9 @@ scattered cards and pans and zooms instead of scrolling.
 ## Files
 
 - `index.html` - the template page, full of TODO(adi) slots
-- `/spear-hunting/canvas.css` - shared styles for every canvas page
+- `/spear-hunting/canvas.css` - shared layout and default skin
+- `/spear-hunting/canvas-skins.css` - alternate looks: marker (middle
+  ground) and acid (outlandish), plus the demo switcher styles
 - `/spear-hunting/canvas.js` - shared pan, zoom, wires, minimap, tour engine
 
 ## Create a new canvas page
@@ -37,3 +39,23 @@ Copy this folder to `spear-hunting/<slug>/`, or adapt
 
 Cards keep normal links and buttons working; content stays in the
 DOM for screen readers and crawlers.
+
+## Skins
+
+A page picks a look with `data-cv-skin` on the body:
+
+- `signal` (default) - the site's design language, midnight,
+  ivory, lavender, soft rounded cards
+- `marker` - middle ground: same palette, but glass cards with
+  accent top borders, tape on stickies, stitched wires, a
+  squiggle under the headline
+- `acid` - fully outlandish: neo brutalist rave board, black
+  graph paper, bone cards with 2px ink borders and hard neon
+  shadows, tilted twice as hard, marching ant wires, mono
+  uppercase labels
+
+To use a skin, set `data-cv-skin="marker"` or `acid` on the body
+and link `/spear-hunting/canvas-skins.css` in the head. The
+template page also has a Signal / Marker / Acid switcher in the
+top pill (demo only, saves the choice to localStorage; remove it
+on real project pages).

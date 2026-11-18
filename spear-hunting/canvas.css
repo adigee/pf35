@@ -419,14 +419,21 @@ body.cv-page [data-component="nav"] {
   top: calc(var(--nav-height) + var(--sp-4));
   left: var(--sp-4);
   z-index: 30;
-  display: grid;
-  gap: var(--sp-1);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-6);
   padding: var(--sp-3) var(--sp-4);
   border: var(--border-width) solid var(--color-border);
   border-radius: 14px;
   background: color-mix(in srgb, var(--color-bg) 80%, transparent);
   backdrop-filter: blur(12px);
   pointer-events: none;
+}
+
+.cv-topbar-text {
+  display: grid;
+  gap: var(--sp-1);
 }
 
 .cv-topbar-title {

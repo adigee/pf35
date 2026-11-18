@@ -430,6 +430,36 @@
   if (tourPrev) tourPrev.addEventListener('click', prevStep);
   if (tourNext) tourNext.addEventListener('click', nextStep);
 
+  /* ── Skin switcher (template demo only) ──────────────────── */
+
+  var SKINS = ['signal', 'marker', 'acid'];
+  var skinButtons = Array.prototype.slice.call(
+    document.querySelectorAll('[data-cv-skin-option]')
+  );
+
+  function setSkin(name) {
+    if (SKINS.indexOf(name) === -1) return;
+    document.body.dataset.cvSkin = name;
+    skinButtons.forEach(function (button) {
+      var active = button.getAttribute('data-cv-skin-option') === name;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+    try { localStorage.setItem('cv-skin', name); } catch (e) { /* ignore */ }
+  }
+
+  skinButtons.forEach(function (button) {
+    button.addEventListener('click', function () {
+      setSkin(button.getAttribute('data-cv-skin-option'));
+    });
+  });
+
+  (function initSkin() {
+    var saved = null;
+    try { saved = localStorage.getItem('cv-skin'); } catch (e) { /* ignore */ }
+    setSkin(saved && SKINS.indexOf(saved) !== -1 ? saved : 'signal');
+  })();
+
   /* ── Boot ────────────────────────────────────────────────── */
 
   function staggerEntrance() {

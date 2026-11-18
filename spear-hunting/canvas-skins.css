@@ -1,0 +1,420 @@
+/* Alternate visual skins for spear hunting canvas pages.
+   Pairs with /spear-hunting/canvas.css. Load this file only
+   on pages that want a non default skin, or on the template
+   demo where the switcher flips between them.
+
+   Three skins:
+     signal  the default, the site's own design language
+             (no rules here, canvas.css already is it)
+     marker  middle ground: same palette and type, but a more
+             crafted board: glass cards, tape, stitched wires
+     acid    fully outlandish: neo brutalist rave board, bone
+             cards with hard neon shadows on black graph paper
+
+   A page picks its skin with <body data-cv-skin="acid">. */
+
+/* ═══════════════════════════════════════════════════════════
+   SKIN: marker (middle ground)
+   ═══════════════════════════════════════════════════════════ */
+
+body[data-cv-skin="marker"] .cv-card:not(.cv-card--title) {
+  background: color-mix(in srgb, var(--color-surface) 82%, transparent);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border-top: 3px solid var(--color-accent);
+}
+
+body[data-cv-skin="marker"] .cv-card--note {
+  border-top-color: var(--color-primary);
+}
+
+body[data-cv-skin="marker"] .cv-card--fact {
+  border-top-color: var(--color-primary);
+  border-radius: 14px;
+}
+
+body[data-cv-skin="marker"] .cv-card--quote {
+  border-left: 4px solid var(--color-primary);
+}
+
+body[data-cv-skin="marker"] .cv-card--image {
+  border-radius: 22px;
+}
+
+/* Squiggle underline under the headline, like a marker stroke. */
+body[data-cv-skin="marker"] .cv-headline {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14' viewBox='0 0 120 14'%3E%3Cpath d='M2 10 Q 17 3 32 10 T 62 10 T 92 10 T 118 10' fill='none' stroke='%23ACA0E8' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+  padding-bottom: 16px;
+}
+
+/* Tape strips holding the stickies. */
+body[data-cv-skin="marker"] .cv-sticky::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 84px;
+  height: 22px;
+  transform: translateX(-50%) rotate(-4deg);
+  background: rgba(172, 160, 232, 0.4);
+  border-radius: 2px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+body[data-cv-skin="marker"] .cv-sticky--ink::before {
+  background: rgba(248, 246, 238, 0.28);
+}
+
+/* Wires become stitched thread in the primary colour. */
+body[data-cv-skin="marker"] .cv-wires line {
+  stroke: var(--color-primary);
+  stroke-width: 3;
+  stroke-dasharray: 1 12;
+  stroke-linecap: round;
+  opacity: 0.8;
+}
+
+body[data-cv-skin="marker"] .cv-wires line.is-hot {
+  stroke: var(--color-accent);
+}
+
+/* Tinted chips. */
+body[data-cv-skin="marker"] .cv-chip {
+  background: var(--color-primary-muted);
+  border-color: transparent;
+}
+
+body[data-cv-skin="marker"] .cv-chip-text {
+  color: var(--color-text);
+}
+
+/* Glass floating chrome. */
+body[data-cv-skin="marker"] .cv-topbar,
+body[data-cv-skin="marker"] .cv-controls,
+body[data-cv-skin="marker"] .cv-minimap {
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  backdrop-filter: blur(14px);
+  border-radius: 16px;
+}
+
+body[data-cv-skin="marker"] .cv-btn:hover {
+  background: var(--color-primary-muted);
+  color: var(--color-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SKIN: acid (fully outlandish)
+   Neo brutalist rave board: bone cards, hard neon shadows,
+   black graph paper, marching ant wires, mono labels.
+   ═══════════════════════════════════════════════════════════ */
+
+body[data-cv-skin="acid"] {
+  --color-bg: #0d0d0b;
+  --color-surface: #f4f0e2;
+  --color-surface-2: #e6e1cf;
+  --color-text: #f4f0e2;
+  --color-text-muted: rgba(244, 240, 226, 0.62);
+  --color-text-subtle: rgba(244, 240, 226, 0.22);
+  --color-primary: #c8ff2e;
+  --color-primary-muted: rgba(200, 255, 46, 0.25);
+  --color-accent: #ff43a6;
+  --color-accent-on-accent: #0d0d0b;
+  --color-on-primary: #0d0d0b;
+  --color-border: rgba(244, 240, 226, 0.16);
+}
+
+/* Graph paper instead of dots, scaled with the world by the
+   same custom property canvas.js drives. */
+body[data-cv-skin="acid"] .cv-canvas::before {
+  background-image:
+    linear-gradient(to right, rgba(200, 255, 46, 0.08) 1.5px, transparent 1.5px),
+    linear-gradient(to bottom, rgba(200, 255, 46, 0.08) 1.5px, transparent 1.5px);
+  background-size: var(--cv-dot-size, 28px) var(--cv-dot-size, 28px);
+  background-position: var(--cv-dot-x, 0px) var(--cv-dot-y, 0px);
+}
+
+/* Cards: bone squares with 2px ink borders and hard neon
+   offset shadows. Card scope flips the ink tokens so text
+   reads dark on bone. */
+body[data-cv-skin="acid"] .cv-card,
+body[data-cv-skin="acid"] .cv-sticky {
+  --color-text: #101010;
+  --color-text-muted: rgba(16, 16, 16, 0.62);
+  --color-text-subtle: rgba(16, 16, 16, 0.28);
+  --color-border: rgba(16, 16, 16, 0.9);
+  color: #101010;
+  background: var(--color-surface);
+  border: 2px solid #101010;
+  border-radius: 0;
+  box-shadow: 8px 8px 0 #c8ff2e;
+  transform: rotate(calc(var(--r, 0deg) * 2));
+  transition: box-shadow 200ms ease, translate 200ms ease, border-color 200ms ease;
+}
+
+body[data-cv-skin="acid"] .cv-card:hover {
+  border-color: #101010;
+  translate: -2px -2px;
+  box-shadow: 12px 12px 0 #ff43a6;
+}
+
+body[data-cv-skin="acid"] .cv-card:focus-within,
+body[data-cv-skin="acid"] .cv-card.is-tour-target {
+  border-color: #101010;
+  box-shadow: 8px 8px 0 #ff43a6;
+}
+
+/* The transparent title card becomes the loudest poster. */
+body[data-cv-skin="acid"] .cv-card--title {
+  background: var(--color-surface);
+  border: 2px solid #101010;
+  box-shadow: 12px 12px 0 #ff43a6;
+  padding: var(--sp-6);
+}
+
+body[data-cv-skin="acid"] .cv-card--title:hover {
+  border: 2px solid #101010;
+  box-shadow: 16px 16px 0 #c8ff2e;
+}
+
+body[data-cv-skin="acid"] .cv-headline {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+body[data-cv-skin="acid"] .cv-eyebrow-accent {
+  background: #c8ff2e;
+  color: #101010;
+  padding: 2px 8px;
+}
+
+body[data-cv-skin="acid"] .cv-role-link {
+  text-transform: uppercase;
+}
+
+/* Mono labels everywhere. */
+body[data-cv-skin="acid"] .cv-label,
+body[data-cv-skin="acid"] .cv-eyebrow,
+body[data-cv-skin="acid"] .cv-sticky-label,
+body[data-cv-skin="acid"] .cv-caption,
+body[data-cv-skin="acid"] .cv-quote-source {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+body[data-cv-skin="acid"] .cv-quote-text {
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+body[data-cv-skin="acid"] .cv-quote-mark {
+  color: #ff43a6;
+}
+
+body[data-cv-skin="acid"] .cv-media-frame {
+  background: rgba(16, 16, 16, 0.06);
+  border-radius: 0;
+}
+
+body[data-cv-skin="acid"] .cv-media-ph {
+  border: 3px dashed rgba(16, 16, 16, 0.5);
+  border-radius: 0;
+  color: rgba(16, 16, 16, 0.62);
+}
+
+body[data-cv-skin="acid"] .cv-media-ph .material-symbols-rounded {
+  color: #101010;
+}
+
+/* Stickies become rave flyers. */
+body[data-cv-skin="acid"] .cv-sticky {
+  border-radius: 0;
+}
+
+body[data-cv-skin="acid"] .cv-sticky--lilac {
+  background: #c8ff2e;
+  color: #101010;
+  box-shadow: 8px 8px 0 #ff43a6;
+}
+
+body[data-cv-skin="acid"] .cv-sticky--ink {
+  background: #ff43a6;
+  color: #101010;
+  border: 2px solid #101010;
+  box-shadow: 8px 8px 0 #c8ff2e;
+}
+
+body[data-cv-skin="acid"] .cv-sticky-big {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* Chips become ticket tags. */
+body[data-cv-skin="acid"] .cv-chip {
+  background: #c8ff2e;
+  border: 2px solid #101010;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 #ff43a6;
+  color: #101010;
+  padding: var(--sp-2) var(--sp-4);
+}
+
+body[data-cv-skin="acid"] .cv-chip-dot {
+  background: #101010;
+}
+
+body[data-cv-skin="acid"] .cv-chip-text {
+  color: #101010;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* Marching ant wires. */
+body[data-cv-skin="acid"] .cv-wires line {
+  stroke: #c8ff2e;
+  stroke-width: 3;
+  stroke-dasharray: 10 8;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body[data-cv-skin="acid"] .cv-wires line {
+    animation: cv-acid-march 900ms linear infinite;
+  }
+}
+
+@keyframes cv-acid-march {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+
+/* Bone chrome with hard shadows. */
+body[data-cv-skin="acid"] .cv-topbar {
+  background: #f4f0e2;
+  border: 2px solid #101010;
+  border-radius: 0;
+  box-shadow: 6px 6px 0 #ff43a6;
+  color: #101010;
+}
+
+body[data-cv-skin="acid"] .cv-topbar-title {
+  color: #101010;
+}
+
+body[data-cv-skin="acid"] .cv-topbar-hint {
+  color: rgba(16, 16, 16, 0.62);
+}
+
+body[data-cv-skin="acid"] .cv-controls {
+  background: #f4f0e2;
+  border: 2px solid #101010;
+  border-radius: 4px;
+  box-shadow: 6px 6px 0 #c8ff2e;
+}
+
+body[data-cv-skin="acid"] .cv-btn {
+  color: #101010;
+  border-radius: 2px;
+}
+
+body[data-cv-skin="acid"] .cv-btn:hover {
+  background: #c8ff2e;
+  color: #101010;
+}
+
+body[data-cv-skin="acid"] .cv-zoom-label,
+body[data-cv-skin="acid"] .cv-tour-count {
+  color: rgba(16, 16, 16, 0.62);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+body[data-cv-skin="acid"] .cv-controls-sep {
+  background: #101010;
+}
+
+body[data-cv-skin="acid"] .cv-btn--tour.is-playing {
+  background: #c8ff2e;
+  color: #101010;
+}
+
+body[data-cv-skin="acid"] .cv-minimap {
+  background: #f4f0e2;
+  border: 2px solid #101010;
+  border-radius: 0;
+  box-shadow: 6px 6px 0 #ff43a6;
+}
+
+body[data-cv-skin="acid"] .cv-minimap-card {
+  background: rgba(16, 16, 16, 0.4);
+}
+
+body[data-cv-skin="acid"] .cv-minimap-card.is-step {
+  background: #ff43a6;
+}
+
+body[data-cv-skin="acid"] .cv-minimap-viewport {
+  border-color: #101010;
+  background: rgba(200, 255, 46, 0.35);
+}
+
+/* Contact buttons inside the bone card. */
+body[data-cv-skin="acid"] .cv-card--contact {
+  border-color: #101010;
+}
+
+body[data-cv-skin="acid"] .cv-card .btn {
+  border: 2px solid #101010;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 #c8ff2e;
+  color: #101010;
+}
+
+body[data-cv-skin="acid"] .cv-card .btn:hover {
+  background: #101010;
+  color: #f4f0e2;
+  box-shadow: 6px 6px 0 #ff43a6;
+  border-color: #101010;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SKIN SWITCHER (template demo only)
+   ═══════════════════════════════════════════════════════════ */
+
+.cv-skin-switch {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface-2);
+  pointer-events: auto;
+}
+
+.cv-skin-btn {
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.cv-skin-btn:hover {
+  color: var(--color-text);
+}
+
+.cv-skin-btn.is-active {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+@media (max-width: 640px) {
+  .cv-skin-switch {
+    display: none;
+  }
+}
