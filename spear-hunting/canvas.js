@@ -244,6 +244,7 @@
     pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
     if (pointers.size === 2) {
       var pts = Array.from(pointers.values());
+      clickCandidate = null;
       pinchState = {
         dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y),
         midX: (pts[0].x + pts[1].x) / 2,
@@ -299,6 +300,36 @@
 
   canvas.addEventListener('pointerup', endPointer);
   canvas.addEventListener('pointercancel', endPointer);
+
+  /* ── Click a node: the camera centres on it ────────────────
+     A plain click (no drag, not on a link or button) on any
+     card or sticky zooms the camera in, centring that node.
+     Drag still pans from the background, Space + drag pans
+     from anywhere. */
+  var clickCandidate = null;
+
+  canvas.addEventListener('pointerdown', function (event) {
+    clickCandidate = null;
+    if (event.button !== 0 || pointers.size !== 1) return;
+    var card = event.target.closest('.cv-card, .cv-sticky, .cv-chip');
+    if (!card) return;
+    if (event.target.closest('a, button, input, textarea, select, .cv-pin, .cv-callout')) return;
+    clickCandidate = { el: card, x: event.clientX, y: event.clientY };
+  });
+
+  canvas.addEventListener('pointerup', function (event) {
+    if (!clickCandidate) return;
+    var el = clickCandidate.el;
+    var moved = Math.hypot(event.clientX - clickCandidate.x, event.clientY - clickCandidate.y);
+    clickCandidate = null;
+    if (moved > 6 || pointers.size > 0) return;
+    var r = rectToWorld(el);
+    var s = clamp(Math.min(
+      canvas.clientWidth / (r.w * 1.35),
+      canvas.clientHeight / (r.h * 1.35)
+    ), MIN_SCALE, 1.25);
+    flyToWorldPoint(r.cx, r.cy, s, true);
+  });
 
   /* ── Wheel: scroll pans, ctrl/cmd zooms ──────────────────── */
 

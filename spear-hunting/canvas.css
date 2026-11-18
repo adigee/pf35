@@ -346,6 +346,7 @@ body.cv-page [data-component="nav"] {
 /* ── STICKY ─────────────────────────────────────────────── */
 .cv-sticky {
   width: var(--w, 260px);
+  aspect-ratio: 1 / 1;
   padding: var(--sp-4);
   border-radius: 6px 6px 18px 6px;
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
@@ -778,9 +779,32 @@ body.cv-page [data-component="nav"] {
   color: rgba(16, 16, 16, 0.55);
 }
 
+/* Board stickies carry the author bottom-right, Miro style. */
+.cv-sticky--tint {
+  display: flex;
+  flex-direction: column;
+}
+
+.cv-sticky--tint .cv-sticky-label {
+  order: 2;
+  margin-top: auto;
+  align-self: flex-end;
+  text-align: right;
+}
+
 .cv-sticky--tint .cv-sticky-text,
 .cv-sticky--tint .cv-sticky-big {
   color: #101010;
+}
+
+/* Hand drawn arrows exported from a source board. Coloured by
+   currentColor so skins can re-ink them. */
+.cv-arrow {
+  position: absolute;
+  left: var(--x, 0px);
+  top: var(--y, 0px);
+  color: var(--color-text);
+  pointer-events: none;
 }
 
 /* ── BOARD SECTION: dashed region frame ─────────────────── */

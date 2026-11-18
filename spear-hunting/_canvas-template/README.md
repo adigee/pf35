@@ -38,8 +38,11 @@ Copy this folder to `spear-hunting/<slug>/`, or adapt
 - `cv-card--photo` - bare photo, minimal chrome
 - `cv-card--annotated` - photo with numbered pins and floating
   callouts (see below)
-- `cv-sticky--lilac` / `cv-sticky--ink` - stickies, small tilt
-  via `--r`
+- `cv-sticky--lilac` / `cv-sticky--ink` / `cv-sticky--tint` -
+  stickies, square, small tilt via `--r`; `--tint` takes the
+  board's own colour via `--sc`
+- `cv-arrow` - hand drawn arrow art exported from a source
+  board, positioned like any card, inked by `currentColor`
 - `cv-chip` - floating section label
 - `cv-card--contact` - email and links, last stop
 
@@ -61,11 +64,15 @@ callouts drop out of the photo and stack underneath it.
 
 - Drag background (or hold Space and drag anywhere) to pan
 - Scroll pans, pinch or ctrl/cmd + scroll zooms
+- Click any card or sticky: the camera zooms in and centres it
+  (plain clicks only, links and buttons still work)
 - Zoom buttons, fit button, keyboard `+ - = 0` and arrow keys
 - Minimap: click or drag to jump the camera
 - Tour: click Tour to enter, then step with the prev and next
   buttons or the left and right arrow keys; Exit or Escape
   returns to the fit view
+- Landing view: set `data-cv-focus="<element-id>"` on the
+  canvas so big boards open on a region instead of the fit
 
 Cards keep normal links and buttons working; content stays in the
 DOM for screen readers and crawlers.
