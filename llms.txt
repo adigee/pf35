@@ -19,6 +19,8 @@ Aditya Gujaran is a senior product designer with 10+ years of practice across B2
 
 **Tools:** Miro, FigJam, Mixpanel, Metabase, Figma, Framer, Maze, Dovetail, Lyssna, v0, Claude Code, Conductor, Cursor, Arduino and circuits
 
+**AI stack:** Design & prototyping — Figma (MCP), pen.dev, v0, Conductor, Claude Code, OpenCode · Guidelines & shipping — Claude Skills, design.md, GitHub, Vercel
+
 ## Experience
 
 - **Bounce** — Senior Product Designer (Aug 2024–Oct 2025). Built the lockers PUDO product from 0→1, reaching 250K ARR; reduced the cancellation rate from 65% to 12%.

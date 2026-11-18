@@ -101,6 +101,13 @@ Miro, FigJam, Mixpanel, Metabase, Figma, Framer, Maze, Dovetail, Lyssna, v0, Cla
 
 ---
 
+## AI Stack
+
+- **Design & prototyping:** Figma (MCP), pen.dev, v0, Conductor, Claude Code, OpenCode
+- **Guidelines & shipping:** Claude Skills, design.md, GitHub, Vercel
+
+---
+
 ## Certificates
 
 - Growth for Product Managers — OneMonthPM, Sept 2023
