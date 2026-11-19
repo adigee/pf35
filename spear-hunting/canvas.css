@@ -797,13 +797,12 @@ body.cv-page [data-component="nav"] {
   color: #101010;
 }
 
-/* Hand drawn arrows exported from a source board. Coloured by
-   currentColor so skins can re-ink them. */
+/* Hand drawn arrows exported from a source board. They carry
+   the original board ink; the class handles placement only. */
 .cv-arrow {
   position: absolute;
   left: var(--x, 0px);
   top: var(--y, 0px);
-  color: var(--color-text);
   pointer-events: none;
 }
 

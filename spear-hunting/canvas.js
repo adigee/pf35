@@ -522,8 +522,14 @@
     collectSteps();
     /* Big boards can ask for a landing view: data-cv-focus on
        the canvas names an element the camera centres on at
-       boot, instead of fitting the whole world. */
+       boot, instead of fitting the whole world. A shared link
+       can pick its own landing with #focus=<element-id>, which
+       wins over the page default. */
     var focusId = canvas.getAttribute('data-cv-focus');
+    var hashFocus = (window.location.hash || '').match(/focus=([A-Za-z0-9_-]+)/);
+    if (hashFocus && document.getElementById(hashFocus[1])) {
+      focusId = hashFocus[1];
+    }
     var focusEl = focusId ? document.getElementById(focusId) : null;
     if (focusEl) {
       var r = rectToWorld(focusEl);

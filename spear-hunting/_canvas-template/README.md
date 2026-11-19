@@ -72,7 +72,9 @@ callouts drop out of the photo and stack underneath it.
   buttons or the left and right arrow keys; Exit or Escape
   returns to the fit view
 - Landing view: set `data-cv-focus="<element-id>"` on the
-  canvas so big boards open on a region instead of the fit
+  canvas so big boards open on a region instead of the fit;
+  a shared link can pick its own landing with the hash
+  `#focus=<element-id>`
 
 Cards keep normal links and buttons working; content stays in the
 DOM for screen readers and crawlers.
