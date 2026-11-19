@@ -423,7 +423,7 @@
 
      1. A deck (preferred): a <script type="application/json"
         id="cv-tour-deck"> in the page holds an ordered list of
-        slides — the PowerPoint model. A slide is one camera
+        slides: the PowerPoint model. A slide is one camera
         shot:
           focus     one element id, or an array to frame a
                     cluster (the union bounding box is fitted)
@@ -437,7 +437,7 @@
                     the highlight and spotlight)
           hold      keep the camera where it is; caption-only beat
      2. data-step attributes: one stop per element in numeric
-        order — the fallback when no deck is present. */
+        order: the fallback when no deck is present. */
 
   var tour = { playing: false, index: 0 };
   var tourButton = document.getElementById('cv-tour');
@@ -680,10 +680,6 @@
     title.className = 'cv-record-title';
     title.textContent = 'Tour recorder';
 
-    var hint = document.createElement('span');
-    hint.className = 'cv-record-hint';
-    hint.textContent = 'Frame a shot · click nodes to spotlight · N capture · C clear · P copy';
-
     var status = document.createElement('span');
     status.className = 'cv-record-status';
     status.id = 'cv-record-status';
@@ -696,9 +692,12 @@
     copy.addEventListener('click', function () { copyRecordDeck(); });
 
     bar.appendChild(title);
-    bar.appendChild(hint);
     bar.appendChild(status);
     bar.appendChild(copy);
+
+    var hint = document.createElement('span');
+    hint.className = 'cv-record-hint';
+    hint.textContent = 'Frame a shot · click nodes to spotlight · N capture · C clear · P copy · Esc exit';
 
     var json = document.createElement('textarea');
     json.className = 'cv-record-json';
@@ -708,6 +707,7 @@
     json.value = '// Press N to capture the first slide';
 
     recordPanel.appendChild(bar);
+    recordPanel.appendChild(hint);
     recordPanel.appendChild(json);
     document.body.appendChild(recordPanel);
   }
@@ -762,12 +762,12 @@
     var text = recordDeckJson();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(
-        function () { flashRecordStatus('Deck copied — paste into the page'); },
-        function () { fallbackCopyRecord(text); flashRecordStatus('Deck copied — paste into the page'); }
+        function () { flashRecordStatus('Deck copied: paste into the page'); },
+        function () { fallbackCopyRecord(text); flashRecordStatus('Deck copied: paste into the page'); }
       );
     } else {
       fallbackCopyRecord(text);
-      flashRecordStatus('Deck copied — paste into the page');
+      flashRecordStatus('Deck copied: paste into the page');
     }
   }
 
