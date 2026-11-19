@@ -76,7 +76,17 @@
       '.type-caret{display:inline-block;width:0.08em;height:0.95em;vertical-align:-0.08em;' +
         'margin-left:0.05em;background:currentColor;border-radius:1px;' +
         'animation:type-caret-blink 0.9s steps(1,end) infinite;}' +
-      '@keyframes type-caret-blink{50%{opacity:0;}}';
+      '@keyframes type-caret-blink{50%{opacity:0;}}' +
+      /* Skip-intro pill: fixed bottom-centre, fades in with the first
+         character and out once the page has revealed. */
+      '.skip-intro{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));' +
+        'transform:translateX(-50%);z-index:50;padding:10px 18px;border-radius:999px;' +
+        'border:1px solid var(--color-border);background:var(--color-surface);' +
+        'color:var(--color-text-muted);font:600 13px/1 var(--font-body);cursor:pointer;' +
+        'opacity:0;transition:opacity .3s cubic-bezier(0.25,0.1,0.25,1),color .2s,border-color .2s;}' +
+      '.skip-intro.is-visible{opacity:1;}' +
+      '.skip-intro:hover{color:var(--color-text);border-color:var(--color-text-subtle);}' +
+      '.skip-intro:focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;}';
     (document.head || document.documentElement).appendChild(style);
   }
 
@@ -189,12 +199,45 @@
 
     var chunks = splitPhrases(leadText);
 
+    /* ── Skip intro ──
+       A bottom-centre pill (or Escape) jumps to the end state: the full
+       headline is written at once, the marker sweeps, and the page reveals
+       alongside it. Every pending typing step checks `skipped` and bails. */
+    var skipped = false;
+    var skipBtn = document.createElement('button');
+    skipBtn.type = 'button';
+    skipBtn.className = 'skip-intro';
+    skipBtn.textContent = 'Skip intro';
+    skipBtn.setAttribute('aria-label', 'Skip intro animation');
+    document.body.appendChild(skipBtn);
+    requestAnimationFrame(function () { skipBtn.classList.add('is-visible'); });
+
+    function removeSkip() {
+      document.removeEventListener('keydown', onKey);
+      skipBtn.classList.remove('is-visible');
+      setTimeout(function () { if (skipBtn.parentNode) skipBtn.parentNode.removeChild(skipBtn); }, 350);
+    }
+    function onKey(e) { if (e.key === 'Escape') skip(); }
+    function skip() {
+      if (skipped) return;
+      skipped = true;
+      if (leadNode) leadNode.data = leadText;
+      for (var k = 0; k < targets.length; k++) targets[k].textContent = texts[k];
+      if (caret.parentNode) caret.parentNode.removeChild(caret);
+      span.dispatchEvent(new CustomEvent('highlight-sweep'));
+      revealPage();
+      removeSkip();
+    }
+    skipBtn.addEventListener('click', skip);
+    document.addEventListener('keydown', onKey);
+
     /* Type one phrase on its curve: character i of n sits at
        t = i/(n-1); the curve's output interpolates the per-character
        delay between MIN_DELAY and MAX_DELAY, with ±3ms jitter. */
     function typePhrase(node, text, curve, done) {
       var n = text.length;
       (function step(i) {
+        if (skipped) return;
         if (i >= n) { done(); return; }
         var ch = text.charAt(i);
         node.data += ch;
@@ -216,6 +259,7 @@
 
     setTimeout(function () {
       (function nextPhrase(i) {
+        if (skipped) return;
         if (i >= chunks.length) {
           /* Final beat: the highlight phrase -- typed out plainly first
              (normal text colour, marker still held), so the words are
@@ -223,10 +267,13 @@
              sequence (one per highlight on narrow screens); the wrapper's
              fan-out staggers the sweeps. */
           (function typeWords(k) {
+            if (skipped) return;
             if (k >= targets.length) {
               setTimeout(function () {
+                if (skipped) return;
                 if (caret.parentNode) caret.parentNode.removeChild(caret);
                 span.dispatchEvent(new CustomEvent('highlight-sweep'));
+                removeSkip(); /* typing is done -- nothing left to skip */
                 /* Page reveal once the sweep lands: the LAST word's marker
                    animationend is the exact finish (sweep + fan stagger),
                    with a safety timeout as backup. */
