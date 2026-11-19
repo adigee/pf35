@@ -1,0 +1,447 @@
+/* Alternate visual skins for spear hunting canvas pages.
+   Pairs with /spear-hunting/canvas.css. Load this file only
+   on pages that want a non default skin, or on the template
+   demo where the switcher flips between them.
+
+   Skins:
+     signal  the default, the site's own design language.
+             No rules here: canvas.css already is it, and it
+             follows the site's dark and light themes.
+     acid    neo brutalist rave board. Ships in the site's two
+             themes: acid dark (bone cards on black graph
+             paper) and acid light (black cards on bone paper).
+
+   A page picks its skin with <body data-cv-skin="acid">. The
+   acid skin reacts to the site theme toggle like signal does. */
+
+/* ═══════════════════════════════════════════════════════════
+   SKIN: acid
+   ═══════════════════════════════════════════════════════════ */
+
+/* ACID DARK: bone cards with 2px ink borders and hard neon
+   shadows on black graph paper. */
+body[data-cv-skin="acid"] {
+  --color-bg: #0d0d0b;
+  --color-surface: #f4f0e2;
+  --color-surface-2: #e6e1cf;
+  --color-text: #f4f0e2;
+  --color-text-muted: rgba(244, 240, 226, 0.62);
+  --color-text-subtle: rgba(244, 240, 226, 0.22);
+  --color-primary: #c8ff2e;
+  --color-primary-muted: rgba(200, 255, 46, 0.25);
+  --color-accent: #ff43a6;
+  --color-accent-on-accent: #0d0d0b;
+  --color-on-primary: #0d0d0b;
+  --color-border: rgba(244, 240, 226, 0.16);
+
+  /* Acid's own vocabulary. */
+  --cv-ink: #101010;                        /* card borders, hard lines */
+  --cv-card-text: #101010;                  /* ink on bone cards */
+  --cv-card-text-muted: rgba(16, 16, 16, 0.62);
+  --cv-card-text-subtle: rgba(16, 16, 16, 0.28);
+  --cv-grid: rgba(200, 255, 46, 0.08);      /* graph paper lines */
+  --cv-chrome-bg: #f4f0e2;                  /* topbar, controls, minimap */
+  --cv-chrome-text: #101010;
+  --cv-chrome-muted: rgba(16, 16, 16, 0.62);
+  --cv-minimap-card: rgba(16, 16, 16, 0.4);
+}
+
+/* ACID LIGHT: daylight rave, full inversion. Black cards with
+   hard neon shadows on bone graph paper, pink takes over as
+   the primary. */
+html[data-theme="light"] body[data-cv-skin="acid"] {
+  --color-bg: #efeadb;
+  --color-surface: #101010;
+  --color-surface-2: #1f1e1a;
+  --color-text: #101010;
+  --color-text-muted: rgba(16, 16, 16, 0.62);
+  --color-text-subtle: rgba(16, 16, 16, 0.2);
+  --color-primary: #ff43a6;
+  --color-primary-muted: rgba(255, 67, 166, 0.18);
+  --color-accent: #c8ff2e;
+  --color-accent-on-accent: #101010;
+  --color-on-primary: #101010;
+  --color-border: rgba(16, 16, 16, 0.2);
+
+  --cv-card-text: #f4f0e2;                  /* bone on black cards */
+  --cv-card-text-muted: rgba(244, 240, 226, 0.62);
+  --cv-card-text-subtle: rgba(244, 240, 226, 0.3);
+  --cv-grid: rgba(16, 16, 16, 0.09);
+  --cv-chrome-bg: #101010;
+  --cv-chrome-text: #f4f0e2;
+  --cv-chrome-muted: rgba(244, 240, 226, 0.62);
+  --cv-minimap-card: rgba(244, 240, 226, 0.45);
+}
+
+/* Graph paper instead of dots, scaled with the world by the
+   same custom property canvas.js drives. */
+body[data-cv-skin="acid"] .cv-canvas::before {
+  background-image:
+    linear-gradient(to right, var(--cv-grid) 1.5px, transparent 1.5px),
+    linear-gradient(to bottom, var(--cv-grid) 1.5px, transparent 1.5px);
+  background-size: var(--cv-dot-size, 28px) var(--cv-dot-size, 28px);
+  background-position: var(--cv-dot-x, 0px) var(--cv-dot-y, 0px);
+}
+
+/* Cards: hard squares with 2px ink borders and hard neon
+   offset shadows. Card scope flips the ink tokens so text
+   reads on the card surface. */
+body[data-cv-skin="acid"] .cv-card,
+body[data-cv-skin="acid"] .cv-sticky {
+  --color-text: var(--cv-card-text);
+  --color-text-muted: var(--cv-card-text-muted);
+  --color-text-subtle: var(--cv-card-text-subtle);
+  --color-border: var(--cv-ink);
+  color: var(--cv-card-text);
+  background: var(--color-surface);
+  border: 2px solid var(--cv-ink);
+  border-radius: 0;
+  box-shadow: 8px 8px 0 var(--color-accent);
+  transform: rotate(calc(var(--r, 0deg) * 2));
+  transition: box-shadow 200ms ease, translate 200ms ease, border-color 200ms ease;
+}
+
+body[data-cv-skin="acid"] .cv-card:hover {
+  border-color: var(--cv-ink);
+  translate: -2px -2px;
+  box-shadow: 12px 12px 0 var(--color-primary);
+}
+
+body[data-cv-skin="acid"] .cv-card:focus-within,
+body[data-cv-skin="acid"] .cv-card.is-tour-target {
+  border-color: var(--cv-ink);
+  box-shadow: 8px 8px 0 var(--color-primary);
+}
+
+/* The transparent title card becomes the loudest poster. */
+body[data-cv-skin="acid"] .cv-card--title {
+  background: var(--color-surface);
+  border: 2px solid var(--cv-ink);
+  box-shadow: 12px 12px 0 var(--color-accent);
+  padding: var(--sp-6);
+}
+
+body[data-cv-skin="acid"] .cv-card--title:hover {
+  border: 2px solid var(--cv-ink);
+  box-shadow: 16px 16px 0 var(--color-primary);
+}
+
+body[data-cv-skin="acid"] .cv-headline {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+body[data-cv-skin="acid"] .cv-eyebrow-accent {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  padding: 2px 8px;
+}
+
+body[data-cv-skin="acid"] .cv-role-link {
+  text-transform: uppercase;
+}
+
+/* Mono labels everywhere. */
+body[data-cv-skin="acid"] .cv-label,
+body[data-cv-skin="acid"] .cv-eyebrow,
+body[data-cv-skin="acid"] .cv-sticky-label,
+body[data-cv-skin="acid"] .cv-caption,
+body[data-cv-skin="acid"] .cv-quote-source {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+body[data-cv-skin="acid"] .cv-quote-text {
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+body[data-cv-skin="acid"] .cv-quote-mark {
+  color: var(--color-accent);
+}
+
+body[data-cv-skin="acid"] .cv-media-frame {
+  background: transparent;
+  border-radius: 0;
+}
+
+body[data-cv-skin="acid"] .cv-media-ph {
+  border: 3px dashed var(--cv-card-text-subtle);
+  border-radius: 0;
+  color: var(--cv-card-text-muted);
+}
+
+body[data-cv-skin="acid"] .cv-media-ph .material-symbols-rounded {
+  color: var(--cv-card-text);
+}
+
+/* Stickies become rave flyers: one in the primary, one in the
+   accent, both with ink borders and swapped hard shadows. */
+body[data-cv-skin="acid"] .cv-sticky {
+  border-radius: 0;
+}
+
+body[data-cv-skin="acid"] .cv-sticky--lilac {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  box-shadow: 8px 8px 0 var(--color-accent);
+}
+
+body[data-cv-skin="acid"] .cv-sticky--lilac .cv-sticky-label,
+body[data-cv-skin="acid"] .cv-sticky--lilac .cv-sticky-text {
+  color: var(--color-on-primary);
+}
+
+body[data-cv-skin="acid"] .cv-sticky--ink {
+  background: var(--color-accent);
+  color: var(--color-accent-on-accent);
+  border: 2px solid var(--cv-ink);
+  box-shadow: 8px 8px 0 var(--color-primary);
+}
+
+body[data-cv-skin="acid"] .cv-sticky--ink .cv-sticky-label,
+body[data-cv-skin="acid"] .cv-sticky--ink .cv-sticky-text {
+  color: var(--color-accent-on-accent);
+}
+
+body[data-cv-skin="acid"] .cv-sticky-big {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* Chips become ticket tags. */
+body[data-cv-skin="acid"] .cv-chip {
+  background: var(--color-primary);
+  border: 2px solid var(--cv-ink);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 var(--color-accent);
+  padding: var(--sp-2) var(--sp-4);
+}
+
+body[data-cv-skin="acid"] .cv-chip-dot {
+  background: var(--cv-ink);
+}
+
+body[data-cv-skin="acid"] .cv-chip-text {
+  color: var(--color-on-primary);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* Marching ant wires. */
+body[data-cv-skin="acid"] .cv-wires line {
+  stroke: var(--color-primary);
+  stroke-width: 3;
+  stroke-dasharray: 10 8;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body[data-cv-skin="acid"] .cv-wires line {
+    animation: cv-acid-march 900ms linear infinite;
+  }
+}
+
+@keyframes cv-acid-march {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+
+/* Chrome: bone squares with hard shadows (acid dark) or black
+   chrome with neon shadows (acid light). */
+body[data-cv-skin="acid"] .cv-topbar {
+  background: var(--cv-chrome-bg);
+  border: 2px solid var(--cv-ink);
+  border-radius: 0;
+  box-shadow: 6px 6px 0 var(--color-accent);
+}
+
+body[data-cv-skin="acid"] .cv-topbar-title {
+  color: var(--cv-chrome-text);
+}
+
+body[data-cv-skin="acid"] .cv-topbar-hint {
+  color: var(--cv-chrome-muted);
+}
+
+body[data-cv-skin="acid"] .cv-controls {
+  background: var(--cv-chrome-bg);
+  border: 2px solid var(--cv-ink);
+  border-radius: 4px;
+  box-shadow: 6px 6px 0 var(--color-primary);
+}
+
+body[data-cv-skin="acid"] .cv-btn {
+  color: var(--cv-chrome-text);
+  border-radius: 2px;
+}
+
+body[data-cv-skin="acid"] .cv-btn:hover {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+body[data-cv-skin="acid"] .cv-zoom-label,
+body[data-cv-skin="acid"] .cv-tour-count {
+  color: var(--cv-chrome-muted);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+body[data-cv-skin="acid"] .cv-controls-sep {
+  background: var(--cv-chrome-muted);
+}
+
+body[data-cv-skin="acid"] .cv-btn--tour.is-playing {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+body[data-cv-skin="acid"] .cv-minimap {
+  background: var(--cv-chrome-bg);
+  border: 2px solid var(--cv-ink);
+  border-radius: 0;
+  box-shadow: 6px 6px 0 var(--color-accent);
+}
+
+body[data-cv-skin="acid"] .cv-minimap-card {
+  background: var(--cv-minimap-card);
+}
+
+body[data-cv-skin="acid"] .cv-minimap-card.is-step {
+  background: var(--color-accent);
+}
+
+body[data-cv-skin="acid"] .cv-minimap-viewport {
+  border-color: var(--color-primary);
+  background: var(--color-primary-muted);
+}
+
+body[data-cv-skin="acid"] .cv-skin-switch {
+  border-color: var(--cv-chrome-muted);
+}
+
+body[data-cv-skin="acid"] .cv-skin-btn {
+  color: var(--cv-chrome-muted);
+}
+
+body[data-cv-skin="acid"] .cv-skin-btn:hover {
+  color: var(--cv-chrome-text);
+}
+
+/* Contact buttons ride on the card surface. */
+body[data-cv-skin="acid"] .cv-card--contact {
+  border-color: var(--cv-ink);
+}
+
+body[data-cv-skin="acid"] .cv-card .btn {
+  border: 2px solid var(--cv-ink);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 var(--color-primary);
+  color: var(--cv-card-text);
+  background: transparent;
+}
+
+body[data-cv-skin="acid"] .cv-card .btn:hover {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  box-shadow: 6px 6px 0 var(--color-accent);
+  border-color: var(--cv-ink);
+}
+
+/* Pins and callouts: hard squares, mono numbers, hard shadows. */
+body[data-cv-skin="acid"] .cv-card--photo .cv-media-frame,
+body[data-cv-skin="acid"] .cv-card--annotated .cv-annotated-media {
+  border-radius: 0;
+}
+
+body[data-cv-skin="acid"] .cv-photo,
+body[data-cv-skin="acid"] .cv-media {
+  border-radius: 0;
+}
+
+body[data-cv-skin="acid"] .cv-pin {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border: 2px solid var(--cv-ink);
+  border-radius: 0;
+  box-shadow: 3px 3px 0 var(--color-accent);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+body[data-cv-skin="acid"] .cv-pin:hover {
+  translate: -1px -2px;
+}
+
+body[data-cv-skin="acid"] .cv-callout {
+  border: 2px solid var(--cv-card-text-muted);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 var(--color-primary);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: var(--text-2xs);
+  letter-spacing: 0.04em;
+}
+
+body[data-cv-skin="acid"] .cv-callout::before {
+  background: var(--cv-card-text-subtle);
+}
+
+body[data-cv-skin="acid"] .cv-callout-num {
+  border-radius: 0;
+  border: 1px solid currentColor;
+}
+
+body[data-cv-skin="acid"] .cv-sticky--tint {
+  border: 2px solid var(--cv-ink);
+  border-radius: 0;
+  box-shadow: 8px 8px 0 var(--color-accent);
+}
+
+body[data-cv-skin="acid"] .cv-board-section {
+  border-color: var(--cv-chrome-muted);
+}
+
+body[data-cv-skin="acid"] .cv-rule {
+  background: var(--cv-chrome-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SKIN SWITCHER (template demo only)
+   ═══════════════════════════════════════════════════════════ */
+
+.cv-skin-switch {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface-2);
+  pointer-events: auto;
+}
+
+.cv-skin-btn {
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.cv-skin-btn:hover {
+  color: var(--color-text);
+}
+
+.cv-skin-btn.is-active {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+@media (max-width: 640px) {
+  .cv-skin-switch {
+    display: none;
+  }
+}
