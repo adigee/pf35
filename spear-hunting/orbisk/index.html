@@ -45,10 +45,10 @@
           </div>
         </figure>
 
-        <!-- See why arrow: from the brief's See-why affordance to
-             the waste history sidebar. Painted before the
-             stickies so the board note masks its start. -->
-        <img class="cv-arrow" src="/spear-hunting/orbisk/assets/arrow-5.svg" alt="" style="--x: 1500px; --y: -1048px; width: 1088px;" />
+        <div class="cv-chip" style="--x: 888px; --y: -1432px;">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">Tablet view</span>
+        </div>
 
         <figure data-step="2" class="cv-card cv-card--photo" id="n19x114" style="--x: -1773px; --y: -3190px; --w: 1470px;">
           <div class="cv-media-frame" style="--ar: 1470 / 923;">
@@ -148,6 +148,11 @@
           <figcaption class="cv-caption">Waste history sidebar, four Tuesdays deep</figcaption>
         </figure>
 
+        <div class="cv-chip" style="--x: 2866px; --y: -1432px;">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">See why sidebar</span>
+        </div>
+
         <aside data-step="23" class="cv-sticky cv-sticky--tint" id="n25x1267" style="--x: 2456px; --y: -768px; --w: 240px; --sc: rgb(255 217 102);">
           <p class="cv-sticky-text">Enable full control to build trust with chef</p>
         </aside>
@@ -242,7 +247,7 @@
     <button class="cv-btn cv-btn--step" id="cv-prev" type="button" aria-label="Previous step">
       <span class="material-symbols-rounded" aria-hidden="true">chevron_left</span>
     </button>
-    <span class="cv-tour-count" id="cv-tour-count" aria-live="polite">1 / 31</span>
+    <span class="cv-tour-count" id="cv-tour-count" aria-live="polite">1 / 16</span>
     <button class="cv-btn cv-btn--step" id="cv-next" type="button" aria-label="Next step">
       <span class="material-symbols-rounded" aria-hidden="true">chevron_right</span>
     </button>
@@ -257,6 +262,33 @@
   <noscript>
     <p class="cv-noscript">This page is an interactive canvas. Enable JavaScript to pan and zoom the content.</p>
   </noscript>
+
+  <!-- Tour deck: the board's narrative as an ordered list of
+       camera shots. focus is one element id or an array to
+       frame a cluster; zoom, caption, spotlight, slow and cam
+       (an exact camera point captured with record mode) are
+       optional per slide. Re-record any time by opening this
+       page with #tour-record appended to the URL. -->
+  <script type="application/json" id="cv-tour-deck">
+    [
+      { "focus": "sticky-preshift", "caption": "The insight: food planning happens pre-shift" },
+      { "focus": ["sticky-proactive", "sticky-nudge"], "caption": "Pre-shift is proactive — a nudge at the daily standup gets acted on" },
+      { "focus": ["n19x114", "n19x166", "n19x169"], "caption": "Three rounds of the brief, explored side by side" },
+      { "focus": "n19x169", "zoom": 0.75, "slow": true, "spotlight": true, "caption": "But this is the one that stuck" },
+      { "focus": ["n19x241", "n19x248", "n19x227", "n19x234"], "caption": "What the system reads: covers, weather, past usage, inventory" },
+      { "focus": ["n19x255", "n19x269", "n19x262", "n19x276", "n19x283", "n19x297", "n19x290", "n19x304"], "caption": "How booked covers turn into one prep adjustment" },
+      { "focus": "n9x89", "caption": "The pre-shift brief: tonight's covers, today's call" },
+      { "focus": ["media-history", "n25x1267"], "caption": "See-why: four Tuesdays of waste history build trust" },
+      { "focus": "n22x916", "caption": "Surface recent wastage into a daily habit" },
+      { "focus": "n22x944", "caption": "An editorial style to probe with chefs" },
+      { "focus": "n25x1285", "caption": "Later rounds keep sharpening the same brief" },
+      { "focus": "n22x937", "caption": "Separate actions from info to help a busy chef scan" },
+      { "focus": "n25x1287", "caption": "Thank you for taking a look 🫶" },
+      { "focus": ["n25x1287", "n25x1298"], "caption": "Up next: about me, or the live prototype" },
+      { "focus": ["n12x108", "n12x111"], "caption": "Archive: earlier cuts of the daily brief" },
+      { "focus": ["n3x2", "n7x2"], "caption": "Archive: the Mise prototypes that came after" }
+    ]
+  </script>
 
   <script src="/components/nav.js"></script>
   <script src="/components/image-modal.js"></script>

@@ -39,8 +39,28 @@
        Optional extras:
          --w: card width (default: fixed per card type)
          --r: rotation in deg, small tilts for stickies only
-         data-step="3"   order for the guided tour (1, 2, 3, ...)
+         data-step="3"   fallback tour order (1, 2, 3, ...) when
+                         the page has no tour deck
          id              used by wires: data-connect="idFrom > idTo"
+
+       HOW TO AUTHOR THE TOUR
+       Preferred: a deck, PowerPoint style. Add near the bottom
+       of the page:
+         <script type="application/json" id="cv-tour-deck">
+           [
+             { "focus": "card-title", "caption": "The headline" },
+             { "focus": ["fact-why", "fact-process"], "caption": "A cluster, framed as one" },
+             { "focus": "media-prototype", "zoom": 0.8, "slow": true,
+               "spotlight": true, "caption": "A dramatic pullout" }
+           ]
+         </script>
+       Per slide: focus (one id or an array), zoom, caption,
+       spotlight, slow, cam ({ x, y, s } exact camera point from
+       record mode) and hold (keep the camera, change the words).
+       To record a deck by performing it, open the page with
+       #tour-record appended to the URL: frame each shot by
+       panning and zooming, click nodes to spotlight them, press
+       N to capture, P to copy the deck JSON.
        Copy any block below into a project page and fill the
        TODO(adi) slots. Delete blocks you do not need.
        ═══════════════════════════════════════════════════════════ -->
