@@ -519,7 +519,8 @@
     var items = world.querySelectorAll('.cv-card, .cv-sticky, .cv-chip');
     items.forEach(function (item) {
       var step = Number(item.dataset.step || 0);
-      item.style.setProperty('--d', (step ? step * 70 : 200) + 'ms');
+      /* Cap the stagger: big boards must not wait seconds. */
+      item.style.setProperty('--d', Math.min(step * 70, 800) + 'ms');
     });
     world.classList.add('is-ready');
   }
@@ -552,6 +553,21 @@
     staggerEntrance();
     applyTransform(false);
   }
+
+  /* Re-focus when the hash changes without a reload, so in-page
+     links and pasted hash URLs both retarget the camera. */
+  window.addEventListener('hashchange', function () {
+    var m = (window.location.hash || '').match(/focus=([A-Za-z0-9_-]+)/);
+    if (!m) return;
+    var el = document.getElementById(m[1]);
+    if (!el) return;
+    var r = rectToWorld(el);
+    var s = clamp(Math.min(
+      canvas.clientWidth / (r.w * 2.2),
+      canvas.clientHeight / (r.h * 1.5)
+    ), MIN_SCALE, 1);
+    flyToWorldPoint(r.cx, r.cy, s, true);
+  });
 
   var resizeTimer = null;
   window.addEventListener('resize', function () {

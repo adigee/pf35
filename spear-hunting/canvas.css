@@ -380,6 +380,7 @@ body.cv-page [data-component="nav"] {
   font-size: var(--text-base);
   font-weight: 400;
   line-height: var(--leading-medium);
+  overflow-wrap: break-word;
 }
 
 .cv-sticky-big {
