@@ -26,7 +26,11 @@ Copy this folder to `spear-hunting/<slug>/`, or adapt
 5. Swap the placeholder `.cv-media-ph` blocks for real
    `<img class="cv-media">` tags from `assets/`.
 
-## Card types
+## Component set
+
+The living reference is `/spear-hunting/canvas-components.html`:
+every component rendered as a specimen on a board, labelled with
+its class. Open it, click a block to zoom, copy the markup.
 
 - `cv-card--title` - the pitch, chrome-less headline
 - `cv-card--note` - normal prose block
@@ -39,10 +43,11 @@ Copy this folder to `spear-hunting/<slug>/`, or adapt
 - `cv-card--annotated` - photo with numbered pins and floating
   callouts (see below)
 - `cv-sticky--lilac` / `cv-sticky--ink` / `cv-sticky--tint` -
-  stickies, square, small tilt via `--r`; `--tint` takes the
-  board's own colour via `--sc`
+  perfect square notes, regular weight text one step up from
+  body copy, small tilt via `--r`; `--tint` takes the board's
+  own colour via `--sc`
 - `cv-arrow` - hand drawn arrow art exported from a source
-  board, positioned like any card, inked by `currentColor`
+  board, positioned like any card, carrying its original ink
 - `cv-chip` - floating section label
 - `cv-card--contact` - email and links, last stop
 

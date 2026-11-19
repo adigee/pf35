@@ -344,11 +344,14 @@ body.cv-page [data-component="nav"] {
 }
 
 /* ── STICKY ─────────────────────────────────────────────── */
+/* ── STICKY ───────────────────────────────────────────────
+   A perfect square note. Text is regular weight and a step
+   larger than body copy, like a real note on a board. */
 .cv-sticky {
   width: var(--w, 260px);
   aspect-ratio: 1 / 1;
   padding: var(--sp-4);
-  border-radius: 6px 6px 18px 6px;
+  border-radius: 0;
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
 }
 
@@ -374,9 +377,9 @@ body.cv-page [data-component="nav"] {
 
 .cv-sticky-text {
   margin: 0;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  line-height: var(--leading-body);
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: var(--leading-medium);
 }
 
 .cv-sticky-big {

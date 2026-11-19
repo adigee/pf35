@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-status="draft" data-published="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Canvas components | Aditya Gujaran</title>
+  <meta name="description" content="The component set for canvas pages: sticky, note, fact, quote, photo, annotated photo, chip, contact." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://www.adityagujaran.com/spear-hunting/canvas-components.html" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍊</text></svg>" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/spear-hunting/canvas.css" />
+  <script src="/components/head.js"></script>
+  <script src="/components/theme.js"></script>
+</head>
+<body id="top" class="cv-page">
+  <div data-component="nav"></div>
+
+  <!-- Living reference for the canvas component set. Each
+       specimen carries a chip with its class name. Copy markup
+       from here into project pages. -->
+
+  <main class="cv-main">
+    <div class="cv-canvas" id="cv-canvas" tabindex="0" aria-label="Component reference canvas. Drag to pan, scroll to move, pinch or control scroll to zoom.">
+      <div class="cv-world" id="cv-world">
+
+        <article class="cv-card cv-card--text" id="intro" style="--x: 120px; --y: 80px; --w: 420px;">
+          <p class="cv-float-text">Canvas components. The building blocks for board pages: stickies, cards, photos, annotations.</p>
+          <p class="cv-caption">Each specimen is labelled with its class. Click any block to zoom in.</p>
+        </article>
+
+        <div class="cv-chip" style="--x: 120px; --y: 380px;">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">cv-sticky--lilac</span>
+        </div>
+        <aside class="cv-sticky cv-sticky--lilac" id="spec-lilac" style="--x: 120px; --y: 424px; --w: 240px;">
+          <p class="cv-sticky-text">A perfect square note. Regular weight, one step up from body copy.</p>
+        </aside>
+
+        <div class="cv-chip" style="--x: 400px; --y: 380px;">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">cv-sticky--ink</span>
+        </div>
+        <aside class="cv-sticky cv-sticky--ink" id="spec-ink" style="--x: 400px; --y: 424px; --w: 240px;">
+          <p class="cv-sticky-text">The dark variant, for contrast against light clusters.</p>
+        </aside>
+
+        <div class="cv-chip" style="--x: 680px; --y: 380px;">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">cv-sticky--tint</span>
+        </div>
+        <aside class="cv-sticky cv-sticky--tint" id="spec-tint" style="--x: 680px; --y: 424px; --w: 240px; --sc: rgb(255 217 102);">
+          <p class="cv-sticky-text">Any board colour via --sc, ink text guaranteed.</p>
+        </aside>
+
+        <div class="cv-chip" style="--x: 960px; --y: 380px;">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">cv-card--note</span>
+        </div>
+        <article class="cv-card cv-card--note" id="spec-note" style="--x: 960px; --y: 424px; --w: 340px;">
+          <p class="cv-label">Note</p>
+          <p class="cv-body">Prose on a card. Two short paragraphs max, then move on.</p>
+          <p class="cv-body">Labels are uppercase, copy stays body size.</p>
+        </article>
+
+        <div class="cv-chip" style="--x: 1330px; --y: 380px;">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">cv-card--text</span>
+        </div>
+        <article class="cv-card cv-card--text" id="spec-text" style="--x: 1330px; --y: 440px; --w: 340px;">
+          <p class="cv-float-text">A chrome-less statement, floating free on the board.</p>
+        </article>
+
+        <div class="cv-chip" style="--x: 120px; --y: 780px;">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">cv-card--fact</span>
+        </div>
+        <article class="cv-card cv-card--fact" id="spec-fact" style="--x: 120px; --y: 824px; --w: 220px; --r: -2deg;">
+          <p class="cv-label">Fact</p>
+          <p class="cv-fact-value">One label, one value, index card size.</p>
+        </article>
+
+        <div class="cv-chip" style="--x: 400px; --y: 780px;">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">cv-card--quote</span>
+        </div>
+        <aside class="cv-card cv-card--quote" id="spec-quote" style="--x: 400px; --y: 824px; --w: 380px;">
+          <span class="cv-quote-mark" aria-hidden="true">“</span>
+          <p class="cv-quote-text">A pull quote, lifted straight from research.</p>
+          <p class="cv-quote-source">Source line goes here</p>
+        </aside>
+
+        <div class="cv-chip" style="--x: 810px; --y: 780px;">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">cv-card--image</span>
+        </div>
+        <figure class="cv-card cv-card--image" id="spec-image" style="--x: 810px; --y: 824px; --w: 380px;">
+          <div class="cv-media-frame">
+            <img class="cv-media" src="/project-content/profile-photo.png" alt="Framed image specimen using a placeholder photo" loading="lazy" />
+          </div>
+          <figcaption class="cv-caption">Framed visual with a caption. Set --ar for the ratio.</figcaption>
+        </figure>
+
+        <div class="cv-chip" style="--x: 120px; --y: 1220px;">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">cv-card--annotated</span>
+        </div>
+        <figure class="cv-card cv-card--annotated" id="spec-annotated" style="--x: 120px; --y: 1264px; --w: 420px;">
+          <div class="cv-annotated">
+            <div class="cv-media-frame">
+              <img class="cv-media" src="/project-content/profile-photo.png" alt="Annotated image specimen using a placeholder photo" loading="lazy" />
+              <span class="cv-pin" data-pin="1" style="--px: 30%; --py: 40%;">1</span>
+            </div>
+            <p class="cv-callout" data-pin="1" data-side="right" style="--px: 30%; --py: 40%;">
+              <span class="cv-callout-num" aria-hidden="true">1</span>
+              Pins and callouts pair by number.
+            </p>
+          </div>
+          <figcaption class="cv-caption">Pins on the image, callouts beside them.</figcaption>
+        </figure>
+
+        <div class="cv-chip" style="--x: 600px; --y: 1220px;">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">cv-card--contact</span>
+        </div>
+        <article class="cv-card cv-card--contact" id="spec-contact" style="--x: 600px; --y: 1264px; --w: 380px;">
+          <p class="cv-label">Last stop</p>
+          <div class="cv-contact-links">
+            <button class="btn btn--md" type="button" data-copy="aditya.gujaran@gmail.com" data-tooltip="Click to copy">
+              <span class="material-symbols-rounded" aria-hidden="true">content_copy</span>
+              <span class="btn-label">aditya.gujaran@gmail.com</span>
+            </button>
+          </div>
+          <p class="cv-caption">Email and links, closes the tour.</p>
+        </article>
+
+        <div class="cv-chip" id="chip-plain" style="--x: 1040px; --y: 1264px;">
+          <span class="cv-chip-dot"></span>
+          <span class="cv-chip-text">cv-chip</span>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Floating header pill -->
+  <div class="cv-topbar" aria-hidden="false">
+    <div class="cv-topbar-text">
+      <p class="cv-topbar-title">Canvas · component set</p>
+      <p class="cv-topbar-hint">Drag to pan · Scroll to move · Click a block to zoom</p>
+    </div>
+  </div>
+
+  <!-- Controls: zoom, fit, guided tour -->
+  <div class="cv-controls" id="cv-controls" role="group" aria-label="Canvas controls">
+    <button class="cv-btn" id="cv-zoom-out" type="button" aria-label="Zoom out">
+      <span class="material-symbols-rounded" aria-hidden="true">remove</span>
+    </button>
+    <span class="cv-zoom-label" id="cv-zoom-label" aria-live="polite">100%</span>
+    <button class="cv-btn" id="cv-zoom-in" type="button" aria-label="Zoom in">
+      <span class="material-symbols-rounded" aria-hidden="true">add</span>
+    </button>
+    <span class="cv-controls-sep" aria-hidden="true"></span>
+    <button class="cv-btn" id="cv-fit" type="button" aria-label="Fit everything in view">
+      <span class="material-symbols-rounded" aria-hidden="true">fit_screen</span>
+    </button>
+  </div>
+
+  <!-- Minimap -->
+  <div class="cv-minimap" id="cv-minimap" role="group" aria-label="Canvas map, click to jump">
+    <div class="cv-minimap-cards" id="cv-minimap-cards"></div>
+    <div class="cv-minimap-viewport" id="cv-minimap-viewport" aria-hidden="true"></div>
+  </div>
+
+  <noscript>
+    <p class="cv-noscript">This page is an interactive canvas. Enable JavaScript to pan and zoom the content.</p>
+  </noscript>
+
+  <script src="/components/nav.js"></script>
+  <script src="/components/image-modal.js"></script>
+  <script src="/main.js"></script>
+  <script src="/spear-hunting/canvas.js"></script>
+</body>
+</html>
