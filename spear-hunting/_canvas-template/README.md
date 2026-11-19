@@ -25,6 +25,7 @@ Copy this folder to `spear-hunting/<slug>/`, or adapt
    card ids you want connected.
 5. Swap the placeholder `.cv-media-ph` blocks for real
    `<img class="cv-media">` tags from `assets/`.
+6. Set `data-status="ready"` and fill the meta tags when done.
 
 ## Component set
 
@@ -63,7 +64,6 @@ percentages relative to the photo box:
 Callout `data-side` is `right`, `left` or `below`. Hovering a pin
 highlights its callout and the other way round. On small screens
 callouts drop out of the photo and stack underneath it.
-6. Set `data-status="ready"` and fill the meta tags when done.
 
 ## Interactions the engine gives you
 
