@@ -133,14 +133,15 @@
     });
   }
 
-  /* Center and side-edge points of an element, in world space. */
+  /* Center and side-edge points of an element, in world space.
+     Uses layout coordinates (offsetLeft etc), not screen rects:
+     screen rects are mid-animation during camera flights, which
+     would skew every measured landing point. */
   function rectToWorld(el) {
-    var r = el.getBoundingClientRect();
-    var c = canvas.getBoundingClientRect();
-    var left = (r.left - c.left - tx) / scale;
-    var top = (r.top - c.top - ty) / scale;
-    var width = r.width / scale;
-    var height = r.height / scale;
+    var left = el.offsetLeft;
+    var top = el.offsetTop;
+    var width = el.offsetWidth;
+    var height = el.offsetHeight;
     return {
       left: { x: left, y: top + height / 2 },
       right: { x: left + width, y: top + height / 2 },
@@ -441,7 +442,12 @@
     world.querySelectorAll('.is-tour-target').forEach(function (n) { n.classList.remove('is-tour-target'); });
     el.classList.add('is-tour-target');
     var r = rectToWorld(el);
-    var zoom = clamp(1.0 * (900 / Math.max(r.w, 640)), 0.5, 1.1);
+    /* Tall cards need a zoom that fits their height too, or the
+       camera lands inside a dark crop and pins float on black. */
+    var zoom = clamp(Math.min(
+      900 / Math.max(r.w, 640),
+      640 / Math.max(r.h, 1)
+    ), 0.4, 1.1);
     flyToWorldPoint(r.cx, r.cy, zoom, true);
     updateTourUi();
   }
