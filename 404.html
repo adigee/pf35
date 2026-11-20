@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page not found — Aditya Gujaran</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍊</text></svg>" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="components/head.js"></script>
+  <script src="components/theme.js"></script>
+
+  <style>
+    /* ─────────────────────────────────────────
+       404 PAGE
+       Single centered column — eyebrow, headline (with
+       the site's own highlighter-marker treatment on the
+       key phrase), one line of copy, one CTA back to work.
+       Reuses only documented design.md tokens/classes.
+    ───────────────────────────────────────── */
+    .nf-shell {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-8);
+    }
+    .nf-content {
+      max-width: var(--application-copy-width);
+      text-align: center;
+    }
+    .nf-content .b-label { display: block; margin-bottom: var(--sp-5); }
+    .nf-content .b-title--xl { margin-bottom: var(--sp-6); }
+    .nf-content .panel-cta { justify-content: center; }
+  </style>
+</head>
+<body>
+  <div data-component="nav"></div>
+
+  <main class="nf-shell">
+    <div class="nf-content">
+      <p class="b-label">You found a gap</p>
+      <h1 class="b-title--xl">This page <em data-highlight data-highlight-auto="400">does not exist.</em></h1>
+      <p class="b-body">Broken link, old bookmark, or a page I quietly killed — hard to say! It isn't here now.</p>
+      <a href="/" class="panel-cta panel-cta--back">
+        Back to work
+        <span class="panel-cta-circle" aria-hidden="true">
+          <svg viewBox="0 0 16 16">
+            <line x1="3" y1="8" x2="13" y2="8"/>
+            <polyline points="9 4 13 8 9 12"/>
+          </svg>
+        </span>
+      </a>
+    </div>
+  </main>
+
+  <script src="components/nav.js"></script>
+  <script src="components/text_highlight.js"></script>
+</body>
+</html>
