@@ -26,7 +26,11 @@
       padding: var(--sp-8);
     }
     .nf-content {
-      max-width: var(--application-copy-width);
+      /* A little roomier than the standard copy column — at the
+         display-size H1 font, "does not exist." needs more width
+         than 62ch gives it to stay on one line without the
+         highlighter's narrow-screen per-word fallback kicking in. */
+      max-width: 72ch;
       text-align: center;
     }
     .nf-content .b-label { display: block; margin-bottom: var(--sp-5); }
@@ -36,6 +40,13 @@
     /* This page has no resume to offer — match the spear-hunting
        pages' stripped-down nav (name only). */
     .nav-resume-group { display: none; }
+
+    /* Claw back some side padding on small phones so "does not
+       exist." keeps its margin against the highlighter's narrow-
+       screen per-word fallback (see note above on .nf-content). */
+    @media (max-width: 480px) {
+      .nf-shell { padding: var(--sp-5); }
+    }
   </style>
 </head>
 <body>
@@ -44,7 +55,7 @@
   <main class="nf-shell">
     <div class="nf-content">
       <p class="b-label">You found a gap</p>
-      <h1 class="b-title--xl">This page <em data-highlight>does not exist.</em></h1>
+      <h1 class="b-title--xl">This page <em data-highlight data-highlight-auto="400" data-highlight-sync>does not exist.</em></h1>
       <p class="b-body">Broken link, old bookmark, or a page I quietly killed — hard to say! It isn't here now.</p>
       <a href="/" class="panel-cta panel-cta--back">
         Back to work

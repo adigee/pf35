@@ -123,7 +123,12 @@
      small swipe, and the sweep fans out across them with a slight
      stagger — like a hand moving along the phrase. Desktop (where the
      phrase fits) keeps the single swipe. A single word that still
-     overflows on its own is left as-is. */
+     overflows on its own is left as-is.
+
+     Opt out of the stagger with data-highlight-sync: every word sweeps
+     in on the same tick instead of fanning — for phrases that read as
+     one idea (not a hand-written flourish) and shouldn't visibly
+     light up word-by-word. */
   function splitOnOverflow(el) {
     var parent = el.parentElement;
     if (!parent || !parent.clientWidth || el.scrollWidth <= parent.clientWidth) return;
@@ -132,6 +137,7 @@
     if (words.length < 2) return;
 
     var auto = el.getAttribute('data-highlight-auto');
+    var stagger = el.hasAttribute('data-highlight-sync') ? 0 : 120;
     /* The wrapper stops being a highlight itself — it just coordinates. */
     el.classList.remove('highlight', 'auto-sweep', 'redrawing', 'removing');
     el.removeAttribute('data-highlight-ready');
@@ -156,7 +162,7 @@
         (function (node, k) {
           setTimeout(function () {
             node.dispatchEvent(new CustomEvent('highlight-sweep'));
-          }, k * 120);
+          }, k * stagger);
         })(kids[j], j);
       }
     };
@@ -172,7 +178,7 @@
     el.addEventListener('click', function () {
       for (var j = 0; j < kids.length; j++) {
         (function (node, k) {
-          setTimeout(function () { replay(node); }, k * 120);
+          setTimeout(function () { replay(node); }, k * stagger);
         })(kids[j], j);
       }
     });
