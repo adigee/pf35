@@ -33,13 +33,18 @@
     .nf-content .b-title--xl { margin-bottom: var(--sp-6); }
     .nf-content .b-title--xl em { font-style: normal; white-space: nowrap; }
     .nf-content .panel-cta { justify-content: center; }
+    /* This page has no resume to offer — match the spear-hunting
+       pages' stripped-down nav (name only). */
+    .nav-resume-group { display: none; }
   </style>
 </head>
 <body>
+  <div data-component="nav"></div>
+
   <main class="nf-shell">
     <div class="nf-content">
       <p class="b-label">You found a gap</p>
-      <h1 class="b-title--xl">This page <em data-highlight data-highlight-auto="400">does not exist.</em></h1>
+      <h1 class="b-title--xl">This page <em data-highlight>does not exist.</em></h1>
       <p class="b-body">Broken link, old bookmark, or a page I quietly killed — hard to say! It isn't here now.</p>
       <a href="/" class="panel-cta panel-cta--back">
         Back to work
@@ -53,6 +58,7 @@
     </div>
   </main>
 
+  <script src="components/nav.js"></script>
   <script src="components/text_highlight.js"></script>
 </body>
 </html>
