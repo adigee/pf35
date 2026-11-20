@@ -43,9 +43,11 @@
        • pf_arrived once per session → one arrival event
      Read from <html data-slug="<company>"> (set on every company page
      and both templates), since the clean URL no longer carries the
-     folder name. */
+     folder name. The literal __SLUG__ placeholder (a template that
+     was never filled in, e.g. the deployed _canvas-template) is not
+     a real company, so it is ignored. */
   var shCompany = document.documentElement.getAttribute('data-slug');
-  if (shCompany) {
+  if (shCompany && shCompany !== '__SLUG__') {
     try {
       document.cookie = 'cs_unlock=' + encodeURIComponent('designforgrowth') + '; path=/; SameSite=Lax';
       localStorage.setItem('pf_via', JSON.stringify({ to: shCompany, via: 'spear-hunting' }));
