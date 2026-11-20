@@ -5,7 +5,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryDirectory = path.dirname(scriptDirectory);
 const applicationsDirectory = path.join(repositoryDirectory, 'spear-hunting');
-const inventoryPath = path.join(repositoryDirectory, 'spearhunting', 'índice', 'index.html');
+const inventoryPath = path.join(repositoryDirectory, 'spearhuntingindex', 'index.html');
 const startMarker = '<!-- APPLICATIONS:START -->';
 const endMarker = '<!-- APPLICATIONS:END -->';
 
@@ -103,7 +103,7 @@ function renderRows(applications) {
 
   return applications.map((application) => {
     const pageCell = application.hasPage
-      ? `<a href="/spear-hunting/${encodeURIComponent(application.slug)}/">${escapeHtml(application.title)}<span class="material-symbols-rounded" aria-hidden="true">arrow_outward</span></a>`
+      ? `<a href="/${encodeURIComponent(application.slug)}">${escapeHtml(application.title)}<span class="material-symbols-rounded" aria-hidden="true">arrow_outward</span></a>`
       : escapeHtml(application.title);
     const dateCell = application.publishDate
       ? `<time datetime="${application.publishDate}">${formatDate(application.publishDate)}</time>`
@@ -123,19 +123,19 @@ export async function generateInventory() {
   const start = html.indexOf(startMarker);
   const end = html.indexOf(endMarker);
   if (start === -1 || end === -1 || end < start) {
-    throw new Error('Could not find the application list markers in spearhunting/índice/index.html.');
+    throw new Error('Could not find the application list markers in spearhuntingindex/index.html.');
   }
 
   const rowsStart = start + startMarker.length;
   const rows = renderRows(applications);
   const updated = `${html.slice(0, rowsStart)}\n${rows}\n          ${html.slice(end)}`;
   await writeFile(inventoryPath, updated);
-  console.log(`Generated spearhunting/índice/ with ${applications.length} application(s).`);
+  console.log(`Generated spearhuntingindex/ with ${applications.length} application(s).`);
 }
 
 if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) {
   generateInventory().catch((error) => {
-    console.error(`Could not generate spearhunting/índice/: ${error.message}`);
+    console.error(`Could not generate spearhuntingindex/: ${error.message}`);
     process.exitCode = 1;
   });
 }

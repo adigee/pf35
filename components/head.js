@@ -33,18 +33,21 @@
   }
 
   /* ── SPEAR-HUNTING PERMISSION SEEDING ──
-     A spear-hunting page (/spear-hunting/<company>/) was sent to a
-     specific company, so arriving there *is* the permission — same
-     level as the /unlocked/ magic link. Seed it:
+     A spear-hunting page (served at /<company>, the folder is
+     spear-hunting/<company>/) was sent to a specific company, so
+     arriving there *is* the permission — same level as the /unlocked/ magic link. Seed it:
        • cs_unlock session cookie → every case study opens silently,
          no password gate
        • pf_via in localStorage → components/analytics.js tags the
          visit "unlocked" and identifies it as link:<company>
        • pf_arrived once per session → one arrival event
-     Derived from the URL here so every current and future company
-     page is covered from this one place. */
-  var shCompany = (location.pathname.match(/^\/spear-hunting\/([a-z0-9-]+)/) || [])[1];
-  if (shCompany) {
+     Read from <html data-slug="<company>"> (set on every company page
+     and both templates), since the clean URL no longer carries the
+     folder name. The literal __SLUG__ placeholder (a template that
+     was never filled in, e.g. the deployed _canvas-template) is not
+     a real company, so it is ignored. */
+  var shCompany = document.documentElement.getAttribute('data-slug');
+  if (shCompany && shCompany !== '__SLUG__') {
     try {
       document.cookie = 'cs_unlock=' + encodeURIComponent('designforgrowth') + '; path=/; SameSite=Lax';
       localStorage.setItem('pf_via', JSON.stringify({ to: shCompany, via: 'spear-hunting' }));
@@ -81,7 +84,7 @@
 
   /* Section-view, click, unlock and video events on top of Umami's
      pageviews — see components/analytics.js. Root-absolute so nested
-     routes (/spear-hunting/<company>/) resolve it too. */
+     routes (/<company>) resolve it too. */
   var analytics = document.createElement('script');
   analytics.defer = true;
   analytics.src = '/components/analytics.js';

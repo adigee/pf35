@@ -4,7 +4,7 @@
    <div data-component="nav"></div>.
 
    Links are root-absolute so the shared nav works from nested
-   routes such as /spear-hunting/<company>/.
+   routes such as /<company>.
 ───────────────────────────────────────── */
 (function () {
   function render() {

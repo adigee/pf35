@@ -11,6 +11,16 @@ function isValidSlug(slug) {
   return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
 }
 
+async function assertSlugIsFree(slug) {
+  const reserved = new Set(['spearhuntingindex']);
+  for (const entry of await readdir(repositoryDirectory, { withFileTypes: true })) {
+    if (entry.isDirectory() || !path.extname(entry.name)) reserved.add(entry.name.toLowerCase());
+  }
+  if (reserved.has(slug)) {
+    throw new Error(`"${slug}" collides with a top-level route, so /${slug} would not reach the page. Pick another slug.`);
+  }
+}
+
 function replaceSlugPlaceholder(html, slug) {
   return html.replaceAll('__SLUG__', slug);
 }
@@ -33,6 +43,8 @@ export async function createPage(slug) {
     throw new Error('Slug must use lowercase letters, digits, and single hyphens.');
   }
 
+  await assertSlugIsFree(slug);
+
   const targetDirectory = path.join(pagesDirectory, slug);
   try {
     await mkdir(targetDirectory);
@@ -46,6 +58,7 @@ export async function createPage(slug) {
   try {
     const entries = await readdir(templateDirectory, { withFileTypes: true });
     for (const entry of entries) {
+      if (entry.name.endsWith('-demo.html')) continue;
       await cp(
         path.join(templateDirectory, entry.name),
         path.join(targetDirectory, entry.name),
