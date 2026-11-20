@@ -17,7 +17,7 @@
      Resume PDF / Resume MD / Book a call / LinkedIn / Email
      Outbound link       any other external link · {host}
      Magic link          arrived through /unlocked/ this visit · {to}
-     Spear-hunting visit arrived through /spear-hunting/<company>/
+     Spear-hunting visit arrived through a company page (/<company>)
                          this visit · {to}
 
    Two permission buckets show up in the data:

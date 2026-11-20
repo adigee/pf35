@@ -161,6 +161,125 @@ export async function checkPages(directory = pagesDirectory) {
   return results;
 }
 
+const siteOrigin = 'https://www.adityagujaran.com';
+const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const oldRoutePattern = /^\/spear-hunting\/[a-z0-9-]+\/?(#.*)?$/;
+const indexAlias = 'spearhuntingindex';
+
+function getHeadUrls(source) {
+  const urls = { canonical: undefined, ogUrl: undefined };
+  for (const [, rawName, rawAttributes] of stripComments(source).matchAll(/<([a-z][\w:-]*)\b([^>]*)>/gi)) {
+    const name = rawName.toLowerCase();
+    const attributes = getAttributes(rawAttributes);
+    if (name === 'link' && attributes.get('rel')?.toLowerCase() === 'canonical') urls.canonical = attributes.get('href');
+    if (name === 'meta' && attributes.get('property')?.toLowerCase() === 'og:url') urls.ogUrl = attributes.get('content');
+  }
+  return urls;
+}
+
+function checkIdentity(source, file, slugValue, expectedUrl) {
+  const errors = [];
+  const rootTag = stripComments(source).match(/<html\b([^>]*)>/i);
+  const dataSlug = rootTag ? getAttributes(rootTag[1]).get('data-slug') : undefined;
+  if (dataSlug !== slugValue) {
+    errors.push({ file, message: `data-slug is ${JSON.stringify(dataSlug)}, expected ${JSON.stringify(slugValue)}.` });
+  }
+  const { canonical, ogUrl } = getHeadUrls(source);
+  if (canonical !== expectedUrl) {
+    errors.push({ file, message: `Canonical is ${JSON.stringify(canonical)}, expected ${expectedUrl}.` });
+  }
+  if (ogUrl !== expectedUrl) {
+    errors.push({ file, message: `og:url is ${JSON.stringify(ogUrl)}, expected ${expectedUrl}.` });
+  }
+  return errors;
+}
+
+function checkOldRouteLinks(source, file) {
+  const errors = [];
+  for (const [, , rawAttributes] of stripComments(source).matchAll(/<([a-z][\w:-]*)\b([^>]*)>/gi)) {
+    const href = getAttributes(rawAttributes).get('href');
+    if (href && oldRoutePattern.test(href)) {
+      errors.push({ file, message: `Link to the old page route ${href}. Use /<slug>.` });
+    }
+  }
+  return errors;
+}
+
+/* Routing rules (vercel.json): /<slug> serves spear-hunting/<slug>/index.html,
+   so a company folder must not share a name with a real top-level entry, and
+   every page must carry the clean URL and its slug. */
+export function checkRouting({ companies, templates, indexSource, topLevelEntries }) {
+  const errors = [];
+  const reserved = new Set([indexAlias, ...topLevelEntries.map((entry) => entry.toLowerCase())]);
+
+  for (const company of companies) {
+    const file = `spear-hunting/${company.slug}/index.html`;
+    if (!slugPattern.test(company.slug)) {
+      errors.push({ file, message: 'Company folder name must use lowercase letters, digits, and single hyphens.' });
+    }
+    if (reserved.has(company.slug)) {
+      errors.push({ file, message: `Folder name "${company.slug}" collides with a top-level route, so /${company.slug} would not reach this page.` });
+    }
+    errors.push(...checkIdentity(company.source, file, company.slug, `${siteOrigin}/${company.slug}`));
+    errors.push(...checkOldRouteLinks(company.source, file));
+    for (const extra of company.otherHtml) {
+      errors.push({ file: `spear-hunting/${company.slug}/${extra}`, message: 'Company folders may only contain index.html as an HTML page. Review pages belong in _template/.' });
+    }
+  }
+  for (const template of templates) {
+    const file = `spear-hunting/${template.name}/index.html`;
+    errors.push(...checkIdentity(template.source, file, '__SLUG__', `${siteOrigin}/__SLUG__`));
+    errors.push(...checkOldRouteLinks(template.source, file));
+  }
+  if (indexSource !== undefined) {
+    errors.push(...checkOldRouteLinks(indexSource, 'spearhunting/índice/index.html'));
+  }
+  return errors;
+}
+
+async function listHtmlFiles(directory, prefix = '') {
+  const found = [];
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    if (entry.isDirectory()) {
+      found.push(...(await listHtmlFiles(path.join(directory, entry.name), `${prefix}${entry.name}/`)));
+    } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.html')) {
+      found.push(`${prefix}${entry.name}`);
+    }
+  }
+  return found;
+}
+
+async function readIfExists(filePath) {
+  try {
+    return await readFile(filePath, 'utf8');
+  } catch (error) {
+    if (error.code === 'ENOENT') return undefined;
+    throw error;
+  }
+}
+
+export async function checkRoutingFiles(directory = pagesDirectory) {
+  const root = path.dirname(directory);
+  const companies = [];
+  const templates = [];
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    const source = await readIfExists(path.join(directory, entry.name, 'index.html'));
+    if (source === undefined) continue;
+    if (entry.name.startsWith('_')) {
+      if (['_template', '_canvas-template'].includes(entry.name)) templates.push({ name: entry.name, source });
+      continue;
+    }
+    const otherHtml = (await listHtmlFiles(path.join(directory, entry.name))).filter((name) => name !== 'index.html');
+    companies.push({ slug: entry.name, source, otherHtml });
+  }
+  const topLevelEntries = (await readdir(root, { withFileTypes: true }))
+    .filter((entry) => entry.isDirectory() || !path.extname(entry.name))
+    .map((entry) => entry.name);
+  const indexSource = await readIfExists(path.join(root, 'spearhunting', 'índice', 'index.html'));
+  return checkRouting({ companies, templates, indexSource, topLevelEntries });
+}
+
 export function runDashSelfTest() {
   const input = `<!doctype html><html><head><meta name="robots" content="noindex, nofollow"></head><body><p>alpha${String.fromCodePoint(0x2013)}beta</p></body></html>`;
   const result = checkHtml(input, 'self-test.html');
@@ -175,6 +294,20 @@ export function runDashSelfTest() {
     throw new Error('Template self-test failed: inert template placeholders should not block a ready page.');
   }
   console.log('Template self-test passed: inert optional slots do not block a ready page.');
+
+  const cleanPage = (slug) => `<!doctype html><html data-slug="${slug}"><head><link rel="canonical" href="${siteOrigin}/${slug}"><meta property="og:url" content="${siteOrigin}/${slug}"></head><body></body></html>`;
+  const routing = (companies, topLevelEntries = ['unlocked', 'prototypes']) =>
+    checkRouting({ companies: companies.map((c) => ({ otherHtml: [], ...c })), templates: [], topLevelEntries });
+  if (routing([{ slug: 'acme', source: cleanPage('acme') }]).length !== 0) {
+    throw new Error('Routing self-test failed: a clean page was reported.');
+  }
+  if (!routing([{ slug: 'unlocked', source: cleanPage('unlocked') }]).some((error) => error.message.includes('collides'))) {
+    throw new Error('Routing self-test failed: a company named like a top-level folder was not reported.');
+  }
+  if (!routing([{ slug: 'acme', source: cleanPage('other') }]).some((error) => error.message.includes('data-slug'))) {
+    throw new Error('Routing self-test failed: a mismatched data-slug was not reported.');
+  }
+  console.log('Routing self-test passed: collisions and mismatched slugs are reported.');
 }
 
 async function main(args) {
@@ -193,6 +326,10 @@ async function main(args) {
 
   let errorCount = 0;
   let warningCount = 0;
+  for (const error of await checkRoutingFiles()) {
+    console.error(`ERROR ${error.file}: ${error.message}`);
+    errorCount += 1;
+  }
   for (const result of results) {
     for (const error of result.errors) {
       const location = error.line ? `:${error.line}` : '';

@@ -103,7 +103,7 @@ function renderRows(applications) {
 
   return applications.map((application) => {
     const pageCell = application.hasPage
-      ? `<a href="/spear-hunting/${encodeURIComponent(application.slug)}/">${escapeHtml(application.title)}<span class="material-symbols-rounded" aria-hidden="true">arrow_outward</span></a>`
+      ? `<a href="/${encodeURIComponent(application.slug)}">${escapeHtml(application.title)}<span class="material-symbols-rounded" aria-hidden="true">arrow_outward</span></a>`
       : escapeHtml(application.title);
     const dateCell = application.publishDate
       ? `<time datetime="${application.publishDate}">${formatDate(application.publishDate)}</time>`

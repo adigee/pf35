@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    { "source": "/spear-hunting/:company([a-z0-9-]+){/}?", "destination": "/:company", "permanent": false },
+    { "source": "/spearfishing/:company([a-z0-9-]+){/}?", "destination": "/:company", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/spearhuntingindex", "destination": "/spearhunting/%C3%ADndice/index.html" },
+    { "source": "/:company([a-z0-9-]+){/}?", "destination": "/spear-hunting/:company/index.html" }
+  ]
+}
