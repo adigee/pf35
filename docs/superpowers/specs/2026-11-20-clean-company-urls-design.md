@@ -397,3 +397,12 @@ for (const [p, want] of cases) {
 console.log(`\n${cases.length - fail}/${cases.length} passed. Companies: ${companies.join(', ')}. Root folders: ${rootDirs.join(', ')}`);
 process.exit(fail ? 1 : 0);
 ```
+## Addendum (2026-11-20): old index URL retired
+
+Adi chose to retire `/spearhunting/índice/` in favour of `/spearhuntingindex`.
+The folder moved to ASCII `spearhuntingindex/` (`index.html`, `index.css`), so
+the accent rewrite rule is gone and `/spearhuntingindex` is a real folder.
+`/spearhunting` and `/spearhunting/(.*)` redirect (307) to `/spearhuntingindex`.
+`{/:path*}?` is rejected by Vercel's compiler and `:path*` misses the trailing
+slash, hence the two explicit rules. Where the text above says
+`spearhunting/índice/`, read `spearhuntingindex/`.

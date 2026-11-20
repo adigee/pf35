@@ -399,7 +399,7 @@ Pages under `spear-hunting/<company>/` are served at `/<company>` (a `vercel.jso
 
 Application section copy is authored per opportunity. The reusable template contains `TODO(adi)` placeholders only. These pages are independent from the project registry and case-study runtime.
 
-The inventory at `/spearhunting/índice/` (also reachable at `/spearhuntingindex`) links to the clean `/<company>` URLs. It is generated from folders under `spear-hunting/` by running `npm run spearhunting:indice`. A page gets a publish date only when its root `<html>` has `data-status="ready"` and a valid ISO date in `data-published` (for example `data-published="2026-10-30"`).
+The inventory lives in `spearhuntingindex/` and is served at `/spearhuntingindex` (the old `/spearhunting/índice/` URL redirects there). It links to the clean `/<company>` URLs. It is generated from folders under `spear-hunting/` by running `npm run spearhunting:indice`. A page gets a publish date only when its root `<html>` has `data-status="ready"` and a valid ISO date in `data-published` (for example `data-published="2026-10-30"`).
 
 ### Opportunity Map (HousingAnywhere application)
 

@@ -232,7 +232,7 @@ export function checkRouting({ companies, templates, indexSource, topLevelEntrie
     errors.push(...checkOldRouteLinks(template.source, file));
   }
   if (indexSource !== undefined) {
-    errors.push(...checkOldRouteLinks(indexSource, 'spearhunting/índice/index.html'));
+    errors.push(...checkOldRouteLinks(indexSource, 'spearhuntingindex/index.html'));
   }
   return errors;
 }
@@ -276,7 +276,7 @@ export async function checkRoutingFiles(directory = pagesDirectory) {
   const topLevelEntries = (await readdir(root, { withFileTypes: true }))
     .filter((entry) => entry.isDirectory() || !path.extname(entry.name))
     .map((entry) => entry.name);
-  const indexSource = await readIfExists(path.join(root, 'spearhunting', 'índice', 'index.html'));
+  const indexSource = await readIfExists(path.join(root, 'spearhuntingindex', 'index.html'));
   return checkRouting({ companies, templates, indexSource, topLevelEntries });
 }
 
